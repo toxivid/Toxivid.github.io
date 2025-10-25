@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chypr AI — Chat (Free HF)</title>
+  <title>Chypr AI — Chat (Free AI)</title>
   <style>
     :root{
       --bg:#0b1020; --panel:#0f1724; --muted:#94a3b8; --accent:#10b981;
@@ -41,7 +41,7 @@
       <div class="brand"><span class="dot"></span>Chypr AI</div>
       <div class="new-chat" id="newChat">＋ New chat</div>
       <div class="history" id="history"></div>
-      <div style="margin-top:auto" class="small">Hosted on GitHub Pages · Free HF</div>
+      <div style="margin-top:auto" class="small">Hosted on GitHub Pages · Free AI</div>
     </aside>
 
     <main class="panel">
@@ -64,17 +64,13 @@
 
 <script>
 (() => {
-  const HF_API_KEY = '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';
-  const HF_MODEL = 'gpt2';
+  const HF_MODEL = 'EleutherAI/gpt-neo-125M'; // Free public model, no token needed
 
   const apiFetch = async (text) => {
     const url = `https://api-inference.huggingface.co/models/${HF_MODEL}`;
     const res = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${HF_API_KEY}`,
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ inputs: text })
     });
     return res;
@@ -140,8 +136,8 @@
       loading.remove(); loadingMeta.remove();
 
       let reply = "[no reply]";
-      if (Array.isArray(data)) {
-        reply = data[0]?.generated_text || reply;
+      if (Array.isArray(data) && data[0]?.generated_text) {
+        reply = data[0].generated_text;
       } else if (data?.generated_text) {
         reply = data.generated_text;
       } else if (data?.error) {
