@@ -150,7 +150,8 @@ It expects a JSON response: { reply: "text" } or streaming variant.
 Replace the endpoint below with your Vercel function URL if you run it separately.
 */
 (() => {
-  const apiUrl = '/api/chat'; // If you deploy proxy to Vercel, replace with full URL e.g. https://your-vercel.app/api/chat
+const apiUrl = 'https://chypr-ai-backend.vercel.app/chypr-ai-proxy/api/chat';
+
   const messagesEl = document.getElementById('messages');
   const promptEl = document.getElementById('prompt');
   const sendBtn = document.getElementById('send');
