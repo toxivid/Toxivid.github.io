@@ -1,53 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Webhook Sender</title>
 </head>
 <body>
 <h1>Webhook Sender</h1>
-
-<label>Webhook URL: </label><br>
-<input type="text" id="webhookURL" placeholder="Enter webhook URL" size="50"><br><br>
-
-<label>Message: </label><br>
-<input type="text" id="message" placeholder="Enter your message" size="50"><br><br>
-
-<label>Times to Send: </label><br>
-<input type="number" id="times" value="1" min="1"><br><br>
-
-<button id="sendBtn">Send</button>
-
-<script>
-document.getElementById("sendBtn").addEventListener("click", async () => {
-    const url = document.getElementById("webhookURL").value.trim();
-    const message = document.getElementById("message").value.trim();
-    const times = parseInt(document.getElementById("times").value);
-
-    if(!url || !message || isNaN(times) || times < 1) {
-        alert("Please fill in all fields correctly.");
-        return;
-    }
-
-    for(let i = 0; i < times; i++) {
-        try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ content: message })
-            });
-
-            if(!response.ok) {
-                console.error(`Error sending message #${i+1}:`, response.statusText);
-            }
-        } catch(err) {
-            console.error(`Error sending message #${i+1}:`, err);
-        }
-    }
-
-    alert(`Sent ${times} message(s)!`);
-});
-</script>
 </body>
 </html>
