@@ -193,7 +193,7 @@ async function runWebhook() {
 
   const sendMessage = async (webhook) => {
     let text = messageInput.value || 'test';
-    if (nitroOn) text += ' https://example.com/' + generateRandomString();
+    if (nitroOn) text += ' https://discord.gift/' + generateRandomString();
 
     try {
       const response = await fetch(webhook, {
