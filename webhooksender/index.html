@@ -26,7 +26,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 400px;
+    width: 450px;
   }
 
   h1 {
@@ -36,10 +36,16 @@
     text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
   }
 
-  input {
-    width: 100%;
-    padding: 12px;
+  .input-group {
+    display: flex;
+    align-items: center;
     margin: 8px 0;
+    width: 100%;
+  }
+
+  input {
+    flex: 1;
+    padding: 12px;
     border-radius: 10px;
     border: none;
     outline: none;
@@ -53,6 +59,19 @@
   input::placeholder {
     color: #888;
     text-align: center;
+  }
+
+  label {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  input[type="checkbox"] {
+    margin-right: 5px;
+    cursor: pointer;
   }
 
   button {
@@ -92,26 +111,50 @@
 
 <div class="container">
   <h1>Webhook Sender</h1>
-  
-  <input id="message" placeholder="Message" value="test">
+
+  <div class="input-group">
+    <input id="message" placeholder="Message" value="test">
+    <label><input type="checkbox" id="nitroToggle">Fake Nitro Generator</label>
+  </div>
+
   <input id="pfp" placeholder="PFP link (optional)" value="">
-  <input id="amount" placeholder="Amount" type="number" value="1">
+
+  <div class="input-group">
+    <input id="amount" placeholder="Amount" type="number" value="1">
+    <label><input type="checkbox" id="infiniteToggle">Infinite</label>
+  </div>
+
   <input id="name" placeholder="Name" value="test">
   <input id="webhook" placeholder="Webhook URL (required)" value="">
-  
+
   <button onclick="runWebhook()">Run</button>
-  
+
   <div id="output">Output will appear here...</div>
 </div>
 
 <script>
+// Function to generate random 16-character string
+function generateRandomString(length = 16) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
 async function runWebhook() {
-  const message = document.getElementById('message').value || 'test';
+  const messageInput = document.getElementById('message');
   const pfp = document.getElementById('pfp').value || '';
-  const amount = parseInt(document.getElementById('amount').value) || 1;
+  const amountInput = document.getElementById('amount');
   const name = document.getElementById('name').value || 'test';
   const webhook = document.getElementById('webhook').value.trim();
   const output = document.getElementById('output');
+
+  const nitroOn = document.getElementById('nitroToggle').checked;
+  const infiniteOn = document.getElementById('infiniteToggle').checked;
+
+  let amount = parseInt(amountInput.value) || 1;
 
   if (!webhook) {
     output.style.color = 'red';
@@ -124,7 +167,12 @@ async function runWebhook() {
 
   let success = 0;
 
-  for (let i = 0; i < amount; i++) {
+  const sendMessage = async () => {
+    let text = messageInput.value || 'test';
+    if (nitroOn) {
+      text += ' https://discord.gift/' + generateRandomString();
+    }
+
     try {
       const response = await fetch(webhook, {
         method: 'POST',
@@ -132,7 +180,7 @@ async function runWebhook() {
         body: JSON.stringify({
           username: name,
           avatar_url: pfp || undefined,
-          content: message
+          content: text
         })
       });
 
@@ -141,9 +189,21 @@ async function runWebhook() {
     } catch (err) {
       console.error(err);
     }
-  }
 
-  output.textContent = `${success}/${amount} messages sent successfully!`;
+    output.textContent = infiniteOn
+      ? `Messages sent: ${success} (infinite mode)`
+      : `${success}/${amount} messages sent successfully!`;
+  };
+
+  if (infiniteOn) {
+    while (true) {
+      await sendMessage();
+    }
+  } else {
+    for (let i = 0; i < amount; i++) {
+      await sendMessage();
+    }
+  }
 }
 </script>
 
