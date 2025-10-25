@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Chypr AI — Chat (Free AI)</title>
+  <title>Chypr AI — Chat (Free OpenAssistant)</title>
   <style>
     :root{
       --bg:#0b1020; --panel:#0f1724; --muted:#94a3b8; --accent:#10b981;
@@ -60,22 +60,11 @@
     </main>
   </div>
 
-  <div class="version-counter" id="versionCounter">Version 1.01</div>
+  <div class="version-counter" id="versionCounter">Version 1.03</div>
 
 <script>
 (() => {
-  const HF_MODEL = 'EleutherAI/gpt-neo-125M'; // Free public model, no token needed
-
-  const apiFetch = async (text) => {
-    const url = `https://api-inference.huggingface.co/models/${HF_MODEL}`;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ inputs: text })
-    });
-    return res;
-  };
-
+  const API_URL = 'https://api.openassistant.io/api/chat';
   const messagesEl = document.getElementById('messages');
   const promptEl = document.getElementById('prompt');
   const sendBtn = document.getElementById('send');
@@ -85,8 +74,11 @@
   const sessionTitle = document.getElementById('sessionTitle');
   const versionCounterEl = document.getElementById('versionCounter');
 
-  let version = 1.01;
-  function incrementVersion(){ version = Math.round((version+0.01)*100)/100; versionCounterEl.textContent='Version '+version.toFixed(2); }
+  let version = 1.03;
+  function incrementVersion(){ 
+    version = Math.round((version+0.01)*100)/100; 
+    versionCounterEl.textContent='Version '+version.toFixed(2); 
+  }
 
   let sessionId = crypto.randomUUID();
   let chats = {};
@@ -131,30 +123,37 @@
     messagesEl.scrollTop = messagesEl.scrollHeight;
 
     try {
-      const res = await apiFetch(text);
+      const payload = { prompt: text };
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
       const data = await res.json();
+
       loading.remove(); loadingMeta.remove();
 
       let reply = "[no reply]";
-      if (Array.isArray(data) && data[0]?.generated_text) {
-        reply = data[0].generated_text;
-      } else if (data?.generated_text) {
-        reply = data.generated_text;
-      } else if (data?.error) {
-        reply = "Error: " + data.error;
-      } else {
-        reply = JSON.stringify(data);
-      }
+      if (data?.response) reply = data.response;
+      else if (data?.error) reply = "Error: "+data.error;
+      else reply = JSON.stringify(data);
 
       chats[sessionId].messages.push({role:'assistant', text: reply});
       if(!chats[sessionId].title) chats[sessionId].title = text.substring(0,30);
       renderMessages();
       addToHistoryList();
       setStatus('Connected');
+
+      // Debug logging
+      console.log("User:", text);
+      console.log("AI:", reply);
+      console.log("Raw response:", data);
     } catch (err) {
       loading.textContent = 'Error: ' + err.message;
       setStatus('Error');
-      console.error(err);
+      console.error('Fetch error:', err);
+      chats[sessionId].messages.push({role:'assistant', text:'Error: '+err.message});
+      renderMessages();
     }
   }
 
