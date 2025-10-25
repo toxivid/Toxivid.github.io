@@ -1,5 +1,274 @@
 <!doctype html>
-<html>
-  <head><meta charset="utf-8"><title>Toxivid Site</title></head>
-  <body><h1>Hello from toxivid.github.io!</h1></body>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chypr AI — Chat</title>
+  <style>
+    /* --- Basic ChatGPT-like UI --- */
+    :root{
+      --bg:#0b1020;
+      --panel:#0f1724;
+      --muted:#94a3b8;
+      --accent:#10b981;
+      --bubble-user:#2bffb0;
+      --bubble-ai:#111827;
+      --glass: rgba(255,255,255,0.03);
+    }
+
+    html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+    body{background:linear-gradient(180deg,#071028 0%, #071226 60%); color:#e6eef8; display:flex; align-items:stretch; justify-content:center; padding:24px; box-sizing:border-box;}
+
+    .app {
+      width:100%;
+      max-width:980px;
+      height:90vh;
+      display:grid;
+      grid-template-columns:260px 1fr;
+      gap:18px;
+    }
+
+    /* left sidebar */
+    .sidebar {
+      background:var(--panel);
+      border-radius:12px;
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+    }
+    .brand { font-weight:700; font-size:18px; display:flex; align-items:center; gap:8px; }
+    .brand .dot { width:10px;height:10px;border-radius:50%;background:var(--accent); box-shadow:0 0 8px var(--accent);}
+    .new-chat { background:var(--glass); border:1px solid rgba(255,255,255,0.03); padding:8px; border-radius:8px; color:var(--muted); cursor:pointer; text-align:center; }
+
+    .history { overflow:auto; padding-right:6px; display:flex; flex-direction:column; gap:8px; }
+    .history .item { padding:8px;border-radius:8px;background:transparent;color:var(--muted); cursor:pointer; font-size:14px; }
+    .history .item.active { background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); color:#fff; }
+
+    /* main panel */
+    .panel {
+      background:rgba(255,255,255,0.02);
+      border-radius:12px;
+      display:flex;
+      flex-direction:column;
+      overflow:hidden;
+      box-shadow: 0 8px 24px rgba(2,6,23,0.5);
+    }
+
+    .topbar { padding:12px 16px; display:flex; align-items:center; gap:12px; border-bottom:1px solid rgba(255,255,255,0.02);}
+    .session-title { font-weight:600; letter-spacing:0.2px; }
+    .spacer { flex:1; }
+
+    .messages {
+      flex:1;
+      padding:18px;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .bubble { max-width:78%; padding:12px 14px; border-radius:12px; line-height:1.45; white-space:pre-wrap; }
+    .bubble.ai { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); color:#e6eef8; border-top-left-radius:4px; align-self:flex-start;}
+    .bubble.user { background:linear-gradient(90deg, rgba(16,185,129,0.12), rgba(16,185,129,0.08)); color:#001f16; border-top-right-radius:4px; align-self:flex-end; }
+
+    .meta { font-size:12px; color:var(--muted); margin-bottom:6px; }
+
+    .composer {
+      padding:12px;
+      border-top:1px solid rgba(255,255,255,0.02);
+      display:flex;
+      gap:8px;
+      align-items:end;
+      background:linear-gradient(180deg, rgba(0,0,0,0.02), transparent);
+    }
+
+    textarea#prompt {
+      flex:1;
+      min-height:46px;
+      max-height:180px;
+      resize:vertical;
+      padding:12px;
+      border-radius:8px;
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.04);
+      color:inherit;
+      font-size:15px;
+      outline:none;
+    }
+
+    button#send {
+      background:linear-gradient(180deg,var(--accent), #059669);
+      border:none;
+      color:#042018;
+      font-weight:700;
+      padding:10px 14px;
+      border-radius:10px;
+      cursor:pointer;
+    }
+
+    .small { font-size:13px;color:var(--muted) }
+
+    .loading-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--muted); margin-right:6px; animation:blink 1s infinite; }
+    @keyframes blink { 0%{opacity:0.2}50%{opacity:1}100%{opacity:0.2} }
+
+    /* responsive */
+    @media (max-width:900px){ .app{grid-template-columns:1fr; height:95vh;} .sidebar{display:none;} }
+  </style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="Chypr AI Chat">
+    <aside class="sidebar" aria-hidden="false">
+      <div class="brand"><span class="dot"></span>Chypr AI</div>
+      <div class="new-chat" id="newChat">＋ New chat</div>
+      <div class="history" id="history"></div>
+      <div style="margin-top:auto" class="small">Hosted on GitHub Pages · Proxy on Vercel</div>
+    </aside>
+
+    <main class="panel">
+      <div class="topbar">
+        <div class="session-title" id="sessionTitle">Welcome to Chypr AI</div>
+        <div class="spacer"></div>
+        <div class="small" id="status">Disconnected</div>
+      </div>
+
+      <div class="messages" id="messages" role="log" aria-live="polite"></div>
+
+      <div class="composer">
+        <textarea id="prompt" placeholder="Send a message to Chypr AI..."></textarea>
+        <button id="send">Send</button>
+      </div>
+    </main>
+  </div>
+
+<script>
+/* ========== Frontend logic ==========
+
+This frontend POSTs JSON to /api/chat on your serverless proxy.
+It expects a JSON response: { reply: "text" } or streaming variant.
+Replace the endpoint below with your Vercel function URL if you run it separately.
+*/
+(() => {
+  const apiUrl = '/api/chat'; // If you deploy proxy to Vercel, replace with full URL e.g. https://your-vercel.app/api/chat
+  const messagesEl = document.getElementById('messages');
+  const promptEl = document.getElementById('prompt');
+  const sendBtn = document.getElementById('send');
+  const statusEl = document.getElementById('status');
+  const historyEl = document.getElementById('history');
+  const newChatBtn = document.getElementById('newChat');
+  const sessionTitle = document.getElementById('sessionTitle');
+
+  let sessionId = crypto.randomUUID();
+  let chats = {}; // {sessionId: {title, messages: [{role, text}]}}
+  chats[sessionId] = { title: "New chat", messages: [] };
+
+  function createBubble(role, text){
+    const wrapper = document.createElement('div');
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = role === 'user' ? 'You' : 'Chypr AI';
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble ' + (role === 'user' ? 'user' : 'ai');
+    bubble.textContent = text;
+    wrapper.appendChild(meta);
+    wrapper.appendChild(bubble);
+    return wrapper;
+  }
+
+  function renderMessages() {
+    messagesEl.innerHTML = '';
+    const msgs = chats[sessionId].messages;
+    msgs.forEach(m=>{
+      messagesEl.appendChild(createBubble(m.role, m.text));
+    });
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function addToHistoryList(){
+    historyEl.innerHTML = '';
+    for (const id of Object.keys(chats)){
+      const it = document.createElement('div');
+      it.className = 'item' + (id===sessionId?' active':'');
+      it.textContent = chats[id].title || 'Chat';
+      it.onclick = () => {
+        sessionId = id;
+        sessionTitle.textContent = chats[id].title || 'Chat';
+        renderMessages();
+        addToHistoryList();
+      };
+      historyEl.appendChild(it);
+    }
+  }
+
+  async function sendMessage(text){
+    if (!text.trim()) return;
+    // push user message
+    chats[sessionId].messages.push({role:'user', text});
+    renderMessages();
+    promptEl.value = '';
+    setStatus('Thinking...');
+    // show a temporary AI bubble
+    const loading = document.createElement('div');
+    loading.className = 'bubble ai';
+    loading.textContent = '...';
+    const meta = document.createElement('div'); meta.className='meta'; meta.textContent='Chypr AI';
+    messagesEl.appendChild(meta); messagesEl.appendChild(loading);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    try {
+      const res = await fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId, message: text })
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err || 'Server error');
+      }
+      const data = await res.json();
+      // remove loading bubble
+      loading.remove(); meta.remove();
+      const reply = data.reply || '[no reply]';
+      chats[sessionId].messages.push({role:'assistant', text: reply});
+      // set a title for chat from first user message
+      if (!chats[sessionId].title) chats[sessionId].title = text.substring(0,30);
+      renderMessages();
+      addToHistoryList();
+      setStatus('Connected');
+    } catch (err) {
+      loading.textContent = 'Error: ' + err.message;
+      setStatus('Error');
+      console.error(err);
+    }
+  }
+
+  function setStatus(t){ statusEl.textContent = t; }
+
+  // send button / enter behaviour
+  sendBtn.addEventListener('click', ()=> sendMessage(promptEl.value));
+  promptEl.addEventListener('keydown', (e)=>{
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage(promptEl.value);
+    }
+  });
+
+  newChatBtn.addEventListener('click', () => {
+    const id = crypto.randomUUID();
+    sessionId = id;
+    chats[id] = { title: 'New chat', messages: [] };
+    sessionTitle.textContent = 'New chat';
+    renderMessages();
+    addToHistoryList();
+  });
+
+  // initial render
+  renderMessages();
+  addToHistoryList();
+  setStatus('Ready');
+})();
+</script>
+</body>
 </html>
