@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>webhook spammer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
+
+  body {
+    background-color: #0d0d0d;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .container {
+    background: linear-gradient(145deg, #0f0c29, #302b63, #24243e);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px #00ffff, 0 0 40px #ff00ff, 0 0 60px #00ff00;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 480px;
+  }
+
+  h1 {
+    text-align: center;
+    color: #00ffff;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
+  }
+
+  .input-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+    width: 100%;
+  }
+
+  input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: #1c1c1c;
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
+    box-shadow: 0 0 5px #00ffff, 0 0 10px #ff00ff;
+  }
+
+  input::placeholder {
+    color: #888;
+    text-align: center;
+  }
+
+  label {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  input[type="checkbox"] {
+    margin-right: 5px;
+    cursor: pointer;
+  }
+
+  .input-group button {
+    margin-left: 10px;
+  }
+
+  button {
+    padding: 12px;
+    margin-top: 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: #ff00ff;
+    color: #fff;
+    font-size: 18px;
+    box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff;
+    transition: 0.3s;
+  }
+
+  button:hover {
+    box-shadow: 0 0 20px #ff00ff, 0 0 40px #00ffff;
+    transform: scale(1.05);
+  }
+
+  #output {
+    margin-top: 20px;
+    width: 100%;
+    background: #111;
+    padding: 15px;
+    border-radius: 10px;
+    min-height: 50px;
+    text-align: center;
+    color: #0f0;
+    box-shadow: 0 0 10px #0f0;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Webhook Sender</h1>
+
+  <div class="input-group">
+    <input id="message" placeholder="Message" value="">
+    <label><input type="checkbox" id="nitroToggle">nitro generator</label>
+  </div>
+
+  <input id="pfp" placeholder="Profile Picture Link" value="">
+
+  <div class="input-group">
+    <input id="amount" placeholder="Amount" type="number" value="">
+    <label><input type="checkbox" id="infiniteToggle">infinite</label>
+  </div>
+
+  <input id="name" placeholder="Name" value="">
+  <input id="webhook" placeholder="Webhook URL(s), separate with commas" value="">
+
+  <button onclick="runWebhook()">Run</button>
+
+  <div id="output">output will appear here...</div>
+</div>
+
+<script>
+function generateRandomString(length = 16) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+// Infinite toggle behavior
+const infiniteToggle = document.getElementById('infiniteToggle');
+const amountInput = document.getElementById('amount');
+
+infiniteToggle.addEventListener('change', () => {
+  if (infiniteToggle.checked) {
+    amountInput.value = '';
+    amountInput.disabled = true;
+    amountInput.style.opacity = 0.5;
+  } else {
+    amountInput.disabled = false;
+    amountInput.style.opacity = 1;
+  }
+});
+
+async function runWebhook() {
+  const messageInput = document.getElementById('message');
+  const pfp = document.getElementById('pfp').value || '';
+  const name = document.getElementById('name').value || 'test';
+  const webhookInput = document.getElementById('webhook').value.trim();
+  const nitroOn = document.getElementById('nitroToggle').checked;
+  const infiniteOn = infiniteToggle.checked;
+  const output = document.getElementById('output');
+
+  if (!webhookInput) {
+    output.style.color = 'red';
+    output.textContent = 'Webhook URL is required!';
+    return;
+  }
+
+  let webhooks = webhookInput.split(',').map(w => w.trim()).filter(Boolean);
+  if (webhooks.length === 0) {
+    output.style.color = 'red';
+    output.textContent = 'No valid webhooks!';
+    return;
+  }
+
+  let amount = infiniteOn ? Infinity : parseInt(amountInput.value) || 1;
+
+  output.style.color = '#0f0';
+  output.textContent = 'Sending...';
+
+  let success = 0;
+
+  const sendMessage = async (webhook) => {
+    let text = messageInput.value || 'test';
+    if (nitroOn) text += ' https://example.com/' + generateRandomString();
+
+    try {
+      const response = await fetch(webhook, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: name,
+          avatar_url: pfp || undefined,
+          content: text
+        })
+      });
+
+      if (response.ok) success++;
+      else console.error('Failed:', response.status);
+    } catch (err) {
+      console.error(err);
+    }
+
+    output.textContent = infiniteOn
+      ? `Messages sent: ${success} (infinite mode)`
+      : `${success}/${amount} messages sent successfully!`;
+  };
+
+  const sendAll = async () => {
+    if (infiniteOn) {
+      while (true) {
+        for (let w of webhooks) await sendMessage(w);
+      }
+    } else {
+      let tasks = [];
+      for (let i = 0; i < amount; i++) {
+        const w = webhooks[i % webhooks.length]; // Split between webhooks
+        tasks.push(sendMessage(w));
+      }
+      await Promise.all(tasks);
+    }
+  };
+
+  sendAll();
+}
+</script>
+
+</body>
+</html>
