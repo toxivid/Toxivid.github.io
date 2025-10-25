@@ -7,7 +7,7 @@
   <style>
     :root{
       --bg:#0b1020; --panel:#0f1724; --muted:#94a3b8; --accent:#10b981;
-      --bubble-user:#2bffb0; --bubble-ai:#111827; --glass: rgba(255,255,255,0.03);
+      --bubble-user:#ff3333; --bubble-ai:#111827; --glass: rgba(255,255,255,0.03);
     }
     html,body{height:100%;margin:0;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;}
     body{background:linear-gradient(180deg,#071028 0%, #071226 60%); color:#e6eef8; display:flex; justify-content:center; align-items:stretch; padding:24px;}
@@ -26,12 +26,13 @@
     .messages{flex:1;padding:18px;overflow:auto;display:flex;flex-direction:column;gap:12px;}
     .bubble{max-width:78%;padding:12px 14px;border-radius:12px;line-height:1.45;white-space:pre-wrap;}
     .bubble.ai{background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); color:#e6eef8; border-top-left-radius:4px; align-self:flex-start;}
-    .bubble.user{background:linear-gradient(90deg, rgba(16,185,129,0.12), rgba(16,185,129,0.08)); color:#001f16; border-top-right-radius:4px; align-self:flex-end;}
+    .bubble.user{background:linear-gradient(90deg, rgba(255,0,0,0.12), rgba(255,0,0,0.08)); color:#ff3333; border-top-right-radius:4px; align-self:flex-end;}
     .meta{font-size:12px;color:var(--muted);margin-bottom:6px;}
     .composer{padding:12px;border-top:1px solid rgba(255,255,255,0.02);display:flex;gap:8px;align-items:end;background:linear-gradient(180deg, rgba(0,0,0,0.02), transparent);}
     textarea#prompt{flex:1;min-height:46px;max-height:180px;resize:vertical;padding:12px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);color:inherit;font-size:15px;outline:none;}
     button#send{background:linear-gradient(180deg,var(--accent), #059669);border:none;color:#042018;font-weight:700;padding:10px 14px;border-radius:10px;cursor:pointer;}
     .small{font-size:13px;color:var(--muted);}
+    .version-counter{position:fixed;bottom:8px;left:12px;font-size:12px;color:var(--muted);font-family:monospace;}
   </style>
 </head>
 <body>
@@ -59,11 +60,11 @@
     </main>
   </div>
 
+  <div class="version-counter" id="versionCounter">Version 1.01</div>
+
 <script>
 (() => {
-  // *** FAKE key for testing as requested ***
   const HF_API_KEY = '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';
-  // Model to call — 'gpt2' is a simple, free model on HF. You can change to another available model if you like.
   const HF_MODEL = 'gpt2';
 
   const apiFetch = async (text) => {
@@ -86,6 +87,10 @@
   const historyEl = document.getElementById('history');
   const newChatBtn = document.getElementById('newChat');
   const sessionTitle = document.getElementById('sessionTitle');
+  const versionCounterEl = document.getElementById('versionCounter');
+
+  let version = 1.01;
+  function incrementVersion(){ version = Math.round((version+0.01)*100)/100; versionCounterEl.textContent='Version '+version.toFixed(2); }
 
   let sessionId = crypto.randomUUID();
   let chats = {};
@@ -124,7 +129,6 @@
     renderMessages();
     promptEl.value = '';
     setStatus('Thinking...');
-    // show loading bubble
     const loadingMeta = document.createElement('div'); loadingMeta.className='meta'; loadingMeta.textContent='Chypr AI';
     const loading = document.createElement('div'); loading.className='bubble ai'; loading.textContent='...';
     messagesEl.appendChild(loadingMeta); messagesEl.appendChild(loading);
@@ -133,12 +137,10 @@
     try {
       const res = await apiFetch(text);
       const data = await res.json();
-      // remove loading
       loading.remove(); loadingMeta.remove();
 
       let reply = "[no reply]";
       if (Array.isArray(data)) {
-        // gpt2 returns an array with generated_text in index 0
         reply = data[0]?.generated_text || reply;
       } else if (data?.generated_text) {
         reply = data.generated_text;
@@ -169,7 +171,6 @@
     sessionTitle.textContent = 'New chat'; renderMessages(); addToHistoryList();
   });
 
-  // init
   renderMessages(); addToHistoryList(); setStatus('Ready');
 })();
 </script>
