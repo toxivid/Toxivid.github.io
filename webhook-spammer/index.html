@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>webhook spammer</title>
+<title>Webhook Sender</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
@@ -74,10 +74,6 @@
   input[type="checkbox"] {
     margin-right: 5px;
     cursor: pointer;
-  }
-
-  .input-group button {
-    margin-left: 10px;
   }
 
   button {
@@ -191,10 +187,7 @@ async function runWebhook() {
 
   let success = 0;
 
-  const sendMessage = async (webhook) => {
-    let text = messageInput.value || 'test';
-    if (nitroOn) text += ' https://discord.gift/' + generateRandomString();
-
+  const sendMessage = async (webhook, text) => {
     try {
       const response = await fetch(webhook, {
         method: 'POST',
@@ -219,16 +212,23 @@ async function runWebhook() {
 
   const sendAll = async () => {
     if (infiniteOn) {
+      let i = 0;
       while (true) {
-        for (let w of webhooks) await sendMessage(w);
+        const webhook = webhooks[i % webhooks.length];
+        let text = messageInput.value || 'test';
+        if (nitroOn) text += ' https://discord.gift/' + generateRandomString();
+        await sendMessage(webhook, text);
+        i++;
       }
     } else {
-      let tasks = [];
+      // Send messages in order, one per webhook
       for (let i = 0; i < amount; i++) {
-        const w = webhooks[i % webhooks.length]; // Split between webhooks
-        tasks.push(sendMessage(w));
+        if (i >= webhooks.length) break; // stop if more webhooks than messages
+        const webhook = webhooks[i];
+        let text = messageInput.value || 'test';
+        if (nitroOn) text += ' https://discord.gift/' + generateRandomString();
+        await sendMessage(webhook, text);
       }
-      await Promise.all(tasks);
     }
   };
 
