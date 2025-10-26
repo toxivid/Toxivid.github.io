@@ -72,11 +72,7 @@
     white-space: nowrap;
   }
 
-  input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-  }
+  input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
 
   .full-width { width: 100%; margin-top: 8px; }
 
@@ -123,6 +119,20 @@
     color: #0ff;
   }
 
+  .footer .middle-link {
+    text-align: center;
+    flex: 1;
+  }
+
+  .footer .middle-link a {
+    color: #0ff;
+    font-weight: bold;
+    text-decoration: none;
+    text-shadow: 0 0 5px #0ff, 0 0 10px #ff00ff;
+  }
+
+  .footer .middle-link a:hover { text-decoration: underline; }
+
   .suggestion-box {
     display: flex;
     align-items: center;
@@ -151,7 +161,7 @@
 </head>
 <body>
 <div class="container">
-  <h1>Webhook Sender</h1>
+  <h1>Webhook spammer</h1>
 
   <div class="input-group">
     <input id="message" type="text" placeholder="Message" value="">
@@ -175,6 +185,9 @@
 
 <div class="footer">
   <div>Version 1.0</div>
+  <div class="middle-link">
+    <a href="https://toxivid.github.io/message-spammer/changelogs" target="_blank">View Changelogs</a>
+  </div>
   <div class="suggestion-box">
     <input id="suggestionInput" type="text" placeholder="Your suggestion">
     <button onclick="sendSuggestion()">Send</button>
@@ -182,9 +195,6 @@
 </div>
 
 <script>
-/* -------------------------
- Utility functions
- ------------------------- */
 function generateRandomString(length = 16) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let out = '';
@@ -206,9 +216,6 @@ infiniteToggle.addEventListener('change', () => {
   }
 });
 
-/* -------------------------
- Webhook sender
- ------------------------- */
 async function runWebhook() {
   const messageRaw = document.getElementById('message').value;
   const pfp = document.getElementById('pfp').value || '';
@@ -278,9 +285,6 @@ message: ${text}
   sendLoop();
 }
 
-/* -------------------------
- Suggestion system
- ------------------------- */
 let suggestionCooldown=false;
 async function sendSuggestion(){
   if(suggestionCooldown) return;
