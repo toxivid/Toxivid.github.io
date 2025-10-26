@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>webhook spammer</title>
+<title>Webhook Sender</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap');
 
@@ -12,8 +12,9 @@
     color: #fff;
     font-family: 'Orbitron', sans-serif;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     height: 100vh;
     margin: 0;
   }
@@ -27,6 +28,7 @@
     flex-direction: column;
     align-items: center;
     width: 520px;
+    position: relative;
   }
 
   h1 {
@@ -59,9 +61,7 @@
     box-shadow: 0 0 5px #00ffff, 0 0 10px #ff00ff;
   }
 
-  input::placeholder {
-    color: #888;
-  }
+  input::placeholder { color: #888; }
 
   label {
     display: flex;
@@ -78,10 +78,7 @@
     cursor: pointer;
   }
 
-  .full-width {
-    width: 100%;
-    margin-top: 8px;
-  }
+  .full-width { width: 100%; margin-top: 8px; }
 
   button {
     padding: 12px 20px;
@@ -114,36 +111,80 @@
     white-space: pre-wrap;
     line-height: 1.35;
   }
+
+  /* Footer */
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 520px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #0ff;
+  }
+
+  .suggestion-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .suggestion-box input {
+    flex: 1;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    font-size: 12px;
+    background: #1c1c1c;
+    color: #fff;
+    box-shadow: 0 0 3px #00ffff, 0 0 5px #ff00ff;
+  }
+
+  .suggestion-box button {
+    padding: 6px 10px;
+    font-size: 12px;
+    box-shadow: 0 0 5px #ff00ff, 0 0 10px #00ffff;
+  }
+
 </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Webhook Sender</h1>
+<div class="container">
+  <h1>Webhook Sender</h1>
 
-    <div class="input-group">
-      <input id="message" type="text" placeholder="Message" value="">
-      <label><input id="nitroToggle" type="checkbox"> nitro generator</label>
-    </div>
-
-    <input id="pfp" class="full-width" type="text" placeholder="Profile Picture Link" value="">
-
-    <div class="input-group">
-      <input id="amount" type="number" placeholder="Amount" value="">
-      <label><input id="infiniteToggle" type="checkbox"> infinite</label>
-    </div>
-
-    <input id="name" class="full-width" type="text" placeholder="Name" value="">
-    <input id="webhook" class="full-width" type="text" placeholder="Webhook URL(s), separate with commas" value="">
-
-    <button onclick="runWebhook()">Run</button>
-
-    <div id="output">output will appear here...</div>
+  <div class="input-group">
+    <input id="message" type="text" placeholder="Message" value="">
+    <label><input id="nitroToggle" type="checkbox"> nitro generator</label>
   </div>
+
+  <input id="pfp" class="full-width" type="text" placeholder="Profile Picture Link" value="">
+
+  <div class="input-group">
+    <input id="amount" type="number" placeholder="Amount" value="">
+    <label><input id="infiniteToggle" type="checkbox"> infinite</label>
+  </div>
+
+  <input id="name" class="full-width" type="text" placeholder="Name" value="">
+  <input id="webhook" class="full-width" type="text" placeholder="Webhook URL(s), separate with commas" value="">
+
+  <button onclick="runWebhook()">Run</button>
+
+  <div id="output">output will appear here...</div>
+</div>
+
+<div class="footer">
+  <div>Version 1.0</div>
+  <div class="suggestion-box">
+    <input id="suggestionInput" type="text" placeholder="Your suggestion">
+    <button onclick="sendSuggestion()">Send</button>
+  </div>
+</div>
 
 <script>
 /* -------------------------
-   Utility & UI behaviour
-   ------------------------- */
+ Utility functions
+ ------------------------- */
 function generateRandomString(length = 16) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let out = '';
@@ -166,13 +207,10 @@ infiniteToggle.addEventListener('change', () => {
 });
 
 /* -------------------------
-   Main sending logic
-   - NO pre-checks of webhooks
-   - Logs config (no sending), blank line, then starts sending
-   - Per-message logs in requested multi-line format
-   ------------------------- */
+ Webhook sender
+ ------------------------- */
 async function runWebhook() {
-  const messageRaw = document.getElementById('message').value; // allow empty string
+  const messageRaw = document.getElementById('message').value;
   const pfp = document.getElementById('pfp').value || '';
   const name = document.getElementById('name').value || '';
   const webhookInput = document.getElementById('webhook').value.trim();
@@ -180,27 +218,15 @@ async function runWebhook() {
   const infiniteOn = infiniteToggle.checked;
   const output = document.getElementById('output');
 
-  if (!webhookInput) {
-    output.style.color = 'red';
-    output.textContent = 'Webhook URL is required!';
-    return;
-  }
+  if (!webhookInput) { output.style.color='red'; output.textContent='Webhook URL is required!'; return; }
 
-  // Parse webhooks (comma separated)
   const webhooks = webhookInput.split(',').map(s => s.trim()).filter(Boolean);
-  if (webhooks.length === 0) {
-    output.style.color = 'red';
-    output.textContent = 'No valid webhooks!';
-    return;
-  }
+  if (webhooks.length === 0) { output.style.color='red'; output.textContent='No valid webhooks!'; return; }
 
-  // Determine amount (0 if empty and not infinite)
   const amount = infiniteOn ? Infinity : (parseInt(amountInput.value, 10) || 0);
 
-  // Reset output and log configuration (no sending)
   output.style.color = '#0f0';
-  output.textContent = ''; // clear
-  output.textContent += `CONFIGURATION:
+  output.textContent = `CONFIGURATION:
 Message: ${messageRaw}
 Profile Picture: ${pfp || '-'}
 Name: ${name || '-'}
@@ -208,30 +234,18 @@ Nitro Generator: ${nitroOn}
 Infinite: ${infiniteOn}
 Amount: ${amount === Infinity ? '∞' : amount}
 
-`; // blank line after config
+`;
 
-  // sendMessage - posts to webhook and logs structured entry
-  async function sendMessageToWebhook(webhook, text, code = '') {
-    let success = false;
+  async function sendMessageToWebhook(webhook, text, code='') {
+    let success=false;
     try {
-      const payload = {
-        content: text
-      };
-      if (name) payload.username = name;
-      if (pfp) payload.avatar_url = pfp;
+      const payload = {content:text};
+      if(name) payload.username=name;
+      if(pfp) payload.avatar_url=pfp;
+      const res = await fetch(webhook,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      success=res.ok;
+    } catch { success=false; }
 
-      const res = await fetch(webhook, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      success = res.ok;
-    } catch (err) {
-      success = false;
-      // don't throw — just log failure
-    }
-
-    // Append multi-line structured log and an empty line afterwards
     output.textContent += `webhook: ${webhook}
 code: ${code || '-'}
 success: ${success}
@@ -241,32 +255,52 @@ message: ${text}
     output.scrollTop = output.scrollHeight;
   }
 
-  // Sending loop
   async function sendLoop() {
     if (infiniteOn) {
-      let i = 0;
-      while (true) {
+      let i=0;
+      while(true){
         const webhook = webhooks[i % webhooks.length];
-        let code = '';
-        let finalMsg = messageRaw;
-        if (nitroOn) { code = generateRandomString(); finalMsg = (finalMsg ? finalMsg + ' ' : '') + 'https://discord.gift/' + code; }
+        let code=''; let finalMsg=messageRaw;
+        if(nitroOn){ code=generateRandomString(); finalMsg=(finalMsg?finalMsg+' ':'')+'https://discord.gift/'+code; }
         await sendMessageToWebhook(webhook, finalMsg, code);
         i++;
       }
     } else {
-      // finite sends: round-robin across webhooks so amount > webhooks works
-      for (let i = 0; i < amount; i++) {
+      for(let i=0;i<amount;i++){
         const webhook = webhooks[i % webhooks.length];
-        let code = '';
-        let finalMsg = messageRaw;
-        if (nitroOn) { code = generateRandomString(); finalMsg = (finalMsg ? finalMsg + ' ' : '') + 'https://discord.gift/' + code; }
+        let code=''; let finalMsg=messageRaw;
+        if(nitroOn){ code=generateRandomString(); finalMsg=(finalMsg?finalMsg+' ':'')+'https://discord.gift/'+code; }
         await sendMessageToWebhook(webhook, finalMsg, code);
       }
     }
   }
 
-  // start
   sendLoop();
+}
+
+/* -------------------------
+ Suggestion system
+ ------------------------- */
+let suggestionCooldown=false;
+async function sendSuggestion(){
+  if(suggestionCooldown) return;
+  const input=document.getElementById('suggestionInput');
+  const text=input.value.trim();
+  if(!text) return;
+
+  const username=prompt("What's your Discord username?");
+  if(!username) return;
+
+  const webhookURL='https://discord.com/api/webhooks/1431794498458882118/stBtxXc7DPC6wEZgYseKOv9JjLCfVPd5cxxeaiGQzCUcbFefe7N891VE-Z3hxvx06kQ-';
+  try{
+    await fetch(webhookURL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({username,content:text})
+    });
+  }catch{}
+  input.value=''; suggestionCooldown=true;
+  setTimeout(()=>{suggestionCooldown=false;},5000);
 }
 </script>
 </body>
