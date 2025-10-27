@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Test — Consent to collect info</title>
+  <style>
+    html,body { height:100%; margin:0; font-family:system-ui,Segoe UI,Roboto,Arial; background:#f6f8fb; }
+    .center {
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .card {
+      width: 420px;
+      background:white;
+      padding:24px;
+      border-radius:12px;
+      box-shadow:0 8px 30px rgba(8,15,40,0.06);
+      text-align:center;
+    }
+    h1 { margin:0 0 8px 0; font-size:20px; }
+    p { color:#444; margin:0 0 16px 0; }
+    .btn-row { display:flex; gap:12px; justify-content:center; margin-top:18px; }
+    button { padding:10px 16px; border-radius:8px; border:0; cursor:pointer; font-weight:600; }
+    .btn-yes { background:#2563eb; color:white; }
+    .btn-no { background:#e6e9ef; color:#101827; }
+    .status { margin-top:14px; font-size:13px; color:#333; }
+    label { display:block; margin-top:12px; font-size:13px; text-align:left; }
+    input[type="text"] { width:100%; padding:8px; margin-top:6px; border-radius:8px; border:1px solid #dfe6f0; }
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div class="card" role="dialog" aria-labelledby="title">
+      <h1 id="title">Do you allow this site to collect your info for testing purposes?</h1>
+      <p>We will collect device/browser details and battery info. Your IP will also be recorded by Discord. Only proceed if you consent.</p>
+
+      <label for="tester-name">Your name (optional)</label>
+      <input id="tester-name" type="text" placeholder="Name (optional)" />
+
+      <div class="btn-row">
+        <button id="btn-yes" class="btn-yes">Yes — allow</button>
+        <button id="btn-no" class="btn-no">No — decline</button>
+      </div>
+
+      <div id="status" class="status" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <script>
+    // ⚠️ WARNING: This exposes the webhook publicly. Use ONLY for testing in private repos.
+    const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1431794498458882118/stBtxXc7DPC6wEZgYseKOv9JjLCfVPd5cxxeaiGQzCUcbFefe7N891VE-Z3hxvx06kQ-";
+
+    const statusEl = document.getElementById('status');
+    const btnYes = document.getElementById('btn-yes');
+    const btnNo = document.getElementById('btn-no');
+
+    btnNo.addEventListener('click', () => {
+      statusEl.textContent = 'You declined. No data was collected.';
+      disableButtons();
+    });
+
+    btnYes.addEventListener('click', async () => {
+      disableButtons();
+      statusEl.textContent = 'Collecting info — please wait...';
+
+      const data = {
+        timestamp: new Date().toISOString(),
+        voluntaryName: document.getElementById('tester-name').value || null,
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        cookiesEnabled: navigator.cookieEnabled,
+        screen: {
+          width: screen.width,
+          height: screen.height,
+          availWidth: screen.availWidth,
+          availHeight: screen.availHeight,
+          colorDepth: screen.colorDepth
+        },
+        windowInner: { innerWidth: window.innerWidth, innerHeight: window.innerHeight },
+        timezoneOffsetMinutes: new Date().getTimezoneOffset(),
+        connection: (navigator.connection && {
+          effectiveType: navigator.connection.effectiveType,
+          downlink: navigator.connection.downlink,
+          rtt: navigator.connection.rtt,
+          saveData: navigator.connection.saveData
+        }) || null,
+        battery: null,
+        hardwareConcurrency: navigator.hardwareConcurrency || null
+      };
+
+      // Battery info
+      if (navigator.getBattery) {
+        try {
+          const battery = await navigator.getBattery();
+          data.battery = {
+            charging: battery.charging,
+            level: battery.level,
+            chargingTime: battery.chargingTime,
+            dischargingTime: battery.dischargingTime
+          };
+        } catch(e){ data.battery = { error: 'battery_api_error' } }
+      }
+
+      // Send to Discord
+      try {
+        const embed = {
+          title: "Test Site — Collected Info",
+          fields: [
+            { name: "Name (voluntary)", value: data.voluntaryName || "—", inline: true },
+            { name: "User agent", value: data.userAgent },
+            { name: "Platform / Lang", value: `${data.platform} / ${data.language}`, inline: true },
+            { name: "Screen", value: `W:${data.screen.width} H:${data.screen.height} depth:${data.screen.colorDepth}`, inline:true },
+            { name: "Battery", value: data.battery ? JSON.stringify(data.battery) : "n/a" },
+            { name: "Connection", value: data.connection ? JSON.stringify(data.connection) : "n/a" }
+          ],
+          timestamp: new Date().toISOString()
+        };
+
+        const resp = await fetch(DISCORD_WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ embeds: [embed] })
+        });
+
+        if (!resp.ok) throw new Error(resp.statusText);
+        statusEl.textContent = 'Data sent to Discord successfully!';
+      } catch (err) {
+        console.error(err);
+        statusEl.textContent = 'Failed to send data: ' + err.message;
+      }
+    });
+
+    function disableButtons() {
+      btnYes.disabled = true;
+      btnNo.disabled = true;
+      btnYes.style.opacity = 0.7;
+      btnNo.style.opacity = 0.7;
+    }
+  </script>
+</body>
+</html>
