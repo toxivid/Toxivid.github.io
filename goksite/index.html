@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>goksite</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#0f1724; --accent:#8b5cf6; --muted:#94a3b8; --glass: rgba(255,255,255,0.03);
+      --success:#10b981; --danger:#ef4444;
+    }
+    html,body{height:100%;}
+    body{
+      margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#071024 0%, #071027 60%); color:#e6eef8; -webkit-font-smoothing:antialiased;
+      display:flex; align-items:center; justify-content:center; padding:32px;
+    }
+    .app{width:1100px; max-width:100%; display:grid; grid-template-columns:320px 1fr; gap:20px;}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:14px; padding:18px; box-shadow: 0 6px 24px rgba(2,6,23,0.6);}
+
+    /* left column */
+    .sidebar .balance{font-size:28px; font-weight:700; display:flex; align-items:center; gap:10px}
+    .small{font-size:12px; color:var(--muted)}
+    .modes{display:flex; flex-direction:column; gap:8px; margin-top:16px}
+    .mode-btn{padding:12px 14px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; background:var(--glass); cursor:pointer; border:1px solid rgba(255,255,255,0.03)}
+    .mode-btn.disabled{opacity:0.5; filter:grayscale(0.2); cursor:not-allowed}
+    .mode-btn.active{outline:2px solid rgba(139,92,246,0.18); box-shadow:0 4px 18px rgba(139,92,246,0.08)}
+
+    .settings{margin-top:18px; display:grid; gap:10px}
+    label{font-size:13px; color:var(--muted)}
+    input[type=number], select{width:100%; padding:10px; border-radius:8px; background:transparent; color:inherit; border:1px dashed rgba(255,255,255,0.04)}
+    .play-row{display:flex; gap:8px; margin-top:8px}
+    button.primary{flex:1; padding:12px; border-radius:10px; background:linear-gradient(90deg,var(--accent), #6ee7b7); color:#021124; border:none; cursor:pointer; font-weight:700}
+    button.ghost{padding:12px; border-radius:10px; background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted); cursor:pointer}
+
+    /* right column */
+    .game-area{display:flex; flex-direction:column; gap:12px}
+    .topbar{display:flex; align-items:center; justify-content:space-between}
+    .info{display:flex; gap:14px; align-items:center}
+    .chip{background:rgba(255,255,255,0.02); padding:8px 10px; border-radius:10px; font-weight:600}
+
+    .board-wrap{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015)); padding:18px; border-radius:12px; display:flex; flex-direction:column; gap:12px}
+    .board{display:grid; gap:6px; justify-content:center}
+    .tile{width:44px; height:44px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.015); border-radius:8px; cursor:pointer; user-select:none; font-size:20px}
+    .tile.revealed{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); cursor:default}
+    .tile.safe{color:var(--success)}
+    .tile.mine{color:var(--danger)}
+    .controls{display:flex; gap:8px; align-items:center}
+    .log{max-height:160px; overflow:auto; padding:10px; background:rgba(0,0,0,0.12); border-radius:8px; font-size:13px}
+
+    footer{font-size:12px; color:var(--muted); margin-top:6px}
+
+    @media(max-width:900px){
+      .app{grid-template-columns:1fr;}
+      .sidebar{order:2}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card sidebar">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div class="small">Saldo</div>
+          <div class="balance">€<span id="balance">10000.00</span></div>
+        </div>
+        <div style="text-align:right">
+          <div class="small">Valuta</div>
+          <div class="chip">EUR</div>
+        </div>
+      </div>
+
+      <div class="modes">
+        <div class="mode-btn active" data-mode="mines" id="mode-mines">Mines <span class="small">(werkt)</span></div>
+        <div class="mode-btn disabled" data-mode="slots" id="mode-slots">Slots <span class="small">(komt later)</span></div>
+        <div class="mode-btn disabled" data-mode="roulette" id="mode-roulette">Roulette <span class="small">(komt later)</span></div>
+      </div>
+
+      <div class="settings">
+        <label>Grid grootte (grid × grid)</label>
+        <div style="display:flex; gap:8px">
+          <input id="gridSize" type="number" min="3" max="12" value="6" />
+          <input id="mineCount" type="number" min="1" value="6" />
+        </div>
+
+        <label>Inzet (€)</label>
+        <input id="betAmount" type="number" min="1" step="0.5" value="10" />
+
+        <div class="play-row">
+          <button class="primary" id="playBtn">Play</button>
+          <button class="ghost" id="resetBtn">Reset</button>
+        </div>
+
+        <div style="margin-top:6px">
+          <div class="small">Speluitleg</div>
+          <div style="font-size:13px; color:var(--muted); margin-top:6px">Klik op tegels. Goede klik = 💎 (safe). Foute klik = 💣 (mine) en ronde is afgelopen. Als je alle veilige tegels onthult win je de inzet × multiplier. Later voegen we meer games toe.</div>
+        </div>
+
+      </div>
+
+      <footer>
+          start saldo = 1000
+      </footer>
+    </div>
+
+    <div class="card game-area">
+      <div class="topbar">
+        <div class="info">
+          <div class="chip">Mode: <strong id="currentMode">Mines</strong></div>
+          <div class="chip">Grid: <strong id="currentGrid">6×6</strong></div>
+          <div class="chip">Mines: <strong id="currentMines">6</strong></div>
+        </div>
+        <div class="controls">
+          <div class="chip">Ronde: <strong id="roundState">idle</strong></div>
+          <div class="chip">Ontdekt: <strong id="revealedCount">0</strong></div>
+        </div>
+      </div>
+
+      <div class="board-wrap">
+        <div id="board" class="board" role="grid" aria-label="Mines board"></div>
+        <div style="display:flex; gap:8px; align-items:center">
+          <div style="flex:1">
+            <div class="small">Log</div>
+            <div id="log" class="log"></div>
+          </div>
+          <div style="width:220px">
+            <div class="small">Laatste uitkomst</div>
+            <div id="lastResult" style="margin-top:6px; padding:12px; border-radius:8px; background:rgba(255,255,255,0.02);">-</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      balance: parseFloat(localStorage.getItem('balance')) || 1000.00,
+      mode: 'mines',
+      grid: 6,
+      mines: 6,
+      bet: 10.0,
+      board: [],
+      revealedCount: 0,
+      running: false,
+      houseEdge: 2.5
+    };
+
+    // --- Helpers ---
+    const $ = id => document.getElementById(id);
+    const format = n => Number(n).toFixed(2);
+    const randomInt = (min, max) => Math.floor(Math.random()*(max-min+1))+min;
+
+    // --- UI binds ---
+    $('balance').textContent = format(state.balance);
+    $('currentMode').textContent = 'Mines';
+    $('currentGrid').textContent = state.grid + '×' + state.grid;
+    $('currentMines').textContent = state.mines;
+    $('gridSize').value = state.grid;
+    $('mineCount').value = state.mines;
+    $('betAmount').value = state.bet;
+
+    function log(msg){
+      const el = $('log');
+      const time = new Date().toLocaleTimeString();
+      el.innerHTML = `<div style="padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.02)"><strong>${time}</strong> — ${msg}</div>` + el.innerHTML;
+    }
+
+    // --- Mode buttons ---
+    document.querySelectorAll('.mode-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        if(btn.classList.contains('disabled')){ log('Deze modus is nog niet beschikbaar.'); return; }
+        document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        state.mode = btn.dataset.mode;
+        $('currentMode').textContent = btn.textContent.trim();
+      });
+    });
+
+    // --- Input listeners ---
+    $('gridSize').addEventListener('change', e=>{
+      let v = parseInt(e.target.value) || 6; if(v<3) v=3; if(v>12) v=12; e.target.value=v; state.grid=v; $('currentGrid').textContent = v+'×'+v;
+      const maxM = Math.max(1, v*v-1);
+      $('mineCount').max = maxM;
+      if(state.mines > maxM){ state.mines = maxM; $('mineCount').value = maxM; $('currentMines').textContent = maxM; }
+    });
+    $('mineCount').addEventListener('change', e=>{
+      let v = parseInt(e.target.value) || 1; const max = state.grid*state.grid-1; if(v<1) v=1; if(v>max) v=max; e.target.value=v; state.mines=v; $('currentMines').textContent=v;
+    });
+    $('betAmount').addEventListener('change', e=>{
+      let v = parseFloat(e.target.value) || 1; if(v<1) v=1; e.target.value = v.toFixed(2); state.bet = v;
+    });
+
+    // --- Core game logic ---
+    function makeBoard(grid, mines){
+      const total = grid*grid;
+      const positions = Array.from({length:total}, (_,i)=>i);
+      for(let i=positions.length-1;i>0;i--){ const j=randomInt(0,i); [positions[i],positions[j]]=[positions[j],positions[i]]; }
+      const minePositions = new Set(positions.slice(0,mines));
+      const board = [];
+      for(let i=0;i<total;i++) board.push({isMine: minePositions.has(i), revealed:false});
+      return board;
+    }
+
+    function renderBoard(){
+      const boardEl = $('board');
+      boardEl.innerHTML='';
+      const n = state.grid;
+      boardEl.style.gridTemplateColumns = `repeat(${n}, 44px)`;
+      state.board.forEach((cell, idx)=>{
+        const div = document.createElement('div');
+        div.className = 'tile' + (cell.revealed? ' revealed':'');
+        div.dataset.index = idx;
+        div.setAttribute('role','button');
+        if(cell.revealed){
+          if(cell.isMine){ div.innerHTML='💣'; div.classList.add('mine'); }
+          else{ div.innerHTML='💎'; div.classList.add('safe'); }
+        } else { div.innerHTML=''; }
+        div.addEventListener('click', onTileClick);
+        boardEl.appendChild(div);
+      });
+    }
+
+    function onTileClick(e){
+      if(!state.running) return;
+      const idx = parseInt(e.currentTarget.dataset.index);
+      const cell = state.board[idx];
+      if(cell.revealed) return;
+      cell.revealed = true;
+      if(cell.isMine){
+        state.running = false;
+        renderBoard();
+        $('roundState').textContent = 'lost';
+        $('revealedCount').textContent = state.revealedCount;
+        $('lastResult').textContent = `Verloren — Je klikte op een bom. Inzet was €${format(state.bet)}.`;
+        log(`Ronde verloren. Klikte op bom op index ${idx}. Inzet €${format(state.bet)} verloren.`);
+        updateBalanceUI();
+        return;
+      } else {
+        state.revealedCount++;
+        renderBoard();
+        $('revealedCount').textContent = state.revealedCount;
+        log(`Veilige tegel onthuld (${state.revealedCount}/${state.grid*state.grid - state.mines})`);
+        const safeTotal = state.grid*state.grid - state.mines;
+        if(state.revealedCount >= safeTotal){
+          state.running = false;
+          const multiplier = calculateMultiplier(state.grid*state.grid, state.mines);
+          const payout = state.bet * multiplier;
+          state.balance += payout;
+          $('roundState').textContent = 'win';
+          $('lastResult').textContent = `Gewonnen! Multiplier: ×${multiplier.toFixed(4)} — Win: €${format(payout)}.`;
+          log(`Ronde gewonnen. Multiplier: ${multiplier.toFixed(4)}. Win: €${format(payout)}.`);
+          updateBalanceUI();
+        }
+      }
+    }
+
+    function calculateMultiplier(totalTiles, mines){
+      const safe = totalTiles - mines;
+      const raw = totalTiles / safe;
+      const scale = 0.85;
+      const multiplier = Math.max(1.0, 1 + Math.pow(raw - 1, 0.95) * safe * scale * state.houseEdge / totalTiles);
+      return Math.min(multiplier, 10000);
+    }
+
+    // --- Controls ---
+    $('playBtn').addEventListener('click', ()=>{
+      if(state.running){ log('Er loopt al een ronde. Reset eerst of wacht tot einde.'); return; }
+      const bet = parseFloat($('betAmount').value) || 1;
+      if(bet <=0){ alert('Inzet moet groter zijn dan 0'); return; }
+      if(bet > state.balance){ alert('Onvoldoende saldo.'); return; }
+      state.grid = parseInt($('gridSize').value) || 6;
+      state.mines = parseInt($('mineCount').value) || 1;
+      state.bet = bet;
+      state.board = makeBoard(state.grid, state.mines);
+      state.revealedCount = 0;
+      state.running = true;
+      state.balance -= state.bet;
+      updateBalanceUI();
+      renderBoard();
+      $('roundState').textContent = 'running';
+      $('revealedCount').textContent = '0';
+      $('currentGrid').textContent = state.grid+'×'+state.grid;
+      $('currentMines').textContent = state.mines;
+      log(`Nieuwe ronde gestart. Grid ${state.grid}×${state.grid}, Minen: ${state.mines}, Inzet €${format(state.bet)}.`);
+      $('lastResult').textContent = '-';
+    });
+
+    $('resetBtn').addEventListener('click', ()=>{
+      if(state.running){ if(!confirm('Ronde is nog bezig. Weet je zeker dat je wil resetten?')) return; }
+      state.balance = 10000.00;
+      localStorage.setItem('balance', state.balance);
+      state.running = false;
+      state.board = [];
+      state.revealedCount = 0;
+      updateBalanceUI();
+      renderBoard();
+      $('roundState').textContent = 'idle';
+      $('lastResult').textContent = '-';
+      $('log').innerHTML='';
+      log('Interface gereset naar beginwaarden.');
+    });
+
+    function updateBalanceUI(){ 
+      $('balance').textContent = format(state.balance); 
+      localStorage.setItem('balance', state.balance); // save to localStorage
+    }
+
+    // --- initial render ---
+    state.board = Array.from({length: state.grid*state.grid}, ()=>({isMine:false, revealed:false}));
+    renderBoard();
+
+    window.addEventListener('keydown', (e)=>{
+      if(e.key==='r') { $('resetBtn').click(); }
+      if(e.key==='p') { $('playBtn').click(); }
+    });
+  </script>
+</body>
+</html>
