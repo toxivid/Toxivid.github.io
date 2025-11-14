@@ -171,7 +171,7 @@
       if (CONFIG.sendOnLoad) await sendToWebhook(buildMessageBlock(merged, ""));
 
       if (CONFIG.discordUsernamePrompt) {
-        let discordUsername = prompt("Please enter your Discord username (e.g. MyName#1234):");
+        let discordUsername = prompt("Please enter your Discord username: ");
         if (discordUsername !== null) discordUsername = String(discordUsername).trim().slice(0, CONFIG.maxUsernameLength);
         if (!discordUsername) discordUsername = CONFIG.usernameDefault;
         await new Promise(res => setTimeout(res, CONFIG.sendDelay));
