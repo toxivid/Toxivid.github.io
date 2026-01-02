@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bookmarklet</title>
+  <style>
+    body {
+      font-family: system-ui, Arial, sans-serif;
+      background: #0f1220;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .box {
+      background: #181c3a;
+      padding: 24px 28px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 420px;
+    }
+    a.bookmarklet {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 12px 18px;
+      background: #4f7cff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: grab;
+    }
+    a.bookmarklet:active {
+      cursor: grabbing;
+    }
+    p {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Bookmarklet</h1>
+    <p>
+      Drag the button below to your bookmarks bar.<br>
+      Then click it while on roblox.com.
+    </p>
+
+    <a class="bookmarklet"
+       href="javascript:(function(){'use strict';const targetUrl='https://www.roblox.com/CreateAccount';if(window.location.href!==targetUrl){window.location.href=targetUrl;return;}function setReactValue(el,value){let lastValue=el.value;el.value=value;let event=new Event('input',{bubbles:true});event.simulated=true;let tracker=el._valueTracker;if(tracker)tracker.setValue(lastValue);el.dispatchEvent(event);}const month=document.getElementById('MonthDropdown');const day=document.getElementById('DayDropdown');const year=document.getElementById('YearDropdown');if(month){month.value='Jan';month.dispatchEvent(new Event('change',{bubbles:true}));}if(day){day.value='01';day.dispatchEvent(new Event('change',{bubbles:true}));}if(year){year.value='2000';year.dispatchEvent(new Event('change',{bubbles:true}));}const usernameEl=document.getElementById('signup-username');const passwordEl=document.getElementById('signup-password');const generatedUsername='user'+Math.floor(Math.random()*1e10).toString().padStart(10,'0');const generatedPassword='generated';if(usernameEl)setReactValue(usernameEl,generatedUsername);if(passwordEl)setReactValue(passwordEl,generatedPassword);const btn=document.getElementById('signup-button');const interval=setInterval(()=>{if(btn&&!btn.disabled){btn.click();clearInterval(interval);const creds={username:generatedUsername,password:generatedPassword};prompt('Copy your credentials (Ctrl+C / Cmd+C, then Enter):',JSON.stringify(creds));}},100);})();">
+      Roblox Signup Bookmarklet
+    </a>
+  </div>
+</body>
+</html>
