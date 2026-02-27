@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IP Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+        .ip-box {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Your IP Address</h1>
+    <div class="ip-box" id="ip">Loading...</div>
+
+    <script>
+        async function getIP() {
+            try {
+                const response = await fetch("https://api.ipify.org?format=json");
+                const data = await response.json();
+                const ip = data.ip;
+
+                // Split into 4 parts
+                const parts = ip.split(".");
+
+                // Hide first octet
+                parts[0] = "***";
+
+                const maskedIP = parts.join(".");
+                document.getElementById("ip").textContent = maskedIP;
+
+            } catch (error) {
+                document.getElementById("ip").textContent = "Could not fetch IP";
+            }
+        }
+
+        getIP();
+    </script>
+
+</body>
+</html>
