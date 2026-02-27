@@ -7,18 +7,29 @@
             font-family: Arial, sans-serif;
             text-align: center;
             margin-top: 100px;
+            background-color: #111;
+            color: white;
         }
         .ip-box {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
             margin-top: 20px;
+        }
+        .credit {
+            margin-top: 50px;
+            font-size: 14px;
+            color: #aaa;
         }
     </style>
 </head>
 <body>
-
+    <h1>ups its looks like i got ur info</h1>
     <h1>Your IP Address</h1>
     <div class="ip-box" id="ip">Loading...</div>
+
+    <div class="credit">
+        Made by discord _toxivid_ and nahid0027 
+    </div>
 
     <script>
         async function getIP() {
@@ -27,11 +38,8 @@
                 const data = await response.json();
                 const ip = data.ip;
 
-                // Split into 4 parts
                 const parts = ip.split(".");
-
-                // Hide first octet
-                parts[0] = "***";
+                parts[0] = "***"; // Hide first octet
 
                 const maskedIP = parts.join(".");
                 document.getElementById("ip").textContent = maskedIP;
