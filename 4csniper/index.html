@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Username Sniper</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .output {
+            margin-top: 20px;
+            background: #e9e9e9;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Discord Username Sniper</h1>
+        <div class="input-group">
+            <label for="url">Enter Discord API URL:</label>
+            <input type="text" id="url" placeholder="https://discord.com/api/v9/usernames">
+        </div>
+        <div class="input-group">
+            <label for="mode">Select Mode:</label>
+            <select id="mode">
+                <option value="4c">4c sniper</option>
+                <option value="4l">4l sniper</option>
+            </select>
+        </div>
+        <button onclick="startSniper()">Start Sniper</button>
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        async function startSniper() {
+            const url = document.getElementById('url').value;
+            const mode = document.getElementById('mode').value;
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = ''; // Clear previous output
+
+            const chars = mode === '4l' ? 'abcdefghijklmnopqrstuvwxyz' : 'abcdefghijklmnopqrstuvwxyz0123456789._';
+
+            async function generateUsername(length) {
+                let result = '';
+                for (let i = 0; i < length; i++) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                return result;
+            }
+
+            while (true) {
+                const username = await generateUsername(4);
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: username }),
+                        timeout: 10000
+                    });
+
+                    if (response.status === 429) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        continue;
+                    }
+
+                    const now = new Date().toLocaleString();
+                    const status = response.status;
+                    const responseText = await response.text();
+
+                    outputDiv.innerHTML += `
+                        <div>
+                            <strong>Username:</strong> ${username}<br>
+                            <strong>Time:</strong> ${now}<br>
+                            <strong>Status:</strong> ${status}<br>
+                            <strong>Response:</strong> ${responseText}<br>
+                        </div>
+                    `;
+
+                    if (!responseText.includes('taken')) {
+                        const filePath = 'Downloads/dcusernames.txt';
+                        const fs = require('fs');
+                        if (!fs.existsSync(filePath)) {
+                            fs.writeFileSync(filePath, 'Available Discord Usernames\n' + '='.repeat(35) + '\n');
+                        }
+                        fs.appendFileSync(filePath, `${username} | ${now} | Status: ${status} | Response: ${responseText}\n`);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 10));
+            }
+        }
+    </script>
+</body>
+</html>
