@@ -10,13 +10,17 @@
             background-color: #f4f4f4;
             margin: 0;
             padding: 20px;
+            display: flex;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
             background: #fff;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .input-group {
             margin-bottom: 20px;
@@ -35,33 +39,48 @@
             background: #e9e9e9;
             padding: 10px;
             border: 1px solid #ccc;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .available-list {
+            margin-top: 20px;
+            background: #d9d9d9;
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Discord Username Sniper</h1>
-        <div class="input-group">
-            <label for="url">Enter Discord API URL:</label>
-            <input type="text" id="url" placeholder="https://discord.com/api/v9/usernames">
+        <div class="button-group">
+            <button onclick="startSniper()">Start Sniper</button>
+            <button onclick="importResults()">Import Results</button>
         </div>
-        <div class="input-group">
-            <label for="mode">Select Mode:</label>
-            <select id="mode">
-                <option value="4c">4c sniper</option>
-                <option value="4l">4l sniper</option>
-            </select>
-        </div>
-        <button onclick="startSniper()">Start Sniper</button>
         <div class="output" id="output"></div>
+        <div class="available-list" id="available-list"></div>
     </div>
 
     <script>
+        const URL = ""; // Fill in your URL here
+        let availableUsernames = [];
+
         async function startSniper() {
-            const url = document.getElementById('url').value;
-            const mode = document.getElementById('mode').value;
+            const mode = document.querySelector('select').value;
             const outputDiv = document.getElementById('output');
             outputDiv.innerHTML = ''; // Clear previous output
+            const availableList = document.getElementById('available-list');
+            availableList.innerHTML = ''; // Clear previous available usernames
 
             const chars = mode === '4l' ? 'abcdefghijklmnopqrstuvwxyz' : 'abcdefghijklmnopqrstuvwxyz0123456789._';
 
@@ -76,7 +95,7 @@
             while (true) {
                 const username = await generateUsername(4);
                 try {
-                    const response = await fetch(url, {
+                    const response = await fetch(URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ username: username }),
@@ -102,12 +121,8 @@
                     `;
 
                     if (!responseText.includes('taken')) {
-                        const filePath = 'Downloads/dcusernames.txt';
-                        const fs = require('fs');
-                        if (!fs.existsSync(filePath)) {
-                            fs.writeFileSync(filePath, 'Available Discord Usernames\n' + '='.repeat(35) + '\n');
-                        }
-                        fs.appendFileSync(filePath, `${username} | ${now} | Status: ${status} | Response: ${responseText}\n`);
+                        availableUsernames.push(username);
+                        availableList.innerHTML += `<div>${username}</div>`;
                     }
                 } catch (error) {
                     console.error('Error:', error);
@@ -115,6 +130,18 @@
 
                 await new Promise(resolve => setTimeout(resolve, 10));
             }
+        }
+
+        function importResults() {
+            const filePath = 'Downloads/dcusernames.txt';
+            const fs = require('fs');
+            if (!fs.existsSync(filePath)) {
+                fs.writeFileSync(filePath, 'Available Discord Usernames\n' + '='.repeat(35) + '\n');
+            }
+            availableUsernames.forEach(username => {
+                fs.appendFileSync(filePath, `${username} | ${new Date().toLocaleString()} | Status: 200 | Response: Available\n`);
+            });
+            alert('Results imported successfully!');
         }
     </script>
 </body>
