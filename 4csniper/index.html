@@ -63,6 +63,13 @@
 <body>
     <div class="container">
         <h1>Discord Username Sniper</h1>
+        <div class="input-group">
+            <label for="mode">Select Mode:</label>
+            <select id="mode">
+                <option value="4c">4c sniper</option>
+                <option value="4l">4l sniper</option>
+            </select>
+        </div>
         <div class="button-group">
             <button onclick="startSniper()">Start Sniper</button>
             <button onclick="importResults()">Import Results</button>
@@ -72,11 +79,11 @@
     </div>
 
     <script>
-        const URL = ""; // Fill in your URL here
+        const URL = "https://discord.com/api/v9/unique-username/username-attempt-unauthed"; // Fill in your URL here
         let availableUsernames = [];
 
         async function startSniper() {
-            const mode = document.querySelector('select').value;
+            const mode = document.getElementById('mode').value;
             const outputDiv = document.getElementById('output');
             outputDiv.innerHTML = ''; // Clear previous output
             const availableList = document.getElementById('available-list');
