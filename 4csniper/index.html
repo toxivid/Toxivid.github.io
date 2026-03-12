@@ -3,153 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Username Sniper</title>
+    <title>Username Sniper</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-            display: flex;
+            margin: 20px;
         }
         .container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            text-align: center;
         }
-        .input-group {
-            margin-bottom: 20px;
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
         }
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .input-group input, .input-group select {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        .output {
+        #output {
             margin-top: 20px;
-            background: #e9e9e9;
-            padding: 10px;
-            border: 1px solid #ccc;
-            width: 100%;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .available-list {
-            margin-top: 20px;
-            background: #d9d9d9;
-            padding: 10px;
-            border: 1px solid #ccc;
-            width: 100%;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .button-group {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-bottom: 20px;
+            text-align: left;
+            white-space: pre-wrap;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Discord Username Sniper</h1>
-        <div class="input-group">
-            <label for="mode">Select Mode:</label>
-            <select id="mode">
-                <option value="4c">4c sniper</option>
-                <option value="4l">4l sniper</option>
-            </select>
-        </div>
-        <div class="button-group">
-            <button onclick="startSniper()">Start Sniper</button>
-            <button onclick="importResults()">Import Results</button>
-        </div>
-        <div class="output" id="output"></div>
-        <div class="available-list" id="available-list"></div>
+        <h1>Username Sniper</h1>
+        <button onclick="toggleMode(1)">4c Sniper</button>
+        <button onclick="toggleMode(2)">4l Sniper</button>
+        <div id="output"></div>
     </div>
+<script>
+let URL = "https://discord.com/api/v9/unique-username/username-attempt-unauthed";
+let WEBHOOK = "https://discord.com/api/webhooks/1481757129684815964/-2JY2nE6368laKYDBSyNhM0hAzoCTO8aN6bw4HWFz13fD3OZrh0LX9buPp0BQKn7q8g5";
 
-    <script>
-        const URL = "https://discord.com/api/v9/unique-username/username-attempt-unauthed"; // Fill in your URL here
-        let availableUsernames = [];
+let CHARS = "abcdefghijklmnopqrstuvwxyz0123456789._";
+let mode = 1;
 
-        async function startSniper() {
-            const mode = document.getElementById('mode').value;
-            const outputDiv = document.getElementById('output');
-            outputDiv.innerHTML = ''; // Clear previous output
-            const availableList = document.getElementById('available-list');
-            availableList.innerHTML = ''; // Clear previous available usernames
+function toggleMode(m) {
+    mode = m;
 
-            const chars = mode === '4l' ? 'abcdefghijklmnopqrstuvwxyz' : 'abcdefghijklmnopqrstuvwxyz0123456789._';
+    if (mode === 2) {
+        CHARS = "abcdefghijklmnopqrstuvwxyz";
+    } else {
+        CHARS = "abcdefghijklmnopqrstuvwxyz0123456789._";
+    }
 
-            async function generateUsername(length) {
-                let result = '';
-                for (let i = 0; i < length; i++) {
-                    result += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return result;
-            }
+    document.getElementById('output').innerText =
+        `Mode set to: ${mode === 1 ? '4c Sniper' : '4l Sniper'}\n`;
 
-            while (true) {
-                const username = await generateUsername(4);
-                try {
-                    const response = await fetch(URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ username: username }),
-                        timeout: 10000
-                    });
+    startSniper();
+}
 
-                    if (response.status === 429) {
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                        continue;
-                    }
+function gen(length = 4) {
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += CHARS[Math.floor(Math.random() * CHARS.length)];
+    }
+    return result;
+}
 
-                    const now = new Date().toLocaleString();
-                    const status = response.status;
-                    const responseText = await response.text();
+async function startSniper() {
 
-                    outputDiv.innerHTML += `
-                        <div>
-                            <strong>Username:</strong> ${username}<br>
-                            <strong>Time:</strong> ${now}<br>
-                            <strong>Status:</strong> ${status}<br>
-                            <strong>Response:</strong> ${responseText}<br>
-                        </div>
-                    `;
+    while (true) {
 
-                    if (!responseText.includes('taken')) {
-                        availableUsernames.push(username);
-                        availableList.innerHTML += `<div>${username}</div>`;
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
+        const username = gen();
 
-                await new Promise(resolve => setTimeout(resolve, 10));
-            }
-        }
+        try {
 
-        function importResults() {
-            const filePath = 'Downloads/dcusernames.txt';
-            const fs = require('fs');
-            if (!fs.existsSync(filePath)) {
-                fs.writeFileSync(filePath, 'Available Discord Usernames\n' + '='.repeat(35) + '\n');
-            }
-            availableUsernames.forEach(username => {
-                fs.appendFileSync(filePath, `${username} | ${new Date().toLocaleString()} | Status: 200 | Response: Available\n`);
+            const response = await fetch(URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username })
             });
-            alert('Results imported successfully!');
+
+            if (response.status === 429) {
+                await new Promise(r => setTimeout(r, 1000));
+                continue;
+            }
+
+            const data = await response.json();
+            const now = new Date().toLocaleString();
+
+            document.getElementById('output').innerText +=
+`========================
+Username: ${username}
+Time: ${now}
+Taken: ${data.taken}
+`;
+
+            if (data.taken === false) {
+
+                document.getElementById('output').innerText +=
+`AVAILABLE: ${username}\n`;
+
+                await fetch(WEBHOOK, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        content: `🚨 Available Username: ${username}`
+                    })
+                });
+
+            }
+
+        } catch (err) {
+            console.error(err);
         }
-    </script>
+
+        await new Promise(r => setTimeout(r, 100));
+    }
+}
+</script>
 </body>
 </html>
