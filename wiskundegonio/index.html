@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trig Calculatie Trainer</title>
+<style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    button { padding: 10px 20px; margin: 10px; font-size: 18px; }
+    canvas { border:1px solid #333; margin-top: 20px; }
+    input { font-size: 16px; padding: 5px; width: 100px; }
+</style>
+</head>
+<body>
+
+<h1>Trig Calculatie Trainer</h1>
+<div>
+    <button onclick="start('SOL')">SIN (SOL)</button>
+    <button onclick="start('CAL')">COS (CAL)</button>
+    <button onclick="start('TOA')">TAN (TOA)</button>
+</div>
+
+<div id="triangleSection" style="display:none;">
+    <canvas id="triangleCanvas" width="400" height="300"></canvas>
+    <p id="info"></p>
+    <input type="text" id="userInput" placeholder="Typ hier cm of °" onkeydown="checkEnter(event)">
+    <button onclick="checkAnswer()">Check</button>
+</div>
+
+<script>
+let type, a, b, c, angleDeg, missingSide, expectedAnswer;
+
+function random(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function start(chosenType) {
+    type = chosenType;
+    document.getElementById('triangleSection').style.display = 'block';
+    generateTriangle();
+}
+
+function generateTriangle() {
+    // Willekeurige zijdes tussen 5 en 30 cm
+    let sides = [random(5, 30), random(5, 30)];
+    // Stel a = aanliggende, b = overstaande, c = schuine
+    a = sides[0];
+    b = sides[1];
+    c = Math.sqrt(a*a + b*b);
+    angleDeg = Math.atan(b/a) * 180/Math.PI;
+
+    missingSide = '';
+    expectedAnswer = 0;
+
+    let displayInfo = '';
+
+    if(type === 'TOA') {
+        if(Math.random() < 0.5) {
+            missingSide = 'angle';
+            displayInfo = `Overstaande = ${b.toFixed(1)} cm, Aanliggende = ${a.toFixed(1)} cm.<br>Bereken de hoek (°)`;
+            expectedAnswer = angleDeg.toFixed(1);
+        } else {
+            missingSide = 'b';
+            displayInfo = `Hoek = ${angleDeg.toFixed(1)}°, Aanliggende = ${a.toFixed(1)} cm.<br>Bereken overstaande (cm)`;
+            expectedAnswer = (Math.tan(angleDeg * Math.PI / 180) * a).toFixed(1);
+        }
+    } else if(type === 'SOL') {
+        if(Math.random() < 0.5) {
+            // bereken overstaande (b)
+            missingSide = 'b';
+            displayInfo = `Hoek = ${angleDeg.toFixed(1)}°, Schuine = ${c.toFixed(1)} cm.<br>Bereken overstaande (cm)`;
+            expectedAnswer = (Math.sin(angleDeg * Math.PI / 180) * c).toFixed(1);
+        } else {
+            // bereken hoek
+            missingSide = 'angle';
+            displayInfo = `Overstaande = ${b.toFixed(1)} cm, Schuine = ${c.toFixed(1)} cm.<br>Bereken de hoek (°)`;
+            expectedAnswer = (Math.asin(b / c) * 180 / Math.PI).toFixed(1);
+        }
+    } else if(type === 'CAL') {
+        if(Math.random() < 0.5) {
+            // bereken aanliggende (a)
+            missingSide = 'a';
+            displayInfo = `Hoek = ${angleDeg.toFixed(1)}°, Schuine = ${c.toFixed(1)} cm.<br>Bereken aanliggende (cm)`;
+            expectedAnswer = (Math.cos(angleDeg * Math.PI / 180) * c).toFixed(1);
+        } else {
+            // bereken hoek
+            missingSide = 'angle';
+            displayInfo = `Aanliggende = ${a.toFixed(1)} cm, Schuine = ${c.toFixed(1)} cm.<br>Bereken de hoek (°)`;
+            expectedAnswer = (Math.acos(a / c) * 180 / Math.PI).toFixed(1);
+        }
+    }
+
+    document.getElementById('info').innerHTML = displayInfo;
+    drawTriangle();
+    document.getElementById('userInput').value = '';
+    document.getElementById('userInput').focus();
+}
+
+function drawTriangle() {
+    let canvas = document.getElementById('triangleCanvas');
+    let ctx = canvas.getContext('2d');
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    let scale = 8; // cm naar pixels
+    let startX = 50, startY = 250;
+
+    // Teken rechthoekige driehoek
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(startX + a*scale, startY);
+    ctx.lineTo(startX + a*scale, startY - b*scale);
+    ctx.closePath();
+    ctx.stroke();
+
+    // Hoekmarkering
+    ctx.fillText('90°', startX+5, startY-5);
+}
+
+function checkEnter(event) {
+    if(event.key === 'Enter') {
+        checkAnswer();
+    }
+}
+
+function checkAnswer() {
+    let userVal = parseFloat(document.getElementById('userInput').value);
+    if(userVal.toFixed(1) == expectedAnswer) {
+        alert("Correct! Nieuwe driehoek wordt gegenereerd.");
+        generateTriangle();
+    } else {
+        alert(`Fout! Correcte antwoord = ${expectedAnswer}`);
+        generateTriangle();
+    }
+}
+</script>
+
+</body>
+</html>
