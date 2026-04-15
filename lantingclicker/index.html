@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Lanting Clicker</title>
+<style>
+body { margin:0; font-family:Arial; background:linear-gradient(135deg,#1e1e2f,#2a2a40); color:white; overflow:hidden; }
+#main { display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; }
+#score { font-size:28px; margin-bottom:20px; }
+
+#clickBtn {
+  width:240px; height:240px; border-radius:50%; border:none; cursor:pointer;
+  background:#444; display:flex; justify-content:center; align-items:center;
+  overflow:hidden; box-shadow:0 0 25px rgba(0,0,0,0.6);
+  transition:transform 0.1s, box-shadow 0.2s;
+}
+#clickBtn:hover { box-shadow:0 0 40px rgba(108,92,231,0.6); }
+#clickBtn:active { transform:scale(0.9); }
+#clickBtn img { width:100%; height:100%; object-fit:cover; }
+
+#shopBtn { position:absolute; left:20px; top:50%; transform:translateY(-50%); }
+#gambleBtn { position:absolute; right:20px; top:50%; transform:translateY(-50%); }
+
+button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7; color:white; cursor:pointer; transition:0.2s; }
+button:hover { transform:scale(1.08); }
+
+.screen {
+  display:none; position:absolute; top:0; left:0; width:100%; height:100%;
+  background:#1e1e2f; padding:80px 20px 20px 20px; overflow:auto;
+}
+
+.exitBtn { position:absolute; top:20px; left:20px; }
+
+.upgrade { border-radius:10px; padding:12px; margin:10px 0; background:#2f2f50; transition:0.2s; }
+.upgrade:hover { transform:scale(1.03); }
+.locked { background:#555; color:#aaa; }
+
+.rollBox { display:inline-block; width:100px; height:100px; margin:10px;
+background:#333; border-radius:10px; text-align:center; line-height:100px;
+font-size:20px; animation:pop 0.3s; }
+
+@keyframes pop { from{transform:scale(0.5);} to{transform:scale(1);} }
+
+</style>
+</head>
+<body>
+
+<div id="main">
+  <div id="score">Lantings: 0</div>
+  <button id="clickBtn"><img id="mainImg" src=""></button>
+</div>
+
+<button id="shopBtn">Shop</button>
+<button id="gambleBtn">Gamble</button>
+
+<div id="shopScreen" class="screen">
+  <button class="exitBtn" onclick="shopScreen.style.display='none'">Exit</button>
+  <h2>Shop</h2>
+  <div id="upgrades"></div>
+</div>
+
+<div id="gambleScreen" class="screen">
+  <button class="exitBtn" onclick="gambleScreen.style.display='none'">Exit</button>
+  <h2>Gamble</h2>
+  <button onclick="openRolls()">Rolls</button>
+</div>
+
+<div id="rollsScreen" class="screen">
+  <button class="exitBtn" onclick="rollsScreen.style.display='none'">Exit</button>
+  <h2>Rolls</h2>
+  <div>Je geld: <span id="rollMoney"></span></div>
+  <input id="rollBet" type="number" placeholder="Inzet">
+  <button onclick="playRolls()">Play</button>
+  <div id="rollResult"></div>
+</div>
+
+<script>
+// LOAD SAVE
+let save = JSON.parse(localStorage.getItem("lantingSave")) || {};
+
+let score = save.score || 0;
+let perClick = save.perClick || 1;
+let perSecond = save.perSecond || 0;
+
+const scoreEl=document.getElementById("score");
+
+function saveGame(){
+  localStorage.setItem("lantingSave", JSON.stringify({score, perClick, perSecond, upgrades}));
+}
+
+function updateScore(){ scoreEl.innerText="Lantings: "+score; rollMoney.innerText=score; saveGame(); }
+
+clickBtn.onclick=()=>{ score+=perClick; updateScore(); };
+
+// SHOP BALANCE FIX
+let upgradesEl=document.getElementById("upgrades");
+let upgrades = save.upgrades || [];
+
+if(upgrades.length===0){
+for(let i=0;i<50;i++){
+  let isClick = i%2==0;
+  upgrades.push({
+    type:isClick?"click":"auto",
+    value:1+Math.floor(i/2)*2,
+    cost: isClick ? Math.floor(30*Math.pow(1.6,i)) : Math.floor(20*Math.pow(1.6,i)),
+    bought:false
+  });
+}}
+
+function renderUpgrades(){
+  upgradesEl.innerHTML="";
+  upgrades.forEach((u,i)=>{
+    let unlocked=i==0||upgrades[i-1].bought;
+    let div=document.createElement("div");
+    div.className="upgrade "+(unlocked?"":"locked");
+
+    if(unlocked){
+      div.innerHTML=`<div>${u.type=="click"?"+"+u.value+" klik":"+"+u.value+"/sec"}</div><div>Kost:${u.cost}</div><button>Koop</button>`;
+      div.querySelector("button").onclick=()=>{
+        if(score>=u.cost){
+          score-=u.cost; u.bought=true;
+          if(u.type=="click") perClick+=u.value; else perSecond+=u.value;
+          u.cost=Math.floor(u.cost*1.6);
+          updateScore(); renderUpgrades();
+        }
+      }
+    } else div.innerHTML="???";
+
+    upgradesEl.appendChild(div);
+  });
+}
+
+setInterval(()=>{ score+=perSecond; updateScore(); },1000);
+
+// NAV
+shopBtn.onclick=()=>shopScreen.style.display="block";
+gambleBtn.onclick=()=>gambleScreen.style.display="block";
+function openRolls(){ gambleScreen.style.display="none"; rollsScreen.style.display="block"; }
+
+// ROLLS
+function playRolls(){
+  let bet=parseInt(rollBet.value);
+  if(bet>score||bet<=0)return;
+  score-=bet;
+
+  const low=[0.25,0.5,0.75,1];
+  const high=[1.25,1.5,2];
+
+  function roll(){ return Math.random()<0.6 ? low[Math.floor(Math.random()*low.length)] : high[Math.floor(Math.random()*high.length)]; }
+
+  let multipliers=[roll(),roll(),roll()];
+  let total=multipliers.reduce((a,b)=>a*b,1);
+  let winAmount=Math.floor(bet*total);
+
+  score+=winAmount;
+
+  rollResult.innerHTML=`
+    <div class="rollBox">x${multipliers[0]}</div>
+    <div class="rollBox">x${multipliers[1]}</div>
+    <div class="rollBox">x${multipliers[2]}</div>
+    <h3>${winAmount}</h3>
+  `;
+
+  updateScore();
+}
+
+renderUpgrades(); updateScore();
+</script>
+</body>
+</html>
