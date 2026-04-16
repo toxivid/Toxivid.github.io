@@ -148,9 +148,9 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
   <h2>Blackjack</h2>
   <div style="margin: 20px 0;">
     <label for="betInput">Bet Amount:</label>
-    <input id="betInput" type="number" min="1" style="margin-left: 10px; padding: 5px;">
+    <input id="betInput" type="number" min="100" style="margin-left: 10px; padding: 5px;">
     <button onclick="startBlackjack()" style="margin-left: 10px; padding: 5px 10px;">Start Game</button>
-    <button onclick="document.getElementById('betInput').value = score" style="margin-left: 10px; padding: 5px 10px;">Start Game All In (10% luck boost)</button>
+    <button onclick="document.getElementById('betInput').value = score; startBlackjack();" style="margin-left: 10px; padding: 5px 10px;">Start Game All In (10% luck boost)</button>
   </div>
   <div>Money: <span id="bjMoney"></span></div>
   <div id="bjGame">
@@ -171,7 +171,7 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
   <div style="margin: 20px 0;">Money: <span id="rollMoney"></span></div>
   <div style="margin: 20px 0;">
     <label for="rollBet">Bet Amount:</label>
-    <input id="rollBet" type="number" min="1" style="margin-left: 10px; padding: 5px;">
+    <input id="rollBet" type="number" min="100" style="margin-left: 10px; padding: 5px;">
     <button onclick="playRolls()" style="margin-left: 10px; padding: 5px 10px;">Play</button>
     <button onclick="document.getElementById('rollBet').value = score" style="margin-left: 10px; padding: 5px 10px;">Play All</button>
   </div>
@@ -510,8 +510,8 @@ function updateBJDisplay() {
 function startBlackjack() {
   const betInput = document.getElementById('betInput');
   currentBet = parseInt(betInput.value);
-  if (isNaN(currentBet) || currentBet <= 0) {
-    alert('Enter a valid bet amount.');
+  if (isNaN(currentBet) || currentBet < 100) {
+    alert('Minimum bet is 100 Lantings!');
     return;
   }
   if (currentBet > score) {
@@ -566,12 +566,12 @@ function stand() {
 
 function endBJ(win) {
   gameInProgress = false;
-  if (win === false && allIn && Math.random() < 0.1) {
+  if (win === false && allIn && Math.random() < 0.15) {
     win = true;
   }
   let resultText = '';
   if (win === true) {
-    let multiplier = isBlackjack(playerHand) ? 2.5 : 2;
+    let multiplier = isBlackjack(playerHand) ? 3 : 2;
     let winnings = Math.floor(currentBet * multiplier);
     score += winnings;
     earned += winnings;
@@ -600,6 +600,10 @@ function newBJGame() {
 // ROLLS
 function playRolls(){
 let bet=parseInt(rollBet.value);
+if(isNaN(bet) || bet < 100){
+  alert('Minimum bet is 100 Lantings!');
+  return;
+}
 if(bet>score)return;
 
 score-=bet;
