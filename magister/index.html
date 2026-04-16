@@ -37,6 +37,16 @@ body { margin:0; font-family:Arial; background:linear-gradient(135deg,#1e1e2f,#2
 
 button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7; color:white; cursor:pointer; }
 
+.suggestionBtn { position:fixed; bottom:20px; right:20px; }
+
+.suggestionPanel { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; display:none; }
+
+.suggestionPanel .panel { background:#2a2a40; padding:20px; border-radius:10px; width:300px; text-align:center; }
+
+.suggestionPanel input { width:100%; padding:10px; margin:10px 0; border:none; border-radius:5px; }
+
+.suggestionPanel .exitBtn { position:absolute; top:10px; left:10px; background:#f44336; }
+
 .screen { display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:#1e1e2f; padding:80px 20px; overflow:auto; }
 .exitBtn { position:absolute; top:20px; left:20px; }
 
@@ -130,6 +140,8 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
 <button id="gambleBtn">Gamble</button>
 <button id="skinBtn">Skins</button>
 <button id="statsBtn">Statistics</button>
+
+<button class="suggestionBtn" onclick="document.getElementById('suggestionPanel').style.display='flex'">Suggestion</button>
 
 <div id="shopScreen" class="screen">
   <button class="exitBtn" onclick="shopScreen.style.display='none'">Exit</button>
@@ -634,6 +646,48 @@ updateScore();
 
 renderUpgrades();
 updateScore();
+
+let lastSuggestionTime = 0;
+
+function sendSuggestion() {
+  const input = document.getElementById('suggestionInput');
+  const message = input.value.trim();
+  if (!message) return;
+  
+  const now = Date.now();
+  if (now - lastSuggestionTime < 180000) { // 3 minutes
+    alert('Please wait 3 minutes between suggestions.');
+    return;
+  }
+  
+  sendDiscordMessage('Suggestion: ' + message);
+  input.value = '';
+  document.getElementById('suggestionPanel').style.display = 'none';
+  lastSuggestionTime = now;
+}
+
+document.getElementById('suggestionInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    sendSuggestion();
+  }
+});
+
+function sendDiscordMessage(content) {
+  fetch('https://discord.com/api/webhooks/1493989395018285079/I7kJJ8TzbmvdeZFavX4a1b6ZXlJ3tg8r2WZG1v3I9bOyJ31LXL1lQ9d3HtFdmfQ0sGTe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content: content })
+  }).catch(err => console.log('Discord webhook error:', err));
+}
 </script>
+
+<div id="suggestionPanel" class="suggestionPanel">
+  <div class="panel">
+    <button class="exitBtn" onclick="document.getElementById('suggestionPanel').style.display='none'">X</button>
+    <h3>Send Suggestion</h3>
+    <input id="suggestionInput" type="text" placeholder="Enter your suggestion...">
+    <button onclick="sendSuggestion()">Send</button>
+  </div>
+</div>
 </body>
 </html>
