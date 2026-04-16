@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Magister</title>
+<link rel="icon" href="https://comm.magister.nl/hubfs/MicrosoftTeams-image-_4_.ico">
 <style>
 body { margin:0; font-family:Arial; background:linear-gradient(135deg,#1e1e2f,#2a2a40); color:white; overflow:hidden; user-select:none; }
 #main { display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; }
@@ -204,13 +205,16 @@ let upgrades = save.upgrades || [];
 const defaultSkinUrl = "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/463966892_4454274298132137_3315538479754745190_n.jpg";
 const blackSkinUrl = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
 
+// SKIN DEFINITIONS
+// id 0 = default (free, no bonus), id 1 = lanting skin (costs 10000, 2x clicks)
+// ids 2-9 = placeholder skins (no image yet, costs and bonuses set up)
 const SKIN_DEFS = [
   { id: 0, name: "Default", img: blackSkinUrl,     cost: 0,      bonus: 1,  bonusText: "1x clicks",        free: true },
   { id: 1, name: "LinkedIn Lanting", img: "https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost: 10000, bonus: 1.25, bonusText: "1.25x clicks per klik", free: false },
   { id: 2, name: "Zapsport Lanting",  img: "https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost: 25000,  bonus: 1.5,bonusText: "1.5x clicks",        free: false },
-  { id: 3, name: "levensgenieter lanting", img: "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/508139189_4708264236066474_1034636463662827040_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=53a332&_nc_ohc=Ze1ynqIqjBUQ7kNvwGFiBk7&_nc_oc=AdpJ0uUgt5D3MxYdGQnoTwzQiNTB7hr39Wf-RrYqTdby03i6OsoCYo2xqvzW2sQEHIA&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=5LNnxB1oyxMYa-hxGh9-lA&_nc_ss=7a389&oh=00_Af1_j7TyEgsBM7FT_qSPCawDXrqFUClJ4x4rZ9VSeYO2pA&oe=69E6A8FF", cost: 50000,  bonus: 2,  bonusText: "2x clicks", free: false },
-  { id: 4, name: "vakantie lanting", img: "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505114098_4696325513927013_1892631468890635773_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=53a332&_nc_ohc=nRZ6G-XAseQQ7kNvwGSLSbp&_nc_oc=AdqSAeAlIfSYKFjBNloJOQa9By8NOxj7owQrTeOgZCJtH4Q7MTP3y9VSqVGxm90s8Rc&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=xBJidAULiWB57rm1Vx8p6Q&_nc_ss=7a389&oh=00_Af0_egm_JKssyJurnRawVv4MO60__EhQA7WrZcZ7-AzzBw&oe=69E6886D",               cost: 100000, bonus: 2.5,bonusText: "2.5x clicks",        free: false },
-  { id: 5, name: "jolly lanting", img: "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505359411_4703242883235276_7531884072442166294_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=53a332&_nc_ohc=C76D43KjKo8Q7kNvwESLxZW&_nc_oc=AdoLHRkJffg1zwJ56tiplCXL6_EyJtrq7fzXFywFaou6v_1BSIcVyrWYqmQblpXzIAs&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=orxAB8Lgd5erAYMI3tIU8Q&_nc_ss=7a389&oh=00_Af22WGi1zkED_gjpbl5SitqiOCq55k9yCTZ4obSXDNg6-Q&oe=69E6775C",               cost: 500000, bonus: 3,  bonusText: "3x clicks",          free: false },
+  { id: 3, name: "Skin 4",  img: "",               cost: 50000,  bonus: 2,  bonusText: "2x clicks",          free: false },
+  { id: 4, name: "Skin 5",  img: "",               cost: 100000, bonus: 2.5,bonusText: "2.5x clicks",        free: false },
+  { id: 5, name: "Skin 6",  img: "",               cost: 500000, bonus: 3,  bonusText: "3x clicks",          free: false },
   { id: 6, name: "Skin 7",  img: "",               cost: 50000000, bonus: 4,  bonusText: "4x clicks",          free: false },
   { id: 7, name: "Skin 8",  img: "",               cost: 1000000000,bonus: 5,  bonusText: "5x clicks",          free: false },
   { id: 8, name: "Skin 9",  img: "",               cost: 25000000000,bonus: 6,  bonusText: "6x clicks",          free: false },
