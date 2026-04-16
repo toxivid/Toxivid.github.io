@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Magister</title>
-<link rel="icon" href="https://ja.magister.net/favicon.ico">
 <style>
 body { margin:0; font-family:Arial; background:linear-gradient(135deg,#1e1e2f,#2a2a40); color:white; overflow:hidden; user-select:none; }
 #main { display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; }
@@ -55,6 +54,61 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
 .skinBox button.buyBtn { background:#6c5ce7; }
 .skinBox button.ownedBtn { background:#555; cursor:default; }
 .skinEquipped { outline:3px solid #00b894; }
+
+#blackjackScreen {
+  text-align: center;
+}
+
+#bjGame {
+  background: #2a2a40;
+  padding: 20px;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+#bjButtons button {
+  background: #6c5ce7;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#bjButtons button:hover {
+  background: #5a4fcf;
+}
+
+#bjResult {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+#rollsScreen {
+  text-align: center;
+}
+
+.rollMultiplier {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  margin: 10px;
+  background: #333;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 80px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.rollMultiplier.good {
+  background: #4CAF50;
+}
+
+.rollMultiplier.bad {
+  background: #f44336;
+}
 </style>
 </head>
 <body>
@@ -92,21 +146,36 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
 <div id="blackjackScreen" class="screen">
   <button class="exitBtn" onclick="blackjackScreen.style.display='none'">Exit</button>
   <h2>Blackjack</h2>
-  <div id="bjGame"></div>
-  <input id="betInput" type="number">
-  <button onclick="startBlackjack()">Start</button>
-  <button onclick="betInput.value=score">Play All</button>
+  <div style="margin: 20px 0;">
+    <label for="betInput">Bet Amount:</label>
+    <input id="betInput" type="number" min="1" style="margin-left: 10px; padding: 5px;">
+    <button onclick="startBlackjack()" style="margin-left: 10px; padding: 5px 10px;">Start Game</button>
+    <button onclick="document.getElementById('betInput').value = score" style="margin-left: 10px; padding: 5px 10px;">Start Game All In (10% luck boost)</button>
+  </div>
   <div>Money: <span id="bjMoney"></span></div>
+  <div id="bjGame">
+    <div style="text-align: center; margin: 20px 0;">
+      <div style="font-size: 24px; margin-bottom: 10px;">Dealer: ?? (?)</div>
+      <div style="font-size: 24px;">Player:  (?)</div>
+    </div>
+    <div style="text-align: center; margin: 20px 0;" id="bjButtons">
+      <button onclick="newBJGame()" style="margin: 0 10px; padding: 10px 20px;">New Game</button>
+    </div>
+    <div style="text-align: center; margin: 20px 0;" id="bjResult"></div>
+  </div>
 </div>
 
 <div id="rollsScreen" class="screen">
   <button class="exitBtn" onclick="rollsScreen.style.display='none'">Exit</button>
   <h2>Rolls</h2>
-  <div>Money: <span id="rollMoney"></span></div>
-  <input id="rollBet" type="number">
-  <button onclick="playRolls()">Play</button>
-  <button onclick="rollBet.value=score">Play All</button>
-  <div id="rollResult"></div>
+  <div style="margin: 20px 0;">Money: <span id="rollMoney"></span></div>
+  <div style="margin: 20px 0;">
+    <label for="rollBet">Bet Amount:</label>
+    <input id="rollBet" type="number" min="1" style="margin-left: 10px; padding: 5px;">
+    <button onclick="playRolls()" style="margin-left: 10px; padding: 5px 10px;">Play</button>
+    <button onclick="document.getElementById('rollBet').value = score" style="margin-left: 10px; padding: 5px 10px;">Play All</button>
+  </div>
+  <div id="rollResult" style="margin: 20px 0;"></div>
 </div>
 
 <div id="skinScreen" class="screen">
@@ -126,7 +195,7 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
 </div>
 
 <script>
-let save = JSON.parse(localStorage.getItem("lanting_clicker_save_v9")) || {};
+let save = JSON.parse(localStorage.getItem("lanting_clicker_save_v10")) || {};
 
 let score = save.score || 0;
 let perClick = save.perClick || 1;
@@ -139,16 +208,16 @@ const blackSkinUrl = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 // id 0 = default (free, no bonus), id 1 = lanting skin (costs 10000, 2x clicks)
 // ids 2-9 = placeholder skins (no image yet, costs and bonuses set up)
 const SKIN_DEFS = [
-  { id: 0, name: "Default", img: blackSkinUrl,     cost: 0,      bonus: 1,  bonusText: "Geen bonus",        free: true },
-  { id: 1, name: "Lanting", img: "https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost: 10000, bonus: 1.25, bonusText: "1.25x clicks per klik", free: false },
-  { id: 2, name: "Skin 3",  img: "https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.",               cost: 25000,  bonus: 1.5,bonusText: "1.5x clicks",        free: false },
+  { id: 0, name: "Default", img: blackSkinUrl,     cost: 0,      bonus: 1,  bonusText: "1x clicks",        free: true },
+  { id: 1, name: "LinkedIn Lanting", img: "https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost: 10000, bonus: 1.25, bonusText: "1.25x clicks per klik", free: false },
+  { id: 2, name: "Zapsport Lanting",  img: "https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost: 25000,  bonus: 1.5,bonusText: "1.5x clicks",        free: false },
   { id: 3, name: "Skin 4",  img: "",               cost: 50000,  bonus: 2,  bonusText: "2x clicks",          free: false },
   { id: 4, name: "Skin 5",  img: "",               cost: 100000, bonus: 2.5,bonusText: "2.5x clicks",        free: false },
-  { id: 5, name: "Skin 6",  img: "",               cost: 200000, bonus: 3,  bonusText: "3x clicks",          free: false },
-  { id: 6, name: "Skin 7",  img: "",               cost: 500000, bonus: 4,  bonusText: "4x clicks",          free: false },
-  { id: 7, name: "Skin 8",  img: "",               cost: 1000000,bonus: 5,  bonusText: "5x clicks",          free: false },
-  { id: 8, name: "Skin 9",  img: "",               cost: 2500000,bonus: 6,  bonusText: "6x clicks",          free: false },
-  { id: 9, name: "Skin 10", img: "",               cost: 5000000,bonus: 10, bonusText: "10x clicks",         free: false },
+  { id: 5, name: "Skin 6",  img: "",               cost: 500000, bonus: 3,  bonusText: "3x clicks",          free: false },
+  { id: 6, name: "Skin 7",  img: "",               cost: 50000000, bonus: 4,  bonusText: "4x clicks",          free: false },
+  { id: 7, name: "Skin 8",  img: "",               cost: 1000000000,bonus: 5,  bonusText: "5x clicks",          free: false },
+  { id: 8, name: "Skin 9",  img: "",               cost: 25000000000,bonus: 6,  bonusText: "6x clicks",          free: false },
+  { id: 9, name: "Skin 10", img: "",               cost: 50000000000000,bonus: 10, bonusText: "10x clicks",         free: false },
 ];
 
 // ownedSkins: array of skin ids the player owns
@@ -215,7 +284,7 @@ skinBtn.onclick=()=>{ skinScreen.style.display="block"; renderSkins(); };
 statsBtn.onclick=()=>statsScreen.style.display="block";
 
 function saveGame(){
-  localStorage.setItem("lanting_clicker_save_v9", JSON.stringify({score,perClick,perSecond,upgrades,playTime,earned,lost,highest,ownedSkins,equippedSkin,basePerClick}));
+  localStorage.setItem("lanting_clicker_save_v10", JSON.stringify({score,perClick,perSecond,upgrades,playTime,earned,lost,highest,ownedSkins,equippedSkin,basePerClick}));
 }
 
 function updateScore(){
@@ -352,48 +421,180 @@ function equipSkin(id) {
 shopBtn.onclick=()=>shopScreen.style.display="block";
 gambleBtn.onclick=()=>gambleScreen.style.display="block";
 function openRolls(){gambleScreen.style.display="none";rollsScreen.style.display="block";}
-function openBlackjack(){gambleScreen.style.display="none";blackjackScreen.style.display="block";}
+function openBlackjack(){gambleScreen.style.display="none";blackjackScreen.style.display="block"; updateBJDisplay();}
 
 // BLACKJACK
-let player=[],dealer=[],bet=0;
-function draw(){return Math.floor(Math.random()*10)+1;}
-function val(h){return h.reduce((a,b)=>a+b,0);}
-function startBlackjack(){
-bet=parseInt(betInput.value);
-if(bet>score)return;
-score-=bet;
-player=[draw(),draw()];
-dealer=[draw(),draw()];
-renderBJ();
-updateScore();
-}
-function renderBJ(){
-bjGame.innerHTML=`${player} vs ${dealer[0]},? 
-<button onclick="hit()">Hit</button>
-<button onclick="stand()">Stand</button>`;
-}
-function hit(){
-player.push(draw());
-if(val(player)>21) endBJ();
-else renderBJ();
-}
-function stand(){
-while(val(dealer)<17) dealer.push(draw());
-endBJ();
-}
-function endBJ(){
-let p=val(player),d=val(dealer);
-let win=false;
+let deck = [];
+let playerHand = [];
+let dealerHand = [];
+let gameInProgress = false;
+let currentBet = 0;
+let allIn = false;
 
-if(p===21) win=true;
-else if(p<=21&&(d>21||p>d)) win=true;
-else if(Math.random()<0.05) win=true;
+const suits = ['♥', '♦', '♣', '♠'];
+const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
-if(win && p===21){score+=bet*3;earned+=bet*3;}
-else if(win){score+=bet*2;earned+=bet*2;}
-else lost+=bet;
+function createDeck() {
+  deck = [];
+  for (let suit of suits) {
+    for (let rank of ranks) {
+      deck.push({ rank, suit });
+    }
+  }
+  shuffleDeck();
+}
 
-updateScore();
+function shuffleDeck() {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+}
+
+function getCardValue(card) {
+  if (card.rank === 'A') return 11;
+  if (['J', 'Q', 'K'].includes(card.rank)) return 10;
+  return parseInt(card.rank);
+}
+
+function getHandValue(hand) {
+  let value = 0;
+  let aces = 0;
+  for (let card of hand) {
+    value += getCardValue(card);
+    if (card.rank === 'A') aces++;
+  }
+  while (value > 21 && aces > 0) {
+    value -= 10;
+    aces--;
+  }
+  return value;
+}
+
+function isBlackjack(hand) {
+  return hand.length === 2 && getHandValue(hand) === 21;
+}
+
+function renderCard(card) {
+  return `<span style="color:${card.suit === '♥' || card.suit === '♦' ? 'red' : 'black'};">${card.rank}${card.suit}</span>`;
+}
+
+function renderHand(hand, hideFirst = false) {
+  return hand.map((card, i) => hideFirst && i === 0 ? '??' : renderCard(card)).join(' ');
+}
+
+function updateBJDisplay() {
+  const bjGame = document.getElementById('bjGame');
+  const playerValue = getHandValue(playerHand);
+  const dealerValue = getHandValue(dealerHand);
+  const dealerDisplay = gameInProgress ? renderHand(dealerHand, true) : renderHand(dealerHand);
+  const dealerValDisplay = gameInProgress ? '?' : dealerValue;
+
+  bjGame.innerHTML = `
+    <div style="text-align: center; margin: 20px 0;">
+      <div style="font-size: 24px; margin-bottom: 10px;">Dealer: ${dealerDisplay} (${dealerValDisplay})</div>
+      <div style="font-size: 24px;">Player: ${renderHand(playerHand)} (${playerValue})</div>
+    </div>
+    <div style="text-align: center; margin: 20px 0;" id="bjButtons">
+      ${gameInProgress ? `
+        <button onclick="hit()" style="margin: 0 10px; padding: 10px 20px;">Hit</button>
+        <button onclick="stand()" style="margin: 0 10px; padding: 10px 20px;">Stand</button>
+      ` : `
+        <button onclick="newBJGame()" style="margin: 0 10px; padding: 10px 20px;">New Game</button>
+      `}
+    </div>
+    <div style="text-align: center; margin: 20px 0;" id="bjResult"></div>
+  `;
+}
+
+function startBlackjack() {
+  const betInput = document.getElementById('betInput');
+  currentBet = parseInt(betInput.value);
+  if (isNaN(currentBet) || currentBet <= 0) {
+    alert('Enter a valid bet amount.');
+    return;
+  }
+  if (currentBet > score) {
+    alert('Not enough Lantings!');
+    return;
+  }
+  allIn = (currentBet === score);
+  score -= currentBet;
+  lost += currentBet;
+  updateScore();
+
+  createDeck();
+  playerHand = [deck.pop(), deck.pop()];
+  dealerHand = [deck.pop(), deck.pop()];
+  gameInProgress = true;
+  document.getElementById('bjResult').innerText = '';
+  updateBJDisplay();
+}
+
+function hit() {
+  if (!gameInProgress) return;
+  playerHand.push(deck.pop());
+  if (getHandValue(playerHand) > 21) {
+    endBJ(false);
+  } else {
+    updateBJDisplay();
+  }
+}
+
+function stand() {
+  if (!gameInProgress) return;
+  gameInProgress = false;
+  while (getHandValue(dealerHand) < 17) {
+    dealerHand.push(deck.pop());
+  }
+  const playerValue = getHandValue(playerHand);
+  const dealerValue = getHandValue(dealerHand);
+  let win = false;
+  if (playerValue > 21) {
+    win = false;
+  } else if (dealerValue > 21) {
+    win = true;
+  } else if (isBlackjack(playerHand) && !isBlackjack(dealerHand)) {
+    win = true;
+  } else if (playerValue > dealerValue) {
+    win = true;
+  } else if (playerValue === dealerValue) {
+    win = null; // push
+  }
+  endBJ(win);
+}
+
+function endBJ(win) {
+  gameInProgress = false;
+  if (win === false && allIn && Math.random() < 0.1) {
+    win = true;
+  }
+  let resultText = '';
+  if (win === true) {
+    let multiplier = isBlackjack(playerHand) ? 2.5 : 2;
+    let winnings = Math.floor(currentBet * multiplier);
+    score += winnings;
+    earned += winnings;
+    resultText = `You win! +${winnings} Lantings`;
+  } else if (win === false) {
+    resultText = 'You lose!';
+  } else {
+    // push
+    score += currentBet;
+    resultText = 'Push! Bet returned.';
+  }
+  document.getElementById('bjResult').innerText = resultText;
+  updateScore();
+  updateBJDisplay();
+}
+
+function newBJGame() {
+  playerHand = [];
+  dealerHand = [];
+  gameInProgress = false;
+  currentBet = 0;
+  document.getElementById('betInput').value = '';
+  updateBJDisplay();
 }
 
 // ROLLS
@@ -415,7 +616,14 @@ let total = roundScoreUp(bet*m.reduce((a,b)=>a*b,1));
 score+=total;
 earned+=total;
 
-rollResult.innerHTML=m;
+let resultHtml = '<div style="margin: 20px 0;"><h3>Multipliers:</h3>';
+m.forEach(mult => {
+  let className = mult >= 1 ? 'good' : 'bad';
+  resultHtml += `<div class="rollMultiplier ${className}">${mult}x</div>`;
+});
+resultHtml += `</div><div>Total: ${total} Lantings</div>`;
+rollResult.innerHTML = resultHtml;
+
 updateScore();
 }
 
