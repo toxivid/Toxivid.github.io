@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<title>Magister</title>
+<style>
+body { margin:0; font-family:Arial; background:linear-gradient(135deg,#1e1e2f,#2a2a40); color:white; overflow:hidden; user-select:none; }
+#main { display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; }
+
+#statsTop {
+  text-align:center;
+  margin-bottom:20px;
+}
+#statsTop div {
+  margin:4px 0;
+  font-size:18px;
+}
+
+#score { font-size:28px; }
+
+#clickBtn {
+  width:240px; height:240px;
+  border-radius:50%; background:#444;
+  display:flex; justify-content:center; align-items:center;
+  overflow:hidden;
+  box-shadow:0 0 25px rgba(0,0,0,0.6);
+  cursor:pointer;
+}
+#clickBtn:active { transform:scale(0.9); }
+#clickBtn img { width:100%; height:100%; object-fit:cover; }
+
+#shopBtn { position:absolute; left:20px; top:50%; transform:translateY(-50%); }
+#gambleBtn { position:absolute; right:20px; top:50%; transform:translateY(-50%); }
+#skinBtn { position:absolute; left:20px; top:20px; }
+#statsBtn { position:absolute; right:20px; top:20px; }
+
+button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7; color:white; cursor:pointer; }
+
+.screen { display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:#1e1e2f; padding:80px 20px; overflow:auto; }
+.exitBtn { position:absolute; top:20px; left:20px; }
+
+.upgrade { padding:12px; margin:10px 0; background:#2f2f50; border-radius:10px; }
+.locked { background:#555; color:#aaa; }
+
+.rollBox { display:inline-block; width:100px; height:100px; margin:10px; background:#333; border-radius:10px; text-align:center; line-height:100px; }
+
+.skinBox { padding:10px; margin:10px; background:#2f2f50; border-radius:10px; display:inline-block; cursor:pointer; vertical-align:top; text-align:center; }
+.skinBox img { width:60px; height:60px; object-fit:cover; display:block; margin:auto; border-radius:50%; }
+.skinBox .skinName { margin-top:6px; font-size:13px; }
+.skinBox .skinCost { font-size:12px; color:#aaa; margin-top:2px; }
+.skinBox .skinBonus { font-size:11px; color:#a8e6cf; margin-top:2px; }
+.skinBox button { margin-top:6px; font-size:12px; padding:6px 10px; }
+.skinBox button.equipBtn { background:#00b894; }
+.skinBox button.buyBtn { background:#6c5ce7; }
+.skinBox button.ownedBtn { background:#555; cursor:default; }
+.skinEquipped { outline:3px solid #00b894; }
+</style>
+</head>
+<body>
+
+<div id="main">
+  <div id="statsTop">
+    <div id="perSecondText">Per seconde: 0</div>
+    <div id="perClickText">Per klik: 1</div>
+    <div id="score">Lantings: 0</div>
+  </div>
+
+  <div id="clickBtn">
+    <img id="mainImg" src="https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/463966892_4454274298132137_3315538479754745190_n.jpg">
+  </div>
+</div>
+
+<button id="shopBtn">Shop</button>
+<button id="gambleBtn">Gamble</button>
+<button id="skinBtn">Skins</button>
+<button id="statsBtn">Statistics</button>
+
+<div id="shopScreen" class="screen">
+  <button class="exitBtn" onclick="shopScreen.style.display='none'">Exit</button>
+  <h2>Shop</h2>
+  <div id="upgrades"></div>
+</div>
+
+<div id="gambleScreen" class="screen">
+  <button class="exitBtn" onclick="gambleScreen.style.display='none'">Exit</button>
+  <h2>Gamble</h2>
+  <button onclick="openBlackjack()">Blackjack</button>
+  <button onclick="openRolls()">Rolls</button>
+</div>
+
+<div id="blackjackScreen" class="screen">
+  <button class="exitBtn" onclick="blackjackScreen.style.display='none'">Exit</button>
+  <h2>Blackjack</h2>
+  <div id="bjGame"></div>
+  <input id="betInput" type="number">
+  <button onclick="startBlackjack()">Start</button>
+  <button onclick="betInput.value=score">Play All</button>
+  <div>Money: <span id="bjMoney"></span></div>
+</div>
+
+<div id="rollsScreen" class="screen">
+  <button class="exitBtn" onclick="rollsScreen.style.display='none'">Exit</button>
+  <h2>Rolls</h2>
+  <div>Money: <span id="rollMoney"></span></div>
+  <input id="rollBet" type="number">
+  <button onclick="playRolls()">Play</button>
+  <button onclick="rollBet.value=score">Play All</button>
+  <div id="rollResult"></div>
+</div>
+
+<div id="skinScreen" class="screen">
+  <button class="exitBtn" onclick="skinScreen.style.display='none'">Exit</button>
+  <h2>Skins</h2>
+  <p style="color:#aaa;font-size:13px;">Sommige skins geven een bonus op je klikken. De default skin is gratis en krijg je aan het begin.</p>
+  <div id="skinList"></div>
+</div>
+
+<div id="statsScreen" class="screen">
+  <button class="exitBtn" onclick="statsScreen.style.display='none'">Exit</button>
+  <h2>Statistics</h2>
+  <p>Playtime: <span id="statTime">0</span> sec</p>
+  <p>Total Earned: <span id="statEarned">0</span></p>
+  <p>Total Lost: <span id="statLost">0</span></p>
+  <p>Highest Ever: <span id="statNet">0</span></p>
+</div>
+
+<script>
+let save = JSON.parse(localStorage.getItem("lanting_clicker_save_v9")) || {};
+
+let score = save.score || 0;
+let perClick = save.perClick || 1;
+let perSecond = save.perSecond || 0;
+let upgrades = save.upgrades || [];
+const defaultSkinUrl = "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/463966892_4454274298132137_3315538479754745190_n.jpg";
+const blackSkinUrl = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
+
+// SKIN DEFINITIONS
+// id 0 = default (free, no bonus), id 1 = lanting skin (costs 10000, 2x clicks)
+// ids 2-9 = placeholder skins (no image yet, costs and bonuses set up)
+const SKIN_DEFS = [
+  { id: 0, name: "Default", img: blackSkinUrl,     cost: 0,      bonus: 1,  bonusText: "Geen bonus",        free: true },
+  { id: 1, name: "Lanting", img: "https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost: 10000, bonus: 1.25, bonusText: "1.25x clicks per klik", free: false },
+  { id: 2, name: "Skin 3",  img: "",               cost: 25000,  bonus: 1.5,bonusText: "1.5x clicks",        free: false },
+  { id: 3, name: "Skin 4",  img: "",               cost: 50000,  bonus: 2,  bonusText: "2x clicks",          free: false },
+  { id: 4, name: "Skin 5",  img: "",               cost: 100000, bonus: 2.5,bonusText: "2.5x clicks",        free: false },
+  { id: 5, name: "Skin 6",  img: "",               cost: 200000, bonus: 3,  bonusText: "3x clicks",          free: false },
+  { id: 6, name: "Skin 7",  img: "",               cost: 500000, bonus: 4,  bonusText: "4x clicks",          free: false },
+  { id: 7, name: "Skin 8",  img: "",               cost: 1000000,bonus: 5,  bonusText: "5x clicks",          free: false },
+  { id: 8, name: "Skin 9",  img: "",               cost: 2500000,bonus: 6,  bonusText: "6x clicks",          free: false },
+  { id: 9, name: "Skin 10", img: "",               cost: 5000000,bonus: 10, bonusText: "10x clicks",         free: false },
+];
+
+// ownedSkins: array of skin ids the player owns
+// equippedSkin: id of currently equipped skin
+// basePerClick: the raw perClick without skin bonus applied
+let ownedSkins = save.ownedSkins || [0]; // default skin always owned
+let equippedSkin = (save.equippedSkin !== undefined) ? save.equippedSkin : 0;
+let basePerClick = save.basePerClick || 1;
+
+// Recalculate perClick based on equipped skin bonus
+function getSkinBonus(id) {
+  let def = SKIN_DEFS.find(s => s.id === id);
+  return def ? def.bonus : 1;
+}
+
+// Apply skin bonus to perClick
+function applyEquippedSkin() {
+  let bonus = getSkinBonus(equippedSkin);
+  perClick = Math.ceil(basePerClick * bonus);
+  let def = SKIN_DEFS.find(s => s.id === equippedSkin);
+  let imgSrc = (def && def.img) ? def.img : blackSkinUrl;
+  mainImg.src = imgSrc;
+}
+
+// STATS
+let playTime = save.playTime || 0;
+let earned = save.earned || 0;
+let lost = save.lost || 0;
+let highest = save.highest || score;
+
+// ROUNDING
+function roundScoreUp(x){ return Math.ceil(x); }
+function roundPriceDown(x){ return Math.floor(x); }
+
+const scoreEl=document.getElementById("score");
+const mainImg=document.getElementById("mainImg");
+const perClickText=document.getElementById("perClickText");
+const perSecondText=document.getElementById("perSecondText");
+
+applyEquippedSkin();
+
+let clickLock=false;
+function doClick(){
+  if(clickLock) return;
+  clickLock=true;
+  score+=perClick;
+  earned+=perClick;
+  updateScore();
+  setTimeout(()=>clickLock=false,40);
+}
+
+clickBtn.addEventListener("mousedown",()=>doClick());
+
+document.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter" && !e.repeat){
+    e.preventDefault();
+    doClick();
+  }
+});
+
+document.addEventListener("keyup",()=>clickLock=false);
+
+skinBtn.onclick=()=>{ skinScreen.style.display="block"; renderSkins(); };
+statsBtn.onclick=()=>statsScreen.style.display="block";
+
+function saveGame(){
+  localStorage.setItem("lanting_clicker_save_v9", JSON.stringify({score,perClick,perSecond,upgrades,playTime,earned,lost,highest,ownedSkins,equippedSkin,basePerClick}));
+}
+
+function updateScore(){
+  score = roundScoreUp(score);
+  basePerClick = roundScoreUp(basePerClick);
+  perSecond = roundScoreUp(perSecond);
+  applyEquippedSkin();
+
+  if(score > highest){ highest = score; }
+
+  scoreEl.innerText="Lantings: "+score;
+  perClickText.innerText="Per klik: " + perClick;
+  perSecondText.innerText="Per seconde: " + perSecond;
+
+  rollMoney.innerText=score;
+  bjMoney.innerText=score;
+
+  document.getElementById("statTime").innerText=playTime;
+  document.getElementById("statEarned").innerText=earned;
+  document.getElementById("statLost").innerText=lost;
+  document.getElementById("statNet").innerText=highest;
+
+  saveGame();
+}
+
+// TIME
+setInterval(()=>{
+  playTime++;
+  score+=perSecond;
+  earned+=perSecond;
+  updateScore();
+},1000);
+
+// SHOP
+let upgradesEl=document.getElementById("upgrades");
+if(upgrades.length===0){
+for(let i=0;i<50;i++){
+let isClick=i%2==0;
+upgrades.push({type:isClick?"click":"auto",value:1+Math.floor(i/2)*2,cost:isClick?30*Math.pow(1.6,i):20*Math.pow(1.6,i),bought:false});
+}}
+
+function renderUpgrades(){
+upgradesEl.innerHTML="";
+upgrades.forEach((u,i)=>{
+let unlocked=i==0||upgrades[i-1].bought;
+let div=document.createElement("div");
+div.className="upgrade "+(unlocked?"":"locked");
+if(unlocked){
+u.cost = roundPriceDown(u.cost);
+div.innerHTML=`+${u.value} ${u.type} ${u.cost} <button>Koop</button>`;
+div.querySelector("button").onclick=()=>{
+if(score>=u.cost){
+score-=u.cost;
+lost+=u.cost;
+
+u.bought=true;
+if(u.type=="click") basePerClick+=u.value; else perSecond+=u.value;
+
+u.cost = roundPriceDown(u.cost * 1.6);
+
+updateScore();
+renderUpgrades();
+}}
+}else div.innerHTML="???";
+upgradesEl.appendChild(div);
+});}
+
+// SKIN SCREEN
+function renderSkins(){
+  let list = document.getElementById("skinList");
+  list.innerHTML = "";
+  SKIN_DEFS.forEach(def => {
+    let owned = ownedSkins.includes(def.id);
+    let equipped = equippedSkin === def.id;
+    let box = document.createElement("div");
+    box.className = "skinBox" + (equipped ? " skinEquipped" : "");
+
+    let imgHtml = def.img
+      ? `<img src="${def.img}">`
+      : `<div style="width:60px;height:60px;background:#444;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888;margin:auto;">Binnenkort</div>`;
+
+    let btnHtml = "";
+    if (owned && equipped) {
+      btnHtml = `<button class="ownedBtn" disabled>Uitgerust</button>`;
+    } else if (owned && !equipped) {
+      btnHtml = `<button class="equipBtn" onclick="equipSkin(${def.id})">Equip</button>`;
+    } else if (def.free) {
+      btnHtml = `<button class="buyBtn" onclick="buySkin(${def.id})">Gratis</button>`;
+    } else if (!def.img) {
+      btnHtml = `<button class="ownedBtn" disabled>Binnenkort</button>`;
+    } else {
+      btnHtml = `<button class="buyBtn" onclick="buySkin(${def.id})">Koop (${def.cost})</button>`;
+    }
+
+    box.innerHTML = `
+      ${imgHtml}
+      <div class="skinName">${def.name}</div>
+      <div class="skinCost">${def.cost > 0 ? def.cost + " Lantings" : "Gratis"}</div>
+      <div class="skinBonus">${def.bonusText}</div>
+      ${btnHtml}
+    `;
+    list.appendChild(box);
+  });
+}
+
+function buySkin(id) {
+  let def = SKIN_DEFS.find(s => s.id === id);
+  if (!def) return;
+  if (ownedSkins.includes(id)) { equipSkin(id); return; }
+  if (def.free) {
+    ownedSkins.push(id);
+    equipSkin(id);
+    renderSkins();
+    return;
+  }
+  if (score < def.cost) { alert("Niet genoeg Lantings!"); return; }
+  score -= def.cost;
+  lost += def.cost;
+  ownedSkins.push(id);
+  equipSkin(id);
+  updateScore();
+  renderSkins();
+}
+
+function equipSkin(id) {
+  if (!ownedSkins.includes(id)) return;
+  equippedSkin = id;
+  applyEquippedSkin();
+  updateScore();
+  renderSkins();
+}
+
+// NAV
+shopBtn.onclick=()=>shopScreen.style.display="block";
+gambleBtn.onclick=()=>gambleScreen.style.display="block";
+function openRolls(){gambleScreen.style.display="none";rollsScreen.style.display="block";}
+function openBlackjack(){gambleScreen.style.display="none";blackjackScreen.style.display="block";}
+
+// BLACKJACK
+let player=[],dealer=[],bet=0;
+function draw(){return Math.floor(Math.random()*10)+1;}
+function val(h){return h.reduce((a,b)=>a+b,0);}
+function startBlackjack(){
+bet=parseInt(betInput.value);
+if(bet>score)return;
+score-=bet;
+player=[draw(),draw()];
+dealer=[draw(),draw()];
+renderBJ();
+updateScore();
+}
+function renderBJ(){
+bjGame.innerHTML=`${player} vs ${dealer[0]},? 
+<button onclick="hit()">Hit</button>
+<button onclick="stand()">Stand</button>`;
+}
+function hit(){
+player.push(draw());
+if(val(player)>21) endBJ();
+else renderBJ();
+}
+function stand(){
+while(val(dealer)<17) dealer.push(draw());
+endBJ();
+}
+function endBJ(){
+let p=val(player),d=val(dealer);
+let win=false;
+
+if(p===21) win=true;
+else if(p<=21&&(d>21||p>d)) win=true;
+else if(Math.random()<0.05) win=true;
+
+if(win && p===21){score+=bet*3;earned+=bet*3;}
+else if(win){score+=bet*2;earned+=bet*2;}
+else lost+=bet;
+
+updateScore();
+}
+
+// ROLLS
+function playRolls(){
+let bet=parseInt(rollBet.value);
+if(bet>score)return;
+
+score-=bet;
+lost+=bet;
+
+const low=[0.25,0.5,0.75,1];
+const high=[1.25,1.5,2];
+
+function r(){return Math.random()<0.65?low[Math.floor(Math.random()*4)]:high[Math.floor(Math.random()*3)];}
+
+let m=[r(),r(),r()];
+let total = roundScoreUp(bet*m.reduce((a,b)=>a*b,1));
+
+score+=total;
+earned+=total;
+
+rollResult.innerHTML=m;
+updateScore();
+}
+
+renderUpgrades();
+updateScore();
+</script>
+</body>
+</html>
