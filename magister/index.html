@@ -6,15 +6,31 @@
 <link rel="icon" href="https://comm.magister.nl/hubfs/MicrosoftTeams-image-_4_.ico">
 <style>
 body { margin:0; font-family:Arial; background:linear-gradient(135deg,#1e1e2f,#2a2a40); color:white; overflow:hidden; user-select:none; }
-#main { display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; }
+#main { display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; animation: fadeIn 0.5s ease-in; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes pulse { 0% { box-shadow: 0 0 25px rgba(0,0,0,0.6); } 50% { box-shadow: 0 0 35px rgba(108,92,231,0.8); } 100% { box-shadow: 0 0 25px rgba(0,0,0,0.6); } }
+@keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+@keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+@keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-80px) scale(0.8); opacity: 0; } }
+@keyframes glow { 0% { text-shadow: 0 0 5px rgba(168,230,207,0.3); } 50% { text-shadow: 0 0 15px rgba(168,230,207,0.8); } 100% { text-shadow: 0 0 5px rgba(168,230,207,0.3); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes scoreUpdate { 0% { transform: scale(1.2); color: #ffd700; } 100% { transform: scale(1); color: white; } }
 
 #statsTop {
   text-align:center;
   margin-bottom:20px;
+  animation: slideDown 0.6s ease;
 }
 #statsTop div {
   margin:4px 0;
   font-size:18px;
+  transition: all 0.3s ease;
+}
+#statsTop div:hover {
+  transform: scale(1.1);
+  color: #a8e6cf;
 }
 
 #score { font-size:28px; }
@@ -26,16 +42,32 @@ body { margin:0; font-family:Arial; background:linear-gradient(135deg,#1e1e2f,#2
   overflow:hidden;
   box-shadow:0 0 25px rgba(0,0,0,0.6);
   cursor:pointer;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  animation: none;
 }
-#clickBtn:active { transform:scale(0.9); }
+#clickBtn:active { transform: scale(0.98); }
+#clickBtn:hover { box-shadow: 0 0 32px rgba(108,92,231,0.7); }
 #clickBtn img { width:100%; height:100%; object-fit:cover; }
 
-#shopBtn { position:absolute; left:20px; top:50%; transform:translateY(-50%); }
-#gambleBtn { position:absolute; right:20px; top:50%; transform:translateY(-50%); }
-#skinBtn { position:absolute; left:20px; top:20px; }
-#statsBtn { position:absolute; right:20px; top:20px; }
+#shopBtn { position:absolute; left:20px; top:50%; transform:translateY(-50%); transition: transform 0.2s ease, background 0.2s ease; }
+#shopBtn:hover { transform: translateY(-50%) scale(1.03); background:#5f4cd4; }
+#gambleBtn { position:absolute; right:20px; top:50%; transform:translateY(-50%); transition: transform 0.2s ease, background 0.2s ease; }
+#gambleBtn:hover { transform: translateY(-50%) scale(1.03); background:#5f4cd4; }
+#skinBtn { position:absolute; left:20px; top:20px; transition: transform 0.2s ease, background 0.2s ease; }
+#skinBtn:hover { transform: scale(1.03); background:#5f4cd4; }
+#statsBtn { position:absolute; right:20px; top:20px; transition: transform 0.2s ease, background 0.2s ease; }
+#statsBtn:hover { transform: scale(1.03); background:#5f4cd4; }
 
-button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7; color:white; cursor:pointer; }
+#playBtn { width:200px; height:200px; border-radius:50%; background:#6c5ce7; border:none; color:white; font-size:24px; cursor:pointer; box-shadow:0 0 25px rgba(0,0,0,0.6); transition: transform 0.2s, background 0.2s, box-shadow 0.2s; }
+#playBtn:hover { background:#7d3dd1; transform:scale(1.05); box-shadow: 0 0 28px rgba(125,61,209,0.7); }
+#playBtn:active { transform: scale(0.98); }
+
+#startScreen { position:relative; }
+#offlineInfo { position:fixed; bottom:40px; left:50%; transform:translateX(-50%); text-align:center; width:90%; max-width:400px; }
+
+button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7; color:white; cursor:pointer; transition: transform 0.2s ease, background 0.2s ease; }
+button:hover { background:#7d3dd1; transform: scale(1.03); }
+button:active { transform: scale(0.98); }
 
 .suggestionBtn { position:fixed; bottom:20px; right:20px; }
 
@@ -47,15 +79,19 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
 
 .suggestionPanel .exitBtn { position:absolute; top:10px; left:10px; background:#f44336; }
 
-.screen { display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:#1e1e2f; padding:80px 20px; overflow:auto; }
-.exitBtn { position:absolute; top:20px; left:20px; }
+.screen { display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:#1e1e2f; padding:80px 20px; overflow:auto; animation: slideDown 0.4s ease; }
+.exitBtn { position:absolute; top:20px; left:20px; background:#f44336; transition: transform 0.2s ease, background 0.2s ease; }
+.exitBtn:hover { background:#ff6b6b; transform: scale(1.05); }
 
-.upgrade { padding:12px; margin:10px 0; background:#2f2f50; border-radius:10px; }
+.upgrade { padding:12px; margin:10px 0; background:#2f2f50; border-radius:10px; transition: transform 0.2s ease, background 0.2s ease; animation: slideDown 0.4s ease; }
+.upgrade:hover { background:#3f3f60; transform: translateX(2px); }
+.upgrade button { display: inline-block; margin-left: auto; }
 .locked { background:#555; color:#aaa; }
 
 .rollBox { display:inline-block; width:100px; height:100px; margin:10px; background:#333; border-radius:10px; text-align:center; line-height:100px; }
 
-.skinBox { padding:10px; margin:10px; background:#2f2f50; border-radius:10px; display:inline-block; cursor:pointer; vertical-align:top; text-align:center; }
+.skinBox { padding:10px; margin:10px; background:#2f2f50; border-radius:10px; display:inline-block; cursor:pointer; vertical-align:top; text-align:center; transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease; animation: slideDown 0.5s ease; }
+.skinBox:hover { transform: translateY(-4px); background:#4f4f70; box-shadow: 0 8px 18px rgba(0,0,0,0.35); }
 .skinBox img { width:60px; height:60px; object-fit:cover; display:block; margin:auto; border-radius:50%; }
 .skinBox .skinName { margin-top:6px; font-size:13px; }
 .skinBox .skinCost { font-size:12px; color:#aaa; margin-top:2px; }
@@ -64,7 +100,7 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
 .skinBox button.equipBtn { background:#00b894; }
 .skinBox button.buyBtn { background:#6c5ce7; }
 .skinBox button.ownedBtn { background:#555; cursor:default; }
-.skinEquipped { outline:3px solid #00b894; }
+.skinEquipped { outline:3px solid #00b894; animation: pulse 2s infinite; }
 
 #blackjackScreen {
   text-align: center;
@@ -111,6 +147,7 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
   line-height: 80px;
   font-size: 24px;
   font-weight: bold;
+  animation: none;
 }
 
 .rollMultiplier.good {
@@ -123,6 +160,15 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
 </style>
 </head>
 <body>
+
+<div id="startScreen" class="screen" style="display:flex; flex-direction:column; justify-content:flex-start; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:#1e1e2f; padding:40px 0; z-index:9999;">
+  <h1 style="font-size:48px; margin:0; margin-bottom:80px; text-align:center;">Lantings Clicker</h1>
+  <button id="playBtn">PLAY</button>
+  <div id="offlineInfo" style="position:fixed; bottom:40px; left:50%; transform:translateX(-50%); text-align:center; width:90%; max-width:400px;">
+    <div id="offlineBonus" style="color:#a8e6cf; font-weight:bold; margin-bottom:10px; font-size:16px; animation: glow 2s infinite;"></div>
+    <div id="offlineTime" style="color:#aaa; font-size:14px; animation: slideDown 0.6s ease;"></div>
+  </div>
+</div>
 
 <div id="main">
   <div id="statsTop">
@@ -139,14 +185,17 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
 <button id="shopBtn">Shop</button>
 <button id="gambleBtn">Gamble</button>
 <button id="skinBtn">Skins</button>
-<button id="statsBtn">Statistics</button>
+<button id="statsBtn">Settings</button>
 
 <button class="suggestionBtn" onclick="document.getElementById('suggestionPanel').style.display='flex'">Suggestion</button>
 
 <div id="shopScreen" class="screen">
-  <button class="exitBtn" onclick="shopScreen.style.display='none'">Exit</button>
-  <h2>Shop</h2>
-  <div id="upgrades"></div>
+  <div id="shopHeader" style="position: fixed; top: 20px; left: 20px; right: 20px; background: #1e1e2f; padding: 15px; text-align: center; z-index: 100; border-bottom: 2px solid #6c5ce7; animation: slideDown 0.3s ease;">
+    <button onmousedown="document.getElementById('shopScreen').style.display='none'" style="position: fixed; left: 25px; top: 25px; padding: 8px 12px; font-size: 14px; background:#f44336; color:white; border:none; border-radius:6px; cursor:pointer; z-index: 101; transition: background 0.2s ease;" onmouseover="this.style.background='#ff6b6b'" onmouseout="this.style.background='#f44336'">Exit</button>
+    <h2 style="margin: 0 0 10px 0; animation: shimmer 2s infinite;">Shop</h2>
+    <div style="font-size: 18px; color: #a8e6cf; font-weight: bold;">Lantings: <span id="shopMoney">0</span></div>
+  </div>
+  <div id="upgrades" style="margin-top: 120px;"></div>
 </div>
 
 <div id="gambleScreen" class="screen">
@@ -154,6 +203,7 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
   <h2>Gamble</h2>
   <button onclick="openBlackjack()">Blackjack</button>
   <button onclick="openRolls()">Rolls</button>
+
 </div>
 
 <div id="blackjackScreen" class="screen">
@@ -191,6 +241,26 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
   <div id="rollResult" style="margin: 20px 0;"></div>
 </div>
 
+<div id="investingScreen" class="screen">
+  <button class="exitBtn" onclick="investingScreen.style.display='none'">Exit</button>
+  <h2>Investing</h2>
+  <div style="margin: 20px 0;">Money: <span id="investMoney"></span></div>
+  <div style="margin: 20px 0;">
+    <div>Current Bitcoin Price: $<span id="btcPrice">Loading...</span></div>
+    <div>Invested: $<span id="investedAmount">0</span> at $<span id="investedPrice">0</span></div>
+  </div>
+  <div style="margin: 20px 0;">
+    <label for="investAmount">Invest Amount:</label>
+    <input id="investAmount" type="number" min="100" style="margin-left: 10px; padding: 5px;">
+    <button onclick="invest()" style="margin-left: 10px; padding: 5px 10px;">Invest</button>
+    <button onclick="withdraw()" style="margin-left: 10px; padding: 5px 10px;">Withdraw All</button>
+  </div>
+  <div style="margin: 20px 0;">
+    <button onclick="simulateDay()" style="padding: 10px 20px;">Simulate Next Day</button>
+  </div>
+  <div id="investResult" style="margin: 20px 0;"></div>
+</div>
+
 <div id="skinScreen" class="screen">
   <button class="exitBtn" onclick="skinScreen.style.display='none'">Exit</button>
   <h2>Skins</h2>
@@ -200,11 +270,29 @@ button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7;
 
 <div id="statsScreen" class="screen">
   <button class="exitBtn" onclick="statsScreen.style.display='none'">Exit</button>
-  <h2>Statistics</h2>
-  <p>Playtime: <span id="statTime">0</span> sec</p>
-  <p>Total Earned: <span id="statEarned">0</span></p>
-  <p>Total Lost: <span id="statLost">0</span></p>
-  <p>Highest Ever: <span id="statNet">0</span></p>
+  <h2>Settings</h2>
+  <div style="max-height:80vh; overflow-y:auto; padding-right:10px;">
+    <h3>Keybinds</h3>
+    <div style="margin:15px 0; padding:10px; background:#2f2f50; border-radius:10px;">
+      <div>Click Keybind: <button id="keybindBtn" style="margin-left:10px; padding:8px 15px; min-width:60px;">ENTER</button></div>
+      <p style="font-size:12px; color:#aaa;">Click to change keybind, then press a key</p>
+    </div>
+    <h3>Statistics</h3>
+    <p>Playtime: <span id="statTime">0</span> sec</p>
+    <p>Total Earned: <span id="statEarned">0</span></p>
+    <p>Total Lost: <span id="statLost">0</span></p>
+    <p>Highest Ever: <span id="statNet">0</span></p>
+    <h3>Changelogs</h3>
+    <div style="font-size:12px; color:#aaa; background:#2f2f50; padding:10px; border-radius:10px;">
+      <p><strong>v1.1 - Offline Bonus Update</strong></p>
+      <ul style="margin:5px 0;">
+        <li>Keybinds for clicking (customizable)</li>
+        <li>Offline bonus increased to 25%</li>
+        <li>Shop quantity counter</li>
+        <li>Bug fixes and improvements</li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -216,6 +304,82 @@ let perSecond = save.perSecond || 0;
 let upgrades = save.upgrades || [];
 const defaultSkinUrl = "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/463966892_4454274298132137_3315538479754745190_n.jpg";
 const blackSkinUrl = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
+const webhookUrl = "https://discord.com/api/webhooks/1494600652582551582/YSsa5dbxGdod1MkfGji38jrVeTEGOByXw8_6FBKgcq6IrpAlkAReZCjmpfKAwiP5Wr_o";
+
+function sendWebhook(message) {
+  fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ content: message })
+  }).catch(() => {});
+}
+
+window.addEventListener("beforeunload", (e) => {
+  let blob = new Blob([JSON.stringify({ content: "client disconnected" })], { type: "application/json" });
+  navigator.sendBeacon(webhookUrl, blob);
+  e.preventDefault();
+  e.returnValue = "";
+  return "";
+});
+
+// START SCREEN
+let hasPlayedBefore = localStorage.getItem("lanting_clicker_last_online") !== null;
+
+function calculateOfflineBonus() {
+  let lastOnline = parseInt(localStorage.getItem("lanting_clicker_last_online")) || Date.now();
+  let currentTime = Date.now();
+  let offlineMs = currentTime - lastOnline;
+  let offlineMinutes = Math.floor(offlineMs / 60000);
+  
+  if (offlineMinutes < 1) {
+    return { minutes: 0, bonus: 0 };
+  }
+  
+  let bonusPerMinute = perSecond * 0.25;
+  let totalBonus = Math.floor(bonusPerMinute * offlineMinutes);
+  
+  return { minutes: offlineMinutes, bonus: totalBonus };
+}
+
+function updateOfflineDisplay() {
+  let offlineData = calculateOfflineBonus();
+  let offlineBonusEl = document.getElementById("offlineBonus");
+  let offlineTimeEl = document.getElementById("offlineTime");
+  
+  if (offlineData.minutes > 0) {
+    offlineBonusEl.innerText = "+ " + offlineData.bonus + " Lantings (offline bonus)";
+    offlineTimeEl.innerText = "Je bent " + offlineData.minutes + " minuten offline geweest";
+  } else {
+    offlineBonusEl.innerText = "";
+    offlineTimeEl.innerText = "";
+  }
+}
+
+document.getElementById("playBtn").onclick = function() {
+  sendWebhook("client connected");
+  
+  let offlineData = calculateOfflineBonus();
+  score += offlineData.bonus;
+  earned += offlineData.bonus;
+  
+  localStorage.setItem("lanting_clicker_last_online", Date.now());
+  
+  document.getElementById("startScreen").style.display = "none";
+  document.getElementById("main").style.display = "flex";
+  updateScore();
+};
+
+if (!hasPlayedBefore) {
+  localStorage.setItem("lanting_clicker_last_online", Date.now());
+}
+
+// Update offline display on load
+if (hasPlayedBefore) {
+  updateOfflineDisplay();
+} else {
+  document.getElementById("startScreen").style.display = "none";
+  document.getElementById("main").style.display = "flex";
+}
 
 // SKIN DEFINITIONS
 // id 0 = default (free, no bonus), id 1 = lanting skin (costs 10000, 2x clicks)
@@ -228,7 +392,7 @@ const SKIN_DEFS = [
   { id: 4, name: "vakantie lanting",  img: "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505114098_4696325513927013_1892631468890635773_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=53a332&_nc_ohc=nRZ6G-XAseQQ7kNvwGSLSbp&_nc_oc=AdqSAeAlIfSYKFjBNloJOQa9By8NOxj7owQrTeOgZCJtH4Q7MTP3y9VSqVGxm90s8Rc&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=9Q2JkJzEbyAGcoC2D2a6Bw&_nc_ss=7a389&oh=00_Af3dskOQkEHrxXzm38hVGTpJOuPDVICVPf22505yDhwvCg&oe=69E6886D",               cost: 100000, bonus: 2.5,bonusText: "2.5x clicks",        free: false },
   { id: 5, name: "jolly lanting",  img: "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505359411_4703242883235276_7531884072442166294_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=53a332&_nc_ohc=C76D43KjKo8Q7kNvwESLxZW&_nc_oc=AdoLHRkJffg1zwJ56tiplCXL6_EyJtrq7fzXFywFaou6v_1BSIcVyrWYqmQblpXzIAs&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=CJ_jltJM4o6Q48yQba2u7A&_nc_ss=7a389&oh=00_Af0SH0r6A1hCGpfX0dK8pWzsmktAsEpmTz1PePCsyDXspQ&oe=69E6775C",               cost: 500000, bonus: 3,  bonusText: "3x clicks",          free: false },
   { id: 6, name: "og lanting",  img: "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505767393_4700743773485187_4696695728975036082_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=53a332&_nc_ohc=-6kmga9A_5IQ7kNvwHFpIBz&_nc_oc=Adq0KoSeqN6LQinoGP4Bzo-66BA_oAL98ma3Qa83C9cv5q5MBXQ8Jaf7dk3nPlBCr_s&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=24nILOznlX4lcXFugR9o2g&_nc_ss=7a389&oh=00_Af3zNH_eyN4E9MT1F-EOjv2WaX1uKkruHvQmfHNvPeQ2Cw&oe=69E68E59",               cost: 50000000, bonus: 4,  bonusText: "4x clicks",          free: false },
-  { id: 7, name: "Skin 8",  img: "",               cost: 1000000000,bonus: 5,  bonusText: "5x clicks",          free: false },
+  { id: 7, name: "lanting",  img: "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/459427263_4407458439480390_1115745422523934606_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=_FaeZ7hSoEcQ7kNvwGwxU3D&_nc_oc=AdrvQvP7q0iqB8x_kVHcDN0lFetYWzdTFiowtHEeITEBY7Iyv8N847w4lByQuctN-7M&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=WCW78bwKmzHRnrloUsHr2w&_nc_ss=7a389&oh=00_Af0mAtQ-R9acTzw29I1Tjx6jkj7JnfKf5FTBkBQCMX9GFg&oe=69E7B5CC",               cost: 1000000000,bonus: 5,  bonusText: "5x clicks",          free: false },
   { id: 8, name: "Skin 9",  img: "",               cost: 25000000000,bonus: 6,  bonusText: "6x clicks",          free: false },
   { id: 9, name: "Skin 10", img: "",               cost: 50000000000000,bonus: 10, bonusText: "10x clicks",         free: false },
 ];
@@ -239,6 +403,14 @@ const SKIN_DEFS = [
 let ownedSkins = save.ownedSkins || [0]; // default skin always owned
 let equippedSkin = (save.equippedSkin !== undefined) ? save.equippedSkin : 0;
 let basePerClick = save.basePerClick || 1;
+
+// STATS
+let playTime = save.playTime || 0;
+let earned = save.earned || 0;
+let lost = save.lost || 0;
+let highest = save.highest || score;
+let investedAmount = save.investedAmount || 0;
+let investedPrice = save.investedPrice || 0;
 
 // Recalculate perClick based on equipped skin bonus
 function getSkinBonus(id) {
@@ -255,49 +427,152 @@ function applyEquippedSkin() {
   mainImg.src = imgSrc;
 }
 
-// STATS
-let playTime = save.playTime || 0;
-let earned = save.earned || 0;
-let lost = save.lost || 0;
-let highest = save.highest || score;
-
 // ROUNDING
 function roundScoreUp(x){ return Math.ceil(x); }
 function roundPriceDown(x){ return Math.floor(x); }
 
 const scoreEl=document.getElementById("score");
 const mainImg=document.getElementById("mainImg");
+const clickBtn=document.getElementById("clickBtn");
 const perClickText=document.getElementById("perClickText");
 const perSecondText=document.getElementById("perSecondText");
 
 applyEquippedSkin();
 
 let clickLock=false;
+let clickKeybind = "Enter";
+let keybindDisplay = "ENTER";
+let waitingForKeybind = false;
+
 function doClick(){
   if(clickLock) return;
   clickLock=true;
   score+=perClick;
   earned+=perClick;
   updateScore();
+  
+  // Create floating text animation
+  let floatText = document.createElement("div");
+  floatText.style.position = "fixed";
+  floatText.style.left = "50%";
+  floatText.style.top = "50%";
+  floatText.style.transform = "translateX(-50%)";
+  floatText.style.color = "#a8e6cf";
+  floatText.style.fontWeight = "bold";
+  floatText.style.fontSize = "24px";
+  floatText.style.pointerEvents = "none";
+  floatText.style.textShadow = "0 0 10px rgba(168,230,207,0.8)";
+  floatText.style.zIndex = "1000";
+  floatText.innerText = "+" + perClick;
+  floatText.style.animation = "floatUp 1s ease-out";
+  document.body.appendChild(floatText);
+  setTimeout(() => floatText.remove(), 1000);
+  
   setTimeout(()=>clickLock=false,40);
 }
 
-clickBtn.addEventListener("mousedown",()=>doClick());
+function isMainScreenActive() {
+  let main = document.getElementById("main");
+  let start = document.getElementById("startScreen");
+  let shop = document.getElementById("shopScreen");
+  let gamble = document.getElementById("gambleScreen");
+  let bj = document.getElementById("blackjackScreen");
+  let rolls = document.getElementById("rollsScreen");
+  let invest = document.getElementById("investingScreen");
+  let skins = document.getElementById("skinScreen");
+  let stats = document.getElementById("statsScreen");
+  
+  return main.style.display === "flex" && start.style.display === "none" &&
+         (!shop || shop.style.display === "none") &&
+         (!gamble || gamble.style.display === "none") &&
+         (!bj || bj.style.display === "none") &&
+         (!rolls || rolls.style.display === "none") &&
+         (!invest || invest.style.display === "none") &&
+         (!skins || skins.style.display === "none") &&
+         (!stats || stats.style.display === "none");
+}
+
+if(clickBtn){
+  clickBtn.addEventListener("mousedown", ()=>doClick());
+}
+if(mainImg){
+  mainImg.addEventListener("mousedown", ()=>doClick());
+}
 
 document.addEventListener("keydown",(e)=>{
-  if(e.key==="Enter" && !e.repeat){
+  // First check: are we waiting to set a new keybind?
+  if(waitingForKeybind) {
     e.preventDefault();
-    doClick();
+    let keyDisplay = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+    if(e.key === " ") keyDisplay = "SPACE";
+    if(e.key === "Enter") keyDisplay = "ENTER";
+    
+    clickKeybind = e.key;
+    keybindDisplay = keyDisplay;
+    localStorage.setItem("lanting_clicker_keybind", clickKeybind);
+    localStorage.setItem("lanting_clicker_keybind_display", keybindDisplay);
+    let btn = document.getElementById("keybindBtn");
+    if(btn) btn.innerText = keybindDisplay;
+    waitingForKeybind = false;
+    console.log("Keybind set to:", clickKeybind, "Display:", keybindDisplay);
+    return;
+  }
+  
+  // Second check: are we on main screen and key matches keybind?
+  if(!e.repeat && isMainScreenActive()) {
+    // Exact match or case-insensitive match
+    let keyMatches = e.key === clickKeybind || e.key.toLowerCase() === clickKeybind.toLowerCase();
+    
+    if(keyMatches) {
+      e.preventDefault();
+      console.log("Keybind triggered! Key:", e.key, "Keybind:", clickKeybind);
+      
+      // Trigger button press animation and click
+      if(clickBtn) {
+        // Add :active state by adding a class temporarily
+        clickBtn.style.transform = "scale(0.98)";
+        clickBtn.style.boxShadow = "0 0 25px rgba(0,0,0,0.9) inset";
+        
+        // Trigger the click
+        doClick();
+        
+        // Remove active state after animation
+        setTimeout(() => {
+          clickBtn.style.transform = "scale(1)";
+          clickBtn.style.boxShadow = "0 0 25px rgba(0,0,0,0.6)";
+        }, 100);
+      }
+    }
   }
 });
 
 document.addEventListener("keyup",()=>clickLock=false);
 
+// Setup keybind button - delayed to ensure DOM is ready
+setTimeout(() => {
+  let savedKeybind = localStorage.getItem("lanting_clicker_keybind") || "Enter";
+  keybindDisplay = localStorage.getItem("lanting_clicker_keybind_display") || "ENTER";
+  clickKeybind = savedKeybind;
+  
+  let btn = document.getElementById("keybindBtn");
+  if(btn) {
+    btn.innerText = keybindDisplay;
+    btn.addEventListener("click", () => {
+      waitingForKeybind = !waitingForKeybind;
+      if(waitingForKeybind) {
+        btn.innerText = "...";
+      } else {
+        btn.innerText = keybindDisplay;
+      }
+    });
+  }
+}, 100);
+
 skinBtn.onclick=()=>{ skinScreen.style.display="block"; renderSkins(); };
 statsBtn.onclick=()=>statsScreen.style.display="block";
 
 function saveGame(){
-  localStorage.setItem("lanting_clicker_save_v10", JSON.stringify({score,perClick,perSecond,upgrades,playTime,earned,lost,highest,ownedSkins,equippedSkin,basePerClick}));
+  localStorage.setItem("lanting_clicker_save_v10", JSON.stringify({score,perClick,perSecond,upgrades,playTime,earned,lost,highest,ownedSkins,equippedSkin,basePerClick,investedAmount,investedPrice}));
 }
 
 function updateScore(){
@@ -309,11 +584,16 @@ function updateScore(){
   if(score > highest){ highest = score; }
 
   scoreEl.innerText="Lantings: "+score;
+  scoreEl.style.animation = "scoreUpdate 0.3s ease";
+  setTimeout(() => { scoreEl.style.animation = ""; }, 300);
   perClickText.innerText="Per klik: " + perClick;
   perSecondText.innerText="Per seconde: " + perSecond;
 
   rollMoney.innerText=score;
   bjMoney.innerText=score;
+  
+  let shopMoney = document.getElementById("shopMoney");
+  if(shopMoney) shopMoney.innerText=score;
 
   document.getElementById("statTime").innerText=playTime;
   document.getElementById("statEarned").innerText=earned;
@@ -328,6 +608,7 @@ setInterval(()=>{
   playTime++;
   score+=perSecond;
   earned+=perSecond;
+  localStorage.setItem("lanting_clicker_last_online", Date.now());
   updateScore();
 },1000);
 
@@ -347,16 +628,24 @@ let div=document.createElement("div");
 div.className="upgrade "+(unlocked?"":"locked");
 if(unlocked){
 u.cost = roundPriceDown(u.cost);
-div.innerHTML=`+${u.value} ${u.type} ${u.cost} <button>Koop</button>`;
+let countDisplay = u.count ? ` [x${u.count}]` : "";
+div.innerHTML=`+${u.value} ${u.type} ${u.cost} <button>Koop</button><span style="margin-left:10px; color:#aaa;">${countDisplay}</span>`;
 div.querySelector("button").onclick=()=>{
 if(score>=u.cost){
 score-=u.cost;
 lost+=u.cost;
 
 u.bought=true;
+u.count = (u.count || 0) + 1;
 if(u.type=="click") basePerClick+=u.value; else perSecond+=u.value;
 
 u.cost = roundPriceDown(u.cost * 1.6);
+
+// Add visual feedback
+let btn = div.querySelector("button");
+btn.style.animation = "pop 0.5s ease";
+btn.style.boxShadow = "0 0 20px rgba(168,230,207,0.8)";
+setTimeout(() => { btn.style.boxShadow = ""; }, 500);
 
 updateScore();
 renderUpgrades();
@@ -431,10 +720,11 @@ function equipSkin(id) {
 }
 
 // NAV
-shopBtn.onclick=()=>shopScreen.style.display="block";
+shopBtn.onclick=()=>{ shopScreen.style.display="block"; renderUpgrades(); };
 gambleBtn.onclick=()=>gambleScreen.style.display="block";
 function openRolls(){gambleScreen.style.display="none";rollsScreen.style.display="block";}
 function openBlackjack(){gambleScreen.style.display="none";blackjackScreen.style.display="block"; updateBJDisplay();}
+function openInvesting(){gambleScreen.style.display="none";investingScreen.style.display="block"; updateInvestDisplay();}
 
 // BLACKJACK
 let deck = [];
