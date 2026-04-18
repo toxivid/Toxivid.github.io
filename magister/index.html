@@ -2,209 +2,683 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<title>Magister</title>
+<title>Lanting Clicker</title>
 <link rel="icon" href="https://comm.magister.nl/hubfs/MicrosoftTeams-image-_4_.ico">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;700;900&display=swap" rel="stylesheet">
 <style>
-body { margin:0; font-family:Arial; background:linear-gradient(135deg,#1e1e2f,#2a2a40); color:white; overflow:hidden; user-select:none; }
-#main { display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; animation: fadeIn 0.5s ease-in; }
-
-@keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
-@keyframes pop       { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
-@keyframes pulse     { 0% { box-shadow: 0 0 25px rgba(0,0,0,0.6); } 50% { box-shadow: 0 0 35px rgba(108,92,231,0.8); } 100% { box-shadow: 0 0 25px rgba(0,0,0,0.6); } }
-@keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes shimmer   { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-@keyframes floatUp   { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-80px) scale(0.8); opacity: 0; } }
-@keyframes glow      { 0% { text-shadow: 0 0 5px rgba(168,230,207,0.3); } 50% { text-shadow: 0 0 15px rgba(168,230,207,0.8); } 100% { text-shadow: 0 0 5px rgba(168,230,207,0.3); } }
-@keyframes scoreUpdate { 0% { transform: scale(1.2); color: #ffd700; } 100% { transform: scale(1); color: white; } }
-
-#statsTop { text-align:center; margin-bottom:20px; animation: slideDown 0.6s ease; }
-#statsTop div { margin:4px 0; font-size:18px; transition: all 0.3s ease; }
-#statsTop div:hover { transform: scale(1.1); color: #a8e6cf; }
-#score { font-size:28px; }
-
-#clickBtn {
-  width:240px; height:240px; border-radius:50%; background:#444;
-  display:flex; justify-content:center; align-items:center; overflow:hidden;
-  box-shadow:0 0 25px rgba(0,0,0,0.6); cursor:pointer;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+:root {
+  --bg:      #0d0d1a;
+  --panel:   #14142a;
+  --card:    #1c1c38;
+  --accent:  #7c5cfc;
+  --accent2: #00e5b0;
+  --danger:  #ff4f6d;
+  --gold:    #ffd700;
+  --text:    #e8e8ff;
+  --muted:   #6b6b99;
+  --border:  rgba(124,92,252,0.25);
 }
-#clickBtn:active { transform: scale(0.98); }
-#clickBtn:hover  { box-shadow: 0 0 32px rgba(108,92,231,0.7); }
-#clickBtn img    { width:100%; height:100%; object-fit:cover; }
 
-#shopBtn   { position:absolute; left:20px;  top:50%; transform:translateY(-50%);   transition: transform 0.2s ease, background 0.2s ease; }
-#gambleBtn { position:absolute; right:20px; top:50%; transform:translateY(-50%);   transition: transform 0.2s ease, background 0.2s ease; }
-#skinBtn   { position:absolute; left:20px;  top:20px; transition: transform 0.2s ease, background 0.2s ease; }
-#statsBtn  { position:absolute; right:20px; top:20px; transition: transform 0.2s ease, background 0.2s ease; }
-#shopBtn:hover, #gambleBtn:hover, #skinBtn:hover, #statsBtn:hover { background:#5f4cd4; }
-#shopBtn:hover   { transform: translateY(-50%) scale(1.03); }
-#gambleBtn:hover { transform: translateY(-50%) scale(1.03); }
-#skinBtn:hover, #statsBtn:hover { transform: scale(1.03); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Exo 2', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  user-select: none;
+  min-height: 100vh;
+}
+
+/* background grid */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(124,92,252,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,92,252,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeIn    { from { opacity:0 } to { opacity:1 } }
+@keyframes slideDown { from { transform:translateY(-16px); opacity:0 } to { transform:translateY(0); opacity:1 } }
+@keyframes slideUp   { from { transform:translateY(16px);  opacity:0 } to { transform:translateY(0); opacity:1 } }
+@keyframes floatUp   { 0%{transform:translateY(0) scale(1);opacity:1} 100%{transform:translateY(-90px) scale(.7);opacity:0} }
+@keyframes pulse     { 0%,100%{box-shadow:0 0 0 0 rgba(124,92,252,.5)} 50%{box-shadow:0 0 0 8px rgba(124,92,252,0)} }
+@keyframes scoreFlash{ 0%{color:var(--gold);transform:scale(1.15)} 100%{color:var(--text);transform:scale(1)} }
+@keyframes glow      { 0%,100%{text-shadow:0 0 8px rgba(0,229,176,.3)} 50%{text-shadow:0 0 20px rgba(0,229,176,.9)} }
+@keyframes shimmer   { 0%,100%{opacity:.6} 50%{opacity:1} }
+@keyframes spin      { to { transform: rotate(360deg) } }
+@keyframes rankPop   { 0%{transform:scale(1.2);color:var(--gold)} 100%{transform:scale(1);color:inherit} }
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar { width:5px }
+::-webkit-scrollbar-track { background:transparent }
+::-webkit-scrollbar-thumb { background:var(--accent); border-radius:4px }
+
+/* ─── BUTTONS ─── */
+button {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: .5px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  position: relative;
+  z-index: 1;
+}
+button:hover  { background: #9070ff; transform: scale(1.04); box-shadow: 0 4px 20px rgba(124,92,252,.4); }
+button:active { transform: scale(.97); }
+
+/* ─── START SCREEN ─── */
+#startScreen {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 60px 20px 40px;
+  animation: fadeIn .5s ease;
+}
+
+.start-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(32px, 7vw, 60px);
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 60px;
+  animation: slideDown .6s ease;
+}
 
 #playBtn {
-  width:200px; height:200px; border-radius:50%; background:#6c5ce7;
-  border:none; color:white; font-size:24px; cursor:pointer;
-  box-shadow:0 0 25px rgba(0,0,0,0.6);
-  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  font-size: 22px;
+  letter-spacing: 2px;
+  background: linear-gradient(145deg, var(--accent), #5a3de8);
+  box-shadow: 0 0 40px rgba(124,92,252,.5), 0 0 80px rgba(124,92,252,.15);
+  animation: pulse 2.5s infinite, slideUp .6s ease;
+  margin-bottom: 30px;
 }
-#playBtn:hover  { background:#7d3dd1; transform:scale(1.05); box-shadow: 0 0 28px rgba(125,61,209,0.7); }
-#playBtn:active { transform: scale(0.98); }
+#playBtn:hover { background: linear-gradient(145deg, #9070ff, #7c5cfc); }
 
-#offlineInfo { position:fixed; bottom:40px; left:50%; transform:translateX(-50%); text-align:center; width:90%; max-width:400px; }
+#nameSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: slideUp .8s ease;
+  width: 100%;
+  max-width: 320px;
+}
+#nameSection label {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+#nameInput {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  font-size: 15px;
+  outline: none;
+  transition: border-color .2s;
+}
+#nameInput:focus { border-color: var(--accent); }
+#nameError {
+  font-size: 12px;
+  color: var(--danger);
+  min-height: 16px;
+  transition: all .2s;
+}
 
-button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7; color:white; cursor:pointer; transition: transform 0.2s ease, background 0.2s ease; }
-button:hover  { background:#7d3dd1; transform: scale(1.03); }
-button:active { transform: scale(0.98); }
+#offlineInfo { text-align:center; margin-top: 20px; }
+#offlineBonus { color: var(--accent2); font-weight: 700; font-size: 16px; animation: glow 2s infinite; margin-bottom: 4px; }
+#offlineTime  { color: var(--muted); font-size: 13px; animation: slideDown .6s ease; }
 
-.suggestionBtn   { position:fixed; bottom:20px; right:20px; }
-.suggestionPanel { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; }
-.suggestionPanel .panel { background:#2a2a40; padding:20px; border-radius:10px; width:300px; text-align:center; }
-.suggestionPanel input  { width:100%; padding:10px; margin:10px 0; border:none; border-radius:5px; }
-.exitBtn { position:absolute; top:20px; left:20px; background:#f44336; transition: transform 0.2s ease, background 0.2s ease; }
-.exitBtn:hover { background:#ff6b6b; transform: scale(1.05); }
+/* ─── MAIN HUD ─── */
+#main {
+  display: none;
+  position: fixed; inset: 0; z-index: 1;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  animation: fadeIn .5s ease;
+}
 
-.screen { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#1e1e2f; padding:80px 20px; overflow:auto; box-sizing:border-box; animation: slideDown 0.4s ease; z-index:100; }
+#statsTop {
+  text-align: center;
+  margin-bottom: 24px;
+  animation: slideDown .6s ease;
+}
+#statsTop div {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  color: var(--muted);
+  letter-spacing: .5px;
+  transition: color .3s;
+}
+#statsTop div:hover { color: var(--accent2); }
+#score {
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--text);
+  letter-spacing: 1px;
+}
 
-.upgrade { padding:12px; margin:10px 0; background:#2f2f50; border-radius:10px; transition: transform 0.2s ease, background 0.2s ease; animation: slideDown 0.4s ease; }
-.upgrade:hover { background:#3f3f60; transform: translateX(2px); }
-.locked { background:#555; color:#aaa; }
+#clickBtn {
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: var(--card);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0,0,0,.8), 0 0 0 3px rgba(124,92,252,.3);
+  cursor: pointer;
+  transition: box-shadow .2s, transform .1s;
+  z-index: 2;
+}
+#clickBtn:hover  { box-shadow: 0 0 40px rgba(124,92,252,.6), 0 0 0 3px rgba(124,92,252,.6); }
+#clickBtn:active { transform: scale(.97); }
+#clickBtn img    { width:100%; height:100%; object-fit:cover; border-radius:50%; }
 
-.skinBox { padding:10px; margin:10px; background:#2f2f50; border-radius:10px; display:inline-block; cursor:pointer; vertical-align:top; text-align:center; transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease; animation: slideDown 0.5s ease; }
-.skinBox:hover   { transform: translateY(-4px); background:#4f4f70; box-shadow: 0 8px 18px rgba(0,0,0,0.35); }
-.skinBox img     { width:60px; height:60px; object-fit:cover; display:block; margin:auto; border-radius:50%; }
-.skinBox .skinName  { margin-top:6px; font-size:13px; }
-.skinBox .skinCost  { font-size:12px; color:#aaa; margin-top:2px; }
-.skinBox .skinBonus { font-size:11px; color:#a8e6cf; margin-top:2px; }
-.skinBox button { margin-top:6px; font-size:12px; padding:6px 10px; }
-.skinBox button.equipBtn  { background:#00b894; }
-.skinBox button.buyBtn    { background:#6c5ce7; }
-.skinBox button.ownedBtn  { background:#555; cursor:default; }
-.skinEquipped { outline:3px solid #00b894; animation: pulse 2s infinite; }
+/* ─── NAV BUTTONS ─── */
+#shopBtn   { position:fixed; left:20px;  top:50%; transform:translateY(-50%); }
+#gambleBtn { position:fixed; right:20px; top:50%; transform:translateY(-50%); }
+#skinBtn   { position:fixed; left:20px;  top:20px; }
+#statsBtn  { position:fixed; right:20px; top:20px; }
+#shopBtn:hover   { transform: translateY(-50%) scale(1.05); }
+#gambleBtn:hover { transform: translateY(-50%) scale(1.05); }
 
-.rollMultiplier { display:inline-block; width:80px; height:80px; margin:10px; background:#333; border-radius:10px; text-align:center; line-height:80px; font-size:24px; font-weight:bold; }
-.rollMultiplier.good { background:#4CAF50; }
-.rollMultiplier.bad  { background:#f44336; }
+/* ─── LEADERBOARD ─── */
+#leaderboard {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(20,20,42,.95);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 20px;
+  min-width: 260px;
+  backdrop-filter: blur(12px);
+  animation: slideUp .7s ease;
+  z-index: 5;
+}
+.lb-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 10px;
+}
+.lb-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 13px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(124,92,252,.1);
+  transition: color .3s;
+}
+.lb-row:last-child { border-bottom: none; }
+.lb-rank {
+  font-weight: 900;
+  font-size: 12px;
+  color: var(--muted);
+  min-width: 20px;
+  text-align: right;
+}
+.lb-rank.gold   { color: #ffd700; }
+.lb-rank.silver { color: #c0c0c0; }
+.lb-rank.bronze { color: #cd7f32; }
+.lb-name  { flex: 1; color: var(--text); }
+.lb-score { color: var(--accent2); font-size: 12px; }
+.lb-me    { color: var(--gold); animation: rankPop .4s ease; }
+.lb-me .lb-name { color: var(--gold); }
+.lb-separator {
+  border: none;
+  border-top: 1px dashed rgba(124,92,252,.3);
+  margin: 4px 0;
+}
+
+/* ─── SUGGESTION BTN ─── */
+.suggestionBtn { position:fixed; bottom:20px; right:20px; font-size:12px; padding:8px 12px; background:var(--card); border:1px solid var(--border); color:var(--muted); }
+.suggestionBtn:hover { color:var(--text); }
+
+/* ─── SCREENS ─── */
+.screen {
+  display: none;
+  position: fixed; inset: 0;
+  background: var(--bg);
+  padding: 100px 20px 20px;
+  overflow-y: auto;
+  z-index: 100;
+  animation: fadeIn .3s ease;
+}
+
+.screen-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: rgba(13,13,26,.96);
+  backdrop-filter: blur(16px);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  z-index: 101;
+}
+.screen-header h2 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  animation: shimmer 2s infinite;
+}
+
+.exitBtn {
+  background: var(--danger);
+  padding: 8px 14px;
+  font-size: 13px;
+}
+.exitBtn:hover { background: #ff6b82; }
+
+/* ─── SHOP ─── */
+.shop-money {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  color: var(--accent2);
+  font-weight: 700;
+}
+
+.upgrade {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  margin: 8px 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: background .2s, transform .2s, border-color .2s;
+  animation: slideDown .3s ease;
+}
+.upgrade:hover { background: #222244; border-color: var(--accent); transform: translateX(3px); }
+.upgrade-info { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:600; }
+.upgrade-info .upgrade-val { color: var(--accent2); }
+.upgrade-info .upgrade-type { color: var(--muted); font-size:12px; margin-top:2px; }
+.upgrade-right { display:flex; align-items:center; gap:12px; }
+.upgrade-count { font-size:11px; color:var(--muted); background:rgba(124,92,252,.15); padding:3px 8px; border-radius:20px; }
+.locked { opacity:.4; cursor:default; }
+.locked:hover { transform:none; border-color:var(--border); }
+
+/* ─── SKINS ─── */
+.skin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px,1fr));
+  gap: 12px;
+  padding-bottom: 20px;
+}
+.skinBox {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform .2s, border-color .2s, background .2s;
+  animation: slideDown .4s ease;
+}
+.skinBox:hover     { transform: translateY(-4px); background:#222244; border-color: var(--accent); }
+.skinEquipped      { border-color: var(--accent2); animation: pulse 2s infinite; }
+.skinBox img       { width:70px; height:70px; border-radius:50%; object-fit:cover; margin:auto; display:block; }
+.skinName          { font-family:'Rajdhani',sans-serif; font-weight:700; font-size:14px; margin-top:8px; }
+.skinCost          { font-size:11px; color:var(--muted); margin-top:3px; }
+.skinBonus         { font-size:11px; color:var(--accent2); margin-top:3px; }
+.skinBox button    { margin-top:10px; font-size:12px; padding:6px 12px; }
+.equipBtn  { background:var(--accent2); color:#000; }
+.equipBtn:hover { background:#00ffcc; }
+.buyBtn    { background:var(--accent); }
+.ownedBtn  { background:#333; color:var(--muted); cursor:default; }
+.ownedBtn:hover { transform:none; box-shadow:none; }
+
+/* ─── GAMBLE ─── */
+.gamble-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 400px;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+.gamble-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s;
+}
+.gamble-card:hover { background: #222244; border-color: var(--accent); transform: translateY(-4px); }
+.gamble-card .gc-icon { font-size:36px; margin-bottom:12px; }
+.gamble-card .gc-name { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; }
+
+/* ─── BLACKJACK ─── */
+#blackjackScreen { text-align:center; }
+.bj-bet-row { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
+.bj-bet-row input { padding:10px 14px; background:var(--card); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px; width:130px; outline:none; }
+.bj-bet-row input:focus { border-color:var(--accent); }
+.bj-hand { font-size:28px; margin:10px 0; font-family:'Rajdhani',sans-serif; font-weight:700; }
+.bj-label { font-size:12px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+.bj-result { font-size:22px; font-weight:700; font-family:'Rajdhani',sans-serif; margin-top:16px; min-height:30px; }
+.bj-buttons { display:flex; gap:12px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+.allin-btn { background:linear-gradient(135deg,#ff4f6d,#e0004f); }
+.allin-btn:hover { background:linear-gradient(135deg,#ff7090,#ff2060); }
+
+/* ─── ROLLS ─── */
+.roll-grid { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:20px 0; }
+.rollMult {
+  width:90px; height:90px;
+  border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Rajdhani',sans-serif;
+  font-size:26px; font-weight:900;
+  animation: slideDown .4s ease;
+  border: 2px solid transparent;
+}
+.rollMult.good { background:rgba(0,229,176,.15); border-color:var(--accent2); color:var(--accent2); }
+.rollMult.bad  { background:rgba(255,79,109,.15); border-color:var(--danger);  color:var(--danger); }
+.roll-total { font-family:'Rajdhani',sans-serif; font-size:20px; font-weight:700; color:var(--gold); }
+
+/* ─── SETTINGS / STATS ─── */
+.stat-block { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; margin:10px 0; }
+.stat-block h3 { font-family:'Rajdhani',sans-serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+.stat-row { display:flex; justify-content:space-between; font-size:14px; padding:5px 0; border-bottom:1px solid rgba(255,255,255,.05); }
+.stat-row:last-child { border-bottom:none; }
+.stat-row .val { color:var(--accent2); font-weight:700; }
+
+.changelog-entry { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px; margin:10px 0; }
+.changelog-entry h4 { font-family:'Rajdhani',sans-serif; font-size:15px; color:var(--accent); font-weight:700; margin-bottom:8px; }
+.changelog-entry ul { padding-left:16px; }
+.changelog-entry li { font-size:13px; color:var(--muted); margin:4px 0; }
+
+.keybind-row { display:flex; align-items:center; gap:12px; padding:12px; background:var(--card); border:1px solid var(--border); border-radius:12px; margin:10px 0; }
+.keybind-row span { flex:1; font-size:14px; }
+
+/* ─── SUGGESTION PANEL ─── */
+.suggestionPanel {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.75);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9000;
+  backdrop-filter: blur(8px);
+}
+.sugg-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 30px;
+  width: 90%;
+  max-width: 360px;
+  text-align: center;
+  animation: slideDown .3s ease;
+  position: relative;
+}
+.sugg-card h3 { font-family:'Rajdhani',sans-serif; font-size:20px; color:var(--accent); margin-bottom:16px; }
+.sugg-card input { width:100%; padding:12px 14px; background:var(--card); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px; outline:none; margin-bottom:12px; }
+.sugg-card input:focus { border-color:var(--accent); }
+.sugg-close { position:absolute; top:12px; right:12px; background:var(--danger); padding:6px 10px; font-size:12px; }
+
+/* ─── SECTION LABELS ─── */
+.sec-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 20px 0 8px;
+}
 </style>
 </head>
 <body>
 
-<div id="startScreen" style="display:flex; flex-direction:column; justify-content:flex-start; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:#1e1e2f; padding:40px 0; z-index:9999;">
-  <h1 style="font-size:48px; margin:0; margin-bottom:80px; text-align:center;">Lantings Clicker</h1>
+<!-- ════ START SCREEN ════ -->
+<div id="startScreen">
+  <div class="start-title">Lantings Clicker</div>
   <button id="playBtn">PLAY</button>
+  <div id="nameSection" style="display:none;">
+    <label for="nameInput">Choose your name</label>
+    <input id="nameInput" type="text" maxlength="24" placeholder="Enter username...">
+    <div id="nameError"></div>
+    <button id="confirmNameBtn">Confirm</button>
+  </div>
   <div id="offlineInfo">
-    <div id="offlineBonus" style="color:#a8e6cf; font-weight:bold; margin-bottom:10px; font-size:16px; animation: glow 2s infinite;"></div>
-    <div id="offlineTime" style="color:#aaa; font-size:14px; animation: slideDown 0.6s ease;"></div>
+    <div id="offlineBonus"></div>
+    <div id="offlineTime"></div>
   </div>
 </div>
 
-<div id="main" style="display:none;">
+<!-- ════ MAIN ════ -->
+<div id="main">
   <div id="statsTop">
     <div id="perSecondText">Per seconde: 0</div>
     <div id="perClickText">Per klik: 1</div>
     <div id="score">Lantings: 0</div>
   </div>
   <div id="clickBtn">
-    <img id="mainImg" src="https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/463966892_4454274298132137_3315538479754745190_n.jpg">
+    <img id="mainImg" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E">
   </div>
 </div>
 
-<button id="shopBtn">Shop</button>
-<button id="gambleBtn">Gamble</button>
-<button id="skinBtn">Skins</button>
-<button id="statsBtn">Settings</button>
-<button class="suggestionBtn" id="suggestionOpenBtn">Suggestion</button>
+<!-- ════ NAV ════ -->
+<button id="shopBtn">🛒 Shop</button>
+<button id="gambleBtn">🎲 Gamble</button>
+<button id="skinBtn">🎨 Skins</button>
+<button id="statsBtn">⚙️ Settings</button>
+<button class="suggestionBtn" id="suggestionOpenBtn">💡 Suggestion</button>
 
+<!-- ════ LEADERBOARD ════ -->
+<div id="leaderboard">
+  <div class="lb-title">🏆 Leaderboard</div>
+  <div id="lbRows"></div>
+</div>
+
+<!-- ════ SHOP ════ -->
 <div id="shopScreen" class="screen">
-  <div style="position:fixed; top:20px; left:20px; right:20px; background:#1e1e2f; padding:15px; text-align:center; z-index:101; border-bottom:2px solid #6c5ce7; animation: slideDown 0.3s ease;">
-    <button id="shopExitBtn" style="position:fixed; left:25px; top:25px; padding:8px 12px; font-size:14px; background:#f44336; color:white; border:none; border-radius:6px; cursor:pointer; z-index:102;">Exit</button>
-    <h2 style="margin: 0 0 10px 0; animation: shimmer 2s infinite;">Shop</h2>
-    <div style="font-size:18px; color:#a8e6cf; font-weight:bold;">Lantings: <span id="shopMoney">0</span></div>
+  <div class="screen-header">
+    <button class="exitBtn" id="shopExitBtn">✕ Exit</button>
+    <h2>Shop</h2>
+    <div class="shop-money">💰 <span id="shopMoney">0</span></div>
   </div>
-  <div id="upgrades" style="margin-top:120px;"></div>
+  <div id="upgrades"></div>
 </div>
 
+<!-- ════ GAMBLE ════ -->
 <div id="gambleScreen" class="screen">
-  <button class="exitBtn" id="gambleExitBtn">Exit</button>
-  <h2>Gamble</h2>
-  <button id="openBlackjackBtn">Blackjack</button>
-  <button id="openRollsBtn">Rolls</button>
-</div>
-
-<div id="blackjackScreen" class="screen" style="text-align:center;">
-  <button class="exitBtn" id="bjExitBtn">Exit</button>
-  <h2>Blackjack</h2>
-  <div style="margin:20px 0;">
-    <label for="betInput">Bet Amount:</label>
-    <input id="betInput" type="number" min="100" style="margin-left:10px; padding:5px;">
-    <button id="bjStartBtn" style="margin-left:10px; padding:5px 10px;">Start Game</button>
-    <button id="bjAllInBtn" style="margin-left:10px; padding:5px 10px;">Start Game All In (10% luck boost)</button>
+  <div class="screen-header">
+    <button class="exitBtn" id="gambleExitBtn">✕ Exit</button>
+    <h2>Gamble</h2>
+    <div></div>
   </div>
-  <div>Money: <span id="bjMoney"></span></div>
-  <div id="bjGame">
-    <div style="text-align:center; margin:20px 0;">
-      <div style="font-size:24px; margin-bottom:10px;">Dealer: ?? (?)</div>
-      <div style="font-size:24px;">Player: (?)</div>
+  <div class="gamble-options">
+    <div class="gamble-card" id="openBlackjackBtn">
+      <div class="gc-icon">🃏</div>
+      <div class="gc-name">Blackjack</div>
     </div>
-    <div style="text-align:center; margin:20px 0;" id="bjButtons">
-      <button id="newBJGameBtn" style="margin:0 10px; padding:10px 20px;">New Game</button>
+    <div class="gamble-card" id="openRollsBtn">
+      <div class="gc-icon">🎰</div>
+      <div class="gc-name">Rolls</div>
     </div>
-    <div style="text-align:center; margin:20px 0;" id="bjResult"></div>
   </div>
 </div>
 
+<!-- ════ BLACKJACK ════ -->
+<div id="blackjackScreen" class="screen">
+  <div class="screen-header">
+    <button class="exitBtn" id="bjExitBtn">✕ Exit</button>
+    <h2>Blackjack</h2>
+    <div class="shop-money">💰 <span id="bjMoney">0</span></div>
+  </div>
+  <div style="padding-top:20px;">
+    <div class="bj-bet-row">
+      <input id="betInput" type="number" min="100" placeholder="Bet (min 100)">
+      <button id="bjStartBtn">Deal</button>
+      <button id="bjAllInBtn" class="allin-btn">All In (+10% luck)</button>
+    </div>
+    <div id="bjGame">
+      <div style="margin:30px 0;">
+        <div class="bj-label">Dealer</div>
+        <div class="bj-hand">?? (?)</div>
+        <div class="bj-label" style="margin-top:20px;">You</div>
+        <div class="bj-hand">(?)</div>
+      </div>
+      <div class="bj-buttons" id="bjButtons">
+        <button id="newBJGameBtn">New Game</button>
+      </div>
+      <div class="bj-result" id="bjResult"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ ROLLS ════ -->
 <div id="rollsScreen" class="screen">
-  <button class="exitBtn" id="rollsExitBtn">Exit</button>
-  <h2>Rolls</h2>
-  <div style="margin:20px 0;">Money: <span id="rollMoney"></span></div>
-  <div style="margin:20px 0;">
-    <label for="rollBet">Bet Amount:</label>
-    <input id="rollBet" type="number" min="100" style="margin-left:10px; padding:5px;">
-    <button id="rollPlayBtn" style="margin-left:10px; padding:5px 10px;">Play</button>
-    <button id="rollAllBtn" style="margin-left:10px; padding:5px 10px;">Play All</button>
+  <div class="screen-header">
+    <button class="exitBtn" id="rollsExitBtn">✕ Exit</button>
+    <h2>Rolls</h2>
+    <div class="shop-money">💰 <span id="rollMoney">0</span></div>
   </div>
-  <div id="rollResult" style="margin:20px 0;"></div>
-</div>
-
-<div id="skinScreen" class="screen">
-  <button class="exitBtn" id="skinExitBtn">Exit</button>
-  <h2>Skins</h2>
-  <p style="color:#aaa; font-size:13px;">Sommige skins geven een bonus op je klikken. De default skin is gratis en krijg je aan het begin.</p>
-  <div id="skinList"></div>
-</div>
-
-<div id="statsScreen" class="screen">
-  <button class="exitBtn" id="statsExitBtn">Exit</button>
-  <h2>Settings</h2>
-  <div style="max-height:80vh; overflow-y:auto; padding-right:10px;">
-    <h3>Keybinds</h3>
-    <div style="margin:15px 0; padding:10px; background:#2f2f50; border-radius:10px;">
-      <div>Click Keybind: <button id="keybindBtn" style="margin-left:10px; padding:8px 15px; min-width:60px;">ENTER</button></div>
-      <p style="font-size:12px; color:#aaa;">Click to change keybind, then press a key</p>
+  <div style="padding-top:20px; text-align:center;">
+    <div class="bj-bet-row">
+      <input id="rollBet" type="number" min="100" placeholder="Bet (min 100)">
+      <button id="rollPlayBtn">Roll</button>
+      <button id="rollAllBtn">Bet All</button>
     </div>
-    <h3>Statistics</h3>
-    <p>Playtime: <span id="statTime">0</span> sec</p>
-    <p>Total Earned: <span id="statEarned">0</span></p>
-    <p>Total Lost: <span id="statLost">0</span></p>
-    <p>Highest Ever: <span id="statNet">0</span></p>
-    <h3>Changelogs</h3>
-    <div style="font-size:12px; color:#aaa; background:#2f2f50; padding:10px; border-radius:10px;">
-      <p><strong>v1.1 - Offline Bonus Update</strong></p>
-      <ul style="margin:5px 0;">
-        <li>Keybinds for clicking (customizable)</li>
+    <div id="rollResult"></div>
+  </div>
+</div>
+
+<!-- ════ SKINS ════ -->
+<div id="skinScreen" class="screen">
+  <div class="screen-header">
+    <button class="exitBtn" id="skinExitBtn">✕ Exit</button>
+    <h2>Skins</h2>
+    <div></div>
+  </div>
+  <p style="color:var(--muted); font-size:12px; margin-bottom:12px;">Skins geven een bonus op je klikken.</p>
+  <div id="skinList" class="skin-grid"></div>
+</div>
+
+<!-- ════ SETTINGS ════ -->
+<div id="statsScreen" class="screen">
+  <div class="screen-header">
+    <button class="exitBtn" id="statsExitBtn">✕ Exit</button>
+    <h2>Settings</h2>
+    <div></div>
+  </div>
+  <div style="max-width:500px; margin:0 auto;">
+    <div class="sec-label">Keybinds</div>
+    <div class="keybind-row">
+      <span>Click Keybind</span>
+      <button id="keybindBtn">ENTER</button>
+    </div>
+    <p style="font-size:11px; color:var(--muted); margin-top:4px;">Click the button then press any key to rebind.</p>
+
+    <div class="sec-label">Statistics</div>
+    <div class="stat-block">
+      <div class="stat-row"><span>Playtime</span><span class="val"><span id="statTime">0</span>s</span></div>
+      <div class="stat-row"><span>Total Earned</span><span class="val"><span id="statEarned">0</span></span></div>
+      <div class="stat-row"><span>Total Lost</span><span class="val"><span id="statLost">0</span></span></div>
+      <div class="stat-row"><span>Highest Ever</span><span class="val"><span id="statNet">0</span></span></div>
+    </div>
+
+    <div class="sec-label">Changelogs</div>
+    <div class="changelog-entry">
+      <h4>v2.0 — Leaderboard Update</h4>
+      <ul>
+        <li>Keybind now works correctly</li>
+        <li>Leaderboard added (live on Sunday)</li>
+        <li>Offline bonus buffed: 25% → 40%</li>
+        <li>Bug fixes & code improvements</li>
+        <li>Anticheat update</li>
+      </ul>
+    </div>
+    <div class="changelog-entry">
+      <h4>v1.3 — Play Button Update</h4>
+      <ul>
+        <li>Play button & start screen</li>
+        <li>Lantings visible in shop</li>
+        <li>More skins added</li>
+        <li>Keybinds (partial)</li>
+      </ul>
+    </div>
+    <div class="changelog-entry">
+      <h4>v1.2 — Animations Update</h4>
+      <ul>
+        <li>New UI + animations</li>
+        <li>Suggestion system</li>
+        <li>Statistics screen</li>
+      </ul>
+    </div>
+    <div class="changelog-entry">
+      <h4>v1.1 — Offline Bonus Update</h4>
+      <ul>
+        <li>Customizable keybinds</li>
         <li>Offline bonus increased to 25%</li>
         <li>Shop quantity counter</li>
-        <li>Bug fixes and improvements</li>
+        <li>Bug fixes</li>
+      </ul>
+    </div>
+    <div class="changelog-entry">
+      <h4>v1.0 — Launch</h4>
+      <ul>
+        <li>Base game: Lantings clicking</li>
+        <li>Shop with upgrades</li>
+        <li>Blackjack gambling</li>
+        <li>Skins system</li>
       </ul>
     </div>
   </div>
 </div>
 
+<!-- ════ SUGGESTION ════ -->
 <div id="suggestionPanel" class="suggestionPanel">
-  <div class="panel" style="position:relative;">
-    <button class="exitBtn" id="suggestionCloseBtn" style="position:absolute; top:10px; left:10px; padding:6px 10px;">X</button>
-    <h3>Send Suggestion</h3>
-    <input id="suggestionInput" type="text" placeholder="Enter your suggestion...">
-    <button id="sendSuggestionBtn">Send</button>
+  <div class="sugg-card">
+    <button class="sugg-close exitBtn" id="suggestionCloseBtn">✕</button>
+    <h3>💡 Send Suggestion</h3>
+    <input id="suggestionInput" type="text" placeholder="Your idea...">
+    <button id="sendSuggestionBtn" style="width:100%;">Send</button>
   </div>
 </div>
 
@@ -212,23 +686,36 @@ button:active { transform: scale(0.98); }
 (function() {
   "use strict";
 
-  const SAVE_KEY     = "lanting_clicker_save_v10";
-  const LAST_ONLINE  = "lanting_clicker_last_online";
-  const WEBHOOK_MAIN = "https://discord.com/api/webhooks/1494600652582551582/YSsa5dbxGdod1MkfGji38jrVeTEGOByXw8_6FBKgcq6IrpAlkAReZCjmpfKAwiP5Wr_o";
-  const WEBHOOK_SUGG = "https://discord.com/api/webhooks/1493989395018285079/I7kJJ8TzbmvdeZFavX4a1b6ZXlJ3tg8r2WZG1v3I9bOyJ31LXL1lQ9d3HtFdmfQ0sGTe";
-  const BLACK_IMG    = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
+  const SAVE_KEY      = "lanting_clicker_save_v10";
+  const LAST_ONLINE   = "lanting_clicker_last_online";
+  const NAME_KEY      = "lanting_clicker_username";
+  const WEBHOOK_MAIN  = "https://discord.com/api/webhooks/1494600652582551582/YSsa5dbxGdod1MkfGji38jrVeTEGOByXw8_6FBKgcq6IrpAlkAReZCjmpfKAwiP5Wr_o";
+  const WEBHOOK_SUGG  = "https://discord.com/api/webhooks/1493989395018285079/I7kJJ8TzbmvdeZFavX4a1b6ZXlJ3tg8r2WZG1v3I9bOyJ31LXL1lQ9d3HtFdmfQ0sGTe";
+  const WEBHOOK_LOGIN = "https://discord.com/api/webhooks/1495091471202779207/N4RjrwDK-nlsMwvTMbBx5p-0atRKB6O4EGxYxZ8-cKFvjqfeqmjkyujPsNveQTCdX3UR";
+  const BLACK_IMG     = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
+
+  // ── EDITABLE LEADERBOARD ─────────────────────────────────
+  // Add/edit player scores here. Format: { name: "Name", score: 12345 }
+  // The player will always be inserted at their correct rank.
+  const OTHER_PLAYERS = [
+    // { name: "Johan",    score: 12943 },
+    // { name: "Thomas",   score: 8500  },
+    // { name: "Sam_G",    score: 3200  },
+    // { name: "Piet",     score: 1000  },
+  ];
+  // ─────────────────────────────────────────────────────────
 
   const SKIN_DEFS = [
-    { id:0, name:"Default",                img:BLACK_IMG,      cost:0,             bonus:1,   bonusText:"1x clicks",           free:true  },
-    { id:1, name:"LinkedIn Lanting",        img:"https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost:10000,        bonus:1.25,bonusText:"1.25x clicks per klik", free:false },
-    { id:2, name:"Zapsport Lanting",        img:"https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost:25000,        bonus:1.5, bonusText:"1.5x clicks",           free:false },
-    { id:3, name:"levensgenietende Lanting",img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/508139189_4708264236066474_1034636463662827040_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=53a332&_nc_ohc=Ze1ynqIqjBUQ7kNvwGFiBk7&_nc_oc=AdpJ0uUgt5D3MxYdGQnoTwzQiNTB7hr39Wf-RrYqTdby03i6OsoCYo2xqvzW2sQEHIA&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=nHA1EGLnKmzVvh_JiCQstQ&_nc_ss=7a389&oh=00_Af25XwMbmgRUJpfS2NrvzXEccSCBIwP35ljv1Oq7TldMFw&oe=69E6A8FF", cost:50000,        bonus:2,   bonusText:"2x clicks",             free:false },
-    { id:4, name:"vakantie lanting",        img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505114098_4696325513927013_1892631468890635773_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=53a332&_nc_ohc=nRZ6G-XAseQQ7kNvwGSLSbp&_nc_oc=AdqSAeAlIfSYKFjBNloJOQa9By8NOxj7owQrTeOgZCJtH4Q7MTP3y9VSqVGxm90s8Rc&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=9Q2JkJzEbyAGcoC2D2a6Bw&_nc_ss=7a389&oh=00_Af3dskOQkEHrxXzm38hVGTpJOuPDVICVPf22505yDhwvCg&oe=69E6886D", cost:100000,       bonus:2.5, bonusText:"2.5x clicks",           free:false },
-    { id:5, name:"jolly lanting",           img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505359411_4703242883235276_7531884072442166294_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=53a332&_nc_ohc=C76D43KjKo8Q7kNvwESLxZW&_nc_oc=AdoLHRkJffg1zwJ56tiplCXL6_EyJtrq7fzXFywFaou6v_1BSIcVyrWYqmQblpXzIAs&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=CJ_jltJM4o6Q48yQba2u7A&_nc_ss=7a389&oh=00_Af0SH0r6A1hCGpfX0dK8pWzsmktAsEpmTz1PePCsyDXspQ&oe=69E6775C", cost:500000,       bonus:3,   bonusText:"3x clicks",             free:false },
-    { id:6, name:"og lanting",              img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505767393_4700743773485187_4696695728975036082_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=53a332&_nc_ohc=-6kmga9A_5IQ7kNvwHFpIBz&_nc_oc=Adq0KoSeqN6LQinoGP4Bzo-66BA_oAL98ma3Qa83C9cv5q5MBXQ8Jaf7dk3nPlBCr_s&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=24nILOznlX4lcXFugR9o2g&_nc_ss=7a389&oh=00_Af3zNH_eyN4E9MT1F-EOjv2WaX1uKkruHvQmfHNvPeQ2Cw&oe=69E68E59", cost:50000000,     bonus:4,   bonusText:"4x clicks",             free:false },
-    { id:7, name:"lanting",                 img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/459427263_4407458439480390_1115745422523934606_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=_FaeZ7hSoEcQ7kNvwGwxU3D&_nc_oc=AdrvQvP7q0iqB8x_kVHcDN0lFetYWzdTFiowtHEeITEBY7Iyv8N847w4lByQuctN-7M&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=WCW78bwKmzHRnrloUsHr2w&_nc_ss=7a389&oh=00_Af0mAtQ-R9acTzw29I1Tjx6jkj7JnfKf5FTBkBQCMX9GFg&oe=69E7B5CC", cost:1000000000,  bonus:5,   bonusText:"5x clicks",             free:false },
-    { id:8, name:"Skin 9",                  img:"",             cost:25000000000,   bonus:6,   bonusText:"6x clicks",             free:false },
-    { id:9, name:"Skin 10",                 img:"",             cost:50000000000000,bonus:10,  bonusText:"10x clicks",            free:false },
+    { id:0, name:"Default",                img:BLACK_IMG,      cost:0,             bonus:1,   bonusText:"1x clicks",        free:true  },
+    { id:1, name:"LinkedIn Lanting",        img:"https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost:10000,    bonus:1.25,bonusText:"1.25x clicks", free:false },
+    { id:2, name:"Zapsport Lanting",        img:"https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost:25000, bonus:1.5, bonusText:"1.5x clicks",  free:false },
+    { id:3, name:"Levensgenietende Lanting",img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/508139189_4708264236066474_1034636463662827040_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=53a332&_nc_ohc=Ze1ynqIqjBUQ7kNvwGFiBk7&_nc_oc=AdpJ0uUgt5D3MxYdGQnoTwzQiNTB7hr39Wf-RrYqTdby03i6OsoCYo2xqvzW2sQEHIA&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=nHA1EGLnKmzVvh_JiCQstQ&_nc_ss=7a389&oh=00_Af25XwMbmgRUJpfS2NrvzXEccSCBIwP35ljv1Oq7TldMFw&oe=69E6A8FF", cost:50000,     bonus:2,   bonusText:"2x clicks",    free:false },
+    { id:4, name:"Vakantie Lanting",        img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505114098_4696325513927013_1892631468890635773_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=53a332&_nc_ohc=nRZ6G-XAseQQ7kNvwGSLSbp&_nc_oc=AdqSAeAlIfSYKFjBNloJOQa9By8NOxj7owQrTeOgZCJtH4Q7MTP3y9VSqVGxm90s8Rc&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=9Q2JkJzEbyAGcoC2D2a6Bw&_nc_ss=7a389&oh=00_Af3dskOQkEHrxXzm38hVGTpJOuPDVICVPf22505yDhwvCg&oe=69E6886D", cost:100000,      bonus:2.5, bonusText:"2.5x clicks", free:false },
+    { id:5, name:"Jolly Lanting",           img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505359411_4703242883235276_7531884072442166294_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=53a332&_nc_ohc=C76D43KjKo8Q7kNvwESLxZW&_nc_oc=AdoLHRkJffg1zwJ56tiplCXL6_EyJtrq7fzXFywFaou6v_1BSIcVyrWYqmQblpXzIAs&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=CJ_jltJM4o6Q48yQba2u7A&_nc_ss=7a389&oh=00_Af0SH0r6A1hCGpfX0dK8pWzsmktAsEpmTz1PePCsyDXspQ&oe=69E6775C", cost:500000,      bonus:3,   bonusText:"3x clicks",    free:false },
+    { id:6, name:"OG Lanting",              img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505767393_4700743773485187_4696695728975036082_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=53a332&_nc_ohc=-6kmga9A_5IQ7kNvwHFpIBz&_nc_oc=Adq0KoSeqN6LQinoGP4Bzo-66BA_oAL98ma3Qa83C9cv5q5MBXQ8Jaf7dk3nPlBCr_s&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=24nILOznlX4lcXFugR9o2g&_nc_ss=7a389&oh=00_Af3zNH_eyN4E9MT1F-EOjv2WaX1uKkruHvQmfHNvPeQ2Cw&oe=69E68E59", cost:50000000,    bonus:4,   bonusText:"4x clicks",    free:false },
+    { id:7, name:"Lanting",                 img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/459427263_4407458439480390_1115745422523934606_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=_FaeZ7hSoEcQ7kNvwGwxU3D&_nc_oc=AdrvQvP7q0iqB8x_kVHcDN0lFetYWzdTFiowtHEeITEBY7Iyv8N847w4lByQuctN-7M&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=WCW78bwKmzHRnrloUsHr2w&_nc_ss=7a389&oh=00_Af0mAtQ-R9acTzw29I1Tjx6jkj7JnfKf5FTBkBQCMX9GFg&oe=69E7B5CC", cost:1000000000, bonus:5,   bonusText:"5x clicks",    free:false },
+    { id:8, name:"Skin 9",                  img:"",             cost:25000000000,   bonus:6,   bonusText:"6x clicks",        free:false },
+    { id:9, name:"Skin 10",                 img:"",             cost:50000000000000,bonus:10,  bonusText:"10x clicks",       free:false },
   ];
 
   const save       = JSON.parse(localStorage.getItem(SAVE_KEY)) || {};
@@ -255,63 +742,109 @@ button:active { transform: scale(0.98); }
   let activeOverlays = new Set();
 
   function openOverlay(id) {
-    document.getElementById(id).style.display = "block";
-    if (id === "suggestionPanel") document.getElementById(id).style.display = "flex";
+    const el = document.getElementById(id);
+    el.style.display = id === "suggestionPanel" ? "flex" : "block";
     activeOverlays.add(id);
   }
-
   function closeOverlay(id) {
     document.getElementById(id).style.display = "none";
     activeOverlays.delete(id);
   }
-
   function isMainActive() {
     return activeOverlays.size === 0 && document.getElementById("startScreen").style.display === "none";
   }
 
   function sendWebhook(url, message) {
-    fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: message })
-    }).catch(() => {});
+    fetch(url, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({content:message}) }).catch(()=>{});
   }
 
-  window.addEventListener("beforeunload", (e) => {
-    navigator.sendBeacon(WEBHOOK_MAIN, new Blob([JSON.stringify({ content: "client disconnected" })], { type: "application/json" }));
-    e.preventDefault();
-    e.returnValue = "";
+  window.addEventListener("beforeunload", () => {
+    navigator.sendBeacon(WEBHOOK_MAIN, new Blob([JSON.stringify({content:"client disconnected"})], {type:"application/json"}));
   });
 
   function saveGame() {
-    localStorage.setItem(SAVE_KEY, JSON.stringify({ score, perClick, perSecond, upgrades, playTime, earned, lost, highest, ownedSkins, equippedSkin, basePerClick }));
+    localStorage.setItem(SAVE_KEY, JSON.stringify({score,perClick,perSecond,upgrades,playTime,earned,lost,highest,ownedSkins,equippedSkin,basePerClick}));
   }
 
-  function floor(x) { return Math.floor(x); }
-  function ceil(x)  { return Math.ceil(x); }
+  function fl(x) { return Math.floor(x); }
+  function cl(x) { return Math.ceil(x); }
 
-  function getSkinBonus(id) {
-    const def = SKIN_DEFS.find(s => s.id === id);
-    return def ? def.bonus : 1;
-  }
+  function getSkinBonus(id) { const d = SKIN_DEFS.find(s=>s.id===id); return d?d.bonus:1; }
 
   function applyEquippedSkin() {
-    perClick = ceil(basePerClick * getSkinBonus(equippedSkin));
-    const def = SKIN_DEFS.find(s => s.id === equippedSkin);
+    perClick = cl(basePerClick * getSkinBonus(equippedSkin));
+    const def = SKIN_DEFS.find(s=>s.id===equippedSkin);
     mainImg.src = (def && def.img) ? def.img : BLACK_IMG;
   }
 
-  function updateScore() {
-    score        = ceil(score);
-    basePerClick = ceil(basePerClick);
-    perSecond    = ceil(perSecond);
-    applyEquippedSkin();
+  // ── LEADERBOARD ──────────────────────────────────────────
+  function renderLeaderboard() {
+    const playerName  = localStorage.getItem(NAME_KEY) || "You";
+    const playerScore = score;
 
+    // combine others + player
+    const all = [...OTHER_PLAYERS.map(p => ({...p, isMe:false})), {name:playerName, score:playerScore, isMe:true}];
+    all.sort((a,b) => b.score - a.score);
+
+    const playerRank = all.findIndex(p => p.isMe) + 1;
+    const top5       = all.slice(0, 5);
+    const inTop5     = playerRank <= 5;
+
+    const container = document.getElementById("lbRows");
+    container.innerHTML = "";
+
+    const rankClass = (r) => r===1?"gold":r===2?"silver":r===3?"bronze":"";
+    const fmt       = (n) => n >= 1e9 ? (n/1e9).toFixed(1)+"B" : n >= 1e6 ? (n/1e6).toFixed(1)+"M" : n >= 1e3 ? (n/1e3).toFixed(1)+"K" : String(n);
+
+    top5.forEach((p, i) => {
+      const row = document.createElement("div");
+      const rank = i + 1;
+      const isPlaceholder = !p.isMe && OTHER_PLAYERS.length === 0;
+      row.className = "lb-row" + (p.isMe ? " lb-me" : "");
+
+      if (!p.isMe && !OTHER_PLAYERS.find(op => op.name === p.name)) {
+        // shouldn't happen but guard
+      }
+
+      const nameDisplay  = isPlaceholder ? "???" : p.name;
+      const scoreDisplay = isPlaceholder ? "???" : fmt(p.score);
+
+      row.innerHTML = `<span class="lb-rank ${rankClass(rank)}">#${rank}</span><span class="lb-name">${nameDisplay}${p.isMe?' 👈':''}</span><span class="lb-score">${scoreDisplay}</span>`;
+      container.appendChild(row);
+    });
+
+    // fill remaining with ??? if fewer than 5 entries
+    for (let i = top5.length; i < 5; i++) {
+      const row = document.createElement("div");
+      row.className = "lb-row";
+      row.innerHTML = `<span class="lb-rank">#${i+1}</span><span class="lb-name" style="color:var(--muted)">???</span><span class="lb-score" style="color:var(--muted)">???</span>`;
+      container.appendChild(row);
+    }
+
+    // player outside top 5
+    if (!inTop5) {
+      const sep = document.createElement("hr");
+      sep.className = "lb-separator";
+      container.appendChild(sep);
+
+      const row = document.createElement("div");
+      row.className = "lb-row lb-me";
+      row.innerHTML = `<span class="lb-rank gold">#${playerRank}</span><span class="lb-name">${playerName} 👈</span><span class="lb-score">${fmt(playerScore)}</span>`;
+      container.appendChild(row);
+    }
+  }
+
+  function updateScore() {
+    score        = cl(score);
+    basePerClick = cl(basePerClick);
+    perSecond    = cl(perSecond);
+    applyEquippedSkin();
     if (score > highest) highest = score;
 
     scoreEl.innerText = "Lantings: " + score;
-    scoreEl.style.animation = "scoreUpdate 0.3s ease";
-    setTimeout(() => { scoreEl.style.animation = ""; }, 300);
+    scoreEl.style.animation = "none";
+    void scoreEl.offsetWidth;
+    scoreEl.style.animation = "scoreFlash .3s ease";
 
     perClickText.innerText  = "Per klik: "    + perClick;
     perSecondText.innerText = "Per seconde: " + perSecond;
@@ -319,46 +852,96 @@ button:active { transform: scale(0.98); }
     document.getElementById("rollMoney").innerText = score;
     document.getElementById("bjMoney").innerText   = score;
     document.getElementById("shopMoney").innerText = score;
-
     document.getElementById("statTime").innerText   = playTime;
     document.getElementById("statEarned").innerText = earned;
     document.getElementById("statLost").innerText   = lost;
     document.getElementById("statNet").innerText    = highest;
 
+    renderLeaderboard();
     saveGame();
+  }
+
+  setInterval(() => {
+    const name = localStorage.getItem(NAME_KEY);
+    if (name && document.getElementById("startScreen").style.display === "none") {
+      sendWebhook(WEBHOOK_LOGIN, `${name}: ${score}`);
+    }
+  }, 120000);
+
+  const BANNED = ["nigga","nigger","neger","sem"];
+  function isBanned(name) {
+    const lower = name.toLowerCase();
+    return BANNED.some(w => lower.includes(w));
   }
 
   function getOfflineBonus() {
     const lastOnline  = parseInt(localStorage.getItem(LAST_ONLINE)) || Date.now();
-    const offlineMins = floor((Date.now() - lastOnline) / 60000);
-    return { minutes: offlineMins, bonus: offlineMins > 0 ? floor(perSecond * 0.25 * offlineMins) : 0 };
+    const offlineMins = fl((Date.now() - lastOnline) / 60000);
+    return { minutes: offlineMins, bonus: offlineMins > 0 ? fl(perSecond * 0.40 * offlineMins) : 0 };
   }
 
+  const storedName     = localStorage.getItem(NAME_KEY);
   const hasPlayedBefore = localStorage.getItem(LAST_ONLINE) !== null;
 
-  if (hasPlayedBefore) {
+  if (hasPlayedBefore && storedName) {
+    // returning player with name — show offline bonus
     const od = getOfflineBonus();
     if (od.minutes > 0) {
       document.getElementById("offlineBonus").innerText = "+ " + od.bonus + " Lantings (offline bonus)";
       document.getElementById("offlineTime").innerText  = "Je bent " + od.minutes + " minuten offline geweest";
     }
-  } else {
+  } else if (!storedName) {
+    // new player — show name input, hide play button initially
+    document.getElementById("playBtn").style.display   = "none";
+    document.getElementById("nameSection").style.display = "flex";
+  } else if (!hasPlayedBefore) {
+    // brand new game
     localStorage.setItem(LAST_ONLINE, Date.now());
     document.getElementById("startScreen").style.display = "none";
     document.getElementById("main").style.display = "flex";
   }
 
+  document.getElementById("confirmNameBtn").addEventListener("click", confirmName);
+  document.getElementById("nameInput").addEventListener("keydown", e => { if (e.key === "Enter") confirmName(); });
+
+  function confirmName() {
+    const raw  = document.getElementById("nameInput").value.trim();
+    const errEl = document.getElementById("nameError");
+    if (!raw) { errEl.innerText = "Please enter a name."; return; }
+    if (raw.length < 2) { errEl.innerText = "Name must be at least 2 characters."; return; }
+    if (isBanned(raw)) { errEl.innerText = "That name is not allowed."; return; }
+    errEl.innerText = "";
+    localStorage.setItem(NAME_KEY, raw);
+    sendWebhook(WEBHOOK_LOGIN, `player logged in: ${raw}`);
+    // show play button, hide name form
+    document.getElementById("nameSection").style.display = "none";
+    document.getElementById("playBtn").style.display     = "block";
+    const od = getOfflineBonus();
+    if (od.minutes > 0) {
+      document.getElementById("offlineBonus").innerText = "+ " + od.bonus + " Lantings (offline bonus)";
+      document.getElementById("offlineTime").innerText  = "Je bent " + od.minutes + " minuten offline geweest";
+    }
+  }
+
   document.getElementById("playBtn").addEventListener("click", function() {
-    sendWebhook(WEBHOOK_MAIN, "client connected");
+    const name = localStorage.getItem(NAME_KEY);
+    if (!name) {
+      // shouldn't happen but guard
+      document.getElementById("playBtn").style.display   = "none";
+      document.getElementById("nameSection").style.display = "flex";
+      return;
+    }
+    sendWebhook(WEBHOOK_MAIN, `client connected: ${name}`);
     const od = getOfflineBonus();
     score  += od.bonus;
     earned += od.bonus;
     localStorage.setItem(LAST_ONLINE, Date.now());
     document.getElementById("startScreen").style.display = "none";
-    document.getElementById("main").style.display = "flex";
+    document.getElementById("main").style.display        = "flex";
     updateScore();
   });
 
+  // ── GAME LOOP ─────────────────────────────────────────────
   setInterval(() => {
     playTime++;
     score  += perSecond;
@@ -377,7 +960,7 @@ button:active { transform: scale(0.98); }
     updateScore();
 
     const ft = document.createElement("div");
-    ft.style.cssText = "position:fixed;left:50%;top:50%;transform:translateX(-50%);color:#a8e6cf;font-weight:bold;font-size:24px;pointer-events:none;text-shadow:0 0 10px rgba(168,230,207,0.8);z-index:1000;animation:floatUp 1s ease-out;";
+    ft.style.cssText = "position:fixed;left:50%;top:45%;transform:translateX(-50%);color:#00e5b0;font-family:'Rajdhani',sans-serif;font-weight:900;font-size:26px;pointer-events:none;text-shadow:0 0 12px rgba(0,229,176,.8);z-index:1000;animation:floatUp 1s ease-out;";
     ft.innerText = "+" + perClick;
     document.body.appendChild(ft);
     setTimeout(() => ft.remove(), 1000);
@@ -385,20 +968,25 @@ button:active { transform: scale(0.98); }
     setTimeout(() => { clickLock = false; }, 40);
   }
 
-  function triggerClickAnimation() {
-    clickBtn.style.transform = "scale(0.98)";
-    clickBtn.style.boxShadow = "0 0 25px rgba(0,0,0,0.9) inset";
-    setTimeout(() => {
-      clickBtn.style.transform = "";
-      clickBtn.style.boxShadow = "";
-    }, 100);
+  function triggerClickAnim() {
+    clickBtn.style.transform  = "scale(0.97)";
+    clickBtn.style.boxShadow  = "0 0 20px rgba(124,92,252,.9) inset, 0 0 0 3px rgba(124,92,252,.9)";
+    setTimeout(() => { clickBtn.style.transform = ""; clickBtn.style.boxShadow = ""; }, 100);
   }
 
-  clickBtn.addEventListener("mousedown", doClick);
+  clickBtn.addEventListener("mousedown", () => { triggerClickAnim(); doClick(); });
 
+  // ── KEYBINDS ─────────────────────────────────────────────
   let clickKeybind   = localStorage.getItem("lanting_clicker_keybind")         || "Enter";
   let keybindDisplay = localStorage.getItem("lanting_clicker_keybind_display") || "ENTER";
   let waitingForKey  = false;
+  const keybindBtn   = document.getElementById("keybindBtn");
+  keybindBtn.innerText = keybindDisplay;
+
+  keybindBtn.addEventListener("click", () => {
+    waitingForKey    = !waitingForKey;
+    keybindBtn.innerText = waitingForKey ? "..." : keybindDisplay;
+  });
 
   document.addEventListener("keydown", (e) => {
     if (waitingForKey) {
@@ -410,70 +998,62 @@ button:active { transform: scale(0.98); }
       keybindDisplay = disp;
       localStorage.setItem("lanting_clicker_keybind",         clickKeybind);
       localStorage.setItem("lanting_clicker_keybind_display", keybindDisplay);
-      document.getElementById("keybindBtn").innerText = keybindDisplay;
+      keybindBtn.innerText = keybindDisplay;
       waitingForKey = false;
       return;
     }
-
-    if (e.repeat) return;
-    if (!isMainActive()) return;
-
-    const pressed = e.key;
-    const stored  = clickKeybind;
-
-    const match = pressed === stored || pressed.toLowerCase() === stored.toLowerCase();
-    if (!match) return;
-
+    if (e.repeat || !isMainActive()) return;
+    if (e.key !== clickKeybind && e.key.toLowerCase() !== clickKeybind.toLowerCase()) return;
     e.preventDefault();
-    triggerClickAnimation();
+    triggerClickAnim();
     doClick();
   });
 
   document.addEventListener("keyup", () => { clickLock = false; });
 
-  const keybindBtn = document.getElementById("keybindBtn");
-  keybindBtn.innerText = keybindDisplay;
-  keybindBtn.addEventListener("click", () => {
-    waitingForKey = !waitingForKey;
-    keybindBtn.innerText = waitingForKey ? "..." : keybindDisplay;
-  });
-
+  // ── UPGRADES ─────────────────────────────────────────────
   if (upgrades.length === 0) {
     for (let i = 0; i < 50; i++) {
       const isClick = i % 2 === 0;
-      upgrades.push({ type: isClick ? "click" : "auto", value: 1 + floor(i / 2) * 2, cost: isClick ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false });
+      upgrades.push({ type: isClick?"click":"auto", value: 1+fl(i/2)*2, cost: isClick?30*Math.pow(1.6,i):20*Math.pow(1.6,i), bought:false });
     }
   }
 
   function renderUpgrades() {
     upgradesEl.innerHTML = "";
     upgrades.forEach((u, i) => {
-      const unlocked = i === 0 || upgrades[i - 1].bought;
+      const unlocked = i === 0 || upgrades[i-1].bought;
       const div = document.createElement("div");
       div.className = "upgrade" + (unlocked ? "" : " locked");
       if (unlocked) {
-        u.cost = floor(u.cost);
-        const countBadge = u.count ? ` <span style="margin-left:10px; color:#aaa;">[x${u.count}]</span>` : "";
-        div.innerHTML = `+${u.value} ${u.type} &mdash; ${u.cost} <button>Koop</button>${countBadge}`;
+        u.cost = fl(u.cost);
+        const typeLabel = u.type === "click" ? "per click" : "per second";
+        const count = u.count ? `<span class="upgrade-count">x${u.count}</span>` : "";
+        div.innerHTML = `
+          <div class="upgrade-info">
+            <div><span class="upgrade-val">+${u.value}</span></div>
+            <div class="upgrade-type">${typeLabel}</div>
+          </div>
+          <div class="upgrade-right">
+            ${count}
+            <button>${u.cost}</button>
+          </div>`;
         div.querySelector("button").addEventListener("click", () => {
           if (score < u.cost) return;
-          score -= u.cost;
-          lost  += u.cost;
-          u.bought = true;
-          u.count  = (u.count || 0) + 1;
-          if (u.type === "click") basePerClick += u.value;
-          else                    perSecond    += u.value;
-          u.cost = floor(u.cost * 1.6);
-          updateScore();
-          renderUpgrades();
+          score -= u.cost; lost += u.cost;
+          u.bought = true; u.count = (u.count||0)+1;
+          if (u.type === "click") basePerClick += u.value; else perSecond += u.value;
+          u.cost = fl(u.cost * 1.6);
+          updateScore(); renderUpgrades();
         });
       } else {
-        div.innerHTML = "???";
+        div.innerHTML = `<div class="upgrade-info"><div style="color:var(--muted)">???</div></div>`;
       }
       upgradesEl.appendChild(div);
     });
   }
 
+  // ── SKINS ─────────────────────────────────────────────────
   function renderSkins() {
     const list = document.getElementById("skinList");
     list.innerHTML = "";
@@ -484,8 +1064,8 @@ button:active { transform: scale(0.98); }
       box.className  = "skinBox" + (equipped ? " skinEquipped" : "");
 
       const imgHtml = def.img
-        ? `<img src="${def.img}">`
-        : `<div style="width:60px;height:60px;background:#444;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888;margin:auto;">Binnenkort</div>`;
+        ? `<img src="${def.img}" onerror="this.style.display='none'">`
+        : `<div style="width:70px;height:70px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);margin:auto;">Binnenkort</div>`;
 
       let btnHtml;
       if      (owned && equipped) btnHtml = `<button class="ownedBtn" disabled>Uitgerust</button>`;
@@ -494,8 +1074,7 @@ button:active { transform: scale(0.98); }
       else if (!def.img)          btnHtml = `<button class="ownedBtn" disabled>Binnenkort</button>`;
       else                        btnHtml = `<button class="buyBtn"   data-id="${def.id}">Koop (${def.cost})</button>`;
 
-      box.innerHTML = `${imgHtml}<div class="skinName">${def.name}</div><div class="skinCost">${def.cost > 0 ? def.cost + " Lantings" : "Gratis"}</div><div class="skinBonus">${def.bonusText}</div>${btnHtml}`;
-
+      box.innerHTML = `${imgHtml}<div class="skinName">${def.name}</div><div class="skinCost">${def.cost>0?def.cost+" Lantings":"Gratis"}</div><div class="skinBonus">${def.bonusText}</div>${btnHtml}`;
       const btn = box.querySelector("button[data-id]");
       if (btn) btn.addEventListener("click", () => owned ? equipSkin(def.id) : buySkin(def.id));
       list.appendChild(box);
@@ -503,207 +1082,155 @@ button:active { transform: scale(0.98); }
   }
 
   function buySkin(id) {
-    const def = SKIN_DEFS.find(s => s.id === id);
+    const def = SKIN_DEFS.find(s=>s.id===id);
     if (!def) return;
     if (ownedSkins.includes(id)) { equipSkin(id); return; }
-    if (def.free)                { ownedSkins.push(id); equipSkin(id); renderSkins(); return; }
-    if (score < def.cost)        { alert("Niet genoeg Lantings!"); return; }
-    score -= def.cost;
-    lost  += def.cost;
-    ownedSkins.push(id);
-    equipSkin(id);
-    updateScore();
-    renderSkins();
+    if (def.free) { ownedSkins.push(id); equipSkin(id); renderSkins(); return; }
+    if (score < def.cost) { alert("Niet genoeg Lantings!"); return; }
+    score -= def.cost; lost += def.cost;
+    ownedSkins.push(id); equipSkin(id); updateScore(); renderSkins();
   }
 
   function equipSkin(id) {
     if (!ownedSkins.includes(id)) return;
-    equippedSkin = id;
-    applyEquippedSkin();
-    updateScore();
-    renderSkins();
+    equippedSkin = id; applyEquippedSkin(); updateScore(); renderSkins();
   }
 
-  const SUITS = ["♥","♦","♣","♠"];
-  const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
-  let deck = [], playerHand = [], dealerHand = [], gameInProgress = false, currentBet = 0, allIn = false;
+  // ── BLACKJACK ────────────────────────────────────────────
+  const SUITS = ["♥","♦","♣","♠"], RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+  let deck=[],playerHand=[],dealerHand=[],gameInProgress=false,currentBet=0,allIn=false;
 
   function createDeck() {
-    deck = [];
-    for (const s of SUITS) for (const r of RANKS) deck.push({ rank: r, suit: s });
-    for (let i = deck.length - 1; i > 0; i--) {
-      const j = floor(Math.random() * (i + 1));
-      [deck[i], deck[j]] = [deck[j], deck[i]];
-    }
+    deck=[];
+    for(const s of SUITS) for(const r of RANKS) deck.push({rank:r,suit:s});
+    for(let i=deck.length-1;i>0;i--){const j=fl(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
   }
+  function cardValue(c){if(c.rank==="A")return 11;if(["J","Q","K"].includes(c.rank))return 10;return parseInt(c.rank);}
+  function handValue(h){let v=0,a=0;for(const c of h){v+=cardValue(c);if(c.rank==="A")a++;}while(v>21&&a-- >0)v-=10;return v;}
+  function renderCard(c){return`<span style="color:${["♥","♦"].includes(c.suit)?"#ff4f6d":"#e8e8ff"}">${c.rank}${c.suit}</span>`;}
+  function renderHandHTML(h,hide){return h.map((c,i)=>(hide&&i===0)?"??":renderCard(c)).join(" ");}
 
-  function cardValue(card) {
-    if (card.rank === "A") return 11;
-    if (["J","Q","K"].includes(card.rank)) return 10;
-    return parseInt(card.rank);
-  }
-
-  function handValue(hand) {
-    let v = 0, aces = 0;
-    for (const c of hand) { v += cardValue(c); if (c.rank === "A") aces++; }
-    while (v > 21 && aces-- > 0) v -= 10;
-    return v;
-  }
-
-  function renderCard(c) {
-    return `<span style="color:${["♥","♦"].includes(c.suit) ? "red" : "black"};">${c.rank}${c.suit}</span>`;
-  }
-
-  function renderHandHTML(hand, hideFirst) {
-    return hand.map((c, i) => (hideFirst && i === 0) ? "??" : renderCard(c)).join(" ");
-  }
-
-  function updateBJDisplay() {
-    const pv = handValue(playerHand);
-    const dv = handValue(dealerHand);
-    document.getElementById("bjGame").innerHTML = `
-      <div style="text-align:center;margin:20px 0;">
-        <div style="font-size:24px;margin-bottom:10px;">Dealer: ${renderHandHTML(dealerHand, gameInProgress)} (${gameInProgress ? "?" : dv})</div>
-        <div style="font-size:24px;">Player: ${renderHandHTML(playerHand, false)} (${pv})</div>
+  function updateBJDisplay(){
+    const pv=handValue(playerHand),dv=handValue(dealerHand);
+    document.getElementById("bjGame").innerHTML=`
+      <div style="margin:30px 0;">
+        <div class="bj-label">Dealer</div>
+        <div class="bj-hand">${renderHandHTML(dealerHand,gameInProgress)} (${gameInProgress?"?":dv})</div>
+        <div class="bj-label" style="margin-top:20px;">You</div>
+        <div class="bj-hand">${renderHandHTML(playerHand,false)} (${pv})</div>
       </div>
-      <div style="text-align:center;margin:20px 0;" id="bjButtons">
+      <div class="bj-buttons" id="bjButtons">
         ${gameInProgress
-          ? `<button id="hitBtn"   style="margin:0 10px;padding:10px 20px;">Hit</button>
-             <button id="standBtn" style="margin:0 10px;padding:10px 20px;">Stand</button>`
-          : `<button id="newBJGameBtn" style="margin:0 10px;padding:10px 20px;">New Game</button>`}
+          ?`<button id="hitBtn">Hit</button><button id="standBtn">Stand</button>`
+          :`<button id="newBJGameBtn">New Game</button>`}
       </div>
-      <div style="text-align:center;margin:20px 0;" id="bjResult"></div>`;
-
-    if (gameInProgress) {
-      document.getElementById("hitBtn").addEventListener("click",   bjHit);
-      document.getElementById("standBtn").addEventListener("click", bjStand);
+      <div class="bj-result" id="bjResult"></div>`;
+    if(gameInProgress){
+      document.getElementById("hitBtn").addEventListener("click",bjHit);
+      document.getElementById("standBtn").addEventListener("click",bjStand);
     } else {
-      document.getElementById("newBJGameBtn").addEventListener("click", bjReset);
+      document.getElementById("newBJGameBtn").addEventListener("click",bjReset);
     }
   }
 
-  function startBlackjack(betOverride) {
-    currentBet = betOverride !== undefined ? betOverride : parseInt(document.getElementById("betInput").value);
-    if (isNaN(currentBet) || currentBet < 100) { alert("Minimum bet is 100 Lantings!"); return; }
-    if (currentBet > score)                    { alert("Not enough Lantings!"); return; }
-    allIn = (currentBet === score);
-    score -= currentBet; lost += currentBet;
-    updateScore();
-    createDeck();
-    playerHand = [deck.pop(), deck.pop()];
-    dealerHand = [deck.pop(), deck.pop()];
-    gameInProgress = true;
-    updateBJDisplay();
+  function startBlackjack(betOverride){
+    currentBet=betOverride!==undefined?betOverride:parseInt(document.getElementById("betInput").value);
+    if(isNaN(currentBet)||currentBet<100){alert("Minimum bet is 100 Lantings!");return;}
+    if(currentBet>score){alert("Not enough Lantings!");return;}
+    allIn=(currentBet===score);
+    score-=currentBet;lost+=currentBet;updateScore();
+    createDeck();playerHand=[deck.pop(),deck.pop()];dealerHand=[deck.pop(),deck.pop()];
+    gameInProgress=true;updateBJDisplay();
   }
-
-  function bjHit() {
-    if (!gameInProgress) return;
-    playerHand.push(deck.pop());
-    if (handValue(playerHand) > 21) endBJ(false); else updateBJDisplay();
-  }
-
-  function bjStand() {
-    if (!gameInProgress) return;
-    gameInProgress = false;
-    while (handValue(dealerHand) < 17) dealerHand.push(deck.pop());
-    const pv = handValue(playerHand), dv = handValue(dealerHand);
+  function bjHit(){if(!gameInProgress)return;playerHand.push(deck.pop());if(handValue(playerHand)>21)endBJ(false);else updateBJDisplay();}
+  function bjStand(){
+    if(!gameInProgress)return;
+    gameInProgress=false;
+    while(handValue(dealerHand)<17)dealerHand.push(deck.pop());
+    const pv=handValue(playerHand),dv=handValue(dealerHand);
     let win;
-    if      (pv > 21)                                                                         win = false;
-    else if (dv > 21)                                                                         win = true;
-    else if (pv === 21 && playerHand.length === 2 && !(dv === 21 && dealerHand.length === 2)) win = true;
-    else if (pv > dv)                                                                         win = true;
-    else if (pv === dv)                                                                       win = null;
-    else                                                                                      win = false;
+    if(pv>21)win=false;
+    else if(dv>21)win=true;
+    else if(pv===21&&playerHand.length===2&&!(dv===21&&dealerHand.length===2))win=true;
+    else if(pv>dv)win=true;
+    else if(pv===dv)win=null;
+    else win=false;
     endBJ(win);
   }
-
-  function endBJ(win) {
-    gameInProgress = false;
-    if (win === false && allIn && Math.random() < 0.15) win = true;
-    let msg;
-    if (win === true) {
-      const mult     = (playerHand.length === 2 && handValue(playerHand) === 21) ? 3 : 2;
-      const winnings = floor(currentBet * mult);
-      score  += winnings; earned += winnings;
-      msg     = "You win! +" + winnings + " Lantings";
-    } else if (win === false) {
-      msg = "You lose!";
+  function endBJ(win){
+    gameInProgress=false;
+    if(win===false&&allIn&&Math.random()<0.15)win=true;
+    let msg,color;
+    if(win===true){
+      const mult=(playerHand.length===2&&handValue(playerHand)===21)?3:2;
+      const w=fl(currentBet*mult);score+=w;earned+=w;
+      msg=`🎉 You win! +${w}`; color="var(--accent2)";
+    } else if(win===false){
+      msg="💀 You lose!"; color="var(--danger)";
     } else {
-      score += currentBet;
-      msg    = "Push! Bet returned.";
+      score+=currentBet; msg="🤝 Push! Bet returned."; color="var(--gold)";
     }
     updateBJDisplay();
-    document.getElementById("bjResult").innerText = msg;
+    const r=document.getElementById("bjResult");
+    r.innerText=msg; r.style.color=color;
+    updateScore();
+  }
+  function bjReset(){playerHand=[];dealerHand=[];gameInProgress=false;currentBet=0;document.getElementById("betInput").value="";updateBJDisplay();}
+
+  // ── ROLLS ────────────────────────────────────────────────
+  function playRolls(){
+    const bet=parseInt(document.getElementById("rollBet").value);
+    if(isNaN(bet)||bet<100){alert("Minimum bet is 100 Lantings!");return;}
+    if(bet>score)return;
+    score-=bet;lost+=bet;
+    const pick=()=>Math.random()<0.65?[0.25,0.5,0.75,1][fl(Math.random()*4)]:[1.25,1.5,2][fl(Math.random()*3)];
+    const m=[pick(),pick(),pick()];
+    const total=cl(bet*m.reduce((a,b)=>a*b,1));
+    score+=total;earned+=total;
+    document.getElementById("rollResult").innerHTML=`
+      <div class="roll-grid">${m.map(x=>`<div class="rollMult ${x>=1?"good":"bad"}">${x}x</div>`).join("")}</div>
+      <div class="roll-total">Total: ${total} Lantings</div>`;
     updateScore();
   }
 
-  function bjReset() {
-    playerHand = []; dealerHand = []; gameInProgress = false; currentBet = 0;
-    document.getElementById("betInput").value = "";
-    updateBJDisplay();
+  // ── SUGGESTION ───────────────────────────────────────────
+  let lastSuggTime=0;
+  function sendSuggestion(){
+    const input=document.getElementById("suggestionInput"),msg=input.value.trim();
+    if(!msg)return;
+    if(Date.now()-lastSuggTime<180000){alert("Wait 3 minutes between suggestions.");return;}
+    sendWebhook(WEBHOOK_SUGG,"Suggestion: "+msg);
+    input.value="";closeOverlay("suggestionPanel");lastSuggTime=Date.now();
   }
 
-  function playRolls() {
-    const bet = parseInt(document.getElementById("rollBet").value);
-    if (isNaN(bet) || bet < 100) { alert("Minimum bet is 100 Lantings!"); return; }
-    if (bet > score)             return;
-    score -= bet; lost += bet;
-    const pick = () => Math.random() < 0.65
-      ? [0.25, 0.5, 0.75, 1][floor(Math.random() * 4)]
-      : [1.25, 1.5, 2][floor(Math.random() * 3)];
-    const m     = [pick(), pick(), pick()];
-    const total = ceil(bet * m.reduce((a, b) => a * b, 1));
-    score  += total; earned += total;
-    document.getElementById("rollResult").innerHTML =
-      `<div style="margin:20px 0;"><h3>Multipliers:</h3>
-       ${m.map(x => `<div class="rollMultiplier ${x >= 1 ? "good" : "bad"}">${x}x</div>`).join("")}
-       </div><div>Total: ${total} Lantings</div>`;
-    updateScore();
-  }
+  // ── EVENT LISTENERS ──────────────────────────────────────
+  document.getElementById("suggestionInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendSuggestion();});
+  document.getElementById("sendSuggestionBtn").addEventListener("click",sendSuggestion);
+  document.getElementById("suggestionOpenBtn").addEventListener("click",()=>openOverlay("suggestionPanel"));
+  document.getElementById("suggestionCloseBtn").addEventListener("click",()=>closeOverlay("suggestionPanel"));
 
-  let lastSuggestionTime = 0;
+  document.getElementById("shopBtn").addEventListener("click",()=>{openOverlay("shopScreen");renderUpgrades();});
+  document.getElementById("shopExitBtn").addEventListener("mousedown",()=>closeOverlay("shopScreen"));
+  document.getElementById("gambleBtn").addEventListener("click",()=>openOverlay("gambleScreen"));
+  document.getElementById("gambleExitBtn").addEventListener("click",()=>closeOverlay("gambleScreen"));
+  document.getElementById("skinBtn").addEventListener("click",()=>{openOverlay("skinScreen");renderSkins();});
+  document.getElementById("skinExitBtn").addEventListener("click",()=>closeOverlay("skinScreen"));
+  document.getElementById("statsBtn").addEventListener("click",()=>openOverlay("statsScreen"));
+  document.getElementById("statsExitBtn").addEventListener("click",()=>closeOverlay("statsScreen"));
 
-  function sendSuggestion() {
-    const input = document.getElementById("suggestionInput");
-    const msg   = input.value.trim();
-    if (!msg) return;
-    if (Date.now() - lastSuggestionTime < 180000) { alert("Please wait 3 minutes between suggestions."); return; }
-    sendWebhook(WEBHOOK_SUGG, "Suggestion: " + msg);
-    input.value = "";
-    closeOverlay("suggestionPanel");
-    lastSuggestionTime = Date.now();
-  }
+  document.getElementById("openBlackjackBtn").addEventListener("click",()=>{closeOverlay("gambleScreen");openOverlay("blackjackScreen");updateBJDisplay();});
+  document.getElementById("bjExitBtn").addEventListener("click",()=>closeOverlay("blackjackScreen"));
+  document.getElementById("bjStartBtn").addEventListener("click",()=>startBlackjack());
+  document.getElementById("bjAllInBtn").addEventListener("click",()=>{document.getElementById("betInput").value=score;startBlackjack();});
 
-  document.getElementById("suggestionInput").addEventListener("keydown", e => { if (e.key === "Enter") sendSuggestion(); });
-  document.getElementById("sendSuggestionBtn").addEventListener("click", sendSuggestion);
-  document.getElementById("suggestionOpenBtn").addEventListener("click", () => openOverlay("suggestionPanel"));
-  document.getElementById("suggestionCloseBtn").addEventListener("click", () => closeOverlay("suggestionPanel"));
-
-  document.getElementById("shopBtn").addEventListener("click",       () => { openOverlay("shopScreen"); renderUpgrades(); });
-  document.getElementById("shopExitBtn").addEventListener("mousedown", () => closeOverlay("shopScreen"));
-  document.getElementById("gambleBtn").addEventListener("click",     () => openOverlay("gambleScreen"));
-  document.getElementById("gambleExitBtn").addEventListener("click", () => closeOverlay("gambleScreen"));
-  document.getElementById("skinBtn").addEventListener("click",       () => { openOverlay("skinScreen"); renderSkins(); });
-  document.getElementById("skinExitBtn").addEventListener("click",   () => closeOverlay("skinScreen"));
-  document.getElementById("statsBtn").addEventListener("click",      () => openOverlay("statsScreen"));
-  document.getElementById("statsExitBtn").addEventListener("click",  () => closeOverlay("statsScreen"));
-
-  document.getElementById("openBlackjackBtn").addEventListener("click", () => {
-    closeOverlay("gambleScreen");
-    openOverlay("blackjackScreen");
-    updateBJDisplay();
-  });
-  document.getElementById("bjExitBtn").addEventListener("click",  () => closeOverlay("blackjackScreen"));
-  document.getElementById("bjStartBtn").addEventListener("click", () => startBlackjack());
-  document.getElementById("bjAllInBtn").addEventListener("click", () => { document.getElementById("betInput").value = score; startBlackjack(); });
-
-  document.getElementById("openRollsBtn").addEventListener("click",  () => { closeOverlay("gambleScreen"); openOverlay("rollsScreen"); });
-  document.getElementById("rollsExitBtn").addEventListener("click",  () => closeOverlay("rollsScreen"));
-  document.getElementById("rollPlayBtn").addEventListener("click",   playRolls);
-  document.getElementById("rollAllBtn").addEventListener("click",    () => { document.getElementById("rollBet").value = score; });
+  document.getElementById("openRollsBtn").addEventListener("click",()=>{closeOverlay("gambleScreen");openOverlay("rollsScreen");});
+  document.getElementById("rollsExitBtn").addEventListener("click",()=>closeOverlay("rollsScreen"));
+  document.getElementById("rollPlayBtn").addEventListener("click",playRolls);
+  document.getElementById("rollAllBtn").addEventListener("click",()=>{document.getElementById("rollBet").value=score;});
 
   applyEquippedSkin();
   renderUpgrades();
+  renderLeaderboard();
   updateScore();
 
 })();
