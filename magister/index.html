@@ -7,176 +7,102 @@
 <style>
 body { margin:0; font-family:Arial; background:linear-gradient(135deg,#1e1e2f,#2a2a40); color:white; overflow:hidden; user-select:none; }
 #main { display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; animation: fadeIn 0.5s ease-in; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
-@keyframes pulse { 0% { box-shadow: 0 0 25px rgba(0,0,0,0.6); } 50% { box-shadow: 0 0 35px rgba(108,92,231,0.8); } 100% { box-shadow: 0 0 25px rgba(0,0,0,0.6); } }
+
+@keyframes fadeIn    { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop       { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+@keyframes pulse     { 0% { box-shadow: 0 0 25px rgba(0,0,0,0.6); } 50% { box-shadow: 0 0 35px rgba(108,92,231,0.8); } 100% { box-shadow: 0 0 25px rgba(0,0,0,0.6); } }
 @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-@keyframes shimmer { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-@keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-80px) scale(0.8); opacity: 0; } }
-@keyframes glow { 0% { text-shadow: 0 0 5px rgba(168,230,207,0.3); } 50% { text-shadow: 0 0 15px rgba(168,230,207,0.8); } 100% { text-shadow: 0 0 5px rgba(168,230,207,0.3); } }
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes shimmer   { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+@keyframes floatUp   { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-80px) scale(0.8); opacity: 0; } }
+@keyframes glow      { 0% { text-shadow: 0 0 5px rgba(168,230,207,0.3); } 50% { text-shadow: 0 0 15px rgba(168,230,207,0.8); } 100% { text-shadow: 0 0 5px rgba(168,230,207,0.3); } }
 @keyframes scoreUpdate { 0% { transform: scale(1.2); color: #ffd700; } 100% { transform: scale(1); color: white; } }
 
-#statsTop {
-  text-align:center;
-  margin-bottom:20px;
-  animation: slideDown 0.6s ease;
-}
-#statsTop div {
-  margin:4px 0;
-  font-size:18px;
-  transition: all 0.3s ease;
-}
-#statsTop div:hover {
-  transform: scale(1.1);
-  color: #a8e6cf;
-}
-
+#statsTop { text-align:center; margin-bottom:20px; animation: slideDown 0.6s ease; }
+#statsTop div { margin:4px 0; font-size:18px; transition: all 0.3s ease; }
+#statsTop div:hover { transform: scale(1.1); color: #a8e6cf; }
 #score { font-size:28px; }
 
 #clickBtn {
-  width:240px; height:240px;
-  border-radius:50%; background:#444;
-  display:flex; justify-content:center; align-items:center;
-  overflow:hidden;
-  box-shadow:0 0 25px rgba(0,0,0,0.6);
-  cursor:pointer;
+  width:240px; height:240px; border-radius:50%; background:#444;
+  display:flex; justify-content:center; align-items:center; overflow:hidden;
+  box-shadow:0 0 25px rgba(0,0,0,0.6); cursor:pointer;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
-  animation: none;
 }
 #clickBtn:active { transform: scale(0.98); }
-#clickBtn:hover { box-shadow: 0 0 32px rgba(108,92,231,0.7); }
-#clickBtn img { width:100%; height:100%; object-fit:cover; }
+#clickBtn:hover  { box-shadow: 0 0 32px rgba(108,92,231,0.7); }
+#clickBtn img    { width:100%; height:100%; object-fit:cover; }
 
-#shopBtn { position:absolute; left:20px; top:50%; transform:translateY(-50%); transition: transform 0.2s ease, background 0.2s ease; }
-#shopBtn:hover { transform: translateY(-50%) scale(1.03); background:#5f4cd4; }
-#gambleBtn { position:absolute; right:20px; top:50%; transform:translateY(-50%); transition: transform 0.2s ease, background 0.2s ease; }
-#gambleBtn:hover { transform: translateY(-50%) scale(1.03); background:#5f4cd4; }
-#skinBtn { position:absolute; left:20px; top:20px; transition: transform 0.2s ease, background 0.2s ease; }
-#skinBtn:hover { transform: scale(1.03); background:#5f4cd4; }
-#statsBtn { position:absolute; right:20px; top:20px; transition: transform 0.2s ease, background 0.2s ease; }
-#statsBtn:hover { transform: scale(1.03); background:#5f4cd4; }
+#shopBtn   { position:absolute; left:20px;  top:50%; transform:translateY(-50%);   transition: transform 0.2s ease, background 0.2s ease; }
+#gambleBtn { position:absolute; right:20px; top:50%; transform:translateY(-50%);   transition: transform 0.2s ease, background 0.2s ease; }
+#skinBtn   { position:absolute; left:20px;  top:20px; transition: transform 0.2s ease, background 0.2s ease; }
+#statsBtn  { position:absolute; right:20px; top:20px; transition: transform 0.2s ease, background 0.2s ease; }
+#shopBtn:hover, #gambleBtn:hover, #skinBtn:hover, #statsBtn:hover { background:#5f4cd4; }
+#shopBtn:hover   { transform: translateY(-50%) scale(1.03); }
+#gambleBtn:hover { transform: translateY(-50%) scale(1.03); }
+#skinBtn:hover, #statsBtn:hover { transform: scale(1.03); }
 
-#playBtn { width:200px; height:200px; border-radius:50%; background:#6c5ce7; border:none; color:white; font-size:24px; cursor:pointer; box-shadow:0 0 25px rgba(0,0,0,0.6); transition: transform 0.2s, background 0.2s, box-shadow 0.2s; }
-#playBtn:hover { background:#7d3dd1; transform:scale(1.05); box-shadow: 0 0 28px rgba(125,61,209,0.7); }
+#playBtn {
+  width:200px; height:200px; border-radius:50%; background:#6c5ce7;
+  border:none; color:white; font-size:24px; cursor:pointer;
+  box-shadow:0 0 25px rgba(0,0,0,0.6);
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+}
+#playBtn:hover  { background:#7d3dd1; transform:scale(1.05); box-shadow: 0 0 28px rgba(125,61,209,0.7); }
 #playBtn:active { transform: scale(0.98); }
 
-#startScreen { position:relative; }
 #offlineInfo { position:fixed; bottom:40px; left:50%; transform:translateX(-50%); text-align:center; width:90%; max-width:400px; }
 
 button { padding:10px 15px; border:none; border-radius:10px; background:#6c5ce7; color:white; cursor:pointer; transition: transform 0.2s ease, background 0.2s ease; }
-button:hover { background:#7d3dd1; transform: scale(1.03); }
+button:hover  { background:#7d3dd1; transform: scale(1.03); }
 button:active { transform: scale(0.98); }
 
-.suggestionBtn { position:fixed; bottom:20px; right:20px; }
-
-.suggestionPanel { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; display:none; }
-
+.suggestionBtn   { position:fixed; bottom:20px; right:20px; }
+.suggestionPanel { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); display:none; justify-content:center; align-items:center; }
 .suggestionPanel .panel { background:#2a2a40; padding:20px; border-radius:10px; width:300px; text-align:center; }
-
-.suggestionPanel input { width:100%; padding:10px; margin:10px 0; border:none; border-radius:5px; }
-
-.suggestionPanel .exitBtn { position:absolute; top:10px; left:10px; background:#f44336; }
-
-.screen { display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:#1e1e2f; padding:80px 20px; overflow:auto; animation: slideDown 0.4s ease; }
+.suggestionPanel input  { width:100%; padding:10px; margin:10px 0; border:none; border-radius:5px; }
 .exitBtn { position:absolute; top:20px; left:20px; background:#f44336; transition: transform 0.2s ease, background 0.2s ease; }
 .exitBtn:hover { background:#ff6b6b; transform: scale(1.05); }
 
+.screen { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#1e1e2f; padding:80px 20px; overflow:auto; box-sizing:border-box; animation: slideDown 0.4s ease; z-index:100; }
+
 .upgrade { padding:12px; margin:10px 0; background:#2f2f50; border-radius:10px; transition: transform 0.2s ease, background 0.2s ease; animation: slideDown 0.4s ease; }
 .upgrade:hover { background:#3f3f60; transform: translateX(2px); }
-.upgrade button { display: inline-block; margin-left: auto; }
 .locked { background:#555; color:#aaa; }
 
-.rollBox { display:inline-block; width:100px; height:100px; margin:10px; background:#333; border-radius:10px; text-align:center; line-height:100px; }
-
 .skinBox { padding:10px; margin:10px; background:#2f2f50; border-radius:10px; display:inline-block; cursor:pointer; vertical-align:top; text-align:center; transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease; animation: slideDown 0.5s ease; }
-.skinBox:hover { transform: translateY(-4px); background:#4f4f70; box-shadow: 0 8px 18px rgba(0,0,0,0.35); }
-.skinBox img { width:60px; height:60px; object-fit:cover; display:block; margin:auto; border-radius:50%; }
-.skinBox .skinName { margin-top:6px; font-size:13px; }
-.skinBox .skinCost { font-size:12px; color:#aaa; margin-top:2px; }
+.skinBox:hover   { transform: translateY(-4px); background:#4f4f70; box-shadow: 0 8px 18px rgba(0,0,0,0.35); }
+.skinBox img     { width:60px; height:60px; object-fit:cover; display:block; margin:auto; border-radius:50%; }
+.skinBox .skinName  { margin-top:6px; font-size:13px; }
+.skinBox .skinCost  { font-size:12px; color:#aaa; margin-top:2px; }
 .skinBox .skinBonus { font-size:11px; color:#a8e6cf; margin-top:2px; }
 .skinBox button { margin-top:6px; font-size:12px; padding:6px 10px; }
-.skinBox button.equipBtn { background:#00b894; }
-.skinBox button.buyBtn { background:#6c5ce7; }
-.skinBox button.ownedBtn { background:#555; cursor:default; }
+.skinBox button.equipBtn  { background:#00b894; }
+.skinBox button.buyBtn    { background:#6c5ce7; }
+.skinBox button.ownedBtn  { background:#555; cursor:default; }
 .skinEquipped { outline:3px solid #00b894; animation: pulse 2s infinite; }
 
-#blackjackScreen {
-  text-align: center;
-}
-
-#bjGame {
-  background: #2a2a40;
-  padding: 20px;
-  border-radius: 10px;
-  margin: 20px 0;
-}
-
-#bjButtons button {
-  background: #6c5ce7;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-#bjButtons button:hover {
-  background: #5a4fcf;
-}
-
-#bjResult {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 10px 0;
-}
-
-#rollsScreen {
-  text-align: center;
-}
-
-.rollMultiplier {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
-  margin: 10px;
-  background: #333;
-  border-radius: 10px;
-  text-align: center;
-  line-height: 80px;
-  font-size: 24px;
-  font-weight: bold;
-  animation: none;
-}
-
-.rollMultiplier.good {
-  background: #4CAF50;
-}
-
-.rollMultiplier.bad {
-  background: #f44336;
-}
+.rollMultiplier { display:inline-block; width:80px; height:80px; margin:10px; background:#333; border-radius:10px; text-align:center; line-height:80px; font-size:24px; font-weight:bold; }
+.rollMultiplier.good { background:#4CAF50; }
+.rollMultiplier.bad  { background:#f44336; }
 </style>
 </head>
 <body>
 
-<div id="startScreen" class="screen" style="display:flex; flex-direction:column; justify-content:flex-start; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:#1e1e2f; padding:40px 0; z-index:9999;">
+<div id="startScreen" style="display:flex; flex-direction:column; justify-content:flex-start; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:#1e1e2f; padding:40px 0; z-index:9999;">
   <h1 style="font-size:48px; margin:0; margin-bottom:80px; text-align:center;">Lantings Clicker</h1>
   <button id="playBtn">PLAY</button>
-  <div id="offlineInfo" style="position:fixed; bottom:40px; left:50%; transform:translateX(-50%); text-align:center; width:90%; max-width:400px;">
+  <div id="offlineInfo">
     <div id="offlineBonus" style="color:#a8e6cf; font-weight:bold; margin-bottom:10px; font-size:16px; animation: glow 2s infinite;"></div>
     <div id="offlineTime" style="color:#aaa; font-size:14px; animation: slideDown 0.6s ease;"></div>
   </div>
 </div>
 
-<div id="main">
+<div id="main" style="display:none;">
   <div id="statsTop">
     <div id="perSecondText">Per seconde: 0</div>
     <div id="perClickText">Per klik: 1</div>
     <div id="score">Lantings: 0</div>
   </div>
-
   <div id="clickBtn">
     <img id="mainImg" src="https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/463966892_4454274298132137_3315538479754745190_n.jpg">
   </div>
@@ -186,90 +112,68 @@ button:active { transform: scale(0.98); }
 <button id="gambleBtn">Gamble</button>
 <button id="skinBtn">Skins</button>
 <button id="statsBtn">Settings</button>
-
-<button class="suggestionBtn" onclick="document.getElementById('suggestionPanel').style.display='flex'">Suggestion</button>
+<button class="suggestionBtn" id="suggestionOpenBtn">Suggestion</button>
 
 <div id="shopScreen" class="screen">
-  <div id="shopHeader" style="position: fixed; top: 20px; left: 20px; right: 20px; background: #1e1e2f; padding: 15px; text-align: center; z-index: 100; border-bottom: 2px solid #6c5ce7; animation: slideDown 0.3s ease;">
-    <button onmousedown="document.getElementById('shopScreen').style.display='none'" style="position: fixed; left: 25px; top: 25px; padding: 8px 12px; font-size: 14px; background:#f44336; color:white; border:none; border-radius:6px; cursor:pointer; z-index: 101; transition: background 0.2s ease;" onmouseover="this.style.background='#ff6b6b'" onmouseout="this.style.background='#f44336'">Exit</button>
+  <div style="position:fixed; top:20px; left:20px; right:20px; background:#1e1e2f; padding:15px; text-align:center; z-index:101; border-bottom:2px solid #6c5ce7; animation: slideDown 0.3s ease;">
+    <button id="shopExitBtn" style="position:fixed; left:25px; top:25px; padding:8px 12px; font-size:14px; background:#f44336; color:white; border:none; border-radius:6px; cursor:pointer; z-index:102;">Exit</button>
     <h2 style="margin: 0 0 10px 0; animation: shimmer 2s infinite;">Shop</h2>
-    <div style="font-size: 18px; color: #a8e6cf; font-weight: bold;">Lantings: <span id="shopMoney">0</span></div>
+    <div style="font-size:18px; color:#a8e6cf; font-weight:bold;">Lantings: <span id="shopMoney">0</span></div>
   </div>
-  <div id="upgrades" style="margin-top: 120px;"></div>
+  <div id="upgrades" style="margin-top:120px;"></div>
 </div>
 
 <div id="gambleScreen" class="screen">
-  <button class="exitBtn" onclick="gambleScreen.style.display='none'">Exit</button>
+  <button class="exitBtn" id="gambleExitBtn">Exit</button>
   <h2>Gamble</h2>
-  <button onclick="openBlackjack()">Blackjack</button>
-  <button onclick="openRolls()">Rolls</button>
-
+  <button id="openBlackjackBtn">Blackjack</button>
+  <button id="openRollsBtn">Rolls</button>
 </div>
 
-<div id="blackjackScreen" class="screen">
-  <button class="exitBtn" onclick="blackjackScreen.style.display='none'">Exit</button>
+<div id="blackjackScreen" class="screen" style="text-align:center;">
+  <button class="exitBtn" id="bjExitBtn">Exit</button>
   <h2>Blackjack</h2>
-  <div style="margin: 20px 0;">
+  <div style="margin:20px 0;">
     <label for="betInput">Bet Amount:</label>
-    <input id="betInput" type="number" min="100" style="margin-left: 10px; padding: 5px;">
-    <button onclick="startBlackjack()" style="margin-left: 10px; padding: 5px 10px;">Start Game</button>
-    <button onclick="document.getElementById('betInput').value = score; startBlackjack();" style="margin-left: 10px; padding: 5px 10px;">Start Game All In (10% luck boost)</button>
+    <input id="betInput" type="number" min="100" style="margin-left:10px; padding:5px;">
+    <button id="bjStartBtn" style="margin-left:10px; padding:5px 10px;">Start Game</button>
+    <button id="bjAllInBtn" style="margin-left:10px; padding:5px 10px;">Start Game All In (10% luck boost)</button>
   </div>
   <div>Money: <span id="bjMoney"></span></div>
   <div id="bjGame">
-    <div style="text-align: center; margin: 20px 0;">
-      <div style="font-size: 24px; margin-bottom: 10px;">Dealer: ?? (?)</div>
-      <div style="font-size: 24px;">Player:  (?)</div>
+    <div style="text-align:center; margin:20px 0;">
+      <div style="font-size:24px; margin-bottom:10px;">Dealer: ?? (?)</div>
+      <div style="font-size:24px;">Player: (?)</div>
     </div>
-    <div style="text-align: center; margin: 20px 0;" id="bjButtons">
-      <button onclick="newBJGame()" style="margin: 0 10px; padding: 10px 20px;">New Game</button>
+    <div style="text-align:center; margin:20px 0;" id="bjButtons">
+      <button id="newBJGameBtn" style="margin:0 10px; padding:10px 20px;">New Game</button>
     </div>
-    <div style="text-align: center; margin: 20px 0;" id="bjResult"></div>
+    <div style="text-align:center; margin:20px 0;" id="bjResult"></div>
   </div>
 </div>
 
 <div id="rollsScreen" class="screen">
-  <button class="exitBtn" onclick="rollsScreen.style.display='none'">Exit</button>
+  <button class="exitBtn" id="rollsExitBtn">Exit</button>
   <h2>Rolls</h2>
-  <div style="margin: 20px 0;">Money: <span id="rollMoney"></span></div>
-  <div style="margin: 20px 0;">
+  <div style="margin:20px 0;">Money: <span id="rollMoney"></span></div>
+  <div style="margin:20px 0;">
     <label for="rollBet">Bet Amount:</label>
-    <input id="rollBet" type="number" min="100" style="margin-left: 10px; padding: 5px;">
-    <button onclick="playRolls()" style="margin-left: 10px; padding: 5px 10px;">Play</button>
-    <button onclick="document.getElementById('rollBet').value = score" style="margin-left: 10px; padding: 5px 10px;">Play All</button>
+    <input id="rollBet" type="number" min="100" style="margin-left:10px; padding:5px;">
+    <button id="rollPlayBtn" style="margin-left:10px; padding:5px 10px;">Play</button>
+    <button id="rollAllBtn" style="margin-left:10px; padding:5px 10px;">Play All</button>
   </div>
-  <div id="rollResult" style="margin: 20px 0;"></div>
-</div>
-
-<div id="investingScreen" class="screen">
-  <button class="exitBtn" onclick="investingScreen.style.display='none'">Exit</button>
-  <h2>Investing</h2>
-  <div style="margin: 20px 0;">Money: <span id="investMoney"></span></div>
-  <div style="margin: 20px 0;">
-    <div>Current Bitcoin Price: $<span id="btcPrice">Loading...</span></div>
-    <div>Invested: $<span id="investedAmount">0</span> at $<span id="investedPrice">0</span></div>
-  </div>
-  <div style="margin: 20px 0;">
-    <label for="investAmount">Invest Amount:</label>
-    <input id="investAmount" type="number" min="100" style="margin-left: 10px; padding: 5px;">
-    <button onclick="invest()" style="margin-left: 10px; padding: 5px 10px;">Invest</button>
-    <button onclick="withdraw()" style="margin-left: 10px; padding: 5px 10px;">Withdraw All</button>
-  </div>
-  <div style="margin: 20px 0;">
-    <button onclick="simulateDay()" style="padding: 10px 20px;">Simulate Next Day</button>
-  </div>
-  <div id="investResult" style="margin: 20px 0;"></div>
+  <div id="rollResult" style="margin:20px 0;"></div>
 </div>
 
 <div id="skinScreen" class="screen">
-  <button class="exitBtn" onclick="skinScreen.style.display='none'">Exit</button>
+  <button class="exitBtn" id="skinExitBtn">Exit</button>
   <h2>Skins</h2>
-  <p style="color:#aaa;font-size:13px;">Sommige skins geven een bonus op je klikken. De default skin is gratis en krijg je aan het begin.</p>
+  <p style="color:#aaa; font-size:13px;">Sommige skins geven een bonus op je klikken. De default skin is gratis en krijg je aan het begin.</p>
   <div id="skinList"></div>
 </div>
 
 <div id="statsScreen" class="screen">
-  <button class="exitBtn" onclick="statsScreen.style.display='none'">Exit</button>
+  <button class="exitBtn" id="statsExitBtn">Exit</button>
   <h2>Settings</h2>
   <div style="max-height:80vh; overflow-y:auto; padding-right:10px;">
     <h3>Keybinds</h3>
@@ -295,689 +199,514 @@ button:active { transform: scale(0.98); }
   </div>
 </div>
 
-<script>
-let save = JSON.parse(localStorage.getItem("lanting_clicker_save_v10")) || {};
-
-let score = save.score || 0;
-let perClick = save.perClick || 1;
-let perSecond = save.perSecond || 0;
-let upgrades = save.upgrades || [];
-const defaultSkinUrl = "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/463966892_4454274298132137_3315538479754745190_n.jpg";
-const blackSkinUrl = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
-const webhookUrl = "https://discord.com/api/webhooks/1494600652582551582/YSsa5dbxGdod1MkfGji38jrVeTEGOByXw8_6FBKgcq6IrpAlkAReZCjmpfKAwiP5Wr_o";
-
-function sendWebhook(message) {
-  fetch(webhookUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content: message })
-  }).catch(() => {});
-}
-
-window.addEventListener("beforeunload", (e) => {
-  let blob = new Blob([JSON.stringify({ content: "client disconnected" })], { type: "application/json" });
-  navigator.sendBeacon(webhookUrl, blob);
-  e.preventDefault();
-  e.returnValue = "";
-  return "";
-});
-
-// START SCREEN
-let hasPlayedBefore = localStorage.getItem("lanting_clicker_last_online") !== null;
-
-function calculateOfflineBonus() {
-  let lastOnline = parseInt(localStorage.getItem("lanting_clicker_last_online")) || Date.now();
-  let currentTime = Date.now();
-  let offlineMs = currentTime - lastOnline;
-  let offlineMinutes = Math.floor(offlineMs / 60000);
-  
-  if (offlineMinutes < 1) {
-    return { minutes: 0, bonus: 0 };
-  }
-  
-  let bonusPerMinute = perSecond * 0.25;
-  let totalBonus = Math.floor(bonusPerMinute * offlineMinutes);
-  
-  return { minutes: offlineMinutes, bonus: totalBonus };
-}
-
-function updateOfflineDisplay() {
-  let offlineData = calculateOfflineBonus();
-  let offlineBonusEl = document.getElementById("offlineBonus");
-  let offlineTimeEl = document.getElementById("offlineTime");
-  
-  if (offlineData.minutes > 0) {
-    offlineBonusEl.innerText = "+ " + offlineData.bonus + " Lantings (offline bonus)";
-    offlineTimeEl.innerText = "Je bent " + offlineData.minutes + " minuten offline geweest";
-  } else {
-    offlineBonusEl.innerText = "";
-    offlineTimeEl.innerText = "";
-  }
-}
-
-document.getElementById("playBtn").onclick = function() {
-  sendWebhook("client connected");
-  
-  let offlineData = calculateOfflineBonus();
-  score += offlineData.bonus;
-  earned += offlineData.bonus;
-  
-  localStorage.setItem("lanting_clicker_last_online", Date.now());
-  
-  document.getElementById("startScreen").style.display = "none";
-  document.getElementById("main").style.display = "flex";
-  updateScore();
-};
-
-if (!hasPlayedBefore) {
-  localStorage.setItem("lanting_clicker_last_online", Date.now());
-}
-
-// Update offline display on load
-if (hasPlayedBefore) {
-  updateOfflineDisplay();
-} else {
-  document.getElementById("startScreen").style.display = "none";
-  document.getElementById("main").style.display = "flex";
-}
-
-// SKIN DEFINITIONS
-// id 0 = default (free, no bonus), id 1 = lanting skin (costs 10000, 2x clicks)
-// ids 2-9 = placeholder skins (no image yet, costs and bonuses set up)
-const SKIN_DEFS = [
-  { id: 0, name: "Default", img: blackSkinUrl,     cost: 0,      bonus: 1,  bonusText: "1x clicks",        free: true },
-  { id: 1, name: "LinkedIn Lanting", img: "https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost: 10000, bonus: 1.25, bonusText: "1.25x clicks per klik", free: false },
-  { id: 2, name: "Zapsport Lanting",  img: "https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost: 25000,  bonus: 1.5,bonusText: "1.5x clicks",        free: false },
-  { id: 3, name: "levensgenietende Lanting",  img: "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/508139189_4708264236066474_1034636463662827040_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=53a332&_nc_ohc=Ze1ynqIqjBUQ7kNvwGFiBk7&_nc_oc=AdpJ0uUgt5D3MxYdGQnoTwzQiNTB7hr39Wf-RrYqTdby03i6OsoCYo2xqvzW2sQEHIA&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=nHA1EGLnKmzVvh_JiCQstQ&_nc_ss=7a389&oh=00_Af25XwMbmgRUJpfS2NrvzXEccSCBIwP35ljv1Oq7TldMFw&oe=69E6A8FF",               cost: 50000,  bonus: 2,  bonusText: "2x clicks",          free: false },
-  { id: 4, name: "vakantie lanting",  img: "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505114098_4696325513927013_1892631468890635773_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=53a332&_nc_ohc=nRZ6G-XAseQQ7kNvwGSLSbp&_nc_oc=AdqSAeAlIfSYKFjBNloJOQa9By8NOxj7owQrTeOgZCJtH4Q7MTP3y9VSqVGxm90s8Rc&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=9Q2JkJzEbyAGcoC2D2a6Bw&_nc_ss=7a389&oh=00_Af3dskOQkEHrxXzm38hVGTpJOuPDVICVPf22505yDhwvCg&oe=69E6886D",               cost: 100000, bonus: 2.5,bonusText: "2.5x clicks",        free: false },
-  { id: 5, name: "jolly lanting",  img: "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505359411_4703242883235276_7531884072442166294_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=53a332&_nc_ohc=C76D43KjKo8Q7kNvwESLxZW&_nc_oc=AdoLHRkJffg1zwJ56tiplCXL6_EyJtrq7fzXFywFaou6v_1BSIcVyrWYqmQblpXzIAs&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=CJ_jltJM4o6Q48yQba2u7A&_nc_ss=7a389&oh=00_Af0SH0r6A1hCGpfX0dK8pWzsmktAsEpmTz1PePCsyDXspQ&oe=69E6775C",               cost: 500000, bonus: 3,  bonusText: "3x clicks",          free: false },
-  { id: 6, name: "og lanting",  img: "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505767393_4700743773485187_4696695728975036082_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=53a332&_nc_ohc=-6kmga9A_5IQ7kNvwHFpIBz&_nc_oc=Adq0KoSeqN6LQinoGP4Bzo-66BA_oAL98ma3Qa83C9cv5q5MBXQ8Jaf7dk3nPlBCr_s&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=24nILOznlX4lcXFugR9o2g&_nc_ss=7a389&oh=00_Af3zNH_eyN4E9MT1F-EOjv2WaX1uKkruHvQmfHNvPeQ2Cw&oe=69E68E59",               cost: 50000000, bonus: 4,  bonusText: "4x clicks",          free: false },
-  { id: 7, name: "lanting",  img: "https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/459427263_4407458439480390_1115745422523934606_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=_FaeZ7hSoEcQ7kNvwGwxU3D&_nc_oc=AdrvQvP7q0iqB8x_kVHcDN0lFetYWzdTFiowtHEeITEBY7Iyv8N847w4lByQuctN-7M&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=WCW78bwKmzHRnrloUsHr2w&_nc_ss=7a389&oh=00_Af0mAtQ-R9acTzw29I1Tjx6jkj7JnfKf5FTBkBQCMX9GFg&oe=69E7B5CC",               cost: 1000000000,bonus: 5,  bonusText: "5x clicks",          free: false },
-  { id: 8, name: "Skin 9",  img: "",               cost: 25000000000,bonus: 6,  bonusText: "6x clicks",          free: false },
-  { id: 9, name: "Skin 10", img: "",               cost: 50000000000000,bonus: 10, bonusText: "10x clicks",         free: false },
-];
-
-// ownedSkins: array of skin ids the player owns
-// equippedSkin: id of currently equipped skin
-// basePerClick: the raw perClick without skin bonus applied
-let ownedSkins = save.ownedSkins || [0]; // default skin always owned
-let equippedSkin = (save.equippedSkin !== undefined) ? save.equippedSkin : 0;
-let basePerClick = save.basePerClick || 1;
-
-// STATS
-let playTime = save.playTime || 0;
-let earned = save.earned || 0;
-let lost = save.lost || 0;
-let highest = save.highest || score;
-let investedAmount = save.investedAmount || 0;
-let investedPrice = save.investedPrice || 0;
-
-// Recalculate perClick based on equipped skin bonus
-function getSkinBonus(id) {
-  let def = SKIN_DEFS.find(s => s.id === id);
-  return def ? def.bonus : 1;
-}
-
-// Apply skin bonus to perClick
-function applyEquippedSkin() {
-  let bonus = getSkinBonus(equippedSkin);
-  perClick = Math.ceil(basePerClick * bonus);
-  let def = SKIN_DEFS.find(s => s.id === equippedSkin);
-  let imgSrc = (def && def.img) ? def.img : blackSkinUrl;
-  mainImg.src = imgSrc;
-}
-
-// ROUNDING
-function roundScoreUp(x){ return Math.ceil(x); }
-function roundPriceDown(x){ return Math.floor(x); }
-
-const scoreEl=document.getElementById("score");
-const mainImg=document.getElementById("mainImg");
-const clickBtn=document.getElementById("clickBtn");
-const perClickText=document.getElementById("perClickText");
-const perSecondText=document.getElementById("perSecondText");
-
-applyEquippedSkin();
-
-let clickLock=false;
-let clickKeybind = "Enter";
-let keybindDisplay = "ENTER";
-let waitingForKeybind = false;
-
-function doClick(){
-  if(clickLock) return;
-  clickLock=true;
-  score+=perClick;
-  earned+=perClick;
-  updateScore();
-  
-  // Create floating text animation
-  let floatText = document.createElement("div");
-  floatText.style.position = "fixed";
-  floatText.style.left = "50%";
-  floatText.style.top = "50%";
-  floatText.style.transform = "translateX(-50%)";
-  floatText.style.color = "#a8e6cf";
-  floatText.style.fontWeight = "bold";
-  floatText.style.fontSize = "24px";
-  floatText.style.pointerEvents = "none";
-  floatText.style.textShadow = "0 0 10px rgba(168,230,207,0.8)";
-  floatText.style.zIndex = "1000";
-  floatText.innerText = "+" + perClick;
-  floatText.style.animation = "floatUp 1s ease-out";
-  document.body.appendChild(floatText);
-  setTimeout(() => floatText.remove(), 1000);
-  
-  setTimeout(()=>clickLock=false,40);
-}
-
-function isMainScreenActive() {
-  let main = document.getElementById("main");
-  let start = document.getElementById("startScreen");
-  let shop = document.getElementById("shopScreen");
-  let gamble = document.getElementById("gambleScreen");
-  let bj = document.getElementById("blackjackScreen");
-  let rolls = document.getElementById("rollsScreen");
-  let invest = document.getElementById("investingScreen");
-  let skins = document.getElementById("skinScreen");
-  let stats = document.getElementById("statsScreen");
-  
-  return main.style.display === "flex" && start.style.display === "none" &&
-         (!shop || shop.style.display === "none") &&
-         (!gamble || gamble.style.display === "none") &&
-         (!bj || bj.style.display === "none") &&
-         (!rolls || rolls.style.display === "none") &&
-         (!invest || invest.style.display === "none") &&
-         (!skins || skins.style.display === "none") &&
-         (!stats || stats.style.display === "none");
-}
-
-if(clickBtn){
-  clickBtn.addEventListener("mousedown", ()=>doClick());
-}
-if(mainImg){
-  mainImg.addEventListener("mousedown", ()=>doClick());
-}
-
-document.addEventListener("keydown",(e)=>{
-  // First check: are we waiting to set a new keybind?
-  if(waitingForKeybind) {
-    e.preventDefault();
-    let keyDisplay = e.key.length === 1 ? e.key.toUpperCase() : e.key;
-    if(e.key === " ") keyDisplay = "SPACE";
-    if(e.key === "Enter") keyDisplay = "ENTER";
-    
-    clickKeybind = e.key;
-    keybindDisplay = keyDisplay;
-    localStorage.setItem("lanting_clicker_keybind", clickKeybind);
-    localStorage.setItem("lanting_clicker_keybind_display", keybindDisplay);
-    let btn = document.getElementById("keybindBtn");
-    if(btn) btn.innerText = keybindDisplay;
-    waitingForKeybind = false;
-    console.log("Keybind set to:", clickKeybind, "Display:", keybindDisplay);
-    return;
-  }
-  
-  // Second check: are we on main screen and key matches keybind?
-  if(!e.repeat && isMainScreenActive()) {
-    // Exact match or case-insensitive match
-    let keyMatches = e.key === clickKeybind || e.key.toLowerCase() === clickKeybind.toLowerCase();
-    
-    if(keyMatches) {
-      e.preventDefault();
-      console.log("Keybind triggered! Key:", e.key, "Keybind:", clickKeybind);
-      
-      // Trigger button press animation and click
-      if(clickBtn) {
-        // Add :active state by adding a class temporarily
-        clickBtn.style.transform = "scale(0.98)";
-        clickBtn.style.boxShadow = "0 0 25px rgba(0,0,0,0.9) inset";
-        
-        // Trigger the click
-        doClick();
-        
-        // Remove active state after animation
-        setTimeout(() => {
-          clickBtn.style.transform = "scale(1)";
-          clickBtn.style.boxShadow = "0 0 25px rgba(0,0,0,0.6)";
-        }, 100);
-      }
-    }
-  }
-});
-
-document.addEventListener("keyup",()=>clickLock=false);
-
-// Setup keybind button - delayed to ensure DOM is ready
-setTimeout(() => {
-  let savedKeybind = localStorage.getItem("lanting_clicker_keybind") || "Enter";
-  keybindDisplay = localStorage.getItem("lanting_clicker_keybind_display") || "ENTER";
-  clickKeybind = savedKeybind;
-  
-  let btn = document.getElementById("keybindBtn");
-  if(btn) {
-    btn.innerText = keybindDisplay;
-    btn.addEventListener("click", () => {
-      waitingForKeybind = !waitingForKeybind;
-      if(waitingForKeybind) {
-        btn.innerText = "...";
-      } else {
-        btn.innerText = keybindDisplay;
-      }
-    });
-  }
-}, 100);
-
-skinBtn.onclick=()=>{ skinScreen.style.display="block"; renderSkins(); };
-statsBtn.onclick=()=>statsScreen.style.display="block";
-
-function saveGame(){
-  localStorage.setItem("lanting_clicker_save_v10", JSON.stringify({score,perClick,perSecond,upgrades,playTime,earned,lost,highest,ownedSkins,equippedSkin,basePerClick,investedAmount,investedPrice}));
-}
-
-function updateScore(){
-  score = roundScoreUp(score);
-  basePerClick = roundScoreUp(basePerClick);
-  perSecond = roundScoreUp(perSecond);
-  applyEquippedSkin();
-
-  if(score > highest){ highest = score; }
-
-  scoreEl.innerText="Lantings: "+score;
-  scoreEl.style.animation = "scoreUpdate 0.3s ease";
-  setTimeout(() => { scoreEl.style.animation = ""; }, 300);
-  perClickText.innerText="Per klik: " + perClick;
-  perSecondText.innerText="Per seconde: " + perSecond;
-
-  rollMoney.innerText=score;
-  bjMoney.innerText=score;
-  
-  let shopMoney = document.getElementById("shopMoney");
-  if(shopMoney) shopMoney.innerText=score;
-
-  document.getElementById("statTime").innerText=playTime;
-  document.getElementById("statEarned").innerText=earned;
-  document.getElementById("statLost").innerText=lost;
-  document.getElementById("statNet").innerText=highest;
-
-  saveGame();
-}
-
-// TIME
-setInterval(()=>{
-  playTime++;
-  score+=perSecond;
-  earned+=perSecond;
-  localStorage.setItem("lanting_clicker_last_online", Date.now());
-  updateScore();
-},1000);
-
-// SHOP
-let upgradesEl=document.getElementById("upgrades");
-if(upgrades.length===0){
-for(let i=0;i<50;i++){
-let isClick=i%2==0;
-upgrades.push({type:isClick?"click":"auto",value:1+Math.floor(i/2)*2,cost:isClick?30*Math.pow(1.6,i):20*Math.pow(1.6,i),bought:false});
-}}
-
-function renderUpgrades(){
-upgradesEl.innerHTML="";
-upgrades.forEach((u,i)=>{
-let unlocked=i==0||upgrades[i-1].bought;
-let div=document.createElement("div");
-div.className="upgrade "+(unlocked?"":"locked");
-if(unlocked){
-u.cost = roundPriceDown(u.cost);
-let countDisplay = u.count ? ` [x${u.count}]` : "";
-div.innerHTML=`+${u.value} ${u.type} ${u.cost} <button>Koop</button><span style="margin-left:10px; color:#aaa;">${countDisplay}</span>`;
-div.querySelector("button").onclick=()=>{
-if(score>=u.cost){
-score-=u.cost;
-lost+=u.cost;
-
-u.bought=true;
-u.count = (u.count || 0) + 1;
-if(u.type=="click") basePerClick+=u.value; else perSecond+=u.value;
-
-u.cost = roundPriceDown(u.cost * 1.6);
-
-// Add visual feedback
-let btn = div.querySelector("button");
-btn.style.animation = "pop 0.5s ease";
-btn.style.boxShadow = "0 0 20px rgba(168,230,207,0.8)";
-setTimeout(() => { btn.style.boxShadow = ""; }, 500);
-
-updateScore();
-renderUpgrades();
-}}
-}else div.innerHTML="???";
-upgradesEl.appendChild(div);
-});}
-
-// SKIN SCREEN
-function renderSkins(){
-  let list = document.getElementById("skinList");
-  list.innerHTML = "";
-  SKIN_DEFS.forEach(def => {
-    let owned = ownedSkins.includes(def.id);
-    let equipped = equippedSkin === def.id;
-    let box = document.createElement("div");
-    box.className = "skinBox" + (equipped ? " skinEquipped" : "");
-
-    let imgHtml = def.img
-      ? `<img src="${def.img}">`
-      : `<div style="width:60px;height:60px;background:#444;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888;margin:auto;">Binnenkort</div>`;
-
-    let btnHtml = "";
-    if (owned && equipped) {
-      btnHtml = `<button class="ownedBtn" disabled>Uitgerust</button>`;
-    } else if (owned && !equipped) {
-      btnHtml = `<button class="equipBtn" onclick="equipSkin(${def.id})">Equip</button>`;
-    } else if (def.free) {
-      btnHtml = `<button class="buyBtn" onclick="buySkin(${def.id})">Gratis</button>`;
-    } else if (!def.img) {
-      btnHtml = `<button class="ownedBtn" disabled>Binnenkort</button>`;
-    } else {
-      btnHtml = `<button class="buyBtn" onclick="buySkin(${def.id})">Koop (${def.cost})</button>`;
-    }
-
-    box.innerHTML = `
-      ${imgHtml}
-      <div class="skinName">${def.name}</div>
-      <div class="skinCost">${def.cost > 0 ? def.cost + " Lantings" : "Gratis"}</div>
-      <div class="skinBonus">${def.bonusText}</div>
-      ${btnHtml}
-    `;
-    list.appendChild(box);
-  });
-}
-
-function buySkin(id) {
-  let def = SKIN_DEFS.find(s => s.id === id);
-  if (!def) return;
-  if (ownedSkins.includes(id)) { equipSkin(id); return; }
-  if (def.free) {
-    ownedSkins.push(id);
-    equipSkin(id);
-    renderSkins();
-    return;
-  }
-  if (score < def.cost) { alert("Niet genoeg Lantings!"); return; }
-  score -= def.cost;
-  lost += def.cost;
-  ownedSkins.push(id);
-  equipSkin(id);
-  updateScore();
-  renderSkins();
-}
-
-function equipSkin(id) {
-  if (!ownedSkins.includes(id)) return;
-  equippedSkin = id;
-  applyEquippedSkin();
-  updateScore();
-  renderSkins();
-}
-
-// NAV
-shopBtn.onclick=()=>{ shopScreen.style.display="block"; renderUpgrades(); };
-gambleBtn.onclick=()=>gambleScreen.style.display="block";
-function openRolls(){gambleScreen.style.display="none";rollsScreen.style.display="block";}
-function openBlackjack(){gambleScreen.style.display="none";blackjackScreen.style.display="block"; updateBJDisplay();}
-function openInvesting(){gambleScreen.style.display="none";investingScreen.style.display="block"; updateInvestDisplay();}
-
-// BLACKJACK
-let deck = [];
-let playerHand = [];
-let dealerHand = [];
-let gameInProgress = false;
-let currentBet = 0;
-let allIn = false;
-
-const suits = ['♥', '♦', '♣', '♠'];
-const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-
-function createDeck() {
-  deck = [];
-  for (let suit of suits) {
-    for (let rank of ranks) {
-      deck.push({ rank, suit });
-    }
-  }
-  shuffleDeck();
-}
-
-function shuffleDeck() {
-  for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]];
-  }
-}
-
-function getCardValue(card) {
-  if (card.rank === 'A') return 11;
-  if (['J', 'Q', 'K'].includes(card.rank)) return 10;
-  return parseInt(card.rank);
-}
-
-function getHandValue(hand) {
-  let value = 0;
-  let aces = 0;
-  for (let card of hand) {
-    value += getCardValue(card);
-    if (card.rank === 'A') aces++;
-  }
-  while (value > 21 && aces > 0) {
-    value -= 10;
-    aces--;
-  }
-  return value;
-}
-
-function isBlackjack(hand) {
-  return hand.length === 2 && getHandValue(hand) === 21;
-}
-
-function renderCard(card) {
-  return `<span style="color:${card.suit === '♥' || card.suit === '♦' ? 'red' : 'black'};">${card.rank}${card.suit}</span>`;
-}
-
-function renderHand(hand, hideFirst = false) {
-  return hand.map((card, i) => hideFirst && i === 0 ? '??' : renderCard(card)).join(' ');
-}
-
-function updateBJDisplay() {
-  const bjGame = document.getElementById('bjGame');
-  const playerValue = getHandValue(playerHand);
-  const dealerValue = getHandValue(dealerHand);
-  const dealerDisplay = gameInProgress ? renderHand(dealerHand, true) : renderHand(dealerHand);
-  const dealerValDisplay = gameInProgress ? '?' : dealerValue;
-
-  bjGame.innerHTML = `
-    <div style="text-align: center; margin: 20px 0;">
-      <div style="font-size: 24px; margin-bottom: 10px;">Dealer: ${dealerDisplay} (${dealerValDisplay})</div>
-      <div style="font-size: 24px;">Player: ${renderHand(playerHand)} (${playerValue})</div>
-    </div>
-    <div style="text-align: center; margin: 20px 0;" id="bjButtons">
-      ${gameInProgress ? `
-        <button onclick="hit()" style="margin: 0 10px; padding: 10px 20px;">Hit</button>
-        <button onclick="stand()" style="margin: 0 10px; padding: 10px 20px;">Stand</button>
-      ` : `
-        <button onclick="newBJGame()" style="margin: 0 10px; padding: 10px 20px;">New Game</button>
-      `}
-    </div>
-    <div style="text-align: center; margin: 20px 0;" id="bjResult"></div>
-  `;
-}
-
-function startBlackjack() {
-  const betInput = document.getElementById('betInput');
-  currentBet = parseInt(betInput.value);
-  if (isNaN(currentBet) || currentBet < 100) {
-    alert('Minimum bet is 100 Lantings!');
-    return;
-  }
-  if (currentBet > score) {
-    alert('Not enough Lantings!');
-    return;
-  }
-  allIn = (currentBet === score);
-  score -= currentBet;
-  lost += currentBet;
-  updateScore();
-
-  createDeck();
-  playerHand = [deck.pop(), deck.pop()];
-  dealerHand = [deck.pop(), deck.pop()];
-  gameInProgress = true;
-  document.getElementById('bjResult').innerText = '';
-  updateBJDisplay();
-}
-
-function hit() {
-  if (!gameInProgress) return;
-  playerHand.push(deck.pop());
-  if (getHandValue(playerHand) > 21) {
-    endBJ(false);
-  } else {
-    updateBJDisplay();
-  }
-}
-
-function stand() {
-  if (!gameInProgress) return;
-  gameInProgress = false;
-  while (getHandValue(dealerHand) < 17) {
-    dealerHand.push(deck.pop());
-  }
-  const playerValue = getHandValue(playerHand);
-  const dealerValue = getHandValue(dealerHand);
-  let win = false;
-  if (playerValue > 21) {
-    win = false;
-  } else if (dealerValue > 21) {
-    win = true;
-  } else if (isBlackjack(playerHand) && !isBlackjack(dealerHand)) {
-    win = true;
-  } else if (playerValue > dealerValue) {
-    win = true;
-  } else if (playerValue === dealerValue) {
-    win = null; // push
-  }
-  endBJ(win);
-}
-
-function endBJ(win) {
-  gameInProgress = false;
-  if (win === false && allIn && Math.random() < 0.15) {
-    win = true;
-  }
-  let resultText = '';
-  if (win === true) {
-    let multiplier = isBlackjack(playerHand) ? 3 : 2;
-    let winnings = Math.floor(currentBet * multiplier);
-    score += winnings;
-    earned += winnings;
-    resultText = `You win! +${winnings} Lantings`;
-  } else if (win === false) {
-    resultText = 'You lose!';
-  } else {
-    // push
-    score += currentBet;
-    resultText = 'Push! Bet returned.';
-  }
-  document.getElementById('bjResult').innerText = resultText;
-  updateScore();
-  updateBJDisplay();
-}
-
-function newBJGame() {
-  playerHand = [];
-  dealerHand = [];
-  gameInProgress = false;
-  currentBet = 0;
-  document.getElementById('betInput').value = '';
-  updateBJDisplay();
-}
-
-// ROLLS
-function playRolls(){
-let bet=parseInt(rollBet.value);
-if(isNaN(bet) || bet < 100){
-  alert('Minimum bet is 100 Lantings!');
-  return;
-}
-if(bet>score)return;
-
-score-=bet;
-lost+=bet;
-
-const low=[0.25,0.5,0.75,1];
-const high=[1.25,1.5,2];
-
-function r(){return Math.random()<0.65?low[Math.floor(Math.random()*4)]:high[Math.floor(Math.random()*3)];}
-
-let m=[r(),r(),r()];
-let total = roundScoreUp(bet*m.reduce((a,b)=>a*b,1));
-
-score+=total;
-earned+=total;
-
-let resultHtml = '<div style="margin: 20px 0;"><h3>Multipliers:</h3>';
-m.forEach(mult => {
-  let className = mult >= 1 ? 'good' : 'bad';
-  resultHtml += `<div class="rollMultiplier ${className}">${mult}x</div>`;
-});
-resultHtml += `</div><div>Total: ${total} Lantings</div>`;
-rollResult.innerHTML = resultHtml;
-
-updateScore();
-}
-
-renderUpgrades();
-updateScore();
-
-let lastSuggestionTime = 0;
-
-function sendSuggestion() {
-  const input = document.getElementById('suggestionInput');
-  const message = input.value.trim();
-  if (!message) return;
-  
-  const now = Date.now();
-  if (now - lastSuggestionTime < 180000) { // 3 minutes
-    alert('Please wait 3 minutes between suggestions.');
-    return;
-  }
-  
-  sendDiscordMessage('Suggestion: ' + message);
-  input.value = '';
-  document.getElementById('suggestionPanel').style.display = 'none';
-  lastSuggestionTime = now;
-}
-
-document.getElementById('suggestionInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    sendSuggestion();
-  }
-});
-
-function sendDiscordMessage(content) {
-  fetch('https://discord.com/api/webhooks/1493989395018285079/I7kJJ8TzbmvdeZFavX4a1b6ZXlJ3tg8r2WZG1v3I9bOyJ31LXL1lQ9d3HtFdmfQ0sGTe', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ content: content })
-  }).catch(err => console.log('Discord webhook error:', err));
-}
-</script>
-
 <div id="suggestionPanel" class="suggestionPanel">
-  <div class="panel">
-    <button class="exitBtn" onclick="document.getElementById('suggestionPanel').style.display='none'">X</button>
+  <div class="panel" style="position:relative;">
+    <button class="exitBtn" id="suggestionCloseBtn" style="position:absolute; top:10px; left:10px; padding:6px 10px;">X</button>
     <h3>Send Suggestion</h3>
     <input id="suggestionInput" type="text" placeholder="Enter your suggestion...">
-    <button onclick="sendSuggestion()">Send</button>
+    <button id="sendSuggestionBtn">Send</button>
   </div>
 </div>
+
+<script>
+(function() {
+  "use strict";
+
+  const SAVE_KEY     = "lanting_clicker_save_v10";
+  const LAST_ONLINE  = "lanting_clicker_last_online";
+  const WEBHOOK_MAIN = "https://discord.com/api/webhooks/1494600652582551582/YSsa5dbxGdod1MkfGji38jrVeTEGOByXw8_6FBKgcq6IrpAlkAReZCjmpfKAwiP5Wr_o";
+  const WEBHOOK_SUGG = "https://discord.com/api/webhooks/1493989395018285079/I7kJJ8TzbmvdeZFavX4a1b6ZXlJ3tg8r2WZG1v3I9bOyJ31LXL1lQ9d3HtFdmfQ0sGTe";
+  const BLACK_IMG    = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
+
+  const SKIN_DEFS = [
+    { id:0, name:"Default",                img:BLACK_IMG,      cost:0,             bonus:1,   bonusText:"1x clicks",           free:true  },
+    { id:1, name:"LinkedIn Lanting",        img:"https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost:10000,        bonus:1.25,bonusText:"1.25x clicks per klik", free:false },
+    { id:2, name:"Zapsport Lanting",        img:"https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost:25000,        bonus:1.5, bonusText:"1.5x clicks",           free:false },
+    { id:3, name:"levensgenietende Lanting",img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/508139189_4708264236066474_1034636463662827040_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=53a332&_nc_ohc=Ze1ynqIqjBUQ7kNvwGFiBk7&_nc_oc=AdpJ0uUgt5D3MxYdGQnoTwzQiNTB7hr39Wf-RrYqTdby03i6OsoCYo2xqvzW2sQEHIA&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=nHA1EGLnKmzVvh_JiCQstQ&_nc_ss=7a389&oh=00_Af25XwMbmgRUJpfS2NrvzXEccSCBIwP35ljv1Oq7TldMFw&oe=69E6A8FF", cost:50000,        bonus:2,   bonusText:"2x clicks",             free:false },
+    { id:4, name:"vakantie lanting",        img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505114098_4696325513927013_1892631468890635773_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=53a332&_nc_ohc=nRZ6G-XAseQQ7kNvwGSLSbp&_nc_oc=AdqSAeAlIfSYKFjBNloJOQa9By8NOxj7owQrTeOgZCJtH4Q7MTP3y9VSqVGxm90s8Rc&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=9Q2JkJzEbyAGcoC2D2a6Bw&_nc_ss=7a389&oh=00_Af3dskOQkEHrxXzm38hVGTpJOuPDVICVPf22505yDhwvCg&oe=69E6886D", cost:100000,       bonus:2.5, bonusText:"2.5x clicks",           free:false },
+    { id:5, name:"jolly lanting",           img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505359411_4703242883235276_7531884072442166294_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=53a332&_nc_ohc=C76D43KjKo8Q7kNvwESLxZW&_nc_oc=AdoLHRkJffg1zwJ56tiplCXL6_EyJtrq7fzXFywFaou6v_1BSIcVyrWYqmQblpXzIAs&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=CJ_jltJM4o6Q48yQba2u7A&_nc_ss=7a389&oh=00_Af0SH0r6A1hCGpfX0dK8pWzsmktAsEpmTz1PePCsyDXspQ&oe=69E6775C", cost:500000,       bonus:3,   bonusText:"3x clicks",             free:false },
+    { id:6, name:"og lanting",              img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505767393_4700743773485187_4696695728975036082_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=53a332&_nc_ohc=-6kmga9A_5IQ7kNvwHFpIBz&_nc_oc=Adq0KoSeqN6LQinoGP4Bzo-66BA_oAL98ma3Qa83C9cv5q5MBXQ8Jaf7dk3nPlBCr_s&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=24nILOznlX4lcXFugR9o2g&_nc_ss=7a389&oh=00_Af3zNH_eyN4E9MT1F-EOjv2WaX1uKkruHvQmfHNvPeQ2Cw&oe=69E68E59", cost:50000000,     bonus:4,   bonusText:"4x clicks",             free:false },
+    { id:7, name:"lanting",                 img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/459427263_4407458439480390_1115745422523934606_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=_FaeZ7hSoEcQ7kNvwGwxU3D&_nc_oc=AdrvQvP7q0iqB8x_kVHcDN0lFetYWzdTFiowtHEeITEBY7Iyv8N847w4lByQuctN-7M&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=WCW78bwKmzHRnrloUsHr2w&_nc_ss=7a389&oh=00_Af0mAtQ-R9acTzw29I1Tjx6jkj7JnfKf5FTBkBQCMX9GFg&oe=69E7B5CC", cost:1000000000,  bonus:5,   bonusText:"5x clicks",             free:false },
+    { id:8, name:"Skin 9",                  img:"",             cost:25000000000,   bonus:6,   bonusText:"6x clicks",             free:false },
+    { id:9, name:"Skin 10",                 img:"",             cost:50000000000000,bonus:10,  bonusText:"10x clicks",            free:false },
+  ];
+
+  const save       = JSON.parse(localStorage.getItem(SAVE_KEY)) || {};
+  let score        = save.score        || 0;
+  let perClick     = save.perClick     || 1;
+  let perSecond    = save.perSecond    || 0;
+  let upgrades     = save.upgrades     || [];
+  let ownedSkins   = save.ownedSkins   || [0];
+  let equippedSkin = (save.equippedSkin !== undefined) ? save.equippedSkin : 0;
+  let basePerClick = save.basePerClick || 1;
+  let playTime     = save.playTime     || 0;
+  let earned       = save.earned       || 0;
+  let lost         = save.lost         || 0;
+  let highest      = save.highest      || score;
+
+  const scoreEl       = document.getElementById("score");
+  const mainImg       = document.getElementById("mainImg");
+  const clickBtn      = document.getElementById("clickBtn");
+  const perClickText  = document.getElementById("perClickText");
+  const perSecondText = document.getElementById("perSecondText");
+  const upgradesEl    = document.getElementById("upgrades");
+
+  const OVERLAY_IDS = ["shopScreen","gambleScreen","blackjackScreen","rollsScreen","skinScreen","statsScreen","suggestionPanel"];
+  let activeOverlays = new Set();
+
+  function openOverlay(id) {
+    document.getElementById(id).style.display = "block";
+    if (id === "suggestionPanel") document.getElementById(id).style.display = "flex";
+    activeOverlays.add(id);
+  }
+
+  function closeOverlay(id) {
+    document.getElementById(id).style.display = "none";
+    activeOverlays.delete(id);
+  }
+
+  function isMainActive() {
+    return activeOverlays.size === 0 && document.getElementById("startScreen").style.display === "none";
+  }
+
+  function sendWebhook(url, message) {
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content: message })
+    }).catch(() => {});
+  }
+
+  window.addEventListener("beforeunload", (e) => {
+    navigator.sendBeacon(WEBHOOK_MAIN, new Blob([JSON.stringify({ content: "client disconnected" })], { type: "application/json" }));
+    e.preventDefault();
+    e.returnValue = "";
+  });
+
+  function saveGame() {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({ score, perClick, perSecond, upgrades, playTime, earned, lost, highest, ownedSkins, equippedSkin, basePerClick }));
+  }
+
+  function floor(x) { return Math.floor(x); }
+  function ceil(x)  { return Math.ceil(x); }
+
+  function getSkinBonus(id) {
+    const def = SKIN_DEFS.find(s => s.id === id);
+    return def ? def.bonus : 1;
+  }
+
+  function applyEquippedSkin() {
+    perClick = ceil(basePerClick * getSkinBonus(equippedSkin));
+    const def = SKIN_DEFS.find(s => s.id === equippedSkin);
+    mainImg.src = (def && def.img) ? def.img : BLACK_IMG;
+  }
+
+  function updateScore() {
+    score        = ceil(score);
+    basePerClick = ceil(basePerClick);
+    perSecond    = ceil(perSecond);
+    applyEquippedSkin();
+
+    if (score > highest) highest = score;
+
+    scoreEl.innerText = "Lantings: " + score;
+    scoreEl.style.animation = "scoreUpdate 0.3s ease";
+    setTimeout(() => { scoreEl.style.animation = ""; }, 300);
+
+    perClickText.innerText  = "Per klik: "    + perClick;
+    perSecondText.innerText = "Per seconde: " + perSecond;
+
+    document.getElementById("rollMoney").innerText = score;
+    document.getElementById("bjMoney").innerText   = score;
+    document.getElementById("shopMoney").innerText = score;
+
+    document.getElementById("statTime").innerText   = playTime;
+    document.getElementById("statEarned").innerText = earned;
+    document.getElementById("statLost").innerText   = lost;
+    document.getElementById("statNet").innerText    = highest;
+
+    saveGame();
+  }
+
+  function getOfflineBonus() {
+    const lastOnline  = parseInt(localStorage.getItem(LAST_ONLINE)) || Date.now();
+    const offlineMins = floor((Date.now() - lastOnline) / 60000);
+    return { minutes: offlineMins, bonus: offlineMins > 0 ? floor(perSecond * 0.25 * offlineMins) : 0 };
+  }
+
+  const hasPlayedBefore = localStorage.getItem(LAST_ONLINE) !== null;
+
+  if (hasPlayedBefore) {
+    const od = getOfflineBonus();
+    if (od.minutes > 0) {
+      document.getElementById("offlineBonus").innerText = "+ " + od.bonus + " Lantings (offline bonus)";
+      document.getElementById("offlineTime").innerText  = "Je bent " + od.minutes + " minuten offline geweest";
+    }
+  } else {
+    localStorage.setItem(LAST_ONLINE, Date.now());
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("main").style.display = "flex";
+  }
+
+  document.getElementById("playBtn").addEventListener("click", function() {
+    sendWebhook(WEBHOOK_MAIN, "client connected");
+    const od = getOfflineBonus();
+    score  += od.bonus;
+    earned += od.bonus;
+    localStorage.setItem(LAST_ONLINE, Date.now());
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("main").style.display = "flex";
+    updateScore();
+  });
+
+  setInterval(() => {
+    playTime++;
+    score  += perSecond;
+    earned += perSecond;
+    localStorage.setItem(LAST_ONLINE, Date.now());
+    updateScore();
+  }, 1000);
+
+  let clickLock = false;
+
+  function doClick() {
+    if (clickLock) return;
+    clickLock = true;
+    score  += perClick;
+    earned += perClick;
+    updateScore();
+
+    const ft = document.createElement("div");
+    ft.style.cssText = "position:fixed;left:50%;top:50%;transform:translateX(-50%);color:#a8e6cf;font-weight:bold;font-size:24px;pointer-events:none;text-shadow:0 0 10px rgba(168,230,207,0.8);z-index:1000;animation:floatUp 1s ease-out;";
+    ft.innerText = "+" + perClick;
+    document.body.appendChild(ft);
+    setTimeout(() => ft.remove(), 1000);
+
+    setTimeout(() => { clickLock = false; }, 40);
+  }
+
+  function triggerClickAnimation() {
+    clickBtn.style.transform = "scale(0.98)";
+    clickBtn.style.boxShadow = "0 0 25px rgba(0,0,0,0.9) inset";
+    setTimeout(() => {
+      clickBtn.style.transform = "";
+      clickBtn.style.boxShadow = "";
+    }, 100);
+  }
+
+  clickBtn.addEventListener("mousedown", doClick);
+
+  let clickKeybind   = localStorage.getItem("lanting_clicker_keybind")         || "Enter";
+  let keybindDisplay = localStorage.getItem("lanting_clicker_keybind_display") || "ENTER";
+  let waitingForKey  = false;
+
+  document.addEventListener("keydown", (e) => {
+    if (waitingForKey) {
+      e.preventDefault();
+      let disp = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+      if (e.key === " ")     disp = "SPACE";
+      if (e.key === "Enter") disp = "ENTER";
+      clickKeybind   = e.key;
+      keybindDisplay = disp;
+      localStorage.setItem("lanting_clicker_keybind",         clickKeybind);
+      localStorage.setItem("lanting_clicker_keybind_display", keybindDisplay);
+      document.getElementById("keybindBtn").innerText = keybindDisplay;
+      waitingForKey = false;
+      return;
+    }
+
+    if (e.repeat) return;
+    if (!isMainActive()) return;
+
+    const pressed = e.key;
+    const stored  = clickKeybind;
+
+    const match = pressed === stored || pressed.toLowerCase() === stored.toLowerCase();
+    if (!match) return;
+
+    e.preventDefault();
+    triggerClickAnimation();
+    doClick();
+  });
+
+  document.addEventListener("keyup", () => { clickLock = false; });
+
+  const keybindBtn = document.getElementById("keybindBtn");
+  keybindBtn.innerText = keybindDisplay;
+  keybindBtn.addEventListener("click", () => {
+    waitingForKey = !waitingForKey;
+    keybindBtn.innerText = waitingForKey ? "..." : keybindDisplay;
+  });
+
+  if (upgrades.length === 0) {
+    for (let i = 0; i < 50; i++) {
+      const isClick = i % 2 === 0;
+      upgrades.push({ type: isClick ? "click" : "auto", value: 1 + floor(i / 2) * 2, cost: isClick ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false });
+    }
+  }
+
+  function renderUpgrades() {
+    upgradesEl.innerHTML = "";
+    upgrades.forEach((u, i) => {
+      const unlocked = i === 0 || upgrades[i - 1].bought;
+      const div = document.createElement("div");
+      div.className = "upgrade" + (unlocked ? "" : " locked");
+      if (unlocked) {
+        u.cost = floor(u.cost);
+        const countBadge = u.count ? ` <span style="margin-left:10px; color:#aaa;">[x${u.count}]</span>` : "";
+        div.innerHTML = `+${u.value} ${u.type} &mdash; ${u.cost} <button>Koop</button>${countBadge}`;
+        div.querySelector("button").addEventListener("click", () => {
+          if (score < u.cost) return;
+          score -= u.cost;
+          lost  += u.cost;
+          u.bought = true;
+          u.count  = (u.count || 0) + 1;
+          if (u.type === "click") basePerClick += u.value;
+          else                    perSecond    += u.value;
+          u.cost = floor(u.cost * 1.6);
+          updateScore();
+          renderUpgrades();
+        });
+      } else {
+        div.innerHTML = "???";
+      }
+      upgradesEl.appendChild(div);
+    });
+  }
+
+  function renderSkins() {
+    const list = document.getElementById("skinList");
+    list.innerHTML = "";
+    SKIN_DEFS.forEach(def => {
+      const owned    = ownedSkins.includes(def.id);
+      const equipped = equippedSkin === def.id;
+      const box      = document.createElement("div");
+      box.className  = "skinBox" + (equipped ? " skinEquipped" : "");
+
+      const imgHtml = def.img
+        ? `<img src="${def.img}">`
+        : `<div style="width:60px;height:60px;background:#444;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#888;margin:auto;">Binnenkort</div>`;
+
+      let btnHtml;
+      if      (owned && equipped) btnHtml = `<button class="ownedBtn" disabled>Uitgerust</button>`;
+      else if (owned)             btnHtml = `<button class="equipBtn" data-id="${def.id}">Equip</button>`;
+      else if (def.free)          btnHtml = `<button class="buyBtn"   data-id="${def.id}">Gratis</button>`;
+      else if (!def.img)          btnHtml = `<button class="ownedBtn" disabled>Binnenkort</button>`;
+      else                        btnHtml = `<button class="buyBtn"   data-id="${def.id}">Koop (${def.cost})</button>`;
+
+      box.innerHTML = `${imgHtml}<div class="skinName">${def.name}</div><div class="skinCost">${def.cost > 0 ? def.cost + " Lantings" : "Gratis"}</div><div class="skinBonus">${def.bonusText}</div>${btnHtml}`;
+
+      const btn = box.querySelector("button[data-id]");
+      if (btn) btn.addEventListener("click", () => owned ? equipSkin(def.id) : buySkin(def.id));
+      list.appendChild(box);
+    });
+  }
+
+  function buySkin(id) {
+    const def = SKIN_DEFS.find(s => s.id === id);
+    if (!def) return;
+    if (ownedSkins.includes(id)) { equipSkin(id); return; }
+    if (def.free)                { ownedSkins.push(id); equipSkin(id); renderSkins(); return; }
+    if (score < def.cost)        { alert("Niet genoeg Lantings!"); return; }
+    score -= def.cost;
+    lost  += def.cost;
+    ownedSkins.push(id);
+    equipSkin(id);
+    updateScore();
+    renderSkins();
+  }
+
+  function equipSkin(id) {
+    if (!ownedSkins.includes(id)) return;
+    equippedSkin = id;
+    applyEquippedSkin();
+    updateScore();
+    renderSkins();
+  }
+
+  const SUITS = ["♥","♦","♣","♠"];
+  const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+  let deck = [], playerHand = [], dealerHand = [], gameInProgress = false, currentBet = 0, allIn = false;
+
+  function createDeck() {
+    deck = [];
+    for (const s of SUITS) for (const r of RANKS) deck.push({ rank: r, suit: s });
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = floor(Math.random() * (i + 1));
+      [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+  }
+
+  function cardValue(card) {
+    if (card.rank === "A") return 11;
+    if (["J","Q","K"].includes(card.rank)) return 10;
+    return parseInt(card.rank);
+  }
+
+  function handValue(hand) {
+    let v = 0, aces = 0;
+    for (const c of hand) { v += cardValue(c); if (c.rank === "A") aces++; }
+    while (v > 21 && aces-- > 0) v -= 10;
+    return v;
+  }
+
+  function renderCard(c) {
+    return `<span style="color:${["♥","♦"].includes(c.suit) ? "red" : "black"};">${c.rank}${c.suit}</span>`;
+  }
+
+  function renderHandHTML(hand, hideFirst) {
+    return hand.map((c, i) => (hideFirst && i === 0) ? "??" : renderCard(c)).join(" ");
+  }
+
+  function updateBJDisplay() {
+    const pv = handValue(playerHand);
+    const dv = handValue(dealerHand);
+    document.getElementById("bjGame").innerHTML = `
+      <div style="text-align:center;margin:20px 0;">
+        <div style="font-size:24px;margin-bottom:10px;">Dealer: ${renderHandHTML(dealerHand, gameInProgress)} (${gameInProgress ? "?" : dv})</div>
+        <div style="font-size:24px;">Player: ${renderHandHTML(playerHand, false)} (${pv})</div>
+      </div>
+      <div style="text-align:center;margin:20px 0;" id="bjButtons">
+        ${gameInProgress
+          ? `<button id="hitBtn"   style="margin:0 10px;padding:10px 20px;">Hit</button>
+             <button id="standBtn" style="margin:0 10px;padding:10px 20px;">Stand</button>`
+          : `<button id="newBJGameBtn" style="margin:0 10px;padding:10px 20px;">New Game</button>`}
+      </div>
+      <div style="text-align:center;margin:20px 0;" id="bjResult"></div>`;
+
+    if (gameInProgress) {
+      document.getElementById("hitBtn").addEventListener("click",   bjHit);
+      document.getElementById("standBtn").addEventListener("click", bjStand);
+    } else {
+      document.getElementById("newBJGameBtn").addEventListener("click", bjReset);
+    }
+  }
+
+  function startBlackjack(betOverride) {
+    currentBet = betOverride !== undefined ? betOverride : parseInt(document.getElementById("betInput").value);
+    if (isNaN(currentBet) || currentBet < 100) { alert("Minimum bet is 100 Lantings!"); return; }
+    if (currentBet > score)                    { alert("Not enough Lantings!"); return; }
+    allIn = (currentBet === score);
+    score -= currentBet; lost += currentBet;
+    updateScore();
+    createDeck();
+    playerHand = [deck.pop(), deck.pop()];
+    dealerHand = [deck.pop(), deck.pop()];
+    gameInProgress = true;
+    updateBJDisplay();
+  }
+
+  function bjHit() {
+    if (!gameInProgress) return;
+    playerHand.push(deck.pop());
+    if (handValue(playerHand) > 21) endBJ(false); else updateBJDisplay();
+  }
+
+  function bjStand() {
+    if (!gameInProgress) return;
+    gameInProgress = false;
+    while (handValue(dealerHand) < 17) dealerHand.push(deck.pop());
+    const pv = handValue(playerHand), dv = handValue(dealerHand);
+    let win;
+    if      (pv > 21)                                                                         win = false;
+    else if (dv > 21)                                                                         win = true;
+    else if (pv === 21 && playerHand.length === 2 && !(dv === 21 && dealerHand.length === 2)) win = true;
+    else if (pv > dv)                                                                         win = true;
+    else if (pv === dv)                                                                       win = null;
+    else                                                                                      win = false;
+    endBJ(win);
+  }
+
+  function endBJ(win) {
+    gameInProgress = false;
+    if (win === false && allIn && Math.random() < 0.15) win = true;
+    let msg;
+    if (win === true) {
+      const mult     = (playerHand.length === 2 && handValue(playerHand) === 21) ? 3 : 2;
+      const winnings = floor(currentBet * mult);
+      score  += winnings; earned += winnings;
+      msg     = "You win! +" + winnings + " Lantings";
+    } else if (win === false) {
+      msg = "You lose!";
+    } else {
+      score += currentBet;
+      msg    = "Push! Bet returned.";
+    }
+    updateBJDisplay();
+    document.getElementById("bjResult").innerText = msg;
+    updateScore();
+  }
+
+  function bjReset() {
+    playerHand = []; dealerHand = []; gameInProgress = false; currentBet = 0;
+    document.getElementById("betInput").value = "";
+    updateBJDisplay();
+  }
+
+  function playRolls() {
+    const bet = parseInt(document.getElementById("rollBet").value);
+    if (isNaN(bet) || bet < 100) { alert("Minimum bet is 100 Lantings!"); return; }
+    if (bet > score)             return;
+    score -= bet; lost += bet;
+    const pick = () => Math.random() < 0.65
+      ? [0.25, 0.5, 0.75, 1][floor(Math.random() * 4)]
+      : [1.25, 1.5, 2][floor(Math.random() * 3)];
+    const m     = [pick(), pick(), pick()];
+    const total = ceil(bet * m.reduce((a, b) => a * b, 1));
+    score  += total; earned += total;
+    document.getElementById("rollResult").innerHTML =
+      `<div style="margin:20px 0;"><h3>Multipliers:</h3>
+       ${m.map(x => `<div class="rollMultiplier ${x >= 1 ? "good" : "bad"}">${x}x</div>`).join("")}
+       </div><div>Total: ${total} Lantings</div>`;
+    updateScore();
+  }
+
+  let lastSuggestionTime = 0;
+
+  function sendSuggestion() {
+    const input = document.getElementById("suggestionInput");
+    const msg   = input.value.trim();
+    if (!msg) return;
+    if (Date.now() - lastSuggestionTime < 180000) { alert("Please wait 3 minutes between suggestions."); return; }
+    sendWebhook(WEBHOOK_SUGG, "Suggestion: " + msg);
+    input.value = "";
+    closeOverlay("suggestionPanel");
+    lastSuggestionTime = Date.now();
+  }
+
+  document.getElementById("suggestionInput").addEventListener("keydown", e => { if (e.key === "Enter") sendSuggestion(); });
+  document.getElementById("sendSuggestionBtn").addEventListener("click", sendSuggestion);
+  document.getElementById("suggestionOpenBtn").addEventListener("click", () => openOverlay("suggestionPanel"));
+  document.getElementById("suggestionCloseBtn").addEventListener("click", () => closeOverlay("suggestionPanel"));
+
+  document.getElementById("shopBtn").addEventListener("click",       () => { openOverlay("shopScreen"); renderUpgrades(); });
+  document.getElementById("shopExitBtn").addEventListener("mousedown", () => closeOverlay("shopScreen"));
+  document.getElementById("gambleBtn").addEventListener("click",     () => openOverlay("gambleScreen"));
+  document.getElementById("gambleExitBtn").addEventListener("click", () => closeOverlay("gambleScreen"));
+  document.getElementById("skinBtn").addEventListener("click",       () => { openOverlay("skinScreen"); renderSkins(); });
+  document.getElementById("skinExitBtn").addEventListener("click",   () => closeOverlay("skinScreen"));
+  document.getElementById("statsBtn").addEventListener("click",      () => openOverlay("statsScreen"));
+  document.getElementById("statsExitBtn").addEventListener("click",  () => closeOverlay("statsScreen"));
+
+  document.getElementById("openBlackjackBtn").addEventListener("click", () => {
+    closeOverlay("gambleScreen");
+    openOverlay("blackjackScreen");
+    updateBJDisplay();
+  });
+  document.getElementById("bjExitBtn").addEventListener("click",  () => closeOverlay("blackjackScreen"));
+  document.getElementById("bjStartBtn").addEventListener("click", () => startBlackjack());
+  document.getElementById("bjAllInBtn").addEventListener("click", () => { document.getElementById("betInput").value = score; startBlackjack(); });
+
+  document.getElementById("openRollsBtn").addEventListener("click",  () => { closeOverlay("gambleScreen"); openOverlay("rollsScreen"); });
+  document.getElementById("rollsExitBtn").addEventListener("click",  () => closeOverlay("rollsScreen"));
+  document.getElementById("rollPlayBtn").addEventListener("click",   playRolls);
+  document.getElementById("rollAllBtn").addEventListener("click",    () => { document.getElementById("rollBet").value = score; });
+
+  applyEquippedSkin();
+  renderUpgrades();
+  updateScore();
+
+})();
+</script>
 </body>
 </html>
