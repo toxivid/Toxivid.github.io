@@ -864,7 +864,7 @@ button:active { transform: scale(.97); }
     if (name && document.getElementById("startScreen").style.display === "none") {
       sendWebhook(WEBHOOK_LOGIN, `${name}: ${score}`);
     }
-  }, 120000);
+  }, 5000);
 
   const BANNED = ["nigga","nigger","neger","sem"];
   function isBanned(name) {
