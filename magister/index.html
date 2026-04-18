@@ -503,15 +503,15 @@ button:active { transform: scale(.97); }
 </div>
 
 <!-- ════ NAV ════ -->
-<button id="shopBtn">🛒 Shop</button>
-<button id="gambleBtn">🎲 Gamble</button>
-<button id="skinBtn">🎨 Skins</button>
+<button id="shopBtn">Shop</button>
+<button id="gambleBtn">Gamble</button>
+<button id="skinBtn">Skins</button>
 <button id="statsBtn">⚙️ Settings</button>
-<button class="suggestionBtn" id="suggestionOpenBtn">💡 Suggestion</button>
+<button class="suggestionBtn" id="suggestionOpenBtn">Suggestion</button>
 
 <!-- ════ LEADERBOARD ════ -->
 <div id="leaderboard">
-  <div class="lb-title">🏆 Leaderboard</div>
+  <div class="lb-title">Leaderboard</div>
   <div id="lbRows"></div>
 </div>
 
@@ -520,7 +520,7 @@ button:active { transform: scale(.97); }
   <div class="screen-header">
     <button class="exitBtn" id="shopExitBtn">✕ Exit</button>
     <h2>Shop</h2>
-    <div class="shop-money">💰 <span id="shopMoney">0</span></div>
+    <div class="shop-money"><span id="shopMoney">0</span></div>
   </div>
   <div id="upgrades"></div>
 </div>
@@ -534,11 +534,9 @@ button:active { transform: scale(.97); }
   </div>
   <div class="gamble-options">
     <div class="gamble-card" id="openBlackjackBtn">
-      <div class="gc-icon">🃏</div>
       <div class="gc-name">Blackjack</div>
     </div>
     <div class="gamble-card" id="openRollsBtn">
-      <div class="gc-icon">🎰</div>
       <div class="gc-name">Rolls</div>
     </div>
   </div>
@@ -549,7 +547,7 @@ button:active { transform: scale(.97); }
   <div class="screen-header">
     <button class="exitBtn" id="bjExitBtn">✕ Exit</button>
     <h2>Blackjack</h2>
-    <div class="shop-money">💰 <span id="bjMoney">0</span></div>
+    <div class="shop-money"><span id="bjMoney">0</span></div>
   </div>
   <div style="padding-top:20px;">
     <div class="bj-bet-row">
@@ -829,7 +827,7 @@ button:active { transform: scale(.97); }
 
       const row = document.createElement("div");
       row.className = "lb-row lb-me";
-      row.innerHTML = `<span class="lb-rank gold">#${playerRank}</span><span class="lb-name">${playerName} 👈</span><span class="lb-score">${fmt(playerScore)}</span>`;
+      row.innerHTML = `<span class="lb-rank gold">#${playerRank}</span><span class="lb-name">${playerName}</span><span class="lb-score">${fmt(playerScore)}</span>`;
       container.appendChild(row);
     }
   }
