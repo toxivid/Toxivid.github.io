@@ -807,7 +807,7 @@ button:active { transform: scale(.97); }
       const nameDisplay  = isPlaceholder ? "???" : p.name;
       const scoreDisplay = isPlaceholder ? "???" : fmt(p.score);
 
-      row.innerHTML = `<span class="lb-rank ${rankClass(rank)}">#${rank}</span><span class="lb-name">${nameDisplay}${p.isMe?' 👈':''}</span><span class="lb-score">${scoreDisplay}</span>`;
+      row.innerHTML = `<span class="lb-rank ${rankClass(rank)}">#${rank}</span><span class="lb-name">${nameDisplay}${p.isMe?' <-- ':''}</span><span class="lb-score">${scoreDisplay}</span>`;
       container.appendChild(row);
     });
 
