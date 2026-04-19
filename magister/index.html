@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<title>Lanting Clicker</title>
+<title>Magister</title>
 <link rel="icon" href="https://comm.magister.nl/hubfs/MicrosoftTeams-image-_4_.ico">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Exo+2:wght@300;400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -30,7 +30,6 @@ body {
   min-height: 100vh;
 }
 
-/* background grid */
 body::before {
   content: '';
   position: fixed; inset: 0;
@@ -42,7 +41,6 @@ body::before {
   z-index: 0;
 }
 
-/* ─── ANIMATIONS ─── */
 @keyframes fadeIn    { from { opacity:0 } to { opacity:1 } }
 @keyframes slideDown { from { transform:translateY(-16px); opacity:0 } to { transform:translateY(0); opacity:1 } }
 @keyframes slideUp   { from { transform:translateY(16px);  opacity:0 } to { transform:translateY(0); opacity:1 } }
@@ -53,13 +51,16 @@ body::before {
 @keyframes shimmer   { 0%,100%{opacity:.6} 50%{opacity:1} }
 @keyframes spin      { to { transform: rotate(360deg) } }
 @keyframes rankPop   { 0%{transform:scale(1.2);color:var(--gold)} 100%{transform:scale(1);color:inherit} }
+@keyframes spinFall  {
+  0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translateY(180px) rotate(720deg) scale(0.6); opacity: 0.3; }
+}
+@keyframes boostPulse { 0%,100%{opacity:1} 50%{opacity:.5} }
 
-/* ─── SCROLLBAR ─── */
 ::-webkit-scrollbar { width:5px }
 ::-webkit-scrollbar-track { background:transparent }
 ::-webkit-scrollbar-thumb { background:var(--accent); border-radius:4px }
 
-/* ─── BUTTONS ─── */
 button {
   font-family: 'Rajdhani', sans-serif;
   font-weight: 700;
@@ -204,6 +205,59 @@ button:active { transform: scale(.97); }
 #clickBtn:active { transform: scale(.97); }
 #clickBtn img    { width:100%; height:100%; object-fit:cover; border-radius:50%; }
 
+/* ─── BOOST INDICATOR ─── */
+#boostBar {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 50;
+}
+.boost-badge {
+  background: var(--card);
+  border: 1.5px solid var(--accent2);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent2);
+  animation: boostPulse 1s infinite;
+}
+.boost-badge.click-boost { border-color: var(--gold); color: var(--gold); }
+.boost-badge.ps-boost    { border-color: var(--accent); color: var(--accent); }
+.boost-badge.gamble-boost{ border-color: var(--accent2); color: var(--accent2); }
+
+/* ─── FALLING CIRCLE ─── */
+#fallingCircle {
+  position: fixed;
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  z-index: 500;
+  box-shadow: 0 0 16px rgba(124,92,252,.7);
+  display: none;
+  border: 2px solid var(--accent2);
+  transition: box-shadow .2s;
+}
+#fallingCircle:hover { box-shadow: 0 0 28px rgba(0,229,176,.9); }
+#fallingCircle img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+#fallingCountdown {
+  position: fixed;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  color: var(--accent2);
+  z-index: 501;
+  display: none;
+  animation: boostPulse 1s infinite;
+}
+
 /* ─── NAV BUTTONS ─── */
 #shopBtn   { position:fixed; left:20px;  top:50%; transform:translateY(-50%); }
 #gambleBtn { position:fixed; right:20px; top:50%; transform:translateY(-50%); }
@@ -211,6 +265,8 @@ button:active { transform: scale(.97); }
 #statsBtn  { position:fixed; right:20px; top:20px; }
 #shopBtn:hover   { transform: translateY(-50%) scale(1.05); }
 #gambleBtn:hover { transform: translateY(-50%) scale(1.05); }
+#gambleBtn:disabled { opacity:.4; cursor:not-allowed; }
+#gambleBtn:disabled:hover { transform: translateY(-50%); box-shadow:none; background:var(--accent); }
 
 /* ─── LEADERBOARD ─── */
 #leaderboard {
@@ -248,13 +304,7 @@ button:active { transform: scale(.97); }
   transition: color .3s;
 }
 .lb-row:last-child { border-bottom: none; }
-.lb-rank {
-  font-weight: 900;
-  font-size: 12px;
-  color: var(--muted);
-  min-width: 20px;
-  text-align: right;
-}
+.lb-rank { font-weight: 900; font-size: 12px; color: var(--muted); min-width: 20px; text-align: right; }
 .lb-rank.gold   { color: #ffd700; }
 .lb-rank.silver { color: #c0c0c0; }
 .lb-rank.bronze { color: #cd7f32; }
@@ -262,11 +312,7 @@ button:active { transform: scale(.97); }
 .lb-score { color: var(--accent2); font-size: 12px; }
 .lb-me    { color: var(--gold); animation: rankPop .4s ease; }
 .lb-me .lb-name { color: var(--gold); }
-.lb-separator {
-  border: none;
-  border-top: 1px dashed rgba(124,92,252,.3);
-  margin: 4px 0;
-}
+.lb-separator { border: none; border-top: 1px dashed rgba(124,92,252,.3); margin: 4px 0; }
 
 /* ─── SUGGESTION BTN ─── */
 .suggestionBtn { position:fixed; bottom:20px; right:20px; font-size:12px; padding:8px 12px; background:var(--card); border:1px solid var(--border); color:var(--muted); }
@@ -305,20 +351,11 @@ button:active { transform: scale(.97); }
   animation: shimmer 2s infinite;
 }
 
-.exitBtn {
-  background: var(--danger);
-  padding: 8px 14px;
-  font-size: 13px;
-}
+.exitBtn { background: var(--danger); padding: 8px 14px; font-size: 13px; }
 .exitBtn:hover { background: #ff6b82; }
 
 /* ─── SHOP ─── */
-.shop-money {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 16px;
-  color: var(--accent2);
-  font-weight: 700;
-}
+.shop-money { font-family: 'Rajdhani', sans-serif; font-size: 16px; color: var(--accent2); font-weight: 700; }
 
 .upgrade {
   display: flex;
@@ -341,22 +378,36 @@ button:active { transform: scale(.97); }
 .locked { opacity:.4; cursor:default; }
 .locked:hover { transform:none; border-color:var(--border); }
 
-/* ─── SKINS ─── */
-.skin-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px,1fr));
-  gap: 12px;
-  padding-bottom: 20px;
-}
-.skinBox {
+/* ─── UNLOCK TILES ─── */
+.unlock-tile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  margin: 8px 0;
   background: var(--card);
-  border: 1.5px solid var(--border);
-  border-radius: 14px;
-  padding: 16px 12px;
-  text-align: center;
-  cursor: pointer;
-  transition: transform .2s, border-color .2s, background .2s;
-  animation: slideDown .4s ease;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  animation: slideDown .3s ease;
+}
+.unlock-tile.unlocked-tile { border-color: rgba(0,229,176,.3); }
+.unlock-info { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:600; }
+.unlock-info .unlock-desc { color: var(--muted); font-size:12px; margin-top:2px; }
+.unlock-btn-unlocked { background:#333; color:var(--muted); cursor:default; font-size:13px; padding:8px 14px; }
+.unlock-btn-unlocked:hover { transform:none; box-shadow:none; background:#333; }
+
+/* ─── SHOP BUY BUTTON STATES ─── */
+.buy-btn-can    { background: #1a6b3a; color:#00e5b0; border:1px solid rgba(0,229,176,.4); }
+.buy-btn-can:hover { background:#218a4a; }
+.buy-btn-cannot { background:#2a2a40; color:var(--muted); border:1px solid rgba(124,92,252,.1); cursor:not-allowed; }
+.buy-btn-cannot:hover { transform:none; box-shadow:none; background:#2a2a40; }
+
+/* ─── SKINS ─── */
+.skin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 12px; padding-bottom: 20px; }
+.skinBox {
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 14px;
+  padding: 16px 12px; text-align: center; cursor: pointer;
+  transition: transform .2s, border-color .2s, background .2s; animation: slideDown .4s ease;
 }
 .skinBox:hover     { transform: translateY(-4px); background:#222244; border-color: var(--accent); }
 .skinEquipped      { border-color: var(--accent2); animation: pulse 2s infinite; }
@@ -372,26 +423,16 @@ button:active { transform: scale(.97); }
 .ownedBtn:hover { transform:none; box-shadow:none; }
 
 /* ─── GAMBLE ─── */
-.gamble-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  max-width: 400px;
-  margin: 0 auto;
-  padding-top: 20px;
-}
+.gamble-options { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 400px; margin: 0 auto; padding-top: 20px; }
 .gamble-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 30px 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: all .2s;
+  background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 30px 20px; text-align: center; cursor: pointer; transition: all .2s;
 }
 .gamble-card:hover { background: #222244; border-color: var(--accent); transform: translateY(-4px); }
-.gamble-card .gc-icon { font-size:36px; margin-bottom:12px; }
+.gamble-card.locked-game { opacity:.5; cursor:not-allowed; }
+.gamble-card.locked-game:hover { transform:none; border-color:var(--border); background:var(--card); }
 .gamble-card .gc-name { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; }
+.gamble-card .gc-lock { font-size:12px; color:var(--muted); margin-top:6px; }
 
 /* ─── BLACKJACK ─── */
 #blackjackScreen { text-align:center; }
@@ -408,13 +449,10 @@ button:active { transform: scale(.97); }
 /* ─── ROLLS ─── */
 .roll-grid { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:20px 0; }
 .rollMult {
-  width:90px; height:90px;
-  border-radius:14px;
+  width:90px; height:90px; border-radius:14px;
   display:flex; align-items:center; justify-content:center;
-  font-family:'Rajdhani',sans-serif;
-  font-size:26px; font-weight:900;
-  animation: slideDown .4s ease;
-  border: 2px solid transparent;
+  font-family:'Rajdhani',sans-serif; font-size:26px; font-weight:900;
+  animation: slideDown .4s ease; border: 2px solid transparent;
 }
 .rollMult.good { background:rgba(0,229,176,.15); border-color:var(--accent2); color:var(--accent2); }
 .rollMult.bad  { background:rgba(255,79,109,.15); border-color:var(--danger);  color:var(--danger); }
@@ -432,8 +470,19 @@ button:active { transform: scale(.97); }
 .changelog-entry ul { padding-left:16px; }
 .changelog-entry li { font-size:13px; color:var(--muted); margin:4px 0; }
 
+.next-update-entry { background:rgba(0,229,176,.05); border:1px solid rgba(0,229,176,.25); border-radius:12px; padding:14px; margin:10px 0; }
+.next-update-entry h4 { font-family:'Rajdhani',sans-serif; font-size:15px; color:var(--accent2); font-weight:700; margin-bottom:8px; }
+.next-update-entry ul { padding-left:16px; }
+.next-update-entry li { font-size:13px; color:rgba(0,229,176,.6); margin:4px 0; }
+
 .keybind-row { display:flex; align-items:center; gap:12px; padding:12px; background:var(--card); border:1px solid var(--border); border-radius:12px; margin:10px 0; }
 .keybind-row span { flex:1; font-size:14px; }
+
+/* ─── CODE SECTION ─── */
+.code-row { display:flex; gap:10px; margin-top:8px; }
+.code-row input { flex:1; padding:10px 14px; background:var(--card); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px; outline:none; }
+.code-row input:focus { border-color:var(--accent); }
+#codeMsg { font-size:12px; margin-top:6px; min-height:16px; }
 
 /* ─── SUGGESTION PANEL ─── */
 .suggestionPanel {
@@ -446,15 +495,9 @@ button:active { transform: scale(.97); }
   backdrop-filter: blur(8px);
 }
 .sugg-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 30px;
-  width: 90%;
-  max-width: 360px;
-  text-align: center;
-  animation: slideDown .3s ease;
-  position: relative;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 18px;
+  padding: 30px; width: 90%; max-width: 360px; text-align: center;
+  animation: slideDown .3s ease; position: relative;
 }
 .sugg-card h3 { font-family:'Rajdhani',sans-serif; font-size:20px; color:var(--accent); margin-bottom:16px; }
 .sugg-card input { width:100%; padding:12px 14px; background:var(--card); border:1.5px solid var(--border); border-radius:10px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px; outline:none; margin-bottom:12px; }
@@ -462,27 +505,20 @@ button:active { transform: scale(.97); }
 .sugg-close { position:absolute; top:12px; right:12px; background:var(--danger); padding:6px 10px; font-size:12px; }
 
 /* ─── SECTION LABELS ─── */
-.sec-label {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin: 20px 0 8px;
-}
+.sec-label { font-family: 'Rajdhani', sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin: 20px 0 8px; }
 </style>
 </head>
 <body>
 
-<!-- ════ START SCREEN ════ -->
+<!-- START SCREEN -->
 <div id="startScreen">
-  <div class="start-title">Lantings Clicker</div>
-  <button id="playBtn">PLAY</button>
+  <div class="start-title">Lanting Clicker</div>
+  <button id="playBtn">SPELEN</button>
   <div id="nameSection" style="display:none;">
-    <label for="nameInput">Choose your name</label>
-    <input id="nameInput" type="text" maxlength="24" placeholder="Enter username...">
+    <label for="nameInput">Kies je naam</label>
+    <input id="nameInput" type="text" maxlength="24" placeholder="Gebruikersnaam...">
     <div id="nameError"></div>
-    <button id="confirmNameBtn">Confirm</button>
+    <button id="confirmNameBtn">Bevestigen</button>
   </div>
   <div id="offlineInfo">
     <div id="offlineBonus"></div>
@@ -490,7 +526,7 @@ button:active { transform: scale(.97); }
   </div>
 </div>
 
-<!-- ════ MAIN ════ -->
+<!-- MAIN -->
 <div id="main">
   <div id="statsTop">
     <div id="perSecondText">Per seconde: 0</div>
@@ -502,95 +538,105 @@ button:active { transform: scale(.97); }
   </div>
 </div>
 
-<!-- ════ NAV ════ -->
+<!-- BOOST BAR -->
+<div id="boostBar"></div>
+
+<!-- FALLING CIRCLE -->
+<div id="fallingCircle"><img id="fallingImg" src=""></div>
+<div id="fallingCountdown"></div>
+
+<!-- NAV -->
 <button id="shopBtn">Shop</button>
-<button id="gambleBtn">Gamble</button>
+<button id="gambleBtn" disabled>Gamble</button>
 <button id="skinBtn">Skins</button>
-<button id="statsBtn">⚙️ Settings</button>
+<button id="statsBtn">Instellingen</button>
 <button class="suggestionBtn" id="suggestionOpenBtn">Suggestion</button>
 
-<!-- ════ LEADERBOARD ════ -->
+<!-- LEADERBOARD -->
 <div id="leaderboard">
   <div class="lb-title">Leaderboard</div>
   <div id="lbRows"></div>
 </div>
 
-<!-- ════ SHOP ════ -->
+<!-- SHOP -->
 <div id="shopScreen" class="screen">
   <div class="screen-header">
-    <button class="exitBtn" id="shopExitBtn">✕ Exit</button>
+    <button class="exitBtn" id="shopExitBtn">Sluiten</button>
     <h2>Shop</h2>
-    <div class="shop-money"><span id="shopMoney">0</span></div>
+    <div class="shop-money"><span id="shopMoney">0</span> Lantings</div>
   </div>
+  <div id="unlockTiles"></div>
   <div id="upgrades"></div>
 </div>
 
-<!-- ════ GAMBLE ════ -->
+<!-- GAMBLE -->
 <div id="gambleScreen" class="screen">
   <div class="screen-header">
-    <button class="exitBtn" id="gambleExitBtn">✕ Exit</button>
+    <button class="exitBtn" id="gambleExitBtn">Sluiten</button>
     <h2>Gamble</h2>
     <div></div>
   </div>
   <div class="gamble-options">
     <div class="gamble-card" id="openBlackjackBtn">
       <div class="gc-name">Blackjack</div>
+      <div class="gc-lock" id="bjLockText"></div>
     </div>
     <div class="gamble-card" id="openRollsBtn">
       <div class="gc-name">Rolls</div>
+      <div class="gc-lock" id="rollsLockText"></div>
     </div>
   </div>
 </div>
 
-<!-- ════ BLACKJACK ════ -->
+<!-- BLACKJACK -->
 <div id="blackjackScreen" class="screen">
   <div class="screen-header">
-    <button class="exitBtn" id="bjExitBtn">✕ Exit</button>
+    <button class="exitBtn" id="bjExitBtn">Sluiten</button>
     <h2>Blackjack</h2>
     <div class="shop-money"><span id="bjMoney">0</span></div>
   </div>
   <div style="padding-top:20px;">
     <div class="bj-bet-row">
-      <input id="betInput" type="number" min="100" placeholder="Bet (min 100)">
-      <button id="bjStartBtn">Deal</button>
-      <button id="bjAllInBtn" class="allin-btn">All In (+10% luck)</button>
+      <input id="betInput" type="number" min="100" placeholder="Inzet (min 100)">
+      <button id="bjStartBtn">Deel</button>
+      <button id="bjAllInBtn" class="allin-btn">Alles In (+10% geluk)</button>
     </div>
     <div id="bjGame">
       <div style="margin:30px 0;">
         <div class="bj-label">Dealer</div>
         <div class="bj-hand">?? (?)</div>
-        <div class="bj-label" style="margin-top:20px;">You</div>
+        <div class="bj-label" style="margin-top:20px;">Jij</div>
         <div class="bj-hand">(?)</div>
       </div>
       <div class="bj-buttons" id="bjButtons">
-        <button id="newBJGameBtn">New Game</button>
+        <button id="newBJGameBtn">Nieuw Spel</button>
       </div>
       <div class="bj-result" id="bjResult"></div>
     </div>
   </div>
 </div>
 
-<!-- ════ ROLLS ════ -->
+<!-- ROLLS -->
 <div id="rollsScreen" class="screen">
   <div class="screen-header">
-    <button class="exitBtn" id="rollsExitBtn">✕ Exit</button>
+    <button class="exitBtn" id="rollsExitBtn">Sluiten</button>
     <h2>Rolls</h2>
     <div class="shop-money"><span id="rollMoney">0</span></div>
   </div>
   <div style="padding-top:20px; text-align:center;">
     <div class="bj-bet-row">
-      <input id="rollBet" type="number" min="100" placeholder="Bet (min 100)">
-      <button id="rollPlayBtn">Roll</button>
-      <button id="rollAllBtn">Bet All</button>
+      <input id="rollBet" type="number" min="100" placeholder="Inzet (min 100)">
+      <button id="rollPlayBtn">Rol</button>
+      <button id="rollAllBtn">Alles Inzetten</button>
     </div>
     <div id="rollResult"></div>
   </div>
 </div>
 
-<!-- ════ SKINS ════ -->
+<!-- SKINS -->
 <div id="skinScreen" class="screen">
   <div class="screen-header">
-    <button class="exitBtn" id="skinExitBtn">✕ Exit</button>
+    <button class="exitBtn" id="skinExitBtn">Sluiten</button>
     <h2>Skins</h2>
     <div></div>
   </div>
@@ -598,85 +644,117 @@ button:active { transform: scale(.97); }
   <div id="skinList" class="skin-grid"></div>
 </div>
 
-<!-- ════ SETTINGS ════ -->
+<!-- SETTINGS -->
 <div id="statsScreen" class="screen">
   <div class="screen-header">
-    <button class="exitBtn" id="statsExitBtn">✕ Exit</button>
+    <button class="exitBtn" id="statsExitBtn">Sluiten</button>
     <h2>Settings</h2>
     <div></div>
   </div>
   <div style="max-width:500px; margin:0 auto;">
-    <div class="sec-label">Keybinds</div>
+    <div class="sec-label">Keybind</div>
     <div class="keybind-row">
-      <span>Click Keybind</span>
+      <span>Klik Keybind</span>
       <button id="keybindBtn">ENTER</button>
     </div>
-    <p style="font-size:11px; color:var(--muted); margin-top:4px;">Click the button then press any key to rebind.</p>
+    <p style="font-size:11px; color:var(--muted); margin-top:4px;">Klik de knop en druk een toets om te herbinden.</p>
 
-    <div class="sec-label">Statistics</div>
+    <div class="sec-label">Statistieken</div>
     <div class="stat-block">
-      <div class="stat-row"><span>Playtime</span><span class="val"><span id="statTime">0</span>s</span></div>
-      <div class="stat-row"><span>Total Earned</span><span class="val"><span id="statEarned">0</span></span></div>
-      <div class="stat-row"><span>Total Lost</span><span class="val"><span id="statLost">0</span></span></div>
-      <div class="stat-row"><span>Highest Ever</span><span class="val"><span id="statNet">0</span></span></div>
+      <div class="stat-row"><span>Speeltijd</span><span class="val"><span id="statTime">0</span>s</span></div>
+      <div class="stat-row"><span>Totaal Verdiend</span><span class="val"><span id="statEarned">0</span></span></div>
+      <div class="stat-row"><span>Totaal Verloren</span><span class="val"><span id="statLost">0</span></span></div>
+      <div class="stat-row"><span>Hoogste Ooit</span><span class="val"><span id="statNet">0</span></span></div>
     </div>
 
+    <div class="sec-label">Codes</div>
+    <div class="code-row">
+      <input id="codeInput" type="text" placeholder="Voer code in...">
+      <button id="codeSubmitBtn">Verzenden</button>
+    </div>
+    <div id="codeMsg"></div>
+
     <div class="sec-label">Changelogs</div>
-    <div class="changelog-entry">
-      <h4>v2.0 — Leaderboard Update</h4>
+
+    <div class="next-update-entry">
+      <h4>Volgende Update</h4>
       <ul>
-        <li>Keybind now works correctly</li>
-        <li>Leaderboard added (live on Sunday)</li>
-        <li>Offline bonus buffed: 25% → 40%</li>
-        <li>Bug fixes & code improvements</li>
+        <li>Vallende cirkel: elke minuut 20% kans dat een kleine cirkel verschijnt</li>
+        <li>Opvangen geeft een bonus: gamble luck boost, klik boost of klikken per seconde boost (elk 20 seconden)</li>
+        <li>Bonus: +20% per klik, x2.5 per seconde, of verbeterde gamble kansen</li>
+        <li>Afteltimer zichtbaar onderin het scherm</li>
+      </ul>
+    </div>
+
+    <div class="changelog-entry">
+      <h4>v2.1 - Gamble & Shop Update</h4>
+      <ul>
+        <li>Gamble ontgrendelen via shop (100 Lantings)</li>
+        <li>Rolls en Blackjack apart ontgrendelen</li>
+        <li>Geld wordt nu correct opgemaakt (punten per 3 cijfers)</li>
+        <li>Lanting score gebruikt NL afkortingen (k, m, md, b, bd, t, td)</li>
+        <li>Shop knoppen groen/grijs op basis van beschikbaar geld</li>
+        <li>Codes systeem in settings</li>
+        <li>Namen al in gebruik worden geblokkeerd</li>
+        <li>Leaderboard dubbele naam probleem opgelost</li>
+        <li>Variabelen reset voor nieuwe opslag</li>
+      </ul>
+    </div>
+    <div class="changelog-entry">
+      <h4>v2.0 - Leaderboard Update</h4>
+      <ul>
+        <li>Keybind werkt nu correct</li>
+        <li>Leaderboard toegevoegd</li>
+        <li>Offline bonus gebuffed: 25% naar 40%</li>
+        <li>Bugfixes en code verbeteringen</li>
         <li>Anticheat update</li>
       </ul>
     </div>
     <div class="changelog-entry">
-      <h4>v1.3 — Play Button Update</h4>
+      <h4>v1.3 - Speelknop Update</h4>
       <ul>
-        <li>Play button & start screen</li>
-        <li>Lantings visible in shop</li>
-        <li>More skins added</li>
-        <li>Keybinds (partial)</li>
+        <li>Speelknop en startscherm</li>
+        <li>Lantings zichtbaar in shop</li>
+        <li>Meer skins toegevoegd</li>
+        <li>Keybinds (gedeeltelijk)</li>
       </ul>
     </div>
     <div class="changelog-entry">
-      <h4>v1.2 — Animations Update</h4>
+      <h4>v1.2 - Animaties Update</h4>
       <ul>
-        <li>New UI + animations</li>
-        <li>Suggestion system</li>
-        <li>Statistics screen</li>
+        <li>Nieuwe UI en animaties</li>
+        <li>Suggestion systeem</li>
+        <li>Statistieken scherm</li>
       </ul>
     </div>
     <div class="changelog-entry">
-      <h4>v1.1 — Offline Bonus Update</h4>
+      <h4>v1.1 - Offline Bonus Update</h4>
       <ul>
-        <li>Customizable keybinds</li>
-        <li>Offline bonus increased to 25%</li>
-        <li>Shop quantity counter</li>
-        <li>Bug fixes</li>
+        <li>Aanpasbare keybinds</li>
+        <li>Offline bonus verhoogd naar 25%</li>
+        <li>Shop hoeveelheid teller</li>
+        <li>Bugfixes</li>
       </ul>
     </div>
     <div class="changelog-entry">
-      <h4>v1.0 — Launch</h4>
+      <h4>v1.0 - Launch</h4>
       <ul>
-        <li>Base game: Lantings clicking</li>
-        <li>Shop with upgrades</li>
-        <li>Blackjack gambling</li>
-        <li>Skins system</li>
+        <li>Basisspel: Lantings klikken</li>
+        <li>Shop met upgrades</li>
+        <li>Blackjack gokken</li>
+        <li>Skins systeem</li>
       </ul>
     </div>
   </div>
 </div>
 
-<!-- ════ SUGGESTION ════ -->
+<!-- SUGGESTION -->
 <div id="suggestionPanel" class="suggestionPanel">
   <div class="sugg-card">
-    <button class="sugg-close exitBtn" id="suggestionCloseBtn">✕</button>
-    <h3>💡 Send Suggestion</h3>
-    <input id="suggestionInput" type="text" placeholder="Your idea...">
-    <button id="sendSuggestionBtn" style="width:100%;">Send</button>
+    <button class="sugg-close exitBtn" id="suggestionCloseBtn">Sluiten</button>
+    <h3>Stuur Suggestion</h3>
+    <input id="suggestionInput" type="text" placeholder="Jouw idee...">
+    <button id="sendSuggestionBtn" style="width:100%;">Verzenden</button>
   </div>
 </div>
 
@@ -684,50 +762,69 @@ button:active { transform: scale(.97); }
 (function() {
   "use strict";
 
-  const SAVE_KEY      = "lantingclicker";
-  const LAST_ONLINE   = "lantingclickerlaastonline";
-  const NAME_KEY      = "lanting_clicker_username";
+  // ── UPDATE THIS IF ASKED FOR LANTING RESET ──
+  // Current save key version. Change this string to reset all saves.
+  const SAVE_KEY    = "lc_v3";
+  const LAST_ONLINE = "lc_v3_lastonline";
+  const NAME_KEY    = "lc_v3_username";
+  const KEYBIND_KEY = "lc_v3_keybind";
+  const KBDISP_KEY  = "lc_v3_keybind_display";
+
+  // Clean up ALL old variable names so we don't accumulate junk
+  const OLD_KEYS = [
+    "lantingclicker","lantingclickerlaastonline","lanting_clicker_username",
+    "lanting_clicker_keybind","lanting_clicker_keybind_display",
+    "lc_v1","lc_v1_lastonline","lc_v1_username",
+    "lc_v2","lc_v2_lastonline","lc_v2_username",
+    "lc_v2_keybind","lc_v2_keybind_display"
+  ];
+  OLD_KEYS.forEach(k => localStorage.removeItem(k));
+
   const WEBHOOK_MAIN  = "https://discord.com/api/webhooks/1494600652582551582/YSsa5dbxGdod1MkfGji38jrVeTEGOByXw8_6FBKgcq6IrpAlkAReZCjmpfKAwiP5Wr_o";
   const WEBHOOK_SUGG  = "https://discord.com/api/webhooks/1493989395018285079/I7kJJ8TzbmvdeZFavX4a1b6ZXlJ3tg8r2WZG1v3I9bOyJ31LXL1lQ9d3HtFdmfQ0sGTe";
   const WEBHOOK_LOGIN = "https://discord.com/api/webhooks/1495091471202779207/N4RjrwDK-nlsMwvTMbBx5p-0atRKB6O4EGxYxZ8-cKFvjqfeqmjkyujPsNveQTCdX3UR";
   const BLACK_IMG     = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
 
-  // ── EDITABLE LEADERBOARD ─────────────────────────────────
-  // Add/edit player scores here. Format: { name: "Name", score: 12345 }
-  // The player will always be inserted at their correct rank.
   const OTHER_PLAYERS = [
-    { name: "toxivid",    score: 11123 },
-    // { name: "Thomas",   score: 8500  },
-    // { name: "Sam_G",    score: 3200  },
-    // { name: "Piet",     score: 1000  },
+    { name: "toxivid", score: 11123 },
+    { name: "johan", score: 100 }
   ];
-  // ─────────────────────────────────────────────────────────
+
+  // Names already taken (lowercase for comparison)
+  const TAKEN_NAMES = ["toxivid"];
 
   const SKIN_DEFS = [
-    { id:0, name:"Default",                img:BLACK_IMG,      cost:0,             bonus:1,   bonusText:"1x clicks",        free:true  },
-    { id:1, name:"LinkedIn Lanting",        img:"https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost:10000,    bonus:1.25,bonusText:"1.25x clicks", free:false },
-    { id:2, name:"Zapsport Lanting",        img:"https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost:25000, bonus:1.5, bonusText:"1.5x clicks",  free:false },
-    { id:3, name:"Levensgenietende Lanting",img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/508139189_4708264236066474_1034636463662827040_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=53a332&_nc_ohc=Ze1ynqIqjBUQ7kNvwGFiBk7&_nc_oc=AdpJ0uUgt5D3MxYdGQnoTwzQiNTB7hr39Wf-RrYqTdby03i6OsoCYo2xqvzW2sQEHIA&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=nHA1EGLnKmzVvh_JiCQstQ&_nc_ss=7a389&oh=00_Af25XwMbmgRUJpfS2NrvzXEccSCBIwP35ljv1Oq7TldMFw&oe=69E6A8FF", cost:50000,     bonus:2,   bonusText:"2x clicks",    free:false },
-    { id:4, name:"Vakantie Lanting",        img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505114098_4696325513927013_1892631468890635773_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=53a332&_nc_ohc=nRZ6G-XAseQQ7kNvwGSLSbp&_nc_oc=AdqSAeAlIfSYKFjBNloJOQa9By8NOxj7owQrTeOgZCJtH4Q7MTP3y9VSqVGxm90s8Rc&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=9Q2JkJzEbyAGcoC2D2a6Bw&_nc_ss=7a389&oh=00_Af3dskOQkEHrxXzm38hVGTpJOuPDVICVPf22505yDhwvCg&oe=69E6886D", cost:100000,      bonus:2.5, bonusText:"2.5x clicks", free:false },
-    { id:5, name:"Jolly Lanting",           img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505359411_4703242883235276_7531884072442166294_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=53a332&_nc_ohc=C76D43KjKo8Q7kNvwESLxZW&_nc_oc=AdoLHRkJffg1zwJ56tiplCXL6_EyJtrq7fzXFywFaou6v_1BSIcVyrWYqmQblpXzIAs&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=CJ_jltJM4o6Q48yQba2u7A&_nc_ss=7a389&oh=00_Af0SH0r6A1hCGpfX0dK8pWzsmktAsEpmTz1PePCsyDXspQ&oe=69E6775C", cost:500000,      bonus:3,   bonusText:"3x clicks",    free:false },
-    { id:6, name:"OG Lanting",              img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505767393_4700743773485187_4696695728975036082_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=53a332&_nc_ohc=-6kmga9A_5IQ7kNvwHFpIBz&_nc_oc=Adq0KoSeqN6LQinoGP4Bzo-66BA_oAL98ma3Qa83C9cv5q5MBXQ8Jaf7dk3nPlBCr_s&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=24nILOznlX4lcXFugR9o2g&_nc_ss=7a389&oh=00_Af3zNH_eyN4E9MT1F-EOjv2WaX1uKkruHvQmfHNvPeQ2Cw&oe=69E68E59", cost:50000000,    bonus:4,   bonusText:"4x clicks",    free:false },
-    { id:7, name:"Lanting",                 img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/459427263_4407458439480390_1115745422523934606_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=_FaeZ7hSoEcQ7kNvwGwxU3D&_nc_oc=AdrvQvP7q0iqB8x_kVHcDN0lFetYWzdTFiowtHEeITEBY7Iyv8N847w4lByQuctN-7M&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=WCW78bwKmzHRnrloUsHr2w&_nc_ss=7a389&oh=00_Af0mAtQ-R9acTzw29I1Tjx6jkj7JnfKf5FTBkBQCMX9GFg&oe=69E7B5CC", cost:1000000000, bonus:5,   bonusText:"5x clicks",    free:false },
-    { id:8, name:"Skin 9",                  img:"",             cost:25000000000,   bonus:6,   bonusText:"6x clicks",        free:false },
-    { id:9, name:"Skin 10",                 img:"",             cost:50000000000000,bonus:10,  bonusText:"10x clicks",       free:false },
+    { id:0, name:"Standaard",               img:BLACK_IMG,      cost:0,             bonus:1,   bonusText:"1x klikken",       free:true  },
+    { id:1, name:"LinkedIn Lanting",         img:"https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost:10000,    bonus:1.25,bonusText:"1.25x klikken",free:false },
+    { id:2, name:"Zapsport Lanting",         img:"https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost:25000, bonus:1.5, bonusText:"1.5x klikken",  free:false },
+    { id:3, name:"Levensgenietende Lanting", img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/508139189_4708264236066474_1034636463662827040_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=53a332&_nc_ohc=Ze1ynqIqjBUQ7kNvwGFiBk7&_nc_oc=AdpJ0uUgt5D3MxYdGQnoTwzQiNTB7hr39Wf-RrYqTdby03i6OsoCYo2xqvzW2sQEHIA&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=nHA1EGLnKmzVvh_JiCQstQ&_nc_ss=7a389&oh=00_Af25XwMbmgRUJpfS2NrvzXEccSCBIwP35ljv1Oq7TldMFw&oe=69E6A8FF", cost:50000, bonus:2, bonusText:"2x klikken", free:false },
+    { id:4, name:"Vakantie Lanting",         img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505114098_4696325513927013_1892631468890635773_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=53a332&_nc_ohc=nRZ6G-XAseQQ7kNvwGSLSbp&_nc_oc=AdqSAeAlIfSYKFjBNloJOQa9By8NOxj7owQrTeOgZCJtH4Q7MTP3y9VSqVGxm90s8Rc&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=9Q2JkJzEbyAGcoC2D2a6Bw&_nc_ss=7a389&oh=00_Af3dskOQkEHrxXzm38hVGTpJOuPDVICVPf22505yDhwvCg&oe=69E6886D", cost:100000, bonus:2.5, bonusText:"2.5x klikken", free:false },
+    { id:5, name:"Jolly Lanting",            img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505359411_4703242883235276_7531884072442166294_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=53a332&_nc_ohc=C76D43KjKo8Q7kNvwESLxZW&_nc_oc=AdoLHRkJffg1zwJ56tiplCXL6_EyJtrq7fzXFywFaou6v_1BSIcVyrWYqmQblpXzIAs&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=CJ_jltJM4o6Q48yQba2u7A&_nc_ss=7a389&oh=00_Af0SH0r6A1hCGpfX0dK8pWzsmktAsEpmTz1PePCsyDXspQ&oe=69E6775C", cost:500000, bonus:3, bonusText:"3x klikken", free:false },
+    { id:6, name:"OG Lanting",               img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505767393_4700743773485187_4696695728975036082_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=53a332&_nc_ohc=-6kmga9A_5IQ7kNvwHFpIBz&_nc_oc=Adq0KoSeqN6LQinoGP4Bzo-66BA_oAL98ma3Qa83C9cv5q5MBXQ8Jaf7dk3nPlBCr_s&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=24nILOznlX4lcXFugR9o2g&_nc_ss=7a389&oh=00_Af3zNH_eyN4E9MT1F-EOjv2WaX1uKkruHvQmfHNvPeQ2Cw&oe=69E68E59", cost:50000000, bonus:4, bonusText:"4x klikken", free:false },
+    { id:7, name:"Lanting",                  img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/459427263_4407458439480390_1115745422523934606_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=_FaeZ7hSoEcQ7kNvwGwxU3D&_nc_oc=AdrvQvP7q0iqB8x_kVHcDN0lFetYWzdTFiowtHEeITEBY7Iyv8N847w4lByQuctN-7M&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=WCW78bwKmzHRnrloUsHr2w&_nc_ss=7a389&oh=00_Af0mAtQ-R9acTzw29I1Tjx6jkj7JnfKf5FTBkBQCMX9GFg&oe=69E7B5CC", cost:1000000000, bonus:5, bonusText:"5x klikken", free:false },
+    { id:8, name:"Skin 9",                   img:"",             cost:25000000000,   bonus:6,   bonusText:"6x klikken",       free:false },
+    { id:9, name:"Skin 10",                  img:"",             cost:50000000000000,bonus:10,  bonusText:"10x klikken",      free:false },
   ];
 
-  const save       = JSON.parse(localStorage.getItem(SAVE_KEY)) || {};
-  let score        = save.score        || 0;
-  let perClick     = save.perClick     || 1;
-  let perSecond    = save.perSecond    || 0;
-  let upgrades     = save.upgrades     || [];
-  let ownedSkins   = save.ownedSkins   || [0];
-  let equippedSkin = (save.equippedSkin !== undefined) ? save.equippedSkin : 0;
-  let basePerClick = save.basePerClick || 1;
-  let playTime     = save.playTime     || 0;
-  let earned       = save.earned       || 0;
-  let lost         = save.lost         || 0;
-  let highest      = save.highest      || score;
+  const save           = JSON.parse(localStorage.getItem(SAVE_KEY)) || {};
+  let score            = save.score        || 0;
+  let perClick         = save.perClick     || 1;
+  let perSecond        = save.perSecond    || 0;
+  let upgrades         = save.upgrades     || [];
+  let ownedSkins       = save.ownedSkins   || [0];
+  let equippedSkin     = (save.equippedSkin !== undefined) ? save.equippedSkin : 0;
+  let basePerClick     = save.basePerClick || 1;
+  let playTime         = save.playTime     || 0;
+  let earned           = save.earned       || 0;
+  let lost             = save.lost         || 0;
+  let highest          = save.highest      || score;
+  // Unlock flags
+  let unlockedGamble   = save.unlockedGamble   || false;
+  let unlockedBlackjack= save.unlockedBlackjack|| false;
+  let unlockedRolls    = save.unlockedRolls    || false;
+
+  // Active boosts: { clickBoost, psBoost, gambleBoost } with expiry timestamps
+  let boosts = { click: 0, ps: 0, gamble: 0 };
 
   const scoreEl       = document.getElementById("score");
   const mainImg       = document.getElementById("mainImg");
@@ -735,6 +832,7 @@ button:active { transform: scale(.97); }
   const perClickText  = document.getElementById("perClickText");
   const perSecondText = document.getElementById("perSecondText");
   const upgradesEl    = document.getElementById("upgrades");
+  const gambleBtn     = document.getElementById("gambleBtn");
 
   const OVERLAY_IDS = ["shopScreen","gambleScreen","blackjackScreen","rollsScreen","skinScreen","statsScreen","suggestionPanel"];
   let activeOverlays = new Set();
@@ -761,27 +859,128 @@ button:active { transform: scale(.97); }
   });
 
   function saveGame() {
-    localStorage.setItem(SAVE_KEY, JSON.stringify({score,perClick,perSecond,upgrades,playTime,earned,lost,highest,ownedSkins,equippedSkin,basePerClick}));
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      score,perClick,perSecond,upgrades,playTime,earned,lost,highest,
+      ownedSkins,equippedSkin,basePerClick,
+      unlockedGamble,unlockedBlackjack,unlockedRolls
+    }));
+    localStorage.setItem(LAST_ONLINE, Date.now());
   }
 
   function fl(x) { return Math.floor(x); }
   function cl(x) { return Math.ceil(x); }
 
+  // ── NUMBER FORMATTING ─────────────────────────────────────
+  // Main score display: Dutch abbreviations
+  // >4 chars: 1482 -> 1.4k, 1048 -> 1k, 1048123 -> 1m, 1392938274 -> 1.4md, then b, bd, t, td
+  function fmtMain(n) {
+    n = Math.floor(n);
+    if (n < 10000) return String(n);
+    const tiers = [
+      [1e18, "td"],
+      [1e15, "t"],
+      [1e12, "bd"],
+      [1e9,  "b"],
+      [1e6,  "md"],
+      [1e3,  "m"],  // Note: Dutch 1000=duizend but user spec says 1.2m for 1242123
+      [1e0,  "k"],  // fallback won't be reached since we check <10000 above
+    ];
+    // Redefine per user's spec:
+    // 1482 -> 1.4k (>= 1000, 4+ chars)
+    // 1242123 -> 1.2m (>= 1000000)
+    // 1392938274 -> 1.4md (>=1e9)
+    // then b (1e9... wait user says 1b after md)
+    // User spec: k, m, md, b, bd, t, td
+    const scale = [
+      [1e18, "td"],
+      [1e15, "t"],
+      [1e12, "bd"],
+      [1e9,  "b"],
+      [1e6,  "md"],
+      [1e3,  "m"],
+    ];
+    // But user shows: 1.2m for 1242123 (million?), 1.4md for 1392938274 (billion?)
+    // Re-reading: k=1000, m=1.000.000, md=1.000.000.000, b=1e12, bd=1e15, t=1e18, td=1e21
+    // "1.4md" for ~1.39 billion = Dutch "miljard"
+    // So: k=1e3, m=1e6, md=1e9(miljard), b=1e12(biljoen), bd=1e15, t=1e18, td=1e21
+    const dutchScale = [
+      [1e21, "td"],
+      [1e18, "t"],
+      [1e15, "bd"],
+      [1e12, "b"],
+      [1e9,  "md"],
+      [1e6,  "m"],
+      [1e3,  "k"],
+    ];
+    for (const [threshold, suffix] of dutchScale) {
+      if (n >= threshold) {
+        const val = n / threshold;
+        const rounded = Math.round(val * 10) / 10;
+        return (rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)) + suffix;
+      }
+    }
+    return String(n);
+  }
+
+  // Shop / gambling prices: dots every 3 chars from right
+  // 111 -> "111", 1457891273894 -> "1.457.891.273.894"
+  function fmtShop(n) {
+    n = Math.floor(n);
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+
+  // Leaderboard compact format
+  function fmtLB(n) {
+    if (n >= 1e9)  return (n/1e9).toFixed(1) + "md";
+    if (n >= 1e6)  return (n/1e6).toFixed(1) + "m";
+    if (n >= 1e3)  return (n/1e3).toFixed(1) + "k";
+    return String(Math.floor(n));
+  }
+
   function getSkinBonus(id) { const d = SKIN_DEFS.find(s=>s.id===id); return d?d.bonus:1; }
+  function getCurrentSkinImg() {
+    const def = SKIN_DEFS.find(s=>s.id===equippedSkin);
+    return (def && def.img) ? def.img : BLACK_IMG;
+  }
 
   function applyEquippedSkin() {
-    perClick = cl(basePerClick * getSkinBonus(equippedSkin));
-    const def = SKIN_DEFS.find(s=>s.id===equippedSkin);
-    mainImg.src = (def && def.img) ? def.img : BLACK_IMG;
+    let mult = getSkinBonus(equippedSkin);
+    // Apply click boost if active
+    if (Date.now() < boosts.click) mult *= 1.2;
+    perClick = cl(basePerClick * mult);
+    mainImg.src = getCurrentSkinImg();
+  }
+
+  // ── GAMBLE BUTTON STATE ───────────────────────────────────
+  function updateGambleButton() {
+    if (unlockedGamble) {
+      gambleBtn.disabled = false;
+      gambleBtn.style.opacity = "";
+    } else {
+      gambleBtn.disabled = true;
+    }
+    // Update gamble screen lock text
+    const bjLock = document.getElementById("bjLockText");
+    const rlLock = document.getElementById("rollsLockText");
+    const bjCard = document.getElementById("openBlackjackBtn");
+    const rlCard = document.getElementById("openRollsBtn");
+    if (bjLock) bjLock.innerText = unlockedBlackjack ? "" : "Vergrendeld";
+    if (rlLock) rlLock.innerText = unlockedRolls ? "" : "Vergrendeld";
+    if (bjCard) bjCard.className = "gamble-card" + (unlockedBlackjack ? "" : " locked-game");
+    if (rlCard) rlCard.className = "gamble-card" + (unlockedRolls ? "" : " locked-game");
   }
 
   // ── LEADERBOARD ──────────────────────────────────────────
   function renderLeaderboard() {
-    const playerName  = localStorage.getItem(NAME_KEY) || "You";
+    const playerName  = localStorage.getItem(NAME_KEY) || "Jij";
     const playerScore = score;
 
-    // combine others + player
-    const all = [...OTHER_PLAYERS.map(p => ({...p, isMe:false})), {name:playerName, score:playerScore, isMe:true}];
+    // If player name matches a leaderboard entry, replace that entry's score with player's
+    const others = OTHER_PLAYERS
+      .filter(p => p.name.toLowerCase() !== playerName.toLowerCase())
+      .map(p => ({...p, isMe:false}));
+
+    const all = [...others, {name:playerName, score:playerScore, isMe:true}];
     all.sort((a,b) => b.score - a.score);
 
     const playerRank = all.findIndex(p => p.isMe) + 1;
@@ -792,26 +991,15 @@ button:active { transform: scale(.97); }
     container.innerHTML = "";
 
     const rankClass = (r) => r===1?"gold":r===2?"silver":r===3?"bronze":"";
-    const fmt       = (n) => n >= 1e9 ? (n/1e9).toFixed(1)+"B" : n >= 1e6 ? (n/1e6).toFixed(1)+"M" : n >= 1e3 ? (n/1e3).toFixed(1)+"K" : String(n);
 
     top5.forEach((p, i) => {
       const row = document.createElement("div");
       const rank = i + 1;
-      const isPlaceholder = !p.isMe && OTHER_PLAYERS.length === 0;
       row.className = "lb-row" + (p.isMe ? " lb-me" : "");
-
-      if (!p.isMe && !OTHER_PLAYERS.find(op => op.name === p.name)) {
-        // shouldn't happen but guard
-      }
-
-      const nameDisplay  = isPlaceholder ? "???" : p.name;
-      const scoreDisplay = isPlaceholder ? "???" : fmt(p.score);
-
-      row.innerHTML = `<span class="lb-rank ${rankClass(rank)}">#${rank}</span><span class="lb-name">${nameDisplay}${p.isMe?' <-- ':''}</span><span class="lb-score">${scoreDisplay}</span>`;
+      row.innerHTML = `<span class="lb-rank ${rankClass(rank)}">#${rank}</span><span class="lb-name">${p.name}${p.isMe?' <-- ':''}</span><span class="lb-score">${fmtLB(p.score)}</span>`;
       container.appendChild(row);
     });
 
-    // fill remaining with ??? if fewer than 5 entries
     for (let i = top5.length; i < 5; i++) {
       const row = document.createElement("div");
       row.className = "lb-row";
@@ -819,16 +1007,42 @@ button:active { transform: scale(.97); }
       container.appendChild(row);
     }
 
-    // player outside top 5
     if (!inTop5) {
       const sep = document.createElement("hr");
       sep.className = "lb-separator";
       container.appendChild(sep);
-
       const row = document.createElement("div");
       row.className = "lb-row lb-me";
-      row.innerHTML = `<span class="lb-rank gold">#${playerRank}</span><span class="lb-name">${playerName}</span><span class="lb-score">${fmt(playerScore)}</span>`;
+      row.innerHTML = `<span class="lb-rank gold">#${playerRank}</span><span class="lb-name">${playerName}</span><span class="lb-score">${fmtLB(playerScore)}</span>`;
       container.appendChild(row);
+    }
+  }
+
+  // ── BOOST RENDERING ──────────────────────────────────────
+  function renderBoosts() {
+    const bar = document.getElementById("boostBar");
+    bar.innerHTML = "";
+    const now = Date.now();
+    if (now < boosts.click) {
+      const rem = Math.ceil((boosts.click - now) / 1000);
+      const b = document.createElement("div");
+      b.className = "boost-badge click-boost";
+      b.innerText = "+20% Klik (" + rem + "s)";
+      bar.appendChild(b);
+    }
+    if (now < boosts.ps) {
+      const rem = Math.ceil((boosts.ps - now) / 1000);
+      const b = document.createElement("div");
+      b.className = "boost-badge ps-boost";
+      b.innerText = "x2.5 P/S (" + rem + "s)";
+      bar.appendChild(b);
+    }
+    if (now < boosts.gamble) {
+      const rem = Math.ceil((boosts.gamble - now) / 1000);
+      const b = document.createElement("div");
+      b.className = "boost-badge gamble-boost";
+      b.innerText = "Gamble Boost (" + rem + "s)";
+      bar.appendChild(b);
     }
   }
 
@@ -839,23 +1053,25 @@ button:active { transform: scale(.97); }
     applyEquippedSkin();
     if (score > highest) highest = score;
 
-    scoreEl.innerText = "Lantings: " + score;
+    scoreEl.innerText = "Lantings: " + fmtMain(score);
     scoreEl.style.animation = "none";
     void scoreEl.offsetWidth;
     scoreEl.style.animation = "scoreFlash .3s ease";
 
     perClickText.innerText  = "Per klik: "    + perClick;
-    perSecondText.innerText = "Per seconde: " + perSecond;
+    perSecondText.innerText = "Per seconde: " + (Date.now() < boosts.ps ? cl(perSecond * 2.5) : perSecond);
 
-    document.getElementById("rollMoney").innerText = score;
-    document.getElementById("bjMoney").innerText   = score;
-    document.getElementById("shopMoney").innerText = score;
+    document.getElementById("rollMoney").innerText = fmtShop(score);
+    document.getElementById("bjMoney").innerText   = fmtShop(score);
+    document.getElementById("shopMoney").innerText = fmtShop(score);
     document.getElementById("statTime").innerText   = playTime;
-    document.getElementById("statEarned").innerText = earned;
-    document.getElementById("statLost").innerText   = lost;
-    document.getElementById("statNet").innerText    = highest;
+    document.getElementById("statEarned").innerText = fmtShop(earned);
+    document.getElementById("statLost").innerText   = fmtShop(lost);
+    document.getElementById("statNet").innerText    = fmtShop(highest);
 
     renderLeaderboard();
+    renderBoosts();
+    updateGambleButton();
     saveGame();
   }
 
@@ -871,6 +1087,10 @@ button:active { transform: scale(.97); }
     const lower = name.toLowerCase();
     return BANNED.some(w => lower.includes(w));
   }
+  function isTaken(name) {
+    const lower = name.toLowerCase();
+    return TAKEN_NAMES.some(n => n.toLowerCase() === lower);
+  }
 
   function getOfflineBonus() {
     const lastOnline  = parseInt(localStorage.getItem(LAST_ONLINE)) || Date.now();
@@ -878,45 +1098,42 @@ button:active { transform: scale(.97); }
     return { minutes: offlineMins, bonus: offlineMins > 0 ? fl(perSecond * 0.40 * offlineMins) : 0 };
   }
 
-  const storedName     = localStorage.getItem(NAME_KEY);
+  const storedName      = localStorage.getItem(NAME_KEY);
   const hasPlayedBefore = localStorage.getItem(LAST_ONLINE) !== null;
 
   if (hasPlayedBefore && storedName) {
-    // returning player with name — show offline bonus
     const od = getOfflineBonus();
     if (od.minutes > 0) {
-      document.getElementById("offlineBonus").innerText = "+ " + od.bonus + " Lantings (offline bonus)";
+      document.getElementById("offlineBonus").innerText = "+ " + fmtMain(od.bonus) + " Lantings (offline bonus)";
       document.getElementById("offlineTime").innerText  = "Je bent " + od.minutes + " minuten offline geweest";
     }
   } else if (!storedName) {
-    // new player — show name input, hide play button initially
-    document.getElementById("playBtn").style.display   = "none";
+    document.getElementById("playBtn").style.display    = "none";
     document.getElementById("nameSection").style.display = "flex";
   } else if (!hasPlayedBefore) {
-    // brand new game
     localStorage.setItem(LAST_ONLINE, Date.now());
     document.getElementById("startScreen").style.display = "none";
-    document.getElementById("main").style.display = "flex";
+    document.getElementById("main").style.display        = "flex";
   }
 
   document.getElementById("confirmNameBtn").addEventListener("click", confirmName);
   document.getElementById("nameInput").addEventListener("keydown", e => { if (e.key === "Enter") confirmName(); });
 
   function confirmName() {
-    const raw  = document.getElementById("nameInput").value.trim();
+    const raw   = document.getElementById("nameInput").value.trim();
     const errEl = document.getElementById("nameError");
-    if (!raw) { errEl.innerText = "Please enter a name."; return; }
-    if (raw.length < 2) { errEl.innerText = "Name must be at least 2 characters."; return; }
-    if (isBanned(raw)) { errEl.innerText = "That name is not allowed."; return; }
+    if (!raw)         { errEl.innerText = "Voer een naam in."; return; }
+    if (raw.length<2) { errEl.innerText = "Naam moet minimaal 2 tekens zijn."; return; }
+    if (isBanned(raw)){ errEl.innerText = "Die naam is niet toegestaan."; return; }
+    if (isTaken(raw)) { errEl.innerText = "Die naam is al in gebruik."; return; }
     errEl.innerText = "";
     localStorage.setItem(NAME_KEY, raw);
     sendWebhook(WEBHOOK_LOGIN, `player logged in: ${raw}`);
-    // show play button, hide name form
     document.getElementById("nameSection").style.display = "none";
     document.getElementById("playBtn").style.display     = "block";
     const od = getOfflineBonus();
     if (od.minutes > 0) {
-      document.getElementById("offlineBonus").innerText = "+ " + od.bonus + " Lantings (offline bonus)";
+      document.getElementById("offlineBonus").innerText = "+ " + fmtMain(od.bonus) + " Lantings (offline bonus)";
       document.getElementById("offlineTime").innerText  = "Je bent " + od.minutes + " minuten offline geweest";
     }
   }
@@ -924,8 +1141,7 @@ button:active { transform: scale(.97); }
   document.getElementById("playBtn").addEventListener("click", function() {
     const name = localStorage.getItem(NAME_KEY);
     if (!name) {
-      // shouldn't happen but guard
-      document.getElementById("playBtn").style.display   = "none";
+      document.getElementById("playBtn").style.display    = "none";
       document.getElementById("nameSection").style.display = "flex";
       return;
     }
@@ -933,7 +1149,6 @@ button:active { transform: scale(.97); }
     const od = getOfflineBonus();
     score  += od.bonus;
     earned += od.bonus;
-    localStorage.setItem(LAST_ONLINE, Date.now());
     document.getElementById("startScreen").style.display = "none";
     document.getElementById("main").style.display        = "flex";
     updateScore();
@@ -942,9 +1157,9 @@ button:active { transform: scale(.97); }
   // ── GAME LOOP ─────────────────────────────────────────────
   setInterval(() => {
     playTime++;
-    score  += perSecond;
-    earned += perSecond;
-    localStorage.setItem(LAST_ONLINE, Date.now());
+    const ps = Date.now() < boosts.ps ? cl(perSecond * 2.5) : perSecond;
+    score  += ps;
+    earned += ps;
     updateScore();
   }, 1000);
 
@@ -975,14 +1190,14 @@ button:active { transform: scale(.97); }
   clickBtn.addEventListener("mousedown", () => { triggerClickAnim(); doClick(); });
 
   // ── KEYBINDS ─────────────────────────────────────────────
-  let clickKeybind   = localStorage.getItem("lanting_clicker_keybind")         || "Enter";
-  let keybindDisplay = localStorage.getItem("lanting_clicker_keybind_display") || "ENTER";
+  let clickKeybind   = localStorage.getItem(KEYBIND_KEY)  || "Enter";
+  let keybindDisplay = localStorage.getItem(KBDISP_KEY)   || "ENTER";
   let waitingForKey  = false;
   const keybindBtn   = document.getElementById("keybindBtn");
   keybindBtn.innerText = keybindDisplay;
 
   keybindBtn.addEventListener("click", () => {
-    waitingForKey    = !waitingForKey;
+    waitingForKey        = !waitingForKey;
     keybindBtn.innerText = waitingForKey ? "..." : keybindDisplay;
   });
 
@@ -994,8 +1209,8 @@ button:active { transform: scale(.97); }
       if (e.key === "Enter") disp = "ENTER";
       clickKeybind   = e.key;
       keybindDisplay = disp;
-      localStorage.setItem("lanting_clicker_keybind",         clickKeybind);
-      localStorage.setItem("lanting_clicker_keybind_display", keybindDisplay);
+      localStorage.setItem(KEYBIND_KEY, clickKeybind);
+      localStorage.setItem(KBDISP_KEY,  keybindDisplay);
       keybindBtn.innerText = keybindDisplay;
       waitingForKey = false;
       return;
@@ -1008,6 +1223,69 @@ button:active { transform: scale(.97); }
   });
 
   document.addEventListener("keyup", () => { clickLock = false; });
+
+  // ── UNLOCK TILES ─────────────────────────────────────────
+  function renderUnlockTiles() {
+    const container = document.getElementById("unlockTiles");
+    container.innerHTML = "";
+
+    // Section label
+    const lbl = document.createElement("div");
+    lbl.className = "sec-label";
+    lbl.innerText = "Ontgrendelen";
+    container.appendChild(lbl);
+
+    const tiles = [
+      { key:"gamble",    label:"Gamble knop",   desc:"Ontgrendelt de Gamble knop",   cost:100,  unlocked:unlockedGamble },
+      { key:"blackjack", label:"Blackjack",      desc:"Speelbaar in Gamble menu",     cost:1000, unlocked:unlockedBlackjack },
+      { key:"rolls",     label:"Rolls",          desc:"Speelbaar in Gamble menu",     cost:500,  unlocked:unlockedRolls },
+    ];
+
+    tiles.forEach(tile => {
+      const div = document.createElement("div");
+      div.className = "unlock-tile" + (tile.unlocked ? " unlocked-tile" : "");
+
+      const canAfford = score >= tile.cost;
+
+      let btnHtml;
+      if (tile.unlocked) {
+        btnHtml = `<button class="unlock-btn-unlocked" disabled>Ontgrendeld</button>`;
+      } else {
+        const cls = canAfford ? "buy-btn-can" : "buy-btn-cannot";
+        btnHtml = `<button class="${cls}" data-key="${tile.key}">${fmtShop(tile.cost)}</button>`;
+      }
+
+      div.innerHTML = `
+        <div class="unlock-info">
+          <div class="upgrade-val">${tile.label}</div>
+          <div class="unlock-desc">${tile.desc}</div>
+        </div>
+        ${btnHtml}`;
+
+      if (!tile.unlocked) {
+        const btn = div.querySelector("button[data-key]");
+        if (btn && canAfford) {
+          btn.addEventListener("click", () => {
+            if (score < tile.cost) return;
+            score -= tile.cost; lost += tile.cost;
+            if (tile.key === "gamble")     unlockedGamble    = true;
+            if (tile.key === "blackjack")  unlockedBlackjack = true;
+            if (tile.key === "rolls")      unlockedRolls     = true;
+            updateScore();
+            renderUnlockTiles();
+            renderUpgrades();
+          });
+        }
+      }
+
+      container.appendChild(div);
+    });
+
+    const upgLabel = document.createElement("div");
+    upgLabel.className = "sec-label";
+    upgLabel.innerText = "Upgrades";
+    container.appendChild(upgLabel);
+  }
 
   // ── UPGRADES ─────────────────────────────────────────────
   if (upgrades.length === 0) {
@@ -1025,8 +1303,10 @@ button:active { transform: scale(.97); }
       div.className = "upgrade" + (unlocked ? "" : " locked");
       if (unlocked) {
         u.cost = fl(u.cost);
-        const typeLabel = u.type === "click" ? "per click" : "per second";
+        const typeLabel = u.type === "click" ? "per klik" : "per seconde";
         const count = u.count ? `<span class="upgrade-count">x${u.count}</span>` : "";
+        const canAfford = score >= u.cost;
+        const btnCls = canAfford ? "buy-btn-can" : "buy-btn-cannot";
         div.innerHTML = `
           <div class="upgrade-info">
             <div><span class="upgrade-val">+${u.value}</span></div>
@@ -1034,16 +1314,19 @@ button:active { transform: scale(.97); }
           </div>
           <div class="upgrade-right">
             ${count}
-            <button>${u.cost}</button>
+            <button class="${btnCls}">${fmtShop(u.cost)}</button>
           </div>`;
-        div.querySelector("button").addEventListener("click", () => {
-          if (score < u.cost) return;
-          score -= u.cost; lost += u.cost;
-          u.bought = true; u.count = (u.count||0)+1;
-          if (u.type === "click") basePerClick += u.value; else perSecond += u.value;
-          u.cost = fl(u.cost * 1.6);
-          updateScore(); renderUpgrades();
-        });
+        const btn = div.querySelector("button");
+        if (canAfford) {
+          btn.addEventListener("click", () => {
+            if (score < u.cost) return;
+            score -= u.cost; lost += u.cost;
+            u.bought = true; u.count = (u.count||0)+1;
+            if (u.type === "click") basePerClick += u.value; else perSecond += u.value;
+            u.cost = fl(u.cost * 1.6);
+            updateScore(); renderUpgrades(); renderUnlockTiles();
+          });
+        }
       } else {
         div.innerHTML = `<div class="upgrade-info"><div style="color:var(--muted)">???</div></div>`;
       }
@@ -1070,9 +1353,9 @@ button:active { transform: scale(.97); }
       else if (owned)             btnHtml = `<button class="equipBtn" data-id="${def.id}">Equip</button>`;
       else if (def.free)          btnHtml = `<button class="buyBtn"   data-id="${def.id}">Gratis</button>`;
       else if (!def.img)          btnHtml = `<button class="ownedBtn" disabled>Binnenkort</button>`;
-      else                        btnHtml = `<button class="buyBtn"   data-id="${def.id}">Koop (${def.cost})</button>`;
+      else                        btnHtml = `<button class="buyBtn"   data-id="${def.id}">Koop (${fmtShop(def.cost)})</button>`;
 
-      box.innerHTML = `${imgHtml}<div class="skinName">${def.name}</div><div class="skinCost">${def.cost>0?def.cost+" Lantings":"Gratis"}</div><div class="skinBonus">${def.bonusText}</div>${btnHtml}`;
+      box.innerHTML = `${imgHtml}<div class="skinName">${def.name}</div><div class="skinCost">${def.cost>0?fmtShop(def.cost)+" Lantings":"Gratis"}</div><div class="skinBonus">${def.bonusText}</div>${btnHtml}`;
       const btn = box.querySelector("button[data-id]");
       if (btn) btn.addEventListener("click", () => owned ? equipSkin(def.id) : buySkin(def.id));
       list.appendChild(box);
@@ -1091,11 +1374,108 @@ button:active { transform: scale(.97); }
 
   function equipSkin(id) {
     if (!ownedSkins.includes(id)) return;
-    equippedSkin = id; applyEquippedSkin(); updateScore(); renderSkins();
+    equippedSkin = id;
+    applyEquippedSkin();
+    // Update falling circle image if visible
+    document.getElementById("fallingImg").src = getCurrentSkinImg();
+    updateScore(); renderSkins();
   }
 
+  // ── BOOSTS ───────────────────────────────────────────────
+  function activateBoost(type) {
+    const dur = 20000;
+    if (type === "click")  boosts.click  = Date.now() + dur;
+    if (type === "ps")     boosts.ps     = Date.now() + dur;
+    if (type === "gamble") boosts.gamble = Date.now() + dur;
+    applyEquippedSkin();
+    updateScore();
+  }
+
+  // ── FALLING CIRCLE ───────────────────────────────────────
+  let fallingActive    = false;
+  let fallingTimer     = null;
+  let fallingCountdown = null;
+  let nextFallAt       = Date.now() + 60000; // first possible spawn: 1 min
+
+  function spawnFallingCircle() {
+    if (fallingActive) return;
+    if (document.getElementById("startScreen").style.display !== "none") return;
+
+    fallingActive = true;
+    const circle  = document.getElementById("fallingCircle");
+    const cdEl    = document.getElementById("fallingCountdown");
+    const img     = document.getElementById("fallingImg");
+
+    img.src = getCurrentSkinImg();
+
+    // Random horizontal position
+    const x = fl(Math.random() * (window.innerWidth - 80)) + 20;
+    circle.style.left = x + "px";
+    circle.style.top  = "0px";
+    circle.style.display = "block";
+    cdEl.style.display = "block";
+
+    let timeLeft = 5;
+    cdEl.innerText = "Vang hem! " + timeLeft + "s";
+
+    // Animate falling + spinning
+    let startTime = Date.now();
+    let anim;
+    function fall() {
+      const elapsed = (Date.now() - startTime) / 1000;
+      const y  = elapsed * 70; // px per second downward
+      const rot = elapsed * 180; // degrees per second
+      circle.style.transform = `translateY(${y}px) rotate(${rot}deg)`;
+      if (elapsed < 5) {
+        anim = requestAnimationFrame(fall);
+      }
+    }
+    anim = requestAnimationFrame(fall);
+
+    fallingTimer = setInterval(() => {
+      timeLeft--;
+      cdEl.innerText = "Vang hem! " + timeLeft + "s";
+      if (timeLeft <= 0) clearFallingCircle(anim);
+    }, 1000);
+
+    circle.onclick = () => {
+      clearFallingCircle(anim);
+      const types = ["click","ps","gamble"];
+      const chosen = types[fl(Math.random() * types.length)];
+      activateBoost(chosen);
+      const msgs = { click:"Klik boost: +20% per klik", ps:"P/S boost: x2.5 per seconde", gamble:"Gamble geluk boost!" };
+      const ft = document.createElement("div");
+      ft.style.cssText = "position:fixed;left:50%;top:40%;transform:translateX(-50%);color:#ffd700;font-family:'Rajdhani',sans-serif;font-weight:900;font-size:20px;pointer-events:none;text-shadow:0 0 12px rgba(255,215,0,.8);z-index:1000;animation:floatUp 2s ease-out;text-align:center;";
+      ft.innerText = msgs[chosen];
+      document.body.appendChild(ft);
+      setTimeout(() => ft.remove(), 2000);
+    };
+  }
+
+  function clearFallingCircle(anim) {
+    cancelAnimationFrame(anim);
+    clearInterval(fallingTimer);
+    document.getElementById("fallingCircle").style.display   = "none";
+    document.getElementById("fallingCountdown").style.display = "none";
+    document.getElementById("fallingCircle").onclick = null;
+    fallingActive = false;
+    nextFallAt = Date.now() + 60000; // wait another minute
+  }
+
+  // Check every second if we should spawn
+  setInterval(() => {
+    if (!fallingActive && Date.now() >= nextFallAt && document.getElementById("startScreen").style.display === "none") {
+      if (Math.random() < 0.20) {
+        spawnFallingCircle();
+      } else {
+        nextFallAt = Date.now() + 60000; // try again in 1 min
+      }
+    }
+    renderBoosts();
+  }, 1000);
+
   // ── BLACKJACK ────────────────────────────────────────────
-  const SUITS = ["♥","♦","♣","♠"], RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+  const SUITS = ["H","D","K","S"], RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
   let deck=[],playerHand=[],dealerHand=[],gameInProgress=false,currentBet=0,allIn=false;
 
   function createDeck() {
@@ -1105,7 +1485,11 @@ button:active { transform: scale(.97); }
   }
   function cardValue(c){if(c.rank==="A")return 11;if(["J","Q","K"].includes(c.rank))return 10;return parseInt(c.rank);}
   function handValue(h){let v=0,a=0;for(const c of h){v+=cardValue(c);if(c.rank==="A")a++;}while(v>21&&a-- >0)v-=10;return v;}
-  function renderCard(c){return`<span style="color:${["♥","♦"].includes(c.suit)?"#ff4f6d":"#e8e8ff"}">${c.rank}${c.suit}</span>`;}
+  function renderCard(c){
+    const suitMap={H:"H",D:"D",K:"K",S:"S"};
+    const isRed = c.suit==="H"||c.suit==="D";
+    return`<span style="color:${isRed?"#ff4f6d":"#e8e8ff"}">${c.rank}${suitMap[c.suit]||c.suit}</span>`;
+  }
   function renderHandHTML(h,hide){return h.map((c,i)=>(hide&&i===0)?"??":renderCard(c)).join(" ");}
 
   function updateBJDisplay(){
@@ -1114,13 +1498,13 @@ button:active { transform: scale(.97); }
       <div style="margin:30px 0;">
         <div class="bj-label">Dealer</div>
         <div class="bj-hand">${renderHandHTML(dealerHand,gameInProgress)} (${gameInProgress?"?":dv})</div>
-        <div class="bj-label" style="margin-top:20px;">You</div>
+        <div class="bj-label" style="margin-top:20px;">Jij</div>
         <div class="bj-hand">${renderHandHTML(playerHand,false)} (${pv})</div>
       </div>
       <div class="bj-buttons" id="bjButtons">
         ${gameInProgress
-          ?`<button id="hitBtn">Hit</button><button id="standBtn">Stand</button>`
-          :`<button id="newBJGameBtn">New Game</button>`}
+          ?`<button id="hitBtn">Pak</button><button id="standBtn">Stop</button>`
+          :`<button id="newBJGameBtn">Nieuw Spel</button>`}
       </div>
       <div class="bj-result" id="bjResult"></div>`;
     if(gameInProgress){
@@ -1133,8 +1517,8 @@ button:active { transform: scale(.97); }
 
   function startBlackjack(betOverride){
     currentBet=betOverride!==undefined?betOverride:parseInt(document.getElementById("betInput").value);
-    if(isNaN(currentBet)||currentBet<100){alert("Minimum bet is 100 Lantings!");return;}
-    if(currentBet>score){alert("Not enough Lantings!");return;}
+    if(isNaN(currentBet)||currentBet<100){alert("Minimale inzet is 100 Lantings!");return;}
+    if(currentBet>score){alert("Niet genoeg Lantings!");return;}
     allIn=(currentBet===score);
     score-=currentBet;lost+=currentBet;updateScore();
     createDeck();playerHand=[deck.pop(),deck.pop()];dealerHand=[deck.pop(),deck.pop()];
@@ -1157,16 +1541,19 @@ button:active { transform: scale(.97); }
   }
   function endBJ(win){
     gameInProgress=false;
+    // All-in luck: 15% chance to convert loss to win
     if(win===false&&allIn&&Math.random()<0.15)win=true;
+    // Gamble boost: slightly better odds
+    if(win===false&&Date.now()<boosts.gamble&&Math.random()<0.10)win=true;
     let msg,color;
     if(win===true){
       const mult=(playerHand.length===2&&handValue(playerHand)===21)?3:2;
       const w=fl(currentBet*mult);score+=w;earned+=w;
-      msg=`🎉 You win! +${w}`; color="var(--accent2)";
+      msg=`Gewonnen! +${fmtShop(w)}`; color="var(--accent2)";
     } else if(win===false){
-      msg="💀 You lose!"; color="var(--danger)";
+      msg="Verloren!"; color="var(--danger)";
     } else {
-      score+=currentBet; msg="🤝 Push! Bet returned."; color="var(--gold)";
+      score+=currentBet; msg="Gelijkspel! Inzet terug."; color="var(--gold)";
     }
     updateBJDisplay();
     const r=document.getElementById("bjResult");
@@ -1178,17 +1565,59 @@ button:active { transform: scale(.97); }
   // ── ROLLS ────────────────────────────────────────────────
   function playRolls(){
     const bet=parseInt(document.getElementById("rollBet").value);
-    if(isNaN(bet)||bet<100){alert("Minimum bet is 100 Lantings!");return;}
+    if(isNaN(bet)||bet<100){alert("Minimale inzet is 100 Lantings!");return;}
     if(bet>score)return;
     score-=bet;lost+=bet;
-    const pick=()=>Math.random()<0.65?[0.25,0.5,0.75,1][fl(Math.random()*4)]:[1.25,1.5,2][fl(Math.random()*3)];
+
+    let table;
+    if (Date.now() < boosts.gamble) {
+      // Gamble boost: more high multipliers
+      table = [0.25,0.25,0.50,0.50,1,1,1.5,1.5,1.5,2,2,2];
+    } else {
+      table = [0.25,0.50,0.75,1,1.25,1.5,2];
+    }
+    const pick = () => table[fl(Math.random() * table.length)];
     const m=[pick(),pick(),pick()];
     const total=cl(bet*m.reduce((a,b)=>a*b,1));
     score+=total;earned+=total;
     document.getElementById("rollResult").innerHTML=`
       <div class="roll-grid">${m.map(x=>`<div class="rollMult ${x>=1?"good":"bad"}">${x}x</div>`).join("")}</div>
-      <div class="roll-total">Total: ${total} Lantings</div>`;
+      <div class="roll-total">Totaal: ${fmtShop(total)} Lantings</div>`;
     updateScore();
+  }
+
+  // ── CODES ────────────────────────────────────────────────
+  const USED_CODES = new Set();
+  const VALID_CODES = {
+    "gamble69": () => {
+      activateBoost("gamble");
+      return { msg: "Gamble geluk boost geactiveerd! (20 seconden)", color: "var(--accent2)" };
+    }
+  };
+
+  document.getElementById("codeSubmitBtn").addEventListener("click", submitCode);
+  document.getElementById("codeInput").addEventListener("keydown", e => { if(e.key==="Enter") submitCode(); });
+
+  function submitCode() {
+    const input = document.getElementById("codeInput");
+    const msgEl = document.getElementById("codeMsg");
+    const code  = input.value.trim().toLowerCase();
+    if (!code) return;
+    if (USED_CODES.has(code)) {
+      msgEl.style.color = "var(--danger)";
+      msgEl.innerText = "Code al gebruikt!";
+      return;
+    }
+    if (VALID_CODES[code]) {
+      USED_CODES.add(code);
+      const result = VALID_CODES[code]();
+      msgEl.style.color = result.color;
+      msgEl.innerText = result.msg;
+      input.value = "";
+    } else {
+      msgEl.style.color = "var(--danger)";
+      msgEl.innerText = "Ongeldige code.";
+    }
   }
 
   // ── SUGGESTION ───────────────────────────────────────────
@@ -1196,7 +1625,7 @@ button:active { transform: scale(.97); }
   function sendSuggestion(){
     const input=document.getElementById("suggestionInput"),msg=input.value.trim();
     if(!msg)return;
-    if(Date.now()-lastSuggTime<180000){alert("Wait 3 minutes between suggestions.");return;}
+    if(Date.now()-lastSuggTime<180000){alert("Wacht 3 minuten tussen suggestions.");return;}
     sendWebhook(WEBHOOK_SUGG,"Suggestion: "+msg);
     input.value="";closeOverlay("suggestionPanel");lastSuggTime=Date.now();
   }
@@ -1207,28 +1636,47 @@ button:active { transform: scale(.97); }
   document.getElementById("suggestionOpenBtn").addEventListener("click",()=>openOverlay("suggestionPanel"));
   document.getElementById("suggestionCloseBtn").addEventListener("click",()=>closeOverlay("suggestionPanel"));
 
-  document.getElementById("shopBtn").addEventListener("click",()=>{openOverlay("shopScreen");renderUpgrades();});
+  document.getElementById("shopBtn").addEventListener("click",()=>{
+    openOverlay("shopScreen");
+    renderUnlockTiles();
+    renderUpgrades();
+  });
   document.getElementById("shopExitBtn").addEventListener("mousedown",()=>closeOverlay("shopScreen"));
-  document.getElementById("gambleBtn").addEventListener("click",()=>openOverlay("gambleScreen"));
+
+  document.getElementById("gambleBtn").addEventListener("click",()=>{
+    if (!unlockedGamble) return;
+    openOverlay("gambleScreen");
+    updateGambleButton();
+  });
   document.getElementById("gambleExitBtn").addEventListener("click",()=>closeOverlay("gambleScreen"));
+
   document.getElementById("skinBtn").addEventListener("click",()=>{openOverlay("skinScreen");renderSkins();});
   document.getElementById("skinExitBtn").addEventListener("click",()=>closeOverlay("skinScreen"));
+
   document.getElementById("statsBtn").addEventListener("click",()=>openOverlay("statsScreen"));
   document.getElementById("statsExitBtn").addEventListener("click",()=>closeOverlay("statsScreen"));
 
-  document.getElementById("openBlackjackBtn").addEventListener("click",()=>{closeOverlay("gambleScreen");openOverlay("blackjackScreen");updateBJDisplay();});
+  document.getElementById("openBlackjackBtn").addEventListener("click",()=>{
+    if (!unlockedBlackjack) return;
+    closeOverlay("gambleScreen"); openOverlay("blackjackScreen"); updateBJDisplay();
+  });
   document.getElementById("bjExitBtn").addEventListener("click",()=>closeOverlay("blackjackScreen"));
   document.getElementById("bjStartBtn").addEventListener("click",()=>startBlackjack());
   document.getElementById("bjAllInBtn").addEventListener("click",()=>{document.getElementById("betInput").value=score;startBlackjack();});
 
-  document.getElementById("openRollsBtn").addEventListener("click",()=>{closeOverlay("gambleScreen");openOverlay("rollsScreen");});
+  document.getElementById("openRollsBtn").addEventListener("click",()=>{
+    if (!unlockedRolls) return;
+    closeOverlay("gambleScreen"); openOverlay("rollsScreen");
+  });
   document.getElementById("rollsExitBtn").addEventListener("click",()=>closeOverlay("rollsScreen"));
   document.getElementById("rollPlayBtn").addEventListener("click",playRolls);
   document.getElementById("rollAllBtn").addEventListener("click",()=>{document.getElementById("rollBet").value=score;});
 
   applyEquippedSkin();
+  renderUnlockTiles();
   renderUpgrades();
   renderLeaderboard();
+  updateGambleButton();
   updateScore();
 
 })();
