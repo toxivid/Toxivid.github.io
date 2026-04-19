@@ -314,6 +314,113 @@ button:active { transform: scale(.97); }
 .lb-me .lb-name { color: var(--gold); }
 .lb-separator { border: none; border-top: 1px dashed rgba(124,92,252,.3); margin: 4px 0; }
 
+/* ─── LB EXPAND BUTTON ─── */
+#lbExpandBtn {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 6px 0;
+  background: rgba(124,92,252,.12);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s, color .2s, border-color .2s;
+}
+#lbExpandBtn:hover {
+  background: rgba(124,92,252,.25);
+  border-color: var(--accent);
+  color: var(--text);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ─── LB FULL MODAL ─── */
+#lbModal {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 8000;
+  backdrop-filter: blur(10px);
+  animation: fadeIn .2s ease;
+}
+#lbModalCard {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  width: 90%;
+  max-width: 420px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideDown .25s ease;
+  overflow: hidden;
+}
+#lbModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+#lbModalHeader h3 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+#lbModalCount {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+}
+#lbModalClose {
+  background: var(--danger);
+  padding: 6px 12px;
+  font-size: 12px;
+}
+#lbModalClose:hover { background: #ff6b82; }
+#lbModalBody {
+  overflow-y: auto;
+  padding: 10px 16px 16px;
+  flex: 1;
+}
+#lbModalBody::-webkit-scrollbar { width: 4px; }
+#lbModalBody::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+.lb-modal-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 6px;
+  border-radius: 8px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(124,92,252,.08);
+  transition: background .15s;
+}
+.lb-modal-row:last-child { border-bottom: none; }
+.lb-modal-row:hover { background: rgba(124,92,252,.07); }
+.lb-modal-row.lb-me {
+  background: rgba(255,215,0,.06);
+  border-radius: 8px;
+  border-color: rgba(255,215,0,.2);
+}
+.lb-modal-row.lb-me .lb-name { color: var(--gold); }
+.lb-modal-rank { min-width: 28px; text-align: right; font-size: 12px; font-weight: 900; color: var(--muted); }
+.lb-modal-rank.gold   { color: #ffd700; }
+.lb-modal-rank.silver { color: #c0c0c0; }
+.lb-modal-rank.bronze { color: #cd7f32; }
+
 /* ─── SUGGESTION BTN ─── */
 .suggestionBtn { position:fixed; bottom:20px; right:20px; font-size:12px; padding:8px 12px; background:var(--card); border:1px solid var(--border); color:var(--muted); }
 .suggestionBtn:hover { color:var(--text); }
@@ -556,6 +663,19 @@ button:active { transform: scale(.97); }
 <div id="leaderboard">
   <div class="lb-title">Leaderboard</div>
   <div id="lbRows"></div>
+  <button id="lbExpandBtn">&#9650; Volledig Leaderboard</button>
+</div>
+
+<!-- LEADERBOARD FULL MODAL -->
+<div id="lbModal">
+  <div id="lbModalCard">
+    <div id="lbModalHeader">
+      <h3>Leaderboard</h3>
+      <span id="lbModalCount"></span>
+      <button id="lbModalClose">Sluiten</button>
+    </div>
+    <div id="lbModalBody"></div>
+  </div>
 </div>
 
 <!-- SHOP -->
@@ -763,14 +883,12 @@ button:active { transform: scale(.97); }
   "use strict";
 
   // ── UPDATE THIS IF ASKED FOR LANTING RESET ──
-  // Current save key version. Change this string to reset all saves.
   const SAVE_KEY    = "lc_v3";
   const LAST_ONLINE = "lc_v3_lastonline";
   const NAME_KEY    = "lc_v3_username";
   const KEYBIND_KEY = "lc_v3_keybind";
   const KBDISP_KEY  = "lc_v3_keybind_display";
 
-  // Clean up ALL old variable names so we don't accumulate junk
   const OLD_KEYS = [
     "lantingclicker","lantingclickerlaastonline","lanting_clicker_username",
     "lanting_clicker_keybind","lanting_clicker_keybind_display",
@@ -785,13 +903,49 @@ button:active { transform: scale(.97); }
   const WEBHOOK_LOGIN = "https://discord.com/api/webhooks/1495091471202779207/N4RjrwDK-nlsMwvTMbBx5p-0atRKB6O4EGxYxZ8-cKFvjqfeqmjkyujPsNveQTCdX3UR";
   const BLACK_IMG     = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
 
-  const OTHER_PLAYERS = [
-    { name: "toxivid", score: 11123 },
-    { name: "johan", score: 100 }
-  ];
+  // ── DISCORD LEADERBOARD CONFIG ───────────────────────────
+  const LB_CHANNEL_ID = "1495438339627815203";
+  const LB_TOKEN      = "MTQ5NTQyNjg2ODM5MDc4OTE5MQ.GAh5e3.dgqOSpTlKpJry1hx3ib3LlxCute79M43Ge08aM";
+
+  // Cached leaderboard data from Discord
+  let lbData = {}; // { name: score, ... } in order
+
+  async function fetchLeaderboard() {
+    try {
+      const res = await fetch(
+        `https://discord.com/api/v9/channels/${LB_CHANNEL_ID}/messages?limit=1`,
+        {
+          headers: {
+            "Authorization": LB_TOKEN,
+            "Content-Type": "application/json"
+          }
+        }
+      );
+      if (!res.ok) return;
+      const msgs = await res.json();
+      if (!msgs || msgs.length === 0) return;
+      const raw = msgs[0].content;
+      // Try to parse the message content as JSON
+      // Strip possible code block wrappers like ```json ... ```
+      const cleaned = raw.replace(/```(?:json)?/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+      // parsed should be { name: score, name2: score2, ... }
+      if (typeof parsed === "object" && !Array.isArray(parsed)) {
+        lbData = parsed;
+      }
+    } catch (e) {
+      // Silently fail — keep old lbData
+    }
+  }
 
   // Names already taken (lowercase for comparison)
-  const TAKEN_NAMES = ["toxivid"];
+  // Dynamically built from lbData keys + any hardcoded ones
+  const ALWAYS_TAKEN = [];
+
+  function isTakenByLB(name) {
+    const lower = name.toLowerCase();
+    return Object.keys(lbData).some(k => k.toLowerCase() === lower);
+  }
 
   const SKIN_DEFS = [
     { id:0, name:"Standaard",               img:BLACK_IMG,      cost:0,             bonus:1,   bonusText:"1x klikken",       free:true  },
@@ -818,12 +972,10 @@ button:active { transform: scale(.97); }
   let earned           = save.earned       || 0;
   let lost             = save.lost         || 0;
   let highest          = save.highest      || score;
-  // Unlock flags
   let unlockedGamble   = save.unlockedGamble   || false;
   let unlockedBlackjack= save.unlockedBlackjack|| false;
   let unlockedRolls    = save.unlockedRolls    || false;
 
-  // Active boosts: { clickBoost, psBoost, gambleBoost } with expiry timestamps
   let boosts = { click: 0, ps: 0, gamble: 0 };
 
   const scoreEl       = document.getElementById("score");
@@ -870,39 +1022,9 @@ button:active { transform: scale(.97); }
   function fl(x) { return Math.floor(x); }
   function cl(x) { return Math.ceil(x); }
 
-  // ── NUMBER FORMATTING ─────────────────────────────────────
-  // Main score display: Dutch abbreviations
-  // >4 chars: 1482 -> 1.4k, 1048 -> 1k, 1048123 -> 1m, 1392938274 -> 1.4md, then b, bd, t, td
   function fmtMain(n) {
     n = Math.floor(n);
     if (n < 10000) return String(n);
-    const tiers = [
-      [1e18, "td"],
-      [1e15, "t"],
-      [1e12, "bd"],
-      [1e9,  "b"],
-      [1e6,  "md"],
-      [1e3,  "m"],  // Note: Dutch 1000=duizend but user spec says 1.2m for 1242123
-      [1e0,  "k"],  // fallback won't be reached since we check <10000 above
-    ];
-    // Redefine per user's spec:
-    // 1482 -> 1.4k (>= 1000, 4+ chars)
-    // 1242123 -> 1.2m (>= 1000000)
-    // 1392938274 -> 1.4md (>=1e9)
-    // then b (1e9... wait user says 1b after md)
-    // User spec: k, m, md, b, bd, t, td
-    const scale = [
-      [1e18, "td"],
-      [1e15, "t"],
-      [1e12, "bd"],
-      [1e9,  "b"],
-      [1e6,  "md"],
-      [1e3,  "m"],
-    ];
-    // But user shows: 1.2m for 1242123 (million?), 1.4md for 1392938274 (billion?)
-    // Re-reading: k=1000, m=1.000.000, md=1.000.000.000, b=1e12, bd=1e15, t=1e18, td=1e21
-    // "1.4md" for ~1.39 billion = Dutch "miljard"
-    // So: k=1e3, m=1e6, md=1e9(miljard), b=1e12(biljoen), bd=1e15, t=1e18, td=1e21
     const dutchScale = [
       [1e21, "td"],
       [1e18, "t"],
@@ -922,15 +1044,14 @@ button:active { transform: scale(.97); }
     return String(n);
   }
 
-  // Shop / gambling prices: dots every 3 chars from right
-  // 111 -> "111", 1457891273894 -> "1.457.891.273.894"
   function fmtShop(n) {
     n = Math.floor(n);
     return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
-  // Leaderboard compact format
   function fmtLB(n) {
+    n = Number(n);
+    if (isNaN(n)) return "0";
     if (n >= 1e9)  return (n/1e9).toFixed(1) + "md";
     if (n >= 1e6)  return (n/1e6).toFixed(1) + "m";
     if (n >= 1e3)  return (n/1e3).toFixed(1) + "k";
@@ -945,13 +1066,11 @@ button:active { transform: scale(.97); }
 
   function applyEquippedSkin() {
     let mult = getSkinBonus(equippedSkin);
-    // Apply click boost if active
     if (Date.now() < boosts.click) mult *= 1.2;
     perClick = cl(basePerClick * mult);
     mainImg.src = getCurrentSkinImg();
   }
 
-  // ── GAMBLE BUTTON STATE ───────────────────────────────────
   function updateGambleButton() {
     if (unlockedGamble) {
       gambleBtn.disabled = false;
@@ -959,7 +1078,6 @@ button:active { transform: scale(.97); }
     } else {
       gambleBtn.disabled = true;
     }
-    // Update gamble screen lock text
     const bjLock = document.getElementById("bjLockText");
     const rlLock = document.getElementById("rollsLockText");
     const bjCard = document.getElementById("openBlackjackBtn");
@@ -971,35 +1089,56 @@ button:active { transform: scale(.97); }
   }
 
   // ── LEADERBOARD ──────────────────────────────────────────
+  // lbData = { name: score, ... } where order = leaderboard order (from Discord message)
+  // Player's local score is injected by replacing their entry if name matches,
+  // or added fresh if not present.
+
+  let lbModalOpen = false;
+
+  function buildEntries() {
+    const playerName  = localStorage.getItem(NAME_KEY) || "Jij";
+    const playerScore = score;
+    const playerLower = playerName.toLowerCase();
+    let entries = [];
+    let playerFoundInLB = false;
+    for (const [name, sc] of Object.entries(lbData)) {
+      if (name.toLowerCase() === playerLower) {
+        entries.push({ name: playerName, score: playerScore, isMe: true });
+        playerFoundInLB = true;
+      } else {
+        entries.push({ name, score: Number(sc), isMe: false });
+      }
+    }
+    if (!playerFoundInLB) {
+      entries.push({ name: playerName, score: playerScore, isMe: true });
+    }
+    entries.sort((a, b) => b.score - a.score);
+    return entries;
+  }
+
+  const rankClass = (r) => r===1?"gold":r===2?"silver":r===3?"bronze":"";
+
   function renderLeaderboard() {
     const playerName  = localStorage.getItem(NAME_KEY) || "Jij";
     const playerScore = score;
+    const entries     = buildEntries();
+    const playerRank  = entries.findIndex(p => p.isMe) + 1;
+    const top5        = entries.slice(0, 5);
+    const inTop5      = playerRank <= 5;
 
-    // If player name matches a leaderboard entry, replace that entry's score with player's
-    const others = OTHER_PLAYERS
-      .filter(p => p.name.toLowerCase() !== playerName.toLowerCase())
-      .map(p => ({...p, isMe:false}));
-
-    const all = [...others, {name:playerName, score:playerScore, isMe:true}];
-    all.sort((a,b) => b.score - a.score);
-
-    const playerRank = all.findIndex(p => p.isMe) + 1;
-    const top5       = all.slice(0, 5);
-    const inTop5     = playerRank <= 5;
-
+    // ── Mini widget (top 5) ──
     const container = document.getElementById("lbRows");
     container.innerHTML = "";
 
-    const rankClass = (r) => r===1?"gold":r===2?"silver":r===3?"bronze":"";
-
     top5.forEach((p, i) => {
-      const row = document.createElement("div");
       const rank = i + 1;
+      const row  = document.createElement("div");
       row.className = "lb-row" + (p.isMe ? " lb-me" : "");
-      row.innerHTML = `<span class="lb-rank ${rankClass(rank)}">#${rank}</span><span class="lb-name">${p.name}${p.isMe?' <-- ':''}</span><span class="lb-score">${fmtLB(p.score)}</span>`;
+      row.innerHTML = `<span class="lb-rank ${rankClass(rank)}">#${rank}</span><span class="lb-name">${p.name}${p.isMe ? ' \u2190' : ''}</span><span class="lb-score">${fmtLB(p.score)}</span>`;
       container.appendChild(row);
     });
 
+    // Fill empty slots up to 5
     for (let i = top5.length; i < 5; i++) {
       const row = document.createElement("div");
       row.className = "lb-row";
@@ -1007,16 +1146,84 @@ button:active { transform: scale(.97); }
       container.appendChild(row);
     }
 
+    // Show player below top 5 if ranked outside top 5
     if (!inTop5) {
       const sep = document.createElement("hr");
       sep.className = "lb-separator";
       container.appendChild(sep);
       const row = document.createElement("div");
       row.className = "lb-row lb-me";
-      row.innerHTML = `<span class="lb-rank gold">#${playerRank}</span><span class="lb-name">${playerName}</span><span class="lb-score">${fmtLB(playerScore)}</span>`;
+      row.innerHTML = `<span class="lb-rank gold">#${playerRank}</span><span class="lb-name">${playerName} \u2190</span><span class="lb-score">${fmtLB(playerScore)}</span>`;
       container.appendChild(row);
     }
+
+    // Update expand button label with total count
+    const expandBtn = document.getElementById("lbExpandBtn");
+    if (expandBtn) {
+      expandBtn.textContent = (lbModalOpen ? "\u25BC" : "\u25B2") + " Volledig Leaderboard (" + entries.length + ")";
+    }
+
+    // ── Full modal list (only re-render if open) ──
+    if (lbModalOpen) renderLbModal(entries, playerRank);
   }
+
+  function renderLbModal(entries, playerRank) {
+    const body = document.getElementById("lbModalBody");
+    const countEl = document.getElementById("lbModalCount");
+    if (!body) return;
+
+    // Scroll position memory
+    const scrollTop = body.scrollTop;
+
+    body.innerHTML = "";
+    if (countEl) countEl.textContent = entries.length + " spelers";
+
+    entries.forEach((p, i) => {
+      const rank = i + 1;
+      const row  = document.createElement("div");
+      row.className = "lb-modal-row" + (p.isMe ? " lb-me" : "");
+      row.innerHTML = `<span class="lb-modal-rank ${rankClass(rank)}">#${rank}</span><span class="lb-name" style="flex:1">${p.name}${p.isMe ? ' \u2190' : ''}</span><span class="lb-score">${fmtLB(p.score)}</span>`;
+      body.appendChild(row);
+    });
+
+    // Restore scroll or jump to player on first open
+    if (scrollTop > 0) {
+      body.scrollTop = scrollTop;
+    } else if (playerRank > 5) {
+      // Scroll player row into view (each row ~32px, header ~52px)
+      const targetScroll = Math.max(0, (playerRank - 4) * 32);
+      body.scrollTop = targetScroll;
+    }
+  }
+
+  function openLbModal() {
+    lbModalOpen = true;
+    const modal = document.getElementById("lbModal");
+    modal.style.display = "flex";
+    activeOverlays.add("lbModal");
+    const entries    = buildEntries();
+    const playerRank = entries.findIndex(p => p.isMe) + 1;
+    renderLbModal(entries, playerRank);
+    const expandBtn = document.getElementById("lbExpandBtn");
+    if (expandBtn) expandBtn.textContent = "\u25BC Volledig Leaderboard (" + entries.length + ")";
+  }
+
+  function closeLbModal() {
+    lbModalOpen = false;
+    document.getElementById("lbModal").style.display = "none";
+    activeOverlays.delete("lbModal");
+    const entries    = buildEntries();
+    const expandBtn  = document.getElementById("lbExpandBtn");
+    if (expandBtn) expandBtn.textContent = "\u25B2 Volledig Leaderboard (" + entries.length + ")";
+  }
+
+  document.getElementById("lbExpandBtn").addEventListener("click", () => {
+    lbModalOpen ? closeLbModal() : openLbModal();
+  });
+  document.getElementById("lbModalClose").addEventListener("click", closeLbModal);
+  document.getElementById("lbModal").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("lbModal")) closeLbModal();
+  });
 
   // ── BOOST RENDERING ──────────────────────────────────────
   function renderBoosts() {
@@ -1075,12 +1282,19 @@ button:active { transform: scale(.97); }
     saveGame();
   }
 
+  // Periodic score report to webhook
   setInterval(() => {
     const name = localStorage.getItem(NAME_KEY);
     if (name && document.getElementById("startScreen").style.display === "none") {
       sendWebhook(WEBHOOK_LOGIN, `${name}: ${score}`);
     }
   }, 5000);
+
+  // Fetch leaderboard from Discord every second
+  setInterval(async () => {
+    await fetchLeaderboard();
+    renderLeaderboard();
+  }, 1000);
 
   const BANNED = ["nigga","nigger","neger","sem"];
   function isBanned(name) {
@@ -1089,7 +1303,8 @@ button:active { transform: scale(.97); }
   }
   function isTaken(name) {
     const lower = name.toLowerCase();
-    return TAKEN_NAMES.some(n => n.toLowerCase() === lower);
+    // Check against live leaderboard names
+    return isTakenByLB(name) || ALWAYS_TAKEN.some(n => n.toLowerCase() === lower);
   }
 
   function getOfflineBonus() {
@@ -1229,7 +1444,6 @@ button:active { transform: scale(.97); }
     const container = document.getElementById("unlockTiles");
     container.innerHTML = "";
 
-    // Section label
     const lbl = document.createElement("div");
     lbl.className = "sec-label";
     lbl.innerText = "Ontgrendelen";
@@ -1376,7 +1590,6 @@ button:active { transform: scale(.97); }
     if (!ownedSkins.includes(id)) return;
     equippedSkin = id;
     applyEquippedSkin();
-    // Update falling circle image if visible
     document.getElementById("fallingImg").src = getCurrentSkinImg();
     updateScore(); renderSkins();
   }
@@ -1395,7 +1608,7 @@ button:active { transform: scale(.97); }
   let fallingActive    = false;
   let fallingTimer     = null;
   let fallingCountdown = null;
-  let nextFallAt       = Date.now() + 60000; // first possible spawn: 1 min
+  let nextFallAt       = Date.now() + 60000;
 
   function spawnFallingCircle() {
     if (fallingActive) return;
@@ -1408,7 +1621,6 @@ button:active { transform: scale(.97); }
 
     img.src = getCurrentSkinImg();
 
-    // Random horizontal position
     const x = fl(Math.random() * (window.innerWidth - 80)) + 20;
     circle.style.left = x + "px";
     circle.style.top  = "0px";
@@ -1418,13 +1630,12 @@ button:active { transform: scale(.97); }
     let timeLeft = 5;
     cdEl.innerText = "Vang hem! " + timeLeft + "s";
 
-    // Animate falling + spinning
     let startTime = Date.now();
     let anim;
     function fall() {
       const elapsed = (Date.now() - startTime) / 1000;
-      const y  = elapsed * 70; // px per second downward
-      const rot = elapsed * 180; // degrees per second
+      const y  = elapsed * 70;
+      const rot = elapsed * 180;
       circle.style.transform = `translateY(${y}px) rotate(${rot}deg)`;
       if (elapsed < 5) {
         anim = requestAnimationFrame(fall);
@@ -1459,16 +1670,15 @@ button:active { transform: scale(.97); }
     document.getElementById("fallingCountdown").style.display = "none";
     document.getElementById("fallingCircle").onclick = null;
     fallingActive = false;
-    nextFallAt = Date.now() + 60000; // wait another minute
+    nextFallAt = Date.now() + 60000;
   }
 
-  // Check every second if we should spawn
   setInterval(() => {
     if (!fallingActive && Date.now() >= nextFallAt && document.getElementById("startScreen").style.display === "none") {
       if (Math.random() < 0.20) {
         spawnFallingCircle();
       } else {
-        nextFallAt = Date.now() + 60000; // try again in 1 min
+        nextFallAt = Date.now() + 60000;
       }
     }
     renderBoosts();
@@ -1486,9 +1696,8 @@ button:active { transform: scale(.97); }
   function cardValue(c){if(c.rank==="A")return 11;if(["J","Q","K"].includes(c.rank))return 10;return parseInt(c.rank);}
   function handValue(h){let v=0,a=0;for(const c of h){v+=cardValue(c);if(c.rank==="A")a++;}while(v>21&&a-- >0)v-=10;return v;}
   function renderCard(c){
-    const suitMap={H:"H",D:"D",K:"K",S:"S"};
     const isRed = c.suit==="H"||c.suit==="D";
-    return`<span style="color:${isRed?"#ff4f6d":"#e8e8ff"}">${c.rank}${suitMap[c.suit]||c.suit}</span>`;
+    return`<span style="color:${isRed?"#ff4f6d":"#e8e8ff"}">${c.rank}${c.suit}</span>`;
   }
   function renderHandHTML(h,hide){return h.map((c,i)=>(hide&&i===0)?"??":renderCard(c)).join(" ");}
 
@@ -1541,9 +1750,7 @@ button:active { transform: scale(.97); }
   }
   function endBJ(win){
     gameInProgress=false;
-    // All-in luck: 15% chance to convert loss to win
     if(win===false&&allIn&&Math.random()<0.15)win=true;
-    // Gamble boost: slightly better odds
     if(win===false&&Date.now()<boosts.gamble&&Math.random()<0.10)win=true;
     let msg,color;
     if(win===true){
@@ -1571,7 +1778,6 @@ button:active { transform: scale(.97); }
 
     let table;
     if (Date.now() < boosts.gamble) {
-      // Gamble boost: more high multipliers
       table = [0.25,0.25,0.50,0.50,1,1,1.5,1.5,1.5,2,2,2];
     } else {
       table = [0.25,0.50,0.75,1,1.25,1.5,2];
@@ -1621,13 +1827,18 @@ button:active { transform: scale(.97); }
   }
 
   // ── SUGGESTION ───────────────────────────────────────────
-  let lastSuggTime=0;
-  function sendSuggestion(){
-    const input=document.getElementById("suggestionInput"),msg=input.value.trim();
-    if(!msg)return;
-    if(Date.now()-lastSuggTime<180000){alert("Wacht 3 minuten tussen suggestions.");return;}
-    sendWebhook(WEBHOOK_SUGG,"Suggestion: "+msg);
-    input.value="";closeOverlay("suggestionPanel");lastSuggTime=Date.now();
+  // Format: "playername: their suggestion"
+  let lastSuggTime = 0;
+  function sendSuggestion() {
+    const input = document.getElementById("suggestionInput");
+    const msg   = input.value.trim();
+    if (!msg) return;
+    if (Date.now() - lastSuggTime < 180000) { alert("Wacht 3 minuten tussen suggestions."); return; }
+    const playerName = localStorage.getItem(NAME_KEY) || "Onbekend";
+    sendWebhook(WEBHOOK_SUGG, `${playerName}: ${msg}`);
+    input.value = "";
+    closeOverlay("suggestionPanel");
+    lastSuggTime = Date.now();
   }
 
   // ── EVENT LISTENERS ──────────────────────────────────────
@@ -1671,6 +1882,11 @@ button:active { transform: scale(.97); }
   document.getElementById("rollsExitBtn").addEventListener("click",()=>closeOverlay("rollsScreen"));
   document.getElementById("rollPlayBtn").addEventListener("click",playRolls);
   document.getElementById("rollAllBtn").addEventListener("click",()=>{document.getElementById("rollBet").value=score;});
+
+  // Initial fetch + render
+  fetchLeaderboard().then(() => {
+    renderLeaderboard();
+  });
 
   applyEquippedSkin();
   renderUnlockTiles();
