@@ -882,7 +882,7 @@ button:active { transform: scale(.97); }
 (function() {
   "use strict";
 
-  // ── UPDATE THIS IF ASKED FOR LANTING RESET ──
+  // ── SAVE KEYS ────────────────────────────────────────────
   const SAVE_KEY    = "lc_v3";
   const LAST_ONLINE = "lc_v3_lastonline";
   const NAME_KEY    = "lc_v3_username";
@@ -903,44 +903,39 @@ button:active { transform: scale(.97); }
   const WEBHOOK_LOGIN = "https://discord.com/api/webhooks/1495091471202779207/N4RjrwDK-nlsMwvTMbBx5p-0atRKB6O4EGxYxZ8-cKFvjqfeqmjkyujPsNveQTCdX3UR";
   const BLACK_IMG     = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
 
-  // ── DISCORD LEADERBOARD CONFIG ───────────────────────────
+  // ── DISCORD BOT CONFIG ───────────────────────────────────
+  // Uses your bot token (safe — bots are meant to call the API)
   const LB_CHANNEL_ID = "1495438339627815203";
-  const LB_TOKEN      = "MTQ5NTQyNjg2ODM5MDc4OTE5MQ.GAh5e3.dgqOSpTlKpJry1hx3ib3LlxCute79M43Ge08aM";
+  const BOT_TOKEN     = "MTQ5NTQ3MTQwMDA0NjE3MDM5Mw.G5p9rK.1Zvx9zFRlwwc5Uz0daYi-lPxP_NifSedcDOMI8";
 
-  // Cached leaderboard data from Discord
-  let lbData = {}; // { name: score, ... } in order
+  // Cached leaderboard data: { name: score, ... }
+  let lbData = {};
 
+  // Mirrors your Python bot: fetch the latest message from the channel
   async function fetchLeaderboard() {
     try {
       const res = await fetch(
-        `https://discord.com/api/v9/channels/${LB_CHANNEL_ID}/messages?limit=1`,
+        `https://discord.com/api/v10/channels/${LB_CHANNEL_ID}/messages?limit=1`,
         {
           headers: {
-            "Authorization": LB_TOKEN,
+            "Authorization": `Bot ${BOT_TOKEN}`,
             "Content-Type": "application/json"
           }
         }
       );
       if (!res.ok) return;
       const msgs = await res.json();
-      if (!msgs || msgs.length === 0) return;
-      const raw = msgs[0].content;
-      // Try to parse the message content as JSON
-      // Strip possible code block wrappers like ```json ... ```
+      if (!Array.isArray(msgs) || msgs.length === 0) return;
+      const raw     = msgs[0].content;
       const cleaned = raw.replace(/```(?:json)?/g, "").trim();
-      const parsed = JSON.parse(cleaned);
-      // parsed should be { name: score, name2: score2, ... }
+      const parsed  = JSON.parse(cleaned);
       if (typeof parsed === "object" && !Array.isArray(parsed)) {
         lbData = parsed;
       }
     } catch (e) {
-      // Silently fail — keep old lbData
+      // Silently keep old lbData on any error
     }
   }
-
-  // Names already taken (lowercase for comparison)
-  // Dynamically built from lbData keys + any hardcoded ones
-  const ALWAYS_TAKEN = [];
 
   function isTakenByLB(name) {
     const lower = name.toLowerCase();
@@ -1089,10 +1084,6 @@ button:active { transform: scale(.97); }
   }
 
   // ── LEADERBOARD ──────────────────────────────────────────
-  // lbData = { name: score, ... } where order = leaderboard order (from Discord message)
-  // Player's local score is injected by replacing their entry if name matches,
-  // or added fresh if not present.
-
   let lbModalOpen = false;
 
   function buildEntries() {
@@ -1119,14 +1110,11 @@ button:active { transform: scale(.97); }
   const rankClass = (r) => r===1?"gold":r===2?"silver":r===3?"bronze":"";
 
   function renderLeaderboard() {
-    const playerName  = localStorage.getItem(NAME_KEY) || "Jij";
-    const playerScore = score;
     const entries     = buildEntries();
     const playerRank  = entries.findIndex(p => p.isMe) + 1;
     const top5        = entries.slice(0, 5);
     const inTop5      = playerRank <= 5;
 
-    // ── Mini widget (top 5) ──
     const container = document.getElementById("lbRows");
     container.innerHTML = "";
 
@@ -1138,7 +1126,6 @@ button:active { transform: scale(.97); }
       container.appendChild(row);
     });
 
-    // Fill empty slots up to 5
     for (let i = top5.length; i < 5; i++) {
       const row = document.createElement("div");
       row.className = "lb-row";
@@ -1146,38 +1133,32 @@ button:active { transform: scale(.97); }
       container.appendChild(row);
     }
 
-    // Show player below top 5 if ranked outside top 5
     if (!inTop5) {
       const sep = document.createElement("hr");
       sep.className = "lb-separator";
       container.appendChild(sep);
+      const playerName = localStorage.getItem(NAME_KEY) || "Jij";
       const row = document.createElement("div");
       row.className = "lb-row lb-me";
-      row.innerHTML = `<span class="lb-rank gold">#${playerRank}</span><span class="lb-name">${playerName} \u2190</span><span class="lb-score">${fmtLB(playerScore)}</span>`;
+      row.innerHTML = `<span class="lb-rank gold">#${playerRank}</span><span class="lb-name">${playerName} \u2190</span><span class="lb-score">${fmtLB(score)}</span>`;
       container.appendChild(row);
     }
 
-    // Update expand button label with total count
     const expandBtn = document.getElementById("lbExpandBtn");
     if (expandBtn) {
       expandBtn.textContent = (lbModalOpen ? "\u25BC" : "\u25B2") + " Volledig Leaderboard (" + entries.length + ")";
     }
 
-    // ── Full modal list (only re-render if open) ──
     if (lbModalOpen) renderLbModal(entries, playerRank);
   }
 
   function renderLbModal(entries, playerRank) {
-    const body = document.getElementById("lbModalBody");
+    const body    = document.getElementById("lbModalBody");
     const countEl = document.getElementById("lbModalCount");
     if (!body) return;
-
-    // Scroll position memory
     const scrollTop = body.scrollTop;
-
     body.innerHTML = "";
     if (countEl) countEl.textContent = entries.length + " spelers";
-
     entries.forEach((p, i) => {
       const rank = i + 1;
       const row  = document.createElement("div");
@@ -1185,21 +1166,16 @@ button:active { transform: scale(.97); }
       row.innerHTML = `<span class="lb-modal-rank ${rankClass(rank)}">#${rank}</span><span class="lb-name" style="flex:1">${p.name}${p.isMe ? ' \u2190' : ''}</span><span class="lb-score">${fmtLB(p.score)}</span>`;
       body.appendChild(row);
     });
-
-    // Restore scroll or jump to player on first open
     if (scrollTop > 0) {
       body.scrollTop = scrollTop;
     } else if (playerRank > 5) {
-      // Scroll player row into view (each row ~32px, header ~52px)
-      const targetScroll = Math.max(0, (playerRank - 4) * 32);
-      body.scrollTop = targetScroll;
+      body.scrollTop = Math.max(0, (playerRank - 4) * 32);
     }
   }
 
   function openLbModal() {
     lbModalOpen = true;
-    const modal = document.getElementById("lbModal");
-    modal.style.display = "flex";
+    document.getElementById("lbModal").style.display = "flex";
     activeOverlays.add("lbModal");
     const entries    = buildEntries();
     const playerRank = entries.findIndex(p => p.isMe) + 1;
@@ -1212,8 +1188,8 @@ button:active { transform: scale(.97); }
     lbModalOpen = false;
     document.getElementById("lbModal").style.display = "none";
     activeOverlays.delete("lbModal");
-    const entries    = buildEntries();
-    const expandBtn  = document.getElementById("lbExpandBtn");
+    const entries   = buildEntries();
+    const expandBtn = document.getElementById("lbExpandBtn");
     if (expandBtn) expandBtn.textContent = "\u25B2 Volledig Leaderboard (" + entries.length + ")";
   }
 
@@ -1290,7 +1266,7 @@ button:active { transform: scale(.97); }
     }
   }, 5000);
 
-  // Fetch leaderboard from Discord every second
+  // Fetch leaderboard every second using the bot token
   setInterval(async () => {
     await fetchLeaderboard();
     renderLeaderboard();
@@ -1302,9 +1278,7 @@ button:active { transform: scale(.97); }
     return BANNED.some(w => lower.includes(w));
   }
   function isTaken(name) {
-    const lower = name.toLowerCase();
-    // Check against live leaderboard names
-    return isTakenByLB(name) || ALWAYS_TAKEN.some(n => n.toLowerCase() === lower);
+    return isTakenByLB(name);
   }
 
   function getOfflineBonus() {
@@ -1458,9 +1432,7 @@ button:active { transform: scale(.97); }
     tiles.forEach(tile => {
       const div = document.createElement("div");
       div.className = "unlock-tile" + (tile.unlocked ? " unlocked-tile" : "");
-
       const canAfford = score >= tile.cost;
-
       let btnHtml;
       if (tile.unlocked) {
         btnHtml = `<button class="unlock-btn-unlocked" disabled>Ontgrendeld</button>`;
@@ -1468,14 +1440,12 @@ button:active { transform: scale(.97); }
         const cls = canAfford ? "buy-btn-can" : "buy-btn-cannot";
         btnHtml = `<button class="${cls}" data-key="${tile.key}">${fmtShop(tile.cost)}</button>`;
       }
-
       div.innerHTML = `
         <div class="unlock-info">
           <div class="upgrade-val">${tile.label}</div>
           <div class="unlock-desc">${tile.desc}</div>
         </div>
         ${btnHtml}`;
-
       if (!tile.unlocked) {
         const btn = div.querySelector("button[data-key]");
         if (btn && canAfford) {
@@ -1491,7 +1461,6 @@ button:active { transform: scale(.97); }
           });
         }
       }
-
       container.appendChild(div);
     });
 
@@ -1557,18 +1526,15 @@ button:active { transform: scale(.97); }
       const equipped = equippedSkin === def.id;
       const box      = document.createElement("div");
       box.className  = "skinBox" + (equipped ? " skinEquipped" : "");
-
       const imgHtml = def.img
         ? `<img src="${def.img}" onerror="this.style.display='none'">`
         : `<div style="width:70px;height:70px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);margin:auto;">Binnenkort</div>`;
-
       let btnHtml;
       if      (owned && equipped) btnHtml = `<button class="ownedBtn" disabled>Uitgerust</button>`;
       else if (owned)             btnHtml = `<button class="equipBtn" data-id="${def.id}">Equip</button>`;
       else if (def.free)          btnHtml = `<button class="buyBtn"   data-id="${def.id}">Gratis</button>`;
       else if (!def.img)          btnHtml = `<button class="ownedBtn" disabled>Binnenkort</button>`;
       else                        btnHtml = `<button class="buyBtn"   data-id="${def.id}">Koop (${fmtShop(def.cost)})</button>`;
-
       box.innerHTML = `${imgHtml}<div class="skinName">${def.name}</div><div class="skinCost">${def.cost>0?fmtShop(def.cost)+" Lantings":"Gratis"}</div><div class="skinBonus">${def.bonusText}</div>${btnHtml}`;
       const btn = box.querySelector("button[data-id]");
       if (btn) btn.addEventListener("click", () => owned ? equipSkin(def.id) : buySkin(def.id));
@@ -1605,53 +1571,40 @@ button:active { transform: scale(.97); }
   }
 
   // ── FALLING CIRCLE ───────────────────────────────────────
-  let fallingActive    = false;
-  let fallingTimer     = null;
-  let fallingCountdown = null;
-  let nextFallAt       = Date.now() + 60000;
+  let fallingActive = false;
+  let fallingTimer  = null;
+  let nextFallAt    = Date.now() + 60000;
 
   function spawnFallingCircle() {
     if (fallingActive) return;
     if (document.getElementById("startScreen").style.display !== "none") return;
-
     fallingActive = true;
-    const circle  = document.getElementById("fallingCircle");
-    const cdEl    = document.getElementById("fallingCountdown");
-    const img     = document.getElementById("fallingImg");
-
-    img.src = getCurrentSkinImg();
-
+    const circle = document.getElementById("fallingCircle");
+    const cdEl   = document.getElementById("fallingCountdown");
+    document.getElementById("fallingImg").src = getCurrentSkinImg();
     const x = fl(Math.random() * (window.innerWidth - 80)) + 20;
-    circle.style.left = x + "px";
-    circle.style.top  = "0px";
+    circle.style.left    = x + "px";
+    circle.style.top     = "0px";
     circle.style.display = "block";
-    cdEl.style.display = "block";
-
-    let timeLeft = 5;
+    cdEl.style.display   = "block";
+    let timeLeft  = 5;
     cdEl.innerText = "Vang hem! " + timeLeft + "s";
-
     let startTime = Date.now();
     let anim;
     function fall() {
       const elapsed = (Date.now() - startTime) / 1000;
-      const y  = elapsed * 70;
-      const rot = elapsed * 180;
-      circle.style.transform = `translateY(${y}px) rotate(${rot}deg)`;
-      if (elapsed < 5) {
-        anim = requestAnimationFrame(fall);
-      }
+      circle.style.transform = `translateY(${elapsed * 70}px) rotate(${elapsed * 180}deg)`;
+      if (elapsed < 5) anim = requestAnimationFrame(fall);
     }
     anim = requestAnimationFrame(fall);
-
     fallingTimer = setInterval(() => {
       timeLeft--;
       cdEl.innerText = "Vang hem! " + timeLeft + "s";
       if (timeLeft <= 0) clearFallingCircle(anim);
     }, 1000);
-
     circle.onclick = () => {
       clearFallingCircle(anim);
-      const types = ["click","ps","gamble"];
+      const types  = ["click","ps","gamble"];
       const chosen = types[fl(Math.random() * types.length)];
       activateBoost(chosen);
       const msgs = { click:"Klik boost: +20% per klik", ps:"P/S boost: x2.5 per seconde", gamble:"Gamble geluk boost!" };
@@ -1670,16 +1623,13 @@ button:active { transform: scale(.97); }
     document.getElementById("fallingCountdown").style.display = "none";
     document.getElementById("fallingCircle").onclick = null;
     fallingActive = false;
-    nextFallAt = Date.now() + 60000;
+    nextFallAt    = Date.now() + 60000;
   }
 
   setInterval(() => {
     if (!fallingActive && Date.now() >= nextFallAt && document.getElementById("startScreen").style.display === "none") {
-      if (Math.random() < 0.20) {
-        spawnFallingCircle();
-      } else {
-        nextFallAt = Date.now() + 60000;
-      }
+      if (Math.random() < 0.20) spawnFallingCircle();
+      else nextFallAt = Date.now() + 60000;
     }
     renderBoosts();
   }, 1000);
@@ -1695,10 +1645,7 @@ button:active { transform: scale(.97); }
   }
   function cardValue(c){if(c.rank==="A")return 11;if(["J","Q","K"].includes(c.rank))return 10;return parseInt(c.rank);}
   function handValue(h){let v=0,a=0;for(const c of h){v+=cardValue(c);if(c.rank==="A")a++;}while(v>21&&a-- >0)v-=10;return v;}
-  function renderCard(c){
-    const isRed = c.suit==="H"||c.suit==="D";
-    return`<span style="color:${isRed?"#ff4f6d":"#e8e8ff"}">${c.rank}${c.suit}</span>`;
-  }
+  function renderCard(c){const isRed=c.suit==="H"||c.suit==="D";return`<span style="color:${isRed?"#ff4f6d":"#e8e8ff"}">${c.rank}${c.suit}</span>`;}
   function renderHandHTML(h,hide){return h.map((c,i)=>(hide&&i===0)?"??":renderCard(c)).join(" ");}
 
   function updateBJDisplay(){
@@ -1775,7 +1722,6 @@ button:active { transform: scale(.97); }
     if(isNaN(bet)||bet<100){alert("Minimale inzet is 100 Lantings!");return;}
     if(bet>score)return;
     score-=bet;lost+=bet;
-
     let table;
     if (Date.now() < boosts.gamble) {
       table = [0.25,0.25,0.50,0.50,1,1,1.5,1.5,1.5,2,2,2];
@@ -1809,25 +1755,20 @@ button:active { transform: scale(.97); }
     const msgEl = document.getElementById("codeMsg");
     const code  = input.value.trim().toLowerCase();
     if (!code) return;
-    if (USED_CODES.has(code)) {
-      msgEl.style.color = "var(--danger)";
-      msgEl.innerText = "Code al gebruikt!";
-      return;
-    }
+    if (USED_CODES.has(code)) { msgEl.style.color="var(--danger)"; msgEl.innerText="Code al gebruikt!"; return; }
     if (VALID_CODES[code]) {
       USED_CODES.add(code);
       const result = VALID_CODES[code]();
       msgEl.style.color = result.color;
-      msgEl.innerText = result.msg;
+      msgEl.innerText   = result.msg;
       input.value = "";
     } else {
       msgEl.style.color = "var(--danger)";
-      msgEl.innerText = "Ongeldige code.";
+      msgEl.innerText   = "Ongeldige code.";
     }
   }
 
   // ── SUGGESTION ───────────────────────────────────────────
-  // Format: "playername: their suggestion"
   let lastSuggTime = 0;
   function sendSuggestion() {
     const input = document.getElementById("suggestionInput");
@@ -1847,18 +1788,10 @@ button:active { transform: scale(.97); }
   document.getElementById("suggestionOpenBtn").addEventListener("click",()=>openOverlay("suggestionPanel"));
   document.getElementById("suggestionCloseBtn").addEventListener("click",()=>closeOverlay("suggestionPanel"));
 
-  document.getElementById("shopBtn").addEventListener("click",()=>{
-    openOverlay("shopScreen");
-    renderUnlockTiles();
-    renderUpgrades();
-  });
+  document.getElementById("shopBtn").addEventListener("click",()=>{openOverlay("shopScreen");renderUnlockTiles();renderUpgrades();});
   document.getElementById("shopExitBtn").addEventListener("mousedown",()=>closeOverlay("shopScreen"));
 
-  document.getElementById("gambleBtn").addEventListener("click",()=>{
-    if (!unlockedGamble) return;
-    openOverlay("gambleScreen");
-    updateGambleButton();
-  });
+  document.getElementById("gambleBtn").addEventListener("click",()=>{if(!unlockedGamble)return;openOverlay("gambleScreen");updateGambleButton();});
   document.getElementById("gambleExitBtn").addEventListener("click",()=>closeOverlay("gambleScreen"));
 
   document.getElementById("skinBtn").addEventListener("click",()=>{openOverlay("skinScreen");renderSkins();});
@@ -1867,27 +1800,18 @@ button:active { transform: scale(.97); }
   document.getElementById("statsBtn").addEventListener("click",()=>openOverlay("statsScreen"));
   document.getElementById("statsExitBtn").addEventListener("click",()=>closeOverlay("statsScreen"));
 
-  document.getElementById("openBlackjackBtn").addEventListener("click",()=>{
-    if (!unlockedBlackjack) return;
-    closeOverlay("gambleScreen"); openOverlay("blackjackScreen"); updateBJDisplay();
-  });
+  document.getElementById("openBlackjackBtn").addEventListener("click",()=>{if(!unlockedBlackjack)return;closeOverlay("gambleScreen");openOverlay("blackjackScreen");updateBJDisplay();});
   document.getElementById("bjExitBtn").addEventListener("click",()=>closeOverlay("blackjackScreen"));
   document.getElementById("bjStartBtn").addEventListener("click",()=>startBlackjack());
   document.getElementById("bjAllInBtn").addEventListener("click",()=>{document.getElementById("betInput").value=score;startBlackjack();});
 
-  document.getElementById("openRollsBtn").addEventListener("click",()=>{
-    if (!unlockedRolls) return;
-    closeOverlay("gambleScreen"); openOverlay("rollsScreen");
-  });
+  document.getElementById("openRollsBtn").addEventListener("click",()=>{if(!unlockedRolls)return;closeOverlay("gambleScreen");openOverlay("rollsScreen");});
   document.getElementById("rollsExitBtn").addEventListener("click",()=>closeOverlay("rollsScreen"));
   document.getElementById("rollPlayBtn").addEventListener("click",playRolls);
   document.getElementById("rollAllBtn").addEventListener("click",()=>{document.getElementById("rollBet").value=score;});
 
-  // Initial fetch + render
-  fetchLeaderboard().then(() => {
-    renderLeaderboard();
-  });
-
+  // ── INIT ─────────────────────────────────────────────────
+  fetchLeaderboard().then(() => renderLeaderboard());
   applyEquippedSkin();
   renderUnlockTiles();
   renderUpgrades();
