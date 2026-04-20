@@ -1726,7 +1726,7 @@ button:active { transform: scale(.97); }
     if (Date.now() < boosts.gamble) {
       table = [0.25,0.25,0.50,0.50,1,1,1.5,1.5,1.5,2,2,2];
     } else {
-      table = [0.25,0.50,0.75,1,1.25,1.5,2];
+      table = [0, 0.20,0.50,0.70,1,1.25,1.5,2,3];
     }
     const pick = () => table[fl(Math.random() * table.length)];
     const m=[pick(),pick(),pick()];
