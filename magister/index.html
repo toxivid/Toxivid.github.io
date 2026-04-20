@@ -131,6 +131,7 @@ button:active { transform: scale(.97); }
   width: 100%;
   max-width: 320px;
 }
+
 #nameSection label {
   font-family: 'Rajdhani', sans-serif;
   font-weight: 600;
@@ -988,15 +989,15 @@ button:active { transform: scale(.97); }
   "use strict";
 
   // ── CONSTANTS ──────────────────────────────────────────────────────────────
-  const VERSION         = "2.2";
+  const VERSION         = "2.3";
   const SAVE_KEY        = "lc_v4";
   const LAST_ONLINE_KEY = "lc_v4_lastonline";
   const NAME_KEY        = "lc_v4_username";
   const KEYBIND_KEY     = "lc_v4_keybind";
   const KBDISP_KEY      = "lc_v4_keybind_display";
   const VOTE_KEY        = "lc_v4_vote";
-  const FORCED_RESET_KEY      = "lc_v4_forced_reset_done";
-  const VERSION_NOTICE_KEY    = "lc_seen_2_2_notice";
+  const FORCED_RESET_KEY      = "lc_v4_forced_reset_done_2_3";
+  const VERSION_NOTICE_KEY    = "lc_seen_2_3_notice";
   const NATTE_HARK_MESSAGE_KEY = "natteharkmessage";
 
   const OLD_KEYS = [
@@ -1067,13 +1068,13 @@ button:active { transform: scale(.97); }
   let unlockedBlackjack= save.unlockedBlackjack || false;
   let unlockedRolls    = save.unlockedRolls   || false;
   let unlockedMines    = save.unlockedMines   ?? false;
-  let gambleLuckStacks = save.gambleLuckStacks || [];
+  let gambleLuckUntil = 0;
 
   // ── RUNTIME STATE ─────────────────────────────────────────────────────────
   let lbData         = {};
   let lbVersionView  = VERSION;
   let lbModalOpen    = false;
-  let gambleCooldownUntil = 0;
+  let gambleCooldownByMode = { blackjack: 0, rolls: 0, mines: 0 };
   let clickLock      = false;
   let waitingForKey  = false;
   let lastSuggTime   = 0;
@@ -1172,7 +1173,7 @@ button:active { transform: scale(.97); }
     localStorage.setItem(SAVE_KEY, JSON.stringify({
       score, perClick, perSecond, upgrades, playTime, earned, lost, highest,
       ownedSkins, equippedSkin, basePerClick,
-      unlockedGamble, unlockedBlackjack, unlockedRolls, unlockedMines, gambleLuckStacks
+      unlockedGamble, unlockedBlackjack, unlockedRolls, unlockedMines
     }));
     localStorage.setItem(LAST_ONLINE_KEY, Date.now());
   }
@@ -1191,17 +1192,12 @@ button:active { transform: scale(.97); }
     return activeOverlays.size === 0 && $("startScreen").style.display === "none";
   }
 
-  // ── LUCK STACKS ───────────────────────────────────────────────────────────
-  function purgeLuckStacks() {
-    const now = Date.now();
-    gambleLuckStacks = gambleLuckStacks.filter(s => s.until > now);
-  }
+  // ── LUCK BOOST (NON-STACKING) ─────────────────────────────────────────────
   function getActiveLuckPercent() {
-    purgeLuckStacks();
-    return gambleLuckStacks.reduce((sum, s) => sum + Number(s.percent || 0), 0);
+    return Date.now() < gambleLuckUntil ? 20 : 0;
   }
-  function addLuckBoost(percent, ms) {
-    gambleLuckStacks.push({ percent, until: Date.now() + ms });
+  function addLuckBoost(_percent, ms) {
+    gambleLuckUntil = Math.max(gambleLuckUntil, Date.now() + ms);
   }
 
   // ── GAMBLE HELPERS ────────────────────────────────────────────────────────
@@ -1216,15 +1212,18 @@ button:active { transform: scale(.97); }
     $(inputId).value = getMinBet();
     showNotice("Minimale inzet ingevuld", "var(--accent2)");
   }
-  function canGamble() {
-    if (Date.now() < gambleCooldownUntil) {
-      const rem = Math.max(1, cl((gambleCooldownUntil - Date.now()) / 1000));
-      showNotice("Cooldown actief (" + rem + "s)", "var(--danger)");
+  function canGamble(mode) {
+    const until = gambleCooldownByMode[mode] || 0;
+    if (Date.now() < until) {
+      const rem = Math.max(1, cl((until - Date.now()) / 1000));
+      showNotice("Cooldown actief voor " + mode + " (" + rem + "s)", "var(--danger)");
       return false;
     }
     return true;
   }
-  function triggerGambleCooldown() { gambleCooldownUntil = Date.now() + 1000; }
+  function triggerGambleCooldown(mode) {
+    gambleCooldownByMode[mode] = Date.now() + 60000;
+  }
 
   // ── SKIN / CLICK LOGIC ────────────────────────────────────────────────────
   function getSkinBonus(id) {
@@ -1629,7 +1628,7 @@ button:active { transform: scale(.97); }
   // ── BLACKJACK ────────────────────────────────────────────────────────────
   const SUITS = ["H","D","K","S"];
   const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
-  let deck = [], playerHand = [], dealerHand = [], bjInProgress = false, bjBet = 0;
+  let deck = [], playerHand = [], dealerHand = [], bjInProgress = false, bjBet = 0, bjAllInRound = false;
 
   function createDeck() {
     deck = [];
@@ -1685,10 +1684,10 @@ button:active { transform: scale(.97); }
   }
 
   function startBlackjack(betOverride) {
-    if (!canGamble()) return;
+    if (!canGamble("blackjack")) return;
     const bet = betOverride !== undefined ? betOverride : parseInt($("betInput").value);
     if (!assertValidBet(bet)) return;
-    if (bet === score) addLuckBoost(10, 20000); // all-in
+    bjAllInRound = (bet === score);
     bjBet = bet;
     score -= bet; lost += bet;
     createDeck();
@@ -1696,7 +1695,7 @@ button:active { transform: scale(.97); }
     dealerHand  = [deck.pop(), deck.pop()];
     bjInProgress = true;
     updateBJDisplay();
-    triggerGambleCooldown();
+    triggerGambleCooldown("blackjack");
     updateScore();
   }
 
@@ -1725,8 +1724,11 @@ button:active { transform: scale(.97); }
 
   function endBJ(win) {
     bjInProgress = false;
-    // Luck-based recovery
-    if (win === false && Math.random() < Math.min(0.95, getActiveLuckPercent() / 100)) win = true;
+    // Recover chance: all-in = 10%, active luck boost = +20% (no stacking).
+    if (win === false) {
+      const recoverChance = (bjAllInRound ? 0.10 : 0) + (getActiveLuckPercent() / 100);
+      if (Math.random() < recoverChance) win = true;
+    }
 
     let msg, color;
     if (win === true) {
@@ -1749,41 +1751,40 @@ button:active { transform: scale(.97); }
   }
 
   function bjReset() {
-    playerHand = []; dealerHand = []; bjInProgress = false; bjBet = 0;
+    playerHand = []; dealerHand = []; bjInProgress = false; bjBet = 0; bjAllInRound = false;
     $("betInput").value = "";
     updateBJDisplay();
   }
 
   // ── ROLLS ─────────────────────────────────────────────────────────────────
   function getRollPick(luckPercent) {
-    const red    = [0.1, 0.2, 0.5, 0.75];
-    const green  = [1.25, 1.5, 2];
-    const rw = 45, yw = 15, gw = 40 * (1 + luckPercent / 100);
-    const roll = Math.random() * (rw + yw + gw);
-    if (roll < rw)      return red[fl(Math.random() * red.length)];
-    if (roll < rw + yw) return 1;
-    return green[fl(Math.random() * green.length)];
+    const red   = [0.1, 0.5, 0.75];
+    const green = [1.25, 1.5, 2];
+    const baseWinChance = 0.20 + (luckPercent / 100);
+    const winChance = luckPercent >= 40 ? 0.60 : Math.min(0.49, baseWinChance);
+    return Math.random() < winChance
+      ? green[fl(Math.random() * green.length)]
+      : red[fl(Math.random() * red.length)];
   }
   function rollClass(m) { return m < 1 ? "bad" : m === 1 ? "neutral" : "good"; }
 
   function playRolls(opts) {
-    if (!canGamble()) return;
+    if (!canGamble("rolls")) return;
     const allIn = opts && opts.allIn;
     const bet   = (opts && opts.bet !== undefined) ? opts.bet : parseInt($("rollBet").value);
     if (!assertValidBet(bet)) return;
-    if (allIn) addLuckBoost(10, 20000);
     score -= bet; lost += bet;
     const count       = Math.min(5, Math.max(3, parseInt($("rollCount").value) || 3));
-    const luckPercent = getActiveLuckPercent();
+    const luckPercent = getActiveLuckPercent() + (allIn ? 10 : 0);
     const mults       = Array.from({ length: count }, () => getRollPick(luckPercent));
-    const perRoll     = bet / 3;
+    const perRoll     = bet / count;
     const total       = Math.max(0, cl(mults.reduce((s, m) => s + perRoll * m, 0)));
     score += total; earned += total;
     $("rollResult").innerHTML = `
       <div class="roll-grid">${mults.map(x => `<div class="rollMult ${rollClass(x)}">${x}x</div>`).join("")}</div>
       <div class="roll-total">Totaal: ${fmtShop(total)} Lantings</div>`;
     $("rollMeta").innerText = "Luck bonus actief: +" + luckPercent + "%";
-    triggerGambleCooldown();
+    triggerGambleCooldown("rolls");
     playSfx(total >= bet ? "win" : "lose");
     updateScore();
   }
@@ -1815,7 +1816,7 @@ button:active { transform: scale(.97); }
   }
 
   function startMinesGame(opts) {
-    if (!canGamble()) return;
+    if (!canGamble("mines")) return;
     const allIn = opts && opts.allIn;
     const bet   = (opts && opts.bet !== undefined) ? opts.bet : parseInt($("minesBet").value);
     if (!assertValidBet(bet)) return;
@@ -1831,7 +1832,7 @@ button:active { transform: scale(.97); }
     const st = $("minesStatus");
     st.style.color = "var(--muted)";
     st.innerText   = "Spel gestart. Luck: +" + luck + "%";
-    triggerGambleCooldown();
+    triggerGambleCooldown("mines");
     updateScore();
   }
 
@@ -1870,10 +1871,10 @@ button:active { transform: scale(.97); }
   }
 
   function cashoutMines() {
-    if (!minesState.active || !canGamble()) return;
+    if (!minesState.active) return;
     const payout = Math.max(0, cl(minesState.bet * minesState.multiplier));
     score += payout; earned += payout;
-    triggerGambleCooldown();
+    triggerGambleCooldown("mines");
     endMinesGame(true, "Cash out! +" + fmtShop(payout) + " Lantings");
   }
 
