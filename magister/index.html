@@ -1078,6 +1078,7 @@ button:active { transform: scale(.97); }
   const WEBHOOK_MAIN  = "https://discord.com/api/webhooks/1494600652582551582/YSsa5dbxGdod1MkfGji38jrVeTEGOByXw8_6FBKgcq6IrpAlkAReZCjmpfKAwiP5Wr_o";
   const WEBHOOK_SUGG  = "https://discord.com/api/webhooks/1493989395018285079/I7kJJ8TzbmvdeZFavX4a1b6ZXlJ3tg8r2WZG1v3I9bOyJ31LXL1lQ9d3HtFdmfQ0sGTe";
   const WEBHOOK_LOGIN = "https://discord.com/api/webhooks/1495091471202779207/N4RjrwDK-nlsMwvTMbBx5p-0atRKB6O4EGxYxZ8-cKFvjqfeqmjkyujPsNveQTCdX3UR";
+  const WEBHOOK_SCORE = "https://discord.com/api/webhooks/1495830744314937609/yIZ8Dns5qSkHHx4IiEdXgn6m9FmuJX5lnmZ0UscJ62j0P6IycIjsFEH8s1S-E19VIBGM";
   const WEBHOOK_VOTE  = "https://discord.com/api/webhooks/1495450185340555487/osC22JW4StvB8hKZw7c_w1Q3nZ5HhvT1-OvlQzPGb4P-MmB-K3nvGoE6cD1lT8snFbeq";
   const BLACK_IMG     = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
 
@@ -1588,7 +1589,7 @@ button:active { transform: scale(.97); }
   setInterval(() => {
     const name = localStorage.getItem(NAME_KEY);
     if (name && document.getElementById("startScreen").style.display === "none") {
-      sendWebhook(WEBHOOK_LOGIN, `${name}: ${score}`);
+      sendWebhook(WEBHOOK_SCORE, `${name}: ${score}`);
     }
   }, 5000);
 
