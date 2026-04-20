@@ -49,12 +49,7 @@ body::before {
 @keyframes scoreFlash{ 0%{color:var(--gold);transform:scale(1.15)} 100%{color:var(--text);transform:scale(1)} }
 @keyframes glow      { 0%,100%{text-shadow:0 0 8px rgba(0,229,176,.3)} 50%{text-shadow:0 0 20px rgba(0,229,176,.9)} }
 @keyframes shimmer   { 0%,100%{opacity:.6} 50%{opacity:1} }
-@keyframes spin      { to { transform: rotate(360deg) } }
 @keyframes rankPop   { 0%{transform:scale(1.2);color:var(--gold)} 100%{transform:scale(1);color:inherit} }
-@keyframes spinFall  {
-  0%   { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
-  100% { transform: translateY(180px) rotate(720deg) scale(0.6); opacity: 0.3; }
-}
 @keyframes boostPulse { 0%,100%{opacity:1} 50%{opacity:.5} }
 
 ::-webkit-scrollbar { width:5px }
@@ -116,6 +111,7 @@ button:active { transform: scale(.97); }
   margin-bottom: 30px;
 }
 #playBtn:hover { background: linear-gradient(145deg, #9070ff, #7c5cfc); }
+
 #versionNotice {
   max-width: 360px;
   margin: -10px auto 18px;
@@ -156,16 +152,11 @@ button:active { transform: scale(.97); }
   transition: border-color .2s;
 }
 #nameInput:focus { border-color: var(--accent); }
-#nameError {
-  font-size: 12px;
-  color: var(--danger);
-  min-height: 16px;
-  transition: all .2s;
-}
+#nameError { font-size: 12px; color: var(--danger); min-height: 16px; }
 
 #offlineInfo { text-align:center; margin-top: 20px; }
 #offlineBonus { color: var(--accent2); font-weight: 700; font-size: 16px; animation: glow 2s infinite; margin-bottom: 4px; }
-#offlineTime  { color: var(--muted); font-size: 13px; animation: slideDown .6s ease; }
+#offlineTime  { color: var(--muted); font-size: 13px; }
 
 /* ─── MAIN HUD ─── */
 #main {
@@ -214,7 +205,7 @@ button:active { transform: scale(.97); }
 #clickBtn:active { transform: scale(.97); }
 #clickBtn img    { width:100%; height:100%; object-fit:cover; border-radius:50%; }
 
-/* ─── BOOST INDICATOR ─── */
+/* ─── BOOST BAR ─── */
 #boostBar {
   position: fixed;
   bottom: 90px;
@@ -283,7 +274,6 @@ button:active { transform: scale(.97); }
   position: fixed;
   bottom: 20px;
   left: 20px;
-  transform: none;
   background: rgba(20,20,42,.95);
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -311,7 +301,6 @@ button:active { transform: scale(.97); }
   font-family: 'Rajdhani', sans-serif;
   font-weight: 600;
   border-bottom: 1px solid rgba(124,92,252,.1);
-  transition: color .3s;
 }
 .lb-row:last-child { border-bottom: none; }
 .lb-rank { font-weight: 900; font-size: 12px; color: var(--muted); min-width: 20px; text-align: right; }
@@ -324,7 +313,6 @@ button:active { transform: scale(.97); }
 .lb-me .lb-name { color: var(--gold); }
 .lb-separator { border: none; border-top: 1px dashed rgba(124,92,252,.3); margin: 4px 0; }
 
-/* ─── LB EXPAND BUTTON ─── */
 #lbExpandBtn {
   display: block;
   width: 100%;
@@ -349,7 +337,7 @@ button:active { transform: scale(.97); }
   box-shadow: none;
 }
 
-/* ─── LB FULL MODAL ─── */
+/* ─── LB MODAL ─── */
 #lbModal {
   position: fixed; inset: 0;
   background: rgba(0,0,0,.8);
@@ -380,11 +368,7 @@ button:active { transform: scale(.97); }
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
 }
-#lbHeaderLeft, #lbHeaderRight {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+#lbHeaderLeft, #lbHeaderRight { display: flex; align-items: center; gap: 8px; }
 #lbModalHeader h3 {
   font-family: 'Rajdhani', sans-serif;
   font-size: 18px;
@@ -393,11 +377,7 @@ button:active { transform: scale(.97); }
   text-transform: uppercase;
   color: var(--accent);
 }
-#lbModalCount {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 12px;
-  color: var(--muted);
-}
+#lbModalCount { font-family: 'Rajdhani', sans-serif; font-size: 12px; color: var(--muted); }
 #lbVersionBadge {
   font-family: 'Rajdhani', sans-serif;
   font-size: 11px;
@@ -406,19 +386,9 @@ button:active { transform: scale(.97); }
   border-radius: 999px;
   padding: 3px 8px;
 }
-.lb-nav-btn {
-  background: rgba(124,92,252,.18);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-size: 12px;
-  padding: 5px 10px;
-}
+.lb-nav-btn { background: rgba(124,92,252,.18); border: 1px solid var(--border); color: var(--text); font-size: 12px; padding: 5px 10px; }
 .lb-nav-btn:hover { background: rgba(124,92,252,.32); }
-#lbModalClose {
-  background: var(--danger);
-  padding: 6px 12px;
-  font-size: 12px;
-}
+#lbModalClose { background: var(--danger); padding: 6px 12px; font-size: 12px; }
 #lbModalClose:hover { background: #ff6b82; }
 #lbModalBody {
   overflow-y: auto;
@@ -441,11 +411,7 @@ button:active { transform: scale(.97); }
 }
 .lb-modal-row:last-child { border-bottom: none; }
 .lb-modal-row:hover { background: rgba(124,92,252,.07); }
-.lb-modal-row.lb-me {
-  background: rgba(255,215,0,.06);
-  border-radius: 8px;
-  border-color: rgba(255,215,0,.2);
-}
+.lb-modal-row.lb-me { background: rgba(255,215,0,.06); border-color: rgba(255,215,0,.2); }
 .lb-modal-row.lb-me .lb-name { color: var(--gold); }
 .lb-modal-rank { min-width: 28px; text-align: right; font-size: 12px; font-weight: 900; color: var(--muted); }
 .lb-modal-rank.gold   { color: #ffd700; }
@@ -453,7 +419,11 @@ button:active { transform: scale(.97); }
 .lb-modal-rank.bronze { color: #cd7f32; }
 
 /* ─── SUGGESTION BTN ─── */
-.suggestionBtn { position:fixed; bottom:20px; right:20px; font-size:12px; padding:8px 12px; background:var(--card); border:1px solid var(--border); color:var(--muted); }
+.suggestionBtn {
+  position:fixed; bottom:20px; right:20px;
+  font-size:12px; padding:8px 12px;
+  background:var(--card); border:1px solid var(--border); color:var(--muted);
+}
 .suggestionBtn:hover { color:var(--text); }
 
 /* ─── SCREENS ─── */
@@ -466,7 +436,6 @@ button:active { transform: scale(.97); }
   z-index: 100;
   animation: fadeIn .3s ease;
 }
-
 .screen-header {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -488,13 +457,11 @@ button:active { transform: scale(.97); }
   color: var(--accent);
   animation: shimmer 2s infinite;
 }
-
 .exitBtn { background: var(--danger); padding: 8px 14px; font-size: 13px; }
 .exitBtn:hover { background: #ff6b82; }
 
 /* ─── SHOP ─── */
 .shop-money { font-family: 'Rajdhani', sans-serif; font-size: 16px; color: var(--accent2); font-weight: 700; }
-
 .upgrade {
   display: flex;
   align-items: center;
@@ -509,8 +476,8 @@ button:active { transform: scale(.97); }
 }
 .upgrade:hover { background: #222244; border-color: var(--accent); transform: translateX(3px); }
 .upgrade-info { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:600; }
-.upgrade-info .upgrade-val { color: var(--accent2); }
-.upgrade-info .upgrade-type { color: var(--muted); font-size:12px; margin-top:2px; }
+.upgrade-val  { color: var(--accent2); }
+.upgrade-type { color: var(--muted); font-size:12px; margin-top:2px; }
 .upgrade-right { display:flex; align-items:center; gap:12px; }
 .upgrade-count { font-size:11px; color:var(--muted); background:rgba(124,92,252,.15); padding:3px 8px; border-radius:20px; }
 .locked { opacity:.4; cursor:default; }
@@ -530,11 +497,9 @@ button:active { transform: scale(.97); }
 }
 .unlock-tile.unlocked-tile { border-color: rgba(0,229,176,.3); }
 .unlock-info { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:600; }
-.unlock-info .unlock-desc { color: var(--muted); font-size:12px; margin-top:2px; }
+.unlock-desc { color: var(--muted); font-size:12px; margin-top:2px; }
 .unlock-btn-unlocked { background:#333; color:var(--muted); cursor:default; font-size:13px; padding:8px 14px; }
 .unlock-btn-unlocked:hover { transform:none; box-shadow:none; background:#333; }
-
-/* ─── SHOP BUY BUTTON STATES ─── */
 .buy-btn-can    { background: #1a6b3a; color:#00e5b0; border:1px solid rgba(0,229,176,.4); }
 .buy-btn-can:hover { background:#218a4a; }
 .buy-btn-cannot { background:#2a2a40; color:var(--muted); border:1px solid rgba(124,92,252,.1); cursor:not-allowed; }
@@ -569,16 +534,16 @@ button:active { transform: scale(.97); }
 .gamble-card:hover { background: #222244; border-color: var(--accent); transform: translateY(-4px); }
 .gamble-card.locked-game { opacity:.5; cursor:not-allowed; }
 .gamble-card.locked-game:hover { transform:none; border-color:var(--border); background:var(--card); }
-.gamble-card .gc-name { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; }
-.gamble-card .gc-lock { font-size:12px; color:var(--muted); margin-top:6px; }
+.gc-name { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; }
+.gc-lock { font-size:12px; color:var(--muted); margin-top:6px; }
 
 /* ─── BLACKJACK ─── */
 #blackjackScreen { text-align:center; }
 .bj-bet-row { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
 .bj-bet-row input { padding:10px 14px; background:var(--card); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px; width:130px; outline:none; }
 .bj-bet-row input:focus { border-color:var(--accent); }
-.bj-hand { font-size:28px; margin:10px 0; font-family:'Rajdhani',sans-serif; font-weight:700; }
-.bj-label { font-size:12px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+.bj-hand   { font-size:28px; margin:10px 0; font-family:'Rajdhani',sans-serif; font-weight:700; }
+.bj-label  { font-size:12px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
 .bj-result { font-size:22px; font-weight:700; font-family:'Rajdhani',sans-serif; margin-top:16px; min-height:30px; }
 .bj-buttons { display:flex; gap:12px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
 .allin-btn { background:linear-gradient(135deg,#ff4f6d,#e0004f); }
@@ -592,9 +557,9 @@ button:active { transform: scale(.97); }
   font-family:'Rajdhani',sans-serif; font-size:26px; font-weight:900;
   animation: slideDown .4s ease; border: 2px solid transparent;
 }
-.rollMult.good { background:rgba(0,229,176,.15); border-color:var(--accent2); color:var(--accent2); }
-.rollMult.bad  { background:rgba(255,79,109,.15); border-color:var(--danger);  color:var(--danger); }
-.rollMult.neutral { background:rgba(255,215,0,.12); border-color:var(--gold); color:var(--gold); }
+.rollMult.good    { background:rgba(0,229,176,.15); border-color:var(--accent2); color:var(--accent2); }
+.rollMult.bad     { background:rgba(255,79,109,.15); border-color:var(--danger);  color:var(--danger); }
+.rollMult.neutral { background:rgba(255,215,0,.12);  border-color:var(--gold);    color:var(--gold); }
 .roll-total { font-family:'Rajdhani',sans-serif; font-size:20px; font-weight:700; color:var(--gold); }
 #rollMeta { color: var(--muted); font-size: 12px; margin-top: 8px; }
 .bet-slider-wrap { min-width: 180px; }
@@ -603,13 +568,7 @@ button:active { transform: scale(.97); }
 
 /* ─── MINES ─── */
 #minesScreen { text-align: center; }
-.mines-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin: 14px 0;
-}
+.mines-controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 14px 0; }
 .mines-controls input, .mines-controls select {
   padding: 10px 14px;
   background: var(--card);
@@ -617,34 +576,21 @@ button:active { transform: scale(.97); }
   border-radius: 8px;
   color: var(--text);
 }
-#minesBoard {
-  width: min(520px, 90vw);
-  aspect-ratio: 1 / 1;
-  margin: 12px auto;
-  display: grid;
-  gap: 4px;
-}
+#minesBoard { width: min(520px, 90vw); aspect-ratio: 1/1; margin: 12px auto; display: grid; gap: 4px; }
 .mine-tile {
-  border: 1px solid var(--border);
-  background: var(--card);
-  color: var(--text);
-  border-radius: 6px;
-  font-size: clamp(10px, 1.5vw, 15px);
-  font-weight: 700;
+  border: 1px solid var(--border); background: var(--card); color: var(--text);
+  border-radius: 6px; font-size: clamp(10px, 1.5vw, 15px); font-weight: 700;
 }
 .mine-tile.safe { background: rgba(0,229,176,.16); border-color: rgba(0,229,176,.45); color: var(--accent2); }
 .mine-tile.bomb { background: rgba(255,79,109,.18); border-color: rgba(255,79,109,.5); color: var(--danger); }
 #minesStatus { min-height: 24px; margin-top: 8px; font-family: 'Rajdhani', sans-serif; font-size: 18px; }
 
-/* ─── IN-GAME NOTICE / VOTE ─── */
+/* ─── NOTICE / VOTE ─── */
 #gameNotice {
   position: fixed;
-  top: 72px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 72px; left: 50%; transform: translateX(-50%);
   z-index: 9200;
-  min-width: 240px;
-  max-width: 640px;
+  min-width: 240px; max-width: 640px;
   text-align: center;
   background: rgba(20,20,42,.96);
   border: 1px solid var(--border);
@@ -655,21 +601,14 @@ button:active { transform: scale(.97); }
   display: none;
 }
 #votePanel {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: rgba(0,0,0,.75);
   display: none;
   justify-content: center;
   align-items: center;
   z-index: 9100;
 }
-#voteCard {
-  width: min(420px, 92vw);
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px;
-}
+#voteCard { width: min(420px, 92vw); background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
 .vote-option { display:flex; gap:10px; align-items:center; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:10px; margin:8px 0; }
 #voteInfo { color: var(--muted); min-height: 18px; margin-top: 8px; font-size: 12px; }
 
@@ -679,17 +618,10 @@ button:active { transform: scale(.97); }
 .stat-row { display:flex; justify-content:space-between; font-size:14px; padding:5px 0; border-bottom:1px solid rgba(255,255,255,.05); }
 .stat-row:last-child { border-bottom:none; }
 .stat-row .val { color:var(--accent2); font-weight:700; }
-
 .changelog-entry { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:14px; margin:10px 0; }
 .changelog-entry h4 { font-family:'Rajdhani',sans-serif; font-size:15px; color:var(--accent); font-weight:700; margin-bottom:8px; }
 .changelog-entry ul { padding-left:16px; }
 .changelog-entry li { font-size:13px; color:var(--muted); margin:4px 0; }
-
-.next-update-entry { background:rgba(0,229,176,.05); border:1px solid rgba(0,229,176,.25); border-radius:12px; padding:14px; margin:10px 0; }
-.next-update-entry h4 { font-family:'Rajdhani',sans-serif; font-size:15px; color:var(--accent2); font-weight:700; margin-bottom:8px; }
-.next-update-entry ul { padding-left:16px; }
-.next-update-entry li { font-size:13px; color:rgba(0,229,176,.6); margin:4px 0; }
-
 .keybind-row { display:flex; align-items:center; gap:12px; padding:12px; background:var(--card); border:1px solid var(--border); border-radius:12px; margin:10px 0; }
 .keybind-row span { flex:1; font-size:14px; }
 
@@ -719,7 +651,6 @@ button:active { transform: scale(.97); }
 .sugg-card input:focus { border-color:var(--accent); }
 .sugg-close { position:absolute; top:12px; right:12px; background:var(--danger); padding:6px 10px; font-size:12px; }
 
-/* ─── SECTION LABELS ─── */
 .sec-label { font-family: 'Rajdhani', sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin: 20px 0 8px; }
 </style>
 </head>
@@ -777,7 +708,7 @@ button:active { transform: scale(.97); }
   <button id="lbExpandBtn">&#9650; Volledig Leaderboard</button>
 </div>
 
-<!-- LEADERBOARD FULL MODAL -->
+<!-- LEADERBOARD MODAL -->
 <div id="lbModal">
   <div id="lbModalCard">
     <div id="lbModalHeader">
@@ -951,13 +882,13 @@ button:active { transform: scale(.97); }
       <button id="codeSubmitBtn">Verzenden</button>
     </div>
     <div id="codeMsg"></div>
-    <div class="sec-label">Changelogs</div>
 
+    <div class="sec-label">Changelogs</div>
     <div class="changelog-entry">
       <h4>v2.2 - Uitleg &amp; Taken</h4>
       <ul>
         <li>Sound effects toegevoegd</li>
-        <li>Skin update (stuur skins in suggesties zodat ze toegevoegd kunnen worden)</li>
+        <li>Skin update</li>
         <li>Name reset functie</li>
         <li>Rolls geld glitch gefixt</li>
         <li>Nieuwe gamble mode: Mines</li>
@@ -966,19 +897,17 @@ button:active { transform: scale(.97); }
         <li>Nieuwe rolls logica</li>
       </ul>
     </div>
-
     <div class="changelog-entry">
-      <h4>v2.1 - Gamble & Shop Update</h4>
+      <h4>v2.1 - Gamble &amp; Shop Update</h4>
       <ul>
         <li>Gamble ontgrendelen via shop (100 Lantings)</li>
         <li>Rolls en Blackjack apart ontgrendelen</li>
-        <li>Geld wordt nu correct opgemaakt (punten per 3 cijfers)</li>
-        <li>Lanting score gebruikt NL afkortingen (k, m, md, b, bd, t, td)</li>
+        <li>Geld correct opgemaakt (punten per 3 cijfers)</li>
+        <li>Lanting score NL afkortingen (k, m, md, b, bd, t, td)</li>
         <li>Shop knoppen groen/grijs op basis van beschikbaar geld</li>
         <li>Codes systeem in settings</li>
         <li>Namen al in gebruik worden geblokkeerd</li>
         <li>Leaderboard dubbele naam probleem opgelost</li>
-        <li>Variabelen reset voor nieuwe opslag</li>
       </ul>
     </div>
     <div class="changelog-entry">
@@ -1039,7 +968,7 @@ button:active { transform: scale(.97); }
   </div>
 </div>
 
-<!-- VOTE PANEL -->
+<!-- VOTE -->
 <div id="votePanel">
   <div id="voteCard">
     <h3 style="margin-bottom:8px;">Nieuwe Vote</h3>
@@ -1055,274 +984,170 @@ button:active { transform: scale(.97); }
 </div>
 
 <script>
-(function() {
+(function () {
   "use strict";
 
-  // ── UPDATE THIS IF ASKED FOR LANTING RESET ──
-  const SAVE_KEY    = "lc_v4";
-  const LAST_ONLINE = "lc_v4_lastonline";
-  const NAME_KEY    = "lc_v4_username";
-  const KEYBIND_KEY = "lc_v4_keybind";
-  const KBDISP_KEY  = "lc_v4_keybind_display";
+  // ── CONSTANTS ──────────────────────────────────────────────────────────────
+  const VERSION         = "2.2";
+  const SAVE_KEY        = "lc_v4";
+  const LAST_ONLINE_KEY = "lc_v4_lastonline";
+  const NAME_KEY        = "lc_v4_username";
+  const KEYBIND_KEY     = "lc_v4_keybind";
+  const KBDISP_KEY      = "lc_v4_keybind_display";
+  const VOTE_KEY        = "lc_v4_vote";
+  const FORCED_RESET_KEY      = "lc_v4_forced_reset_done";
+  const VERSION_NOTICE_KEY    = "lc_seen_2_2_notice";
+  const NATTE_HARK_MESSAGE_KEY = "natteharkmessage";
 
   const OLD_KEYS = [
     "lantingclicker","lantingclickerlaastonline","lanting_clicker_username",
     "lanting_clicker_keybind","lanting_clicker_keybind_display",
     "lc_v1","lc_v1_lastonline","lc_v1_username",
-    "lc_v2","lc_v2_lastonline","lc_v2_username",
-    "lc_v2_keybind","lc_v2_keybind_display",
+    "lc_v2","lc_v2_lastonline","lc_v2_username","lc_v2_keybind","lc_v2_keybind_display",
     "lc_v3","lc_v3_lastonline","lc_v3_username","lc_v3_keybind","lc_v3_keybind_display"
   ];
   OLD_KEYS.forEach(k => localStorage.removeItem(k));
 
-  const WEBHOOK_MAIN  = "https://discord.com/api/webhooks/1494600652582551582/YSsa5dbxGdod1MkfGji38jrVeTEGOByXw8_6FBKgcq6IrpAlkAReZCjmpfKAwiP5Wr_o";
-  const WEBHOOK_SUGG  = "https://discord.com/api/webhooks/1493989395018285079/I7kJJ8TzbmvdeZFavX4a1b6ZXlJ3tg8r2WZG1v3I9bOyJ31LXL1lQ9d3HtFdmfQ0sGTe";
-  const WEBHOOK_LOGIN = "https://discord.com/api/webhooks/1495091471202779207/N4RjrwDK-nlsMwvTMbBx5p-0atRKB6O4EGxYxZ8-cKFvjqfeqmjkyujPsNveQTCdX3UR";
-  const WEBHOOK_SCORE = "https://discord.com/api/webhooks/1495830744314937609/yIZ8Dns5qSkHHx4IiEdXgn6m9FmuJX5lnmZ0UscJ62j0P6IycIjsFEH8s1S-E19VIBGM";
-  const WEBHOOK_VOTE  = "https://discord.com/api/webhooks/1495450185340555487/osC22JW4StvB8hKZw7c_w1Q3nZ5HhvT1-OvlQzPGb4P-MmB-K3nvGoE6cD1lT8snFbeq";
-  const BLACK_IMG     = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
+  const WEBHOOKS = {
+    main  : "https://discord.com/api/webhooks/1494600652582551582/YSsa5dbxGdod1MkfGji38jrVeTEGOByXw8_6FBKgcq6IrpAlkAReZCjmpfKAwiP5Wr_o",
+    sugg  : "https://discord.com/api/webhooks/1493989395018285079/I7kJJ8TzbmvdeZFavX4a1b6ZXlJ3tg8r2WZG1v3I9bOyJ31LXL1lQ9d3HtFdmfQ0sGTe",
+    login : "https://discord.com/api/webhooks/1495091471202779207/N4RjrwDK-nlsMwvTMbBx5p-0atRKB6O4EGxYxZ8-cKFvjqfeqmjkyujPsNveQTCdX3UR",
+    score : "https://discord.com/api/webhooks/1495830744314937609/yIZ8Dns5qSkHHx4IiEdXgn6m9FmuJX5lnmZ0UscJ62j0P6IycIjsFEH8s1S-E19VIBGM",
+    vote  : "https://discord.com/api/webhooks/1495450185340555487/osC22JW4StvB8hKZw7c_w1Q3nZ5HhvT1-OvlQzPGb4P-MmB-K3nvGoE6cD1lT8snFbeq"
+  };
 
-  // ── DISCORD LEADERBOARD CONFIG ───────────────────────────
-  const LB_CHANNEL_ID = "1495438339627815203";
-  const LB_TOKEN      = "MTQ5NTQyNjg2ODM5MDc4OTE5MQ.GAh5e3.dgqOSpTlKpJry1hx3ib3LlxCute79M43Ge08aM";
+  const LB_API_URL = "https://api.jsonbin.io/v3/b/69e66028aaba8821971c72a0";
+  const LB_API_KEY = "$2a$10$xxpzWG1syN1LR/OUoHA5LOdIfYJUxKSJurQUkGxEwocfbXKUIDt4q";
 
-  const VERSION = "2.2";
-  const VERSION_NOTICE_KEY = "lc_seen_2_2_notice";
-  const VOTE_KEY = "lc_v4_vote";
-  const FORCED_RESET_KEY = "lc_v4_forced_reset_done";
-  if (!localStorage.getItem(FORCED_RESET_KEY)) {
-    localStorage.removeItem(SAVE_KEY);
-    localStorage.removeItem(LAST_ONLINE);
-    localStorage.removeItem(NAME_KEY);
-    localStorage.removeItem(VOTE_KEY);
-    localStorage.setItem(FORCED_RESET_KEY, "1");
-  }
-  const LB_V21 = {"michaelsmegmaeikel":983212632645483100000,"dihhalpha":778819730309406000000,"_//_":8964609716123722000,"Natte hark":5701510570466705000,"justin":1337822822809383200,"dikkedaniel123":1181222723092031000,"yvonne":47081998670756640,"OG Lanting":1651486874631794,"Djeeden":329090479377270,"ron_zaadkanon":277157913874511,"k1ck":187676374495059,"Nih":31953666177684,"jelle":30398138591424,"n3ger_b3ff3r":22633909742535,"patati":2017834350401,"josti123":1116132126346,"pijnackerkarker":164111837371,"Lars":103498298905,"zaadsoldaat":6547211249,"Fitiboy072":1877502777,"Fih":686079273,"lantingrager":585614978,"Nate Higgers":53217910,"sjorsragger":26787017,"ginger army":11413571,"Txs072":9093270,"q072":6586870,"ching":5274353,"ieke":2181070,"billebars":954312,"grape":757691,"balzak123":726984,"johan":707401,"Lars pijnacker":550715,"boriedejew":508682,"lantingfan123":425402,"lil john":424591,"isa":373436,"hoi":294081,"Guimke":246808,"jente":245787,"JE":236462,"6767":216759,"Milan":145978,"Tegellikker45":106886,"lantinglover67":104606,"yes":83235,"!!":76059,"binnenste vulvalip":60662,"ipilipi67676767676767676":55012,"Sterre":48977,"azfan67":43280,"yani":39508,"Jake":37579,"pijnackerpijper":37381,"nga balls":28458,"J072":22692,"STALIN":20852,"pijnkanker":14400,"jemairo":12128,"..":11932,"9595":11188,"laaalanting":8184,"De Kosjes":7608,"blowjob":7447,"tester69":6816,"deekie110":5349,"RB":4998,"Jamie":2852,"stroop":2599,"Lebron":1728,"lavissa":1392,"Lakplak23":894,"jamie":516,"ferron":503,"dj bust a nut":291,"lvh4sunoo":278,"giss072":208,"roan":99,"mikkel":91,"robbie":88,"Tgfffd":2,"Yo":0};
-  let lbData = {};
-  let lbVersionView = VERSION;
-
-  async function fetchLeaderboard() {
-    try {
-      const res = await fetch(
-        `https://discord.com/api/v9/channels/${LB_CHANNEL_ID}/messages?limit=1`,
-        {
-          headers: {
-            "Authorization": LB_TOKEN,
-            "Content-Type": "application/json"
-          }
-        }
-      );
-      if (!res.ok) return;
-      const msgs = await res.json();
-      if (!msgs || msgs.length === 0) return;
-      const raw = msgs[0].content;
-      // Try to parse the message content as JSON
-      // Strip possible code block wrappers like ```json ... ```
-      const cleaned = raw.replace(/```(?:json)?/g, "").trim();
-      const parsed = JSON.parse(cleaned);
-      // parsed should be { name: score, name2: score2, ... }
-      if (typeof parsed === "object" && !Array.isArray(parsed)) {
-        lbData = parsed;
-      }
-    } catch (e) {
-      // Silently fail — keep old lbData
-    }
-  }
-
-  // Names already taken (lowercase for comparison)
-  // Dynamically built from lbData keys + any hardcoded ones
-  const ALWAYS_TAKEN = [];
-
-  function isTakenByLB(name) {
-    const lower = name.toLowerCase();
-    return Object.keys(lbData).some(k => k.toLowerCase() === lower);
-  }
+  const BLACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
 
   const SKIN_DEFS = [
-    { id:0, name:"Standaard",               img:BLACK_IMG,      cost:0,             bonus:1,   bonusText:"1x klikken",       free:true  },
-    { id:1, name:"LinkedIn Lanting",         img:"https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost:10000,    bonus:1.25,bonusText:"1.25x klikken",free:false },
+    { id:0, name:"Standaard",               img:BLACK_IMG, cost:0,              bonus:1,   bonusText:"1x klikken",   free:true  },
+    { id:1, name:"LinkedIn Lanting",         img:"https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost:10000,       bonus:1.25,bonusText:"1.25x klikken", free:false },
     { id:2, name:"Zapsport Lanting",         img:"https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost:25000, bonus:1.5, bonusText:"1.5x klikken",  free:false },
     { id:3, name:"Levensgenietende Lanting", img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/508139189_4708264236066474_1034636463662827040_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=53a332&_nc_ohc=Ze1ynqIqjBUQ7kNvwGFiBk7&_nc_oc=AdpJ0uUgt5D3MxYdGQnoTwzQiNTB7hr39Wf-RrYqTdby03i6OsoCYo2xqvzW2sQEHIA&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=nHA1EGLnKmzVvh_JiCQstQ&_nc_ss=7a389&oh=00_Af25XwMbmgRUJpfS2NrvzXEccSCBIwP35ljv1Oq7TldMFw&oe=69E6A8FF", cost:50000, bonus:2, bonusText:"2x klikken", free:false },
     { id:4, name:"Vakantie Lanting",         img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505114098_4696325513927013_1892631468890635773_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=53a332&_nc_ohc=nRZ6G-XAseQQ7kNvwGSLSbp&_nc_oc=AdqSAeAlIfSYKFjBNloJOQa9By8NOxj7owQrTeOgZCJtH4Q7MTP3y9VSqVGxm90s8Rc&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=9Q2JkJzEbyAGcoC2D2a6Bw&_nc_ss=7a389&oh=00_Af3dskOQkEHrxXzm38hVGTpJOuPDVICVPf22505yDhwvCg&oe=69E6886D", cost:100000, bonus:2.5, bonusText:"2.5x klikken", free:false },
     { id:5, name:"Jolly Lanting",            img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505359411_4703242883235276_7531884072442166294_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=53a332&_nc_ohc=C76D43KjKo8Q7kNvwESLxZW&_nc_oc=AdoLHRkJffg1zwJ56tiplCXL6_EyJtrq7fzXFywFaou6v_1BSIcVyrWYqmQblpXzIAs&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=CJ_jltJM4o6Q48yQba2u7A&_nc_ss=7a389&oh=00_Af0SH0r6A1hCGpfX0dK8pWzsmktAsEpmTz1PePCsyDXspQ&oe=69E6775C", cost:500000, bonus:3, bonusText:"3x klikken", free:false },
     { id:6, name:"OG Lanting",               img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505767393_4700743773485187_4696695728975036082_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=53a332&_nc_ohc=-6kmga9A_5IQ7kNvwHFpIBz&_nc_oc=Adq0KoSeqN6LQinoGP4Bzo-66BA_oAL98ma3Qa83C9cv5q5MBXQ8Jaf7dk3nPlBCr_s&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=24nILOznlX4lcXFugR9o2g&_nc_ss=7a389&oh=00_Af3zNH_eyN4E9MT1F-EOjv2WaX1uKkruHvQmfHNvPeQ2Cw&oe=69E68E59", cost:50000000, bonus:4, bonusText:"4x klikken", free:false },
     { id:7, name:"Lanting",                  img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/459427263_4407458439480390_1115745422523934606_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=_FaeZ7hSoEcQ7kNvwGwxU3D&_nc_oc=AdrvQvP7q0iqB8x_kVHcDN0lFetYWzdTFiowtHEeITEBY7Iyv8N847w4lByQuctN-7M&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=WCW78bwKmzHRnrloUsHr2w&_nc_ss=7a389&oh=00_Af0mAtQ-R9acTzw29I1Tjx6jkj7JnfKf5FTBkBQCMX9GFg&oe=69E7B5CC", cost:1000000000, bonus:5, bonusText:"5x klikken", free:false },
-    { id:8, name:"Skin 9",                   img:"",             cost:25000000000,   bonus:6,   bonusText:"6x klikken",       free:false },
-    { id:9, name:"Skin 10",                  img:"",             cost:50000000000000,bonus:10,  bonusText:"10x klikken",      free:false },
+    { id:8, name:"Skin 9",                   img:"", cost:25000000000,    bonus:6,  bonusText:"6x klikken",  free:false },
+    { id:9, name:"Skin 10",                  img:"", cost:50000000000000, bonus:10, bonusText:"10x klikken", free:false },
   ];
 
-  const save           = JSON.parse(localStorage.getItem(SAVE_KEY)) || {};
-  let score            = save.score        || 0;
-  let perClick         = save.perClick     || 1;
-  let perSecond        = save.perSecond    || 0;
-  let upgrades         = save.upgrades     || [];
-  let ownedSkins       = save.ownedSkins   || [0];
-  let equippedSkin     = (save.equippedSkin !== undefined) ? save.equippedSkin : 0;
-  let basePerClick     = save.basePerClick || 1;
-  let playTime         = save.playTime     || 0;
-  let earned           = save.earned       || 0;
-  let lost             = save.lost         || 0;
-  let highest          = save.highest      || score;
-  let unlockedGamble   = save.unlockedGamble   || false;
-  let unlockedBlackjack= save.unlockedBlackjack|| false;
-  let unlockedRolls    = save.unlockedRolls    || false;
-  let unlockedMines    = (save.unlockedMines !== undefined) ? save.unlockedMines : false;
+  const BANNED_WORDS  = ["nigga","nigger","neger","sem","yvonne","sjors"];
+  const UNLOCK_DEFS   = [
+    { key:"gamble",    label:"Gamble knop", desc:"Ontgrendelt de Gamble knop", cost:100  },
+    { key:"blackjack", label:"Blackjack",   desc:"Speelbaar in Gamble menu",   cost:1000 },
+    { key:"rolls",     label:"Rolls",       desc:"Speelbaar in Gamble menu",   cost:500  },
+    { key:"mines",     label:"Mines",       desc:"Speelbaar in Gamble menu",   cost:2500 },
+  ];
 
-  let boosts = { click: 0, ps: 0 };
+  const LB_V21 = {"michaelsmegmaeikel":983212632645483100000,"dihhalpha":778819730309406000000,"_//_":8964609716123722000,"Natte hark":5701510570466705000,"justin":1337822822809383200,"dikkedaniel123":1181222723092031000,"yvonne":47081998670756640,"OG Lanting":1651486874631794,"Djeeden":329090479377270,"ron_zaadkanon":277157913874511,"k1ck":187676374495059,"Nih":31953666177684,"jelle":30398138591424,"n3ger_b3ff3r":22633909742535,"patati":2017834350401,"josti123":1116132126346,"pijnackerkarker":164111837371,"Lars":103498298905,"zaadsoldaat":6547211249,"Fitiboy072":1877502777,"Fih":686079273,"lantingrager":585614978,"Nate Higgers":53217910,"sjorsragger":26787017,"ginger army":11413571,"Txs072":9093270,"q072":6586870,"ching":5274353,"ieke":2181070,"billebars":954312,"grape":757691,"balzak123":726984,"johan":707401,"Lars pijnacker":550715,"boriedejew":508682,"lantingfan123":425402,"lil john":424591,"isa":373436,"hoi":294081,"Guimke":246808,"jente":245787,"JE":236462,"6767":216759,"Milan":145978,"Tegellikker45":106886,"lantinglover67":104606,"yes":83235,"!!":76059,"binnenste vulvalip":60662,"ipilipi67676767676767676":55012,"Sterre":48977,"azfan67":43280,"yani":39508,"Jake":37579,"pijnackerpijper":37381,"nga balls":28458,"J072":22692,"STALIN":20852,"pijnkanker":14400,"jemairo":12128,"..":11932,"9595":11188,"laaalanting":8184,"De Kosjes":7608,"blowjob":7447,"tester69":6816,"deekie110":5349,"RB":4998,"Jamie":2852,"stroop":2599,"Lebron":1728,"lavissa":1392,"Lakplak23":894,"jamie":516,"ferron":503,"dj bust a nut":291,"lvh4sunoo":278,"giss072":208,"roan":99,"mikkel":91,"robbie":88,"Tgfffd":2,"Yo":0};
+
+  // ── FORCED RESET (one-time per version) ────────────────────────────────────
+  if (!localStorage.getItem(FORCED_RESET_KEY)) {
+    [SAVE_KEY, LAST_ONLINE_KEY, NAME_KEY, VOTE_KEY].forEach(k => localStorage.removeItem(k));
+    localStorage.setItem(FORCED_RESET_KEY, "1");
+  }
+
+  // ── LOAD SAVE ─────────────────────────────────────────────────────────────
+  const save = JSON.parse(localStorage.getItem(SAVE_KEY) || "{}");
+  let score            = save.score           || 0;
+  let perClick         = save.perClick        || 1;
+  let perSecond        = save.perSecond       || 0;
+  let upgrades         = save.upgrades        || [];
+  let ownedSkins       = save.ownedSkins      || [0];
+  let equippedSkin     = save.equippedSkin    ?? 0;
+  let basePerClick     = save.basePerClick    || 1;
+  let playTime         = save.playTime        || 0;
+  let earned           = save.earned          || 0;
+  let lost             = save.lost            || 0;
+  let highest          = save.highest         || score;
+  let unlockedGamble   = save.unlockedGamble  || false;
+  let unlockedBlackjack= save.unlockedBlackjack || false;
+  let unlockedRolls    = save.unlockedRolls   || false;
+  let unlockedMines    = save.unlockedMines   ?? false;
   let gambleLuckStacks = save.gambleLuckStacks || [];
+
+  // ── RUNTIME STATE ─────────────────────────────────────────────────────────
+  let lbData         = {};
+  let lbVersionView  = VERSION;
+  let lbModalOpen    = false;
   let gambleCooldownUntil = 0;
+  let clickLock      = false;
+  let waitingForKey  = false;
+  let lastSuggTime   = 0;
+  let noticeTimer    = null;
+  let fallingActive  = false;
+  let fallingAnimId  = null;
+  let fallingTimerId = null;
+  let nextFallAt     = Date.now() + 60000;
+  let clickKeybind   = localStorage.getItem(KEYBIND_KEY)  || "Enter";
+  let keybindDisplay = localStorage.getItem(KBDISP_KEY)   || "ENTER";
 
-  const scoreEl       = document.getElementById("score");
-  const mainImg       = document.getElementById("mainImg");
-  const clickBtn      = document.getElementById("clickBtn");
-  const perClickText  = document.getElementById("perClickText");
-  const perSecondText = document.getElementById("perSecondText");
-  const upgradesEl    = document.getElementById("upgrades");
-  const gambleBtn     = document.getElementById("gambleBtn");
+  // Active overlays tracking
+  const activeOverlays = new Set();
 
-  const OVERLAY_IDS = ["shopScreen","gambleScreen","blackjackScreen","rollsScreen","minesScreen","skinScreen","statsScreen","suggestionPanel","votePanel"];
-  let activeOverlays = new Set();
+  // ── DOM REFS ──────────────────────────────────────────────────────────────
+  const $ = id => document.getElementById(id);
+  const scoreEl       = $("score");
+  const mainImg       = $("mainImg");
+  const clickBtn      = $("clickBtn");
+  const perClickText  = $("perClickText");
+  const perSecondText = $("perSecondText");
+  const upgradesEl    = $("upgrades");
+  const gambleBtn     = $("gambleBtn");
+  const keybindBtn    = $("keybindBtn");
+  const boostBar      = $("boostBar");
+  const lbRows        = $("lbRows");
+  const lbExpandBtn   = $("lbExpandBtn");
+  const lbModal       = $("lbModal");
+  const lbModalBody   = $("lbModalBody");
+  const fallingCircle = $("fallingCircle");
+  const fallingImg    = $("fallingImg");
+  const fallingCdEl   = $("fallingCountdown");
 
-  function openOverlay(id) {
-    const el = document.getElementById(id);
-    el.style.display = id === "suggestionPanel" ? "flex" : "block";
-    activeOverlays.add(id);
+  // ── HELPERS ───────────────────────────────────────────────────────────────
+  const fl  = Math.floor;
+  const cl  = Math.ceil;
+
+  function sendWebhook(url, content) {
+    fetch(url, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({content}) }).catch(() => {});
   }
-  function closeOverlay(id) {
-    document.getElementById(id).style.display = "none";
-    activeOverlays.delete(id);
-  }
-  function isMainActive() {
-    return activeOverlays.size === 0 && document.getElementById("startScreen").style.display === "none";
-  }
-
-  function sendWebhook(url, message) {
-    fetch(url, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({content:message}) }).catch(()=>{});
-  }
-
-  let noticeTimer = null;
-  function showNotice(msg, color) {
-    const el = document.getElementById("gameNotice");
-    if (!el) return;
-    el.style.display = "block";
-    el.style.color = color || "var(--text)";
-    el.innerText = msg;
-    clearTimeout(noticeTimer);
-    noticeTimer = setTimeout(() => { el.style.display = "none"; }, 2200);
-  }
-
-  window.addEventListener("beforeunload", () => {
-    navigator.sendBeacon(WEBHOOK_MAIN, new Blob([JSON.stringify({content:"client disconnected"})], {type:"application/json"}));
-  });
-
-  function saveGame() {
-    localStorage.setItem(SAVE_KEY, JSON.stringify({
-      score,perClick,perSecond,upgrades,playTime,earned,lost,highest,
-      ownedSkins,equippedSkin,basePerClick,
-      unlockedGamble,unlockedBlackjack,unlockedRolls,unlockedMines,gambleLuckStacks
-    }));
-    localStorage.setItem(LAST_ONLINE, Date.now());
-  }
-
-  function fl(x) { return Math.floor(x); }
-  function cl(x) { return Math.ceil(x); }
 
   function fmtMain(n) {
-    n = Math.floor(n);
+    n = fl(n);
     if (n < 10000) return String(n);
-    const dutchScale = [
-      [1e21, "td"],
-      [1e18, "t"],
-      [1e15, "bd"],
-      [1e12, "b"],
-      [1e9,  "md"],
-      [1e6,  "m"],
-      [1e3,  "k"],
-    ];
-    for (const [threshold, suffix] of dutchScale) {
+    const scales = [[1e21,"td"],[1e18,"t"],[1e15,"bd"],[1e12,"b"],[1e9,"md"],[1e6,"m"],[1e3,"k"]];
+    for (const [threshold, suffix] of scales) {
       if (n >= threshold) {
-        const val = n / threshold;
-        const rounded = Math.round(val * 10) / 10;
-        return (rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)) + suffix;
+        const v = Math.round(n / threshold * 10) / 10;
+        return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + suffix;
       }
     }
     return String(n);
   }
 
   function fmtShop(n) {
-    n = Math.floor(n);
-    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return fl(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
 
-  function fmtLB(n) {
-    n = Number(n);
-    if (isNaN(n)) return "0";
-    const dutchScale = [
-      [1e21, "td"],
-      [1e18, "t"],
-      [1e15, "bd"],
-      [1e12, "b"],
-      [1e9, "md"],
-      [1e6, "m"],
-      [1e3, "k"]
-    ];
-    for (const [threshold, suffix] of dutchScale) {
-      if (n >= threshold) {
-        const val = n / threshold;
-        const rounded = Math.round(val * 10) / 10;
-        return (rounded % 1 === 0 ? rounded.toFixed(0) : rounded.toFixed(1)) + suffix;
-      }
-    }
-    return String(Math.floor(n));
+  // fmtLB is identical to fmtMain
+  const fmtLB = fmtMain;
+
+  function showNotice(msg, color) {
+    const el = $("gameNotice");
+    el.style.display = "block";
+    el.style.color   = color || "var(--text)";
+    el.innerText     = msg;
+    clearTimeout(noticeTimer);
+    noticeTimer = setTimeout(() => { el.style.display = "none"; }, 2200);
   }
 
-  function purgeLuckStacks() {
-    const now = Date.now();
-    gambleLuckStacks = gambleLuckStacks.filter(s => s.until > now);
-  }
-  function getActiveLuckPercent() {
-    purgeLuckStacks();
-    return gambleLuckStacks.reduce((sum, s) => sum + Number(s.percent || 0), 0);
-  }
-  function addLuckBoost(percent, ms) {
-    gambleLuckStacks.push({ percent, until: Date.now() + ms });
-  }
-  function getMinBet() {
-    return Math.max(1, cl(score * 0.05));
-  }
-  function assertValidBet(bet) {
-    const minBet = getMinBet();
-    if (isNaN(bet) || bet < minBet) {
-      showNotice("Minimale inzet is " + fmtShop(minBet) + " Lantings", "var(--danger)");
-      return false;
-    }
-    if (bet > score) {
-      showNotice("Niet genoeg Lantings", "var(--danger)");
-      return false;
-    }
-    return true;
-  }
-  function setInputToMinBet(inputId) {
-    const el = document.getElementById(inputId);
-    if (!el) return;
-    el.value = getMinBet();
-    showNotice("Minimale inzet ingevuld", "var(--accent2)");
-  }
-  function canGamble() {
-    if (Date.now() < gambleCooldownUntil) {
-      const rem = Math.max(1, Math.ceil((gambleCooldownUntil - Date.now()) / 1000));
-      showNotice("Cooldown actief (" + rem + "s)", "var(--danger)");
-      return false;
-    }
-    return true;
-  }
-  function triggerGambleCooldown() {
-    gambleCooldownUntil = Date.now() + 1000;
-  }
   function playSfx(kind) {
     try {
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = ctx.createOscillator();
+      const ctx  = new (window.AudioContext || window.webkitAudioContext)();
+      const osc  = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "triangle";
       osc.frequency.value = kind === "lose" ? 180 : kind === "safe" ? 480 : 320;
@@ -1334,227 +1159,100 @@ button:active { transform: scale(.97); }
     } catch (_) {}
   }
 
-  function getSkinBonus(id) { const d = SKIN_DEFS.find(s=>s.id===id); return d?d.bonus:1; }
-  function getCurrentSkinImg() {
-    const def = SKIN_DEFS.find(s=>s.id===equippedSkin);
-    return (def && def.img) ? def.img : BLACK_IMG;
+  function spawnFloatText(text, color) {
+    const el = document.createElement("div");
+    el.style.cssText = `position:fixed;left:50%;top:45%;transform:translateX(-50%);color:${color || "#00e5b0"};font-family:'Rajdhani',sans-serif;font-weight:900;font-size:26px;pointer-events:none;text-shadow:0 0 12px rgba(0,229,176,.8);z-index:1000;animation:floatUp 1s ease-out;`;
+    el.innerText = text;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1000);
   }
 
+  // ── SAVE ──────────────────────────────────────────────────────────────────
+  function saveGame() {
+    localStorage.setItem(SAVE_KEY, JSON.stringify({
+      score, perClick, perSecond, upgrades, playTime, earned, lost, highest,
+      ownedSkins, equippedSkin, basePerClick,
+      unlockedGamble, unlockedBlackjack, unlockedRolls, unlockedMines, gambleLuckStacks
+    }));
+    localStorage.setItem(LAST_ONLINE_KEY, Date.now());
+  }
+
+  // ── OVERLAYS ──────────────────────────────────────────────────────────────
+  function openOverlay(id) {
+    const el = $(id);
+    el.style.display = (id === "suggestionPanel" || id === "votePanel") ? "flex" : "block";
+    activeOverlays.add(id);
+  }
+  function closeOverlay(id) {
+    $(id).style.display = "none";
+    activeOverlays.delete(id);
+  }
+  function isMainActive() {
+    return activeOverlays.size === 0 && $("startScreen").style.display === "none";
+  }
+
+  // ── LUCK STACKS ───────────────────────────────────────────────────────────
+  function purgeLuckStacks() {
+    const now = Date.now();
+    gambleLuckStacks = gambleLuckStacks.filter(s => s.until > now);
+  }
+  function getActiveLuckPercent() {
+    purgeLuckStacks();
+    return gambleLuckStacks.reduce((sum, s) => sum + Number(s.percent || 0), 0);
+  }
+  function addLuckBoost(percent, ms) {
+    gambleLuckStacks.push({ percent, until: Date.now() + ms });
+  }
+
+  // ── GAMBLE HELPERS ────────────────────────────────────────────────────────
+  function getMinBet()  { return Math.max(1, cl(score * 0.10)); }
+  function assertValidBet(bet) {
+    const min = getMinBet();
+    if (isNaN(bet) || bet < min) { showNotice("Minimale inzet is " + fmtShop(min) + " Lantings", "var(--danger)"); return false; }
+    if (bet > score)             { showNotice("Niet genoeg Lantings", "var(--danger)"); return false; }
+    return true;
+  }
+  function setInputToMinBet(inputId) {
+    $(inputId).value = getMinBet();
+    showNotice("Minimale inzet ingevuld", "var(--accent2)");
+  }
+  function canGamble() {
+    if (Date.now() < gambleCooldownUntil) {
+      const rem = Math.max(1, cl((gambleCooldownUntil - Date.now()) / 1000));
+      showNotice("Cooldown actief (" + rem + "s)", "var(--danger)");
+      return false;
+    }
+    return true;
+  }
+  function triggerGambleCooldown() { gambleCooldownUntil = Date.now() + 1000; }
+
+  // ── SKIN / CLICK LOGIC ────────────────────────────────────────────────────
+  function getSkinBonus(id) {
+    return (SKIN_DEFS.find(s => s.id === id) || { bonus:1 }).bonus;
+  }
+  function getCurrentSkinImg() {
+    const def = SKIN_DEFS.find(s => s.id === equippedSkin);
+    return (def && def.img) ? def.img : BLACK_IMG;
+  }
   function applyEquippedSkin() {
-    let mult = getSkinBonus(equippedSkin);
-    if (Date.now() < boosts.click) mult *= 1.2;
-    perClick = cl(basePerClick * mult);
+    const mult = getSkinBonus(equippedSkin) * (Date.now() < boosts.click ? 1.2 : 1);
+    perClick   = cl(basePerClick * mult);
     mainImg.src = getCurrentSkinImg();
   }
 
-  function updateGambleButton() {
-    if (unlockedGamble) {
-      gambleBtn.disabled = false;
-      gambleBtn.style.opacity = "";
-    } else {
-      gambleBtn.disabled = true;
-    }
-    const bjLock = document.getElementById("bjLockText");
-    const rlLock = document.getElementById("rollsLockText");
-    const mnLock = document.getElementById("minesLockText");
-    const bjCard = document.getElementById("openBlackjackBtn");
-    const rlCard = document.getElementById("openRollsBtn");
-    const mnCard = document.getElementById("openMinesBtn");
-    if (bjLock) bjLock.innerText = unlockedBlackjack ? "" : "Vergrendeld";
-    if (rlLock) rlLock.innerText = unlockedRolls ? "" : "Vergrendeld";
-    if (mnLock) mnLock.innerText = unlockedMines ? "" : "Vergrendeld";
-    if (bjCard) bjCard.className = "gamble-card" + (unlockedBlackjack ? "" : " locked-game");
-    if (rlCard) rlCard.className = "gamble-card" + (unlockedRolls ? "" : " locked-game");
-    if (mnCard) mnCard.className = "gamble-card" + (unlockedMines ? "" : " locked-game");
+  // Boost expiry timestamps
+  const boosts = { click: 0, ps: 0 };
+
+  function activateBoost(type) {
+    const dur = 20000;
+    if (type === "click")  boosts.click = Date.now() + dur;
+    if (type === "ps")     boosts.ps    = Date.now() + dur;
+    if (type === "gamble") addLuckBoost(20, dur);
+    applyEquippedSkin();
+    updateScore();
   }
 
-  // ── LEADERBOARD ──────────────────────────────────────────
-  // lbData = { name: score, ... } where order = leaderboard order (from Discord message)
-  // Player's local score is injected by replacing their entry if name matches,
-  // or added fresh if not present.
-
-  let lbModalOpen = false;
-
-  function getLeaderboardSource() {
-    return lbVersionView === "2.1" ? LB_V21 : lbData;
-  }
-  function updateLeaderboardVersionControls() {
-    const badge = document.getElementById("lbVersionBadge");
-    const prev = document.getElementById("lbPrevBtn");
-    const next = document.getElementById("lbNextBtn");
-    if (badge) badge.textContent = "v" + lbVersionView;
-    if (prev) prev.style.display = lbVersionView === VERSION ? "inline-block" : "none";
-    if (next) next.style.display = lbVersionView === "2.1" ? "inline-block" : "none";
-  }
-  function buildEntries() {
-    const playerName  = localStorage.getItem(NAME_KEY) || "Jij";
-    const playerScore = score;
-    const playerLower = playerName.toLowerCase();
-    let entries = [];
-    const viewOnly = lbVersionView === "2.1";
-    let playerFoundInLB = false;
-    for (const [name, sc] of Object.entries(getLeaderboardSource())) {
-      if (!viewOnly && name.toLowerCase() === playerLower) {
-        entries.push({ name: playerName, score: playerScore, isMe: true });
-        playerFoundInLB = true;
-      } else {
-        entries.push({ name, score: Number(sc), isMe: false });
-      }
-    }
-    if (!viewOnly && !playerFoundInLB) {
-      entries.push({ name: playerName, score: playerScore, isMe: true });
-    }
-    entries.sort((a, b) => b.score - a.score);
-    return entries;
-  }
-
-  const rankClass = (r) => r===1?"gold":r===2?"silver":r===3?"bronze":"";
-
-  function renderLeaderboard() {
-    const playerName  = localStorage.getItem(NAME_KEY) || "Jij";
-    const playerScore = score;
-    const entries     = buildEntries();
-    updateLeaderboardVersionControls();
-    const playerRank  = entries.findIndex(p => p.isMe) + 1;
-    const top5        = entries.slice(0, 5);
-    const inTop5      = playerRank <= 5;
-
-    // ── Mini widget (top 5) ──
-    const container = document.getElementById("lbRows");
-    container.innerHTML = "";
-
-    top5.forEach((p, i) => {
-      const rank = i + 1;
-      const row  = document.createElement("div");
-      row.className = "lb-row" + (p.isMe ? " lb-me" : "");
-      row.innerHTML = `<span class="lb-rank ${rankClass(rank)}">#${rank}</span><span class="lb-name">${p.name}${p.isMe ? ' \u2190' : ''}</span><span class="lb-score">${fmtLB(p.score)}</span>`;
-      container.appendChild(row);
-    });
-
-    // Fill empty slots up to 5
-    for (let i = top5.length; i < 5; i++) {
-      const row = document.createElement("div");
-      row.className = "lb-row";
-      row.innerHTML = `<span class="lb-rank">#${i+1}</span><span class="lb-name" style="color:var(--muted)">???</span><span class="lb-score" style="color:var(--muted)">???</span>`;
-      container.appendChild(row);
-    }
-
-    // Show player below top 5 if ranked outside top 5
-    if (!inTop5) {
-      const sep = document.createElement("hr");
-      sep.className = "lb-separator";
-      container.appendChild(sep);
-      const row = document.createElement("div");
-      row.className = "lb-row lb-me";
-      row.innerHTML = `<span class="lb-rank gold">#${playerRank}</span><span class="lb-name">${playerName} \u2190</span><span class="lb-score">${fmtLB(playerScore)}</span>`;
-      container.appendChild(row);
-    }
-
-    // Update expand button label with total count
-    const expandBtn = document.getElementById("lbExpandBtn");
-    if (expandBtn) {
-      expandBtn.textContent = (lbModalOpen ? "\u25BC" : "\u25B2") + " Volledig Leaderboard (" + entries.length + ")";
-    }
-
-    // ── Full modal list (only re-render if open) ──
-    if (lbModalOpen) renderLbModal(entries, playerRank);
-  }
-
-  function renderLbModal(entries, playerRank) {
-    const body = document.getElementById("lbModalBody");
-    const countEl = document.getElementById("lbModalCount");
-    if (!body) return;
-
-    // Scroll position memory
-    const scrollTop = body.scrollTop;
-
-    body.innerHTML = "";
-    if (countEl) countEl.textContent = entries.length + " spelers";
-    updateLeaderboardVersionControls();
-
-    entries.forEach((p, i) => {
-      const rank = i + 1;
-      const row  = document.createElement("div");
-      row.className = "lb-modal-row" + (p.isMe ? " lb-me" : "");
-      row.innerHTML = `<span class="lb-modal-rank ${rankClass(rank)}">#${rank}</span><span class="lb-name" style="flex:1">${p.name}${p.isMe ? ' \u2190' : ''}</span><span class="lb-score">${fmtLB(p.score)}</span>`;
-      body.appendChild(row);
-    });
-
-    // Restore scroll or jump to player on first open
-    if (scrollTop > 0) {
-      body.scrollTop = scrollTop;
-    } else if (playerRank > 5) {
-      // Scroll player row into view (each row ~32px, header ~52px)
-      const targetScroll = Math.max(0, (playerRank - 4) * 32);
-      body.scrollTop = targetScroll;
-    }
-  }
-
-  function openLbModal() {
-    lbModalOpen = true;
-    const modal = document.getElementById("lbModal");
-    modal.style.display = "flex";
-    activeOverlays.add("lbModal");
-    const entries    = buildEntries();
-    const playerRank = entries.findIndex(p => p.isMe) + 1;
-    renderLbModal(entries, playerRank);
-    const expandBtn = document.getElementById("lbExpandBtn");
-    if (expandBtn) expandBtn.textContent = "\u25BC Volledig Leaderboard (" + entries.length + ")";
-  }
-
-  function closeLbModal() {
-    lbModalOpen = false;
-    document.getElementById("lbModal").style.display = "none";
-    activeOverlays.delete("lbModal");
-    const entries    = buildEntries();
-    const expandBtn  = document.getElementById("lbExpandBtn");
-    if (expandBtn) expandBtn.textContent = "\u25B2 Volledig Leaderboard (" + entries.length + ")";
-  }
-
-  document.getElementById("lbExpandBtn").addEventListener("click", () => {
-    lbModalOpen ? closeLbModal() : openLbModal();
-  });
-  document.getElementById("lbPrevBtn").addEventListener("click", () => {
-    lbVersionView = "2.1";
-    renderLeaderboard();
-  });
-  document.getElementById("lbNextBtn").addEventListener("click", () => {
-    lbVersionView = VERSION;
-    renderLeaderboard();
-  });
-  document.getElementById("lbModalClose").addEventListener("click", closeLbModal);
-  document.getElementById("lbModal").addEventListener("click", (e) => {
-    if (e.target === document.getElementById("lbModal")) closeLbModal();
-  });
-
-  // ── BOOST RENDERING ──────────────────────────────────────
-  function renderBoosts() {
-    const bar = document.getElementById("boostBar");
-    bar.innerHTML = "";
-    const now = Date.now();
-    if (now < boosts.click) {
-      const rem = Math.ceil((boosts.click - now) / 1000);
-      const b = document.createElement("div");
-      b.className = "boost-badge click-boost";
-      b.innerText = "+20% Klik (" + rem + "s)";
-      bar.appendChild(b);
-    }
-    if (now < boosts.ps) {
-      const rem = Math.ceil((boosts.ps - now) / 1000);
-      const b = document.createElement("div");
-      b.className = "boost-badge ps-boost";
-      b.innerText = "x2.5 P/S (" + rem + "s)";
-      bar.appendChild(b);
-    }
-    const luckPercent = getActiveLuckPercent();
-    if (luckPercent > 0) {
-      const b = document.createElement("div");
-      b.className = "boost-badge gamble-boost";
-      b.innerText = "Luck +" + luckPercent + "%";
-      bar.appendChild(b);
-    }
-  }
-
+  // ── UPDATE SCORE (central UI refresh) ─────────────────────────────────────
   function updateScore() {
     score        = cl(score);
     basePerClick = cl(basePerClick);
@@ -1562,22 +1260,24 @@ button:active { transform: scale(.97); }
     applyEquippedSkin();
     if (score > highest) highest = score;
 
-    scoreEl.innerText = "Lantings: " + fmtMain(score);
+    const effectivePS = Date.now() < boosts.ps ? cl(perSecond * 2.5) : perSecond;
+
+    scoreEl.innerText       = "Lantings: " + fmtMain(score);
     scoreEl.style.animation = "none";
-    void scoreEl.offsetWidth;
+    void scoreEl.offsetWidth; // reflow to retrigger animation
     scoreEl.style.animation = "scoreFlash .3s ease";
 
     perClickText.innerText  = "Per klik: "    + perClick;
-    perSecondText.innerText = "Per seconde: " + (Date.now() < boosts.ps ? cl(perSecond * 2.5) : perSecond);
+    perSecondText.innerText = "Per seconde: " + effectivePS;
 
-    document.getElementById("rollMoney").innerText = fmtShop(score);
-    document.getElementById("bjMoney").innerText   = fmtShop(score);
-    document.getElementById("minesMoney").innerText = fmtShop(score);
-    document.getElementById("shopMoney").innerText = fmtShop(score);
-    document.getElementById("statTime").innerText   = playTime;
-    document.getElementById("statEarned").innerText = fmtShop(earned);
-    document.getElementById("statLost").innerText   = fmtShop(lost);
-    document.getElementById("statNet").innerText    = fmtShop(highest);
+    $("rollMoney").innerText  = fmtShop(score);
+    $("bjMoney").innerText    = fmtShop(score);
+    $("minesMoney").innerText = fmtShop(score);
+    $("shopMoney").innerText  = fmtShop(score);
+    $("statTime").innerText   = playTime;
+    $("statEarned").innerText = fmtShop(earned);
+    $("statLost").innerText   = fmtShop(lost);
+    $("statNet").innerText    = fmtShop(highest);
 
     renderLeaderboard();
     renderBoosts();
@@ -1585,110 +1285,146 @@ button:active { transform: scale(.97); }
     saveGame();
   }
 
-  // Periodic score report to webhook
-  setInterval(() => {
-    const name = localStorage.getItem(NAME_KEY);
-    if (name && document.getElementById("startScreen").style.display === "none") {
-      sendWebhook(WEBHOOK_SCORE, `${name}: ${score}`);
-    }
-  }, 5000);
+  // ── BOOST RENDER ─────────────────────────────────────────────────────────
+  function renderBoosts() {
+    const now = Date.now();
+    const badges = [];
+    if (now < boosts.click) badges.push(`<div class="boost-badge click-boost">+20% Klik (${cl((boosts.click - now) / 1000)}s)</div>`);
+    if (now < boosts.ps)    badges.push(`<div class="boost-badge ps-boost">x2.5 P/S (${cl((boosts.ps - now) / 1000)}s)</div>`);
+    const luck = getActiveLuckPercent();
+    if (luck > 0)           badges.push(`<div class="boost-badge gamble-boost">Luck +${luck}%</div>`);
+    boostBar.innerHTML = badges.join("");
+  }
 
-  // Fetch leaderboard from Discord every second
-  setInterval(async () => {
-    await fetchLeaderboard();
-    renderLeaderboard();
-  }, 1000);
+  // ── GAMBLE BUTTON STATE ───────────────────────────────────────────────────
+  function updateGambleButton() {
+    gambleBtn.disabled = !unlockedGamble;
+    const lockText = (unlocked) => unlocked ? "" : "Vergrendeld";
+    const lockClass = (unlocked) => "gamble-card" + (unlocked ? "" : " locked-game");
+    $("bjLockText").innerText    = lockText(unlockedBlackjack);
+    $("rollsLockText").innerText = lockText(unlockedRolls);
+    $("minesLockText").innerText = lockText(unlockedMines);
+    $("openBlackjackBtn").className = lockClass(unlockedBlackjack);
+    $("openRollsBtn").className     = lockClass(unlockedRolls);
+    $("openMinesBtn").className     = lockClass(unlockedMines);
+  }
 
-  const BANNED = ["nigga","nigger","neger","sem","yvonne","sjors"];
-  function isBanned(name) {
+  // ── LEADERBOARD ───────────────────────────────────────────────────────────
+  async function fetchLeaderboard() {
+    try {
+      const res = await fetch(LB_API_URL, { headers: { "X-Master-Key": LB_API_KEY } });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && typeof data.leaderboard === "object" && !Array.isArray(data.leaderboard)) {
+        lbData = data.leaderboard;
+      } else if (data && typeof data.record === "object" && !Array.isArray(data.record)) {
+        lbData = (data.record && typeof data.record.leaderboard === "object" && !Array.isArray(data.record.leaderboard))
+          ? data.record.leaderboard
+          : data.record;
+      }
+    } catch (_) {}
+  }
+
+  function isTakenByLB(name) {
     const lower = name.toLowerCase();
-    return BANNED.some(w => lower.includes(w));
-  }
-  function isTaken(name) {
-    const lower = name.toLowerCase();
-    // Check against live leaderboard names
-    return isTakenByLB(name) || ALWAYS_TAKEN.some(n => n.toLowerCase() === lower);
+    return Object.keys(lbData).some(k => k.toLowerCase() === lower);
   }
 
-  function getOfflineBonus() {
-    const lastOnline  = parseInt(localStorage.getItem(LAST_ONLINE)) || Date.now();
-    const offlineMins = fl((Date.now() - lastOnline) / 60000);
-    return { minutes: offlineMins, bonus: offlineMins > 0 ? fl(perSecond * 0.40 * offlineMins) : 0 };
-  }
+  const rankClass = r => r === 1 ? "gold" : r === 2 ? "silver" : r === 3 ? "bronze" : "";
 
-  const storedName      = localStorage.getItem(NAME_KEY);
-  const hasPlayedBefore = localStorage.getItem(LAST_ONLINE) !== null;
-  const versionNoticeEl = document.getElementById("versionNotice");
-  if (!localStorage.getItem(VERSION_NOTICE_KEY) && versionNoticeEl) {
-    versionNoticeEl.style.display = "block";
-    versionNoticeEl.innerHTML = "Nieuwe versie: 2.2<br>Bekijk de changelogs in settings om te zien wat er is aangepast<br>Leaderboard van versie 2.1 staat nu vast";
-    localStorage.setItem(VERSION_NOTICE_KEY, "1");
-  }
+  function buildEntries() {
+    const playerName  = localStorage.getItem(NAME_KEY) || "Jij";
+    const playerLower = playerName.toLowerCase();
+    const source      = lbVersionView === "2.1" ? LB_V21 : lbData;
+    const viewOnly    = lbVersionView === "2.1";
+    let playerFound   = false;
+    const entries     = [];
 
-  if (hasPlayedBefore && storedName) {
-    const od = getOfflineBonus();
-    if (od.minutes > 0) {
-      document.getElementById("offlineBonus").innerText = "+ " + fmtMain(od.bonus) + " Lantings (offline bonus)";
-      document.getElementById("offlineTime").innerText  = "Je bent " + od.minutes + " minuten offline geweest";
+    for (const [name, sc] of Object.entries(source)) {
+      if (!viewOnly && name.toLowerCase() === playerLower) {
+        entries.push({ name: playerName, score, isMe: true });
+        playerFound = true;
+      } else {
+        entries.push({ name, score: Number(sc), isMe: false });
+      }
     }
-  } else if (!storedName) {
-    document.getElementById("playBtn").style.display    = "none";
-    document.getElementById("nameSection").style.display = "flex";
-  } else if (!hasPlayedBefore) {
-    localStorage.setItem(LAST_ONLINE, Date.now());
-    document.getElementById("startScreen").style.display = "none";
-    document.getElementById("main").style.display        = "flex";
+    if (!viewOnly && !playerFound) {
+      entries.push({ name: playerName, score, isMe: true });
+    }
+    entries.sort((a, b) => b.score - a.score);
+    return entries;
   }
 
-  document.getElementById("confirmNameBtn").addEventListener("click", confirmName);
-  document.getElementById("nameInput").addEventListener("keydown", e => { if (e.key === "Enter") confirmName(); });
+  function makeRowHTML(rank, name, sc, isMe, modal) {
+    const cls  = modal ? "lb-modal-row" : "lb-row";
+    const rnk  = modal ? "lb-modal-rank" : "lb-rank";
+    return `<div class="${cls}${isMe ? " lb-me" : ""}">
+      <span class="${rnk} ${rankClass(rank)}">#${rank}</span>
+      <span class="lb-name" style="flex:1">${name}${isMe ? " \u2190" : ""}</span>
+      <span class="lb-score">${fmtLB(sc)}</span>
+    </div>`;
+  }
 
-  function confirmName() {
-    const raw   = document.getElementById("nameInput").value.trim();
-    const errEl = document.getElementById("nameError");
-    if (!raw)         { errEl.innerText = "Voer een naam in."; return; }
-    if (raw.length<2) { errEl.innerText = "Naam moet minimaal 2 tekens zijn."; return; }
-    if (isBanned(raw)){ errEl.innerText = "Die naam is niet toegestaan."; return; }
-    if (isTaken(raw)) { errEl.innerText = "Die naam is al in gebruik."; return; }
-    errEl.innerText = "";
-    localStorage.setItem(NAME_KEY, raw);
-    sendWebhook(WEBHOOK_LOGIN, `player logged in: ${raw}`);
-    document.getElementById("nameSection").style.display = "none";
-    document.getElementById("playBtn").style.display     = "block";
-    const od = getOfflineBonus();
-    if (od.minutes > 0) {
-      document.getElementById("offlineBonus").innerText = "+ " + fmtMain(od.bonus) + " Lantings (offline bonus)";
-      document.getElementById("offlineTime").innerText  = "Je bent " + od.minutes + " minuten offline geweest";
+  function renderLeaderboard() {
+    const entries    = buildEntries();
+    const playerRank = entries.findIndex(p => p.isMe) + 1;
+    const top5       = entries.slice(0, 5);
+    const inTop5     = playerRank <= 5;
+
+    // Mini widget
+    let html = top5.map((p, i) => makeRowHTML(i + 1, p.name, p.score, p.isMe, false)).join("");
+    for (let i = top5.length; i < 5; i++) {
+      html += `<div class="lb-row"><span class="lb-rank">#${i+1}</span><span class="lb-name" style="color:var(--muted)">???</span><span class="lb-score" style="color:var(--muted)">???</span></div>`;
+    }
+    if (!inTop5) {
+      html += `<hr class="lb-separator">${makeRowHTML(playerRank, entries[playerRank - 1].name, entries[playerRank - 1].score, true, false)}`;
+    }
+    lbRows.innerHTML = html;
+
+    lbExpandBtn.textContent = (lbModalOpen ? "\u25BC" : "\u25B2") + " Volledig Leaderboard (" + entries.length + ")";
+
+    // Version controls
+    $("lbVersionBadge").textContent = "v" + lbVersionView;
+    $("lbPrevBtn").style.display    = lbVersionView === VERSION ? "inline-block" : "none";
+    $("lbNextBtn").style.display    = lbVersionView === "2.1"   ? "inline-block" : "none";
+
+    if (lbModalOpen) renderLbModal(entries, playerRank);
+  }
+
+  function renderLbModal(entries, playerRank) {
+    const scrollTop = lbModalBody.scrollTop;
+    $("lbModalCount").textContent = entries.length + " spelers";
+    $("lbVersionBadge").textContent = "v" + lbVersionView;
+    $("lbPrevBtn").style.display    = lbVersionView === VERSION ? "inline-block" : "none";
+    $("lbNextBtn").style.display    = lbVersionView === "2.1"   ? "inline-block" : "none";
+
+    lbModalBody.innerHTML = entries.map((p, i) => makeRowHTML(i + 1, p.name, p.score, p.isMe, true)).join("");
+
+    if (scrollTop > 0) {
+      lbModalBody.scrollTop = scrollTop;
+    } else if (playerRank > 5) {
+      lbModalBody.scrollTop = Math.max(0, (playerRank - 4) * 32);
     }
   }
 
-  document.getElementById("playBtn").addEventListener("click", function() {
-    const name = localStorage.getItem(NAME_KEY);
-    if (!name) {
-      document.getElementById("playBtn").style.display    = "none";
-      document.getElementById("nameSection").style.display = "flex";
-      return;
-    }
-    sendWebhook(WEBHOOK_MAIN, `client connected: ${name}`);
-    const od = getOfflineBonus();
-    score  += od.bonus;
-    earned += od.bonus;
-    document.getElementById("startScreen").style.display = "none";
-    document.getElementById("main").style.display        = "flex";
-    updateScore();
-  });
+  function openLbModal() {
+    lbModalOpen = true;
+    lbModal.style.display = "flex";
+    activeOverlays.add("lbModal");
+    const entries    = buildEntries();
+    const playerRank = entries.findIndex(p => p.isMe) + 1;
+    renderLbModal(entries, playerRank);
+    lbExpandBtn.textContent = "\u25BC Volledig Leaderboard (" + entries.length + ")";
+  }
 
-  // ── GAME LOOP ─────────────────────────────────────────────
-  setInterval(() => {
-    playTime++;
-    const ps = Date.now() < boosts.ps ? cl(perSecond * 2.5) : perSecond;
-    score  += ps;
-    earned += ps;
-    updateScore();
-  }, 1000);
+  function closeLbModal() {
+    lbModalOpen = false;
+    lbModal.style.display = "none";
+    activeOverlays.delete("lbModal");
+    lbExpandBtn.textContent = "\u25B2 Volledig Leaderboard (" + buildEntries().length + ")";
+  }
 
-  let clickLock = false;
-
+  // ── CLICK HANDLER ────────────────────────────────────────────────────────
   function doClick() {
     if (clickLock) return;
     clickLock = true;
@@ -1696,13 +1432,7 @@ button:active { transform: scale(.97); }
     score  += perClick;
     earned += perClick;
     updateScore();
-
-    const ft = document.createElement("div");
-    ft.style.cssText = "position:fixed;left:50%;top:45%;transform:translateX(-50%);color:#00e5b0;font-family:'Rajdhani',sans-serif;font-weight:900;font-size:26px;pointer-events:none;text-shadow:0 0 12px rgba(0,229,176,.8);z-index:1000;animation:floatUp 1s ease-out;";
-    ft.innerText = "+" + perClick;
-    document.body.appendChild(ft);
-    setTimeout(() => ft.remove(), 1000);
-
+    spawnFloatText("+" + perClick, "#00e5b0");
     setTimeout(() => { clickLock = false; }, 40);
   }
 
@@ -1712,30 +1442,602 @@ button:active { transform: scale(.97); }
     setTimeout(() => { clickBtn.style.transform = ""; clickBtn.style.boxShadow = ""; }, 100);
   }
 
+  // ── FALLING CIRCLE ───────────────────────────────────────────────────────
+  function spawnFallingCircle() {
+    if (fallingActive || $("startScreen").style.display !== "none") return;
+    fallingActive = true;
+
+    fallingImg.src = getCurrentSkinImg();
+    fallingCircle.style.left    = fl(Math.random() * (window.innerWidth - 80) + 20) + "px";
+    fallingCircle.style.top     = "0px";
+    fallingCircle.style.display = "block";
+    fallingCdEl.style.display   = "block";
+
+    let timeLeft = 5;
+    fallingCdEl.innerText = "Vang hem! " + timeLeft + "s";
+
+    const startTime = Date.now();
+    function fall() {
+      const t = (Date.now() - startTime) / 1000;
+      fallingCircle.style.transform = `translateY(${t * 70}px) rotate(${t * 180}deg)`;
+      if (t < 5) fallingAnimId = requestAnimationFrame(fall);
+    }
+    fallingAnimId = requestAnimationFrame(fall);
+
+    fallingTimerId = setInterval(() => {
+      timeLeft--;
+      fallingCdEl.innerText = "Vang hem! " + timeLeft + "s";
+      if (timeLeft <= 0) clearFallingCircle();
+    }, 1000);
+
+    fallingCircle.onclick = () => {
+      clearFallingCircle();
+      const types  = ["click", "ps", "gamble"];
+      const chosen = types[fl(Math.random() * types.length)];
+      activateBoost(chosen);
+      const msgs = { click:"Klik boost: +20% per klik", ps:"P/S boost: x2.5 per seconde", gamble:"Gamble geluk boost!" };
+      spawnFloatText(msgs[chosen], "#ffd700");
+    };
+  }
+
+  function clearFallingCircle() {
+    cancelAnimationFrame(fallingAnimId);
+    clearInterval(fallingTimerId);
+    fallingCircle.style.display = "none";
+    fallingCdEl.style.display   = "none";
+    fallingCircle.onclick       = null;
+    fallingActive = false;
+    nextFallAt    = Date.now() + 60000;
+  }
+
+  // ── SHOP ──────────────────────────────────────────────────────────────────
+  function renderUnlockTiles() {
+    const container = $("unlockTiles");
+    const unlockedMap = { gamble: unlockedGamble, blackjack: unlockedBlackjack, rolls: unlockedRolls, mines: unlockedMines };
+
+    let html = `<div class="sec-label">Ontgrendelen</div>`;
+    UNLOCK_DEFS.forEach(tile => {
+      const unlocked  = unlockedMap[tile.key];
+      const canAfford = score >= tile.cost;
+      const btnHtml   = unlocked
+        ? `<button class="unlock-btn-unlocked" disabled>Ontgrendeld</button>`
+        : `<button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" data-ukey="${tile.key}" ${canAfford ? "" : "disabled"}>${fmtShop(tile.cost)}</button>`;
+      html += `<div class="unlock-tile${unlocked ? " unlocked-tile" : ""}">
+        <div class="unlock-info"><div class="upgrade-val">${tile.label}</div><div class="unlock-desc">${tile.desc}</div></div>
+        ${btnHtml}
+      </div>`;
+    });
+    html += `<div class="sec-label">Upgrades</div>`;
+    container.innerHTML = html;
+
+    container.querySelectorAll("button[data-ukey]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.ukey;
+        const def = UNLOCK_DEFS.find(t => t.key === key);
+        if (!def || score < def.cost) return;
+        score -= def.cost; lost += def.cost;
+        if (key === "gamble")    unlockedGamble    = true;
+        if (key === "blackjack") unlockedBlackjack = true;
+        if (key === "rolls")     unlockedRolls     = true;
+        if (key === "mines")     unlockedMines     = true;
+        updateScore();
+        renderUnlockTiles();
+        renderUpgrades();
+      });
+    });
+  }
+
+  if (!upgrades.length) {
+    for (let i = 0; i < 50; i++) {
+      const isClick = i % 2 === 0;
+      upgrades.push({ type: isClick ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: isClick ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false });
+    }
+  }
+
+  function renderUpgrades() {
+    let html = "";
+    upgrades.forEach((u, i) => {
+      const unlocked  = i === 0 || upgrades[i - 1].bought;
+      u.cost = fl(u.cost);
+      if (!unlocked) {
+        html += `<div class="upgrade locked"><div class="upgrade-info"><div style="color:var(--muted)">???</div></div></div>`;
+        return;
+      }
+      const typeLabel = u.type === "click" ? "per klik" : "per seconde";
+      const countBadge = u.count ? `<span class="upgrade-count">x${u.count}</span>` : "";
+      const canAfford  = score >= u.cost;
+      html += `<div class="upgrade" data-idx="${i}">
+        <div class="upgrade-info">
+          <div><span class="upgrade-val">+${u.value}</span></div>
+          <div class="upgrade-type">${typeLabel}</div>
+        </div>
+        <div class="upgrade-right">
+          ${countBadge}
+          <button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" data-upg="${i}" ${canAfford ? "" : "disabled"}>${fmtShop(u.cost)}</button>
+        </div>
+      </div>`;
+    });
+    upgradesEl.innerHTML = html;
+
+    upgradesEl.querySelectorAll("button[data-upg]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const i = parseInt(btn.dataset.upg);
+        const u = upgrades[i];
+        if (!u || score < u.cost) return;
+        score -= u.cost; lost += u.cost;
+        u.bought = true;
+        u.count  = (u.count || 0) + 1;
+        if (u.type === "click") basePerClick += u.value; else perSecond += u.value;
+        u.cost = fl(u.cost * 1.6);
+        updateScore();
+        renderUpgrades();
+        renderUnlockTiles();
+      });
+    });
+  }
+
+  // ── SKINS ─────────────────────────────────────────────────────────────────
+  function renderSkins() {
+    const list = $("skinList");
+    list.innerHTML = SKIN_DEFS.map(def => {
+      const owned    = ownedSkins.includes(def.id);
+      const equipped = equippedSkin === def.id;
+      const imgHtml  = def.img
+        ? `<img src="${def.img}" onerror="this.style.display='none'">`
+        : `<div style="width:70px;height:70px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);margin:auto;">Binnenkort</div>`;
+
+      let btnHtml;
+      if (owned && equipped) btnHtml = `<button class="ownedBtn" disabled>Uitgerust</button>`;
+      else if (owned)        btnHtml = `<button class="equipBtn" data-sid="${def.id}">Equip</button>`;
+      else if (def.free)     btnHtml = `<button class="buyBtn"   data-sid="${def.id}">Gratis</button>`;
+      else if (!def.img)     btnHtml = `<button class="ownedBtn" disabled>Binnenkort</button>`;
+      else                   btnHtml = `<button class="buyBtn"   data-sid="${def.id}">Koop (${fmtShop(def.cost)})</button>`;
+
+      return `<div class="skinBox${equipped ? " skinEquipped" : ""}">
+        ${imgHtml}
+        <div class="skinName">${def.name}</div>
+        <div class="skinCost">${def.cost > 0 ? fmtShop(def.cost) + " Lantings" : "Gratis"}</div>
+        <div class="skinBonus">${def.bonusText}</div>
+        ${btnHtml}
+      </div>`;
+    }).join("");
+
+    list.querySelectorAll("button[data-sid]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = parseInt(btn.dataset.sid);
+        if (ownedSkins.includes(id)) { equipSkin(id); return; }
+        const def = SKIN_DEFS.find(s => s.id === id);
+        if (!def) return;
+        if (def.free) { ownedSkins.push(id); equipSkin(id); renderSkins(); return; }
+        if (score < def.cost) { showNotice("Niet genoeg Lantings", "var(--danger)"); return; }
+        score -= def.cost; lost += def.cost;
+        ownedSkins.push(id); equipSkin(id);
+        updateScore(); renderSkins();
+      });
+    });
+  }
+
+  function equipSkin(id) {
+    if (!ownedSkins.includes(id)) return;
+    equippedSkin = id;
+    applyEquippedSkin();
+    fallingImg.src = getCurrentSkinImg();
+    updateScore();
+    renderSkins();
+  }
+
+  // ── BLACKJACK ────────────────────────────────────────────────────────────
+  const SUITS = ["H","D","K","S"];
+  const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+  let deck = [], playerHand = [], dealerHand = [], bjInProgress = false, bjBet = 0;
+
+  function createDeck() {
+    deck = [];
+    for (const s of SUITS) for (const r of RANKS) deck.push({ rank: r, suit: s });
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = fl(Math.random() * (i + 1));
+      [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+  }
+
+  function cardValue(c) {
+    if (c.rank === "A") return 11;
+    if (["J","Q","K"].includes(c.rank)) return 10;
+    return parseInt(c.rank);
+  }
+  function handValue(h) {
+    let v = 0, aces = 0;
+    for (const c of h) { v += cardValue(c); if (c.rank === "A") aces++; }
+    while (v > 21 && aces-- > 0) v -= 10;
+    return v;
+  }
+  function renderCard(c) {
+    const red = c.suit === "H" || c.suit === "D";
+    return `<span style="color:${red ? "#ff4f6d" : "#e8e8ff"}">${c.rank}${c.suit}</span>`;
+  }
+  function renderHandHTML(h, hideFirst) {
+    return h.map((c, i) => (hideFirst && i === 0) ? "??" : renderCard(c)).join(" ");
+  }
+
+  function updateBJDisplay() {
+    const pv = handValue(playerHand);
+    const dv = handValue(dealerHand);
+    $("bjGame").innerHTML = `
+      <div style="margin:30px 0;">
+        <div class="bj-label">Dealer</div>
+        <div class="bj-hand">${renderHandHTML(dealerHand, bjInProgress)} (${bjInProgress ? "?" : dv})</div>
+        <div class="bj-label" style="margin-top:20px;">Jij</div>
+        <div class="bj-hand">${renderHandHTML(playerHand, false)} (${pv})</div>
+      </div>
+      <div class="bj-buttons" id="bjButtons">
+        ${bjInProgress
+          ? `<button id="hitBtn">Pak</button><button id="standBtn">Stop</button>`
+          : `<button id="newBJGameBtn">Opnieuw</button>`}
+      </div>
+      <div class="bj-result" id="bjResult"></div>`;
+
+    if (bjInProgress) {
+      $("hitBtn").addEventListener("click", bjHit);
+      $("standBtn").addEventListener("click", bjStand);
+    } else {
+      $("newBJGameBtn").addEventListener("click", bjReset);
+    }
+  }
+
+  function startBlackjack(betOverride) {
+    if (!canGamble()) return;
+    const bet = betOverride !== undefined ? betOverride : parseInt($("betInput").value);
+    if (!assertValidBet(bet)) return;
+    if (bet === score) addLuckBoost(10, 20000); // all-in
+    bjBet = bet;
+    score -= bet; lost += bet;
+    createDeck();
+    playerHand  = [deck.pop(), deck.pop()];
+    dealerHand  = [deck.pop(), deck.pop()];
+    bjInProgress = true;
+    updateBJDisplay();
+    triggerGambleCooldown();
+    updateScore();
+  }
+
+  function bjHit() {
+    if (!bjInProgress) return;
+    playerHand.push(deck.pop());
+    if (handValue(playerHand) > 21) endBJ(false);
+    else updateBJDisplay();
+  }
+
+  function bjStand() {
+    if (!bjInProgress) return;
+    bjInProgress = false;
+    while (handValue(dealerHand) < 17) dealerHand.push(deck.pop());
+    const pv = handValue(playerHand);
+    const dv = handValue(dealerHand);
+    let win;
+    if      (pv > 21)                                                     win = false;
+    else if (dv > 21)                                                     win = true;
+    else if (pv === 21 && playerHand.length === 2 && !(dv === 21 && dealerHand.length === 2)) win = true;
+    else if (pv > dv)                                                     win = true;
+    else if (pv === dv)                                                   win = null;
+    else                                                                  win = false;
+    endBJ(win);
+  }
+
+  function endBJ(win) {
+    bjInProgress = false;
+    // Luck-based recovery
+    if (win === false && Math.random() < Math.min(0.95, getActiveLuckPercent() / 100)) win = true;
+
+    let msg, color;
+    if (win === true) {
+      const mult = (playerHand.length === 2 && handValue(playerHand) === 21) ? 3 : 2;
+      const payout = Math.max(0, fl(bjBet * mult));
+      score += payout; earned += payout;
+      msg = "Gewonnen! +" + fmtShop(payout); color = "var(--accent2)";
+      playSfx("win");
+    } else if (win === false) {
+      msg = "Verloren!"; color = "var(--danger)";
+      playSfx("lose");
+    } else {
+      score += bjBet;
+      msg = "Gelijkspel! Inzet terug."; color = "var(--gold)";
+    }
+    updateBJDisplay();
+    const r = $("bjResult");
+    r.innerText = msg; r.style.color = color;
+    updateScore();
+  }
+
+  function bjReset() {
+    playerHand = []; dealerHand = []; bjInProgress = false; bjBet = 0;
+    $("betInput").value = "";
+    updateBJDisplay();
+  }
+
+  // ── ROLLS ─────────────────────────────────────────────────────────────────
+  function getRollPick(luckPercent) {
+    const red    = [0.1, 0.2, 0.5, 0.75];
+    const green  = [1.25, 1.5, 2];
+    const rw = 45, yw = 15, gw = 40 * (1 + luckPercent / 100);
+    const roll = Math.random() * (rw + yw + gw);
+    if (roll < rw)      return red[fl(Math.random() * red.length)];
+    if (roll < rw + yw) return 1;
+    return green[fl(Math.random() * green.length)];
+  }
+  function rollClass(m) { return m < 1 ? "bad" : m === 1 ? "neutral" : "good"; }
+
+  function playRolls(opts) {
+    if (!canGamble()) return;
+    const allIn = opts && opts.allIn;
+    const bet   = (opts && opts.bet !== undefined) ? opts.bet : parseInt($("rollBet").value);
+    if (!assertValidBet(bet)) return;
+    if (allIn) addLuckBoost(10, 20000);
+    score -= bet; lost += bet;
+    const count       = Math.min(5, Math.max(3, parseInt($("rollCount").value) || 3));
+    const luckPercent = getActiveLuckPercent();
+    const mults       = Array.from({ length: count }, () => getRollPick(luckPercent));
+    const perRoll     = bet / 3;
+    const total       = Math.max(0, cl(mults.reduce((s, m) => s + perRoll * m, 0)));
+    score += total; earned += total;
+    $("rollResult").innerHTML = `
+      <div class="roll-grid">${mults.map(x => `<div class="rollMult ${rollClass(x)}">${x}x</div>`).join("")}</div>
+      <div class="roll-total">Totaal: ${fmtShop(total)} Lantings</div>`;
+    $("rollMeta").innerText = "Luck bonus actief: +" + luckPercent + "%";
+    triggerGambleCooldown();
+    playSfx(total >= bet ? "win" : "lose");
+    updateScore();
+  }
+
+  // ── MINES ─────────────────────────────────────────────────────────────────
+  let minesState = { active:false, size:5, mines:3, bet:0, multiplier:1, safe:0, bombSet:new Set(), opened:new Set() };
+
+  function mineGainPerSafe(size, mines, luck) {
+    const ratio   = mines / (size * size);
+    const luckMul = 1 + (luck / 100) * 0.25;
+    return Math.max(0.00005, Math.pow(ratio, 2.8) * 35) * luckMul;
+  }
+
+  function resetMinesBoard() {
+    const board = $("minesBoard");
+    board.style.gridTemplateColumns = `repeat(${minesState.size}, 1fr)`;
+    const total = minesState.size * minesState.size;
+    const frag  = document.createDocumentFragment();
+    for (let i = 0; i < total; i++) {
+      const tile = document.createElement("button");
+      tile.className   = "mine-tile";
+      tile.dataset.idx = String(i);
+      tile.textContent = "?";
+      tile.addEventListener("click", () => onMineClick(i));
+      frag.appendChild(tile);
+    }
+    board.innerHTML = "";
+    board.appendChild(frag);
+  }
+
+  function startMinesGame(opts) {
+    if (!canGamble()) return;
+    const allIn = opts && opts.allIn;
+    const bet   = (opts && opts.bet !== undefined) ? opts.bet : parseInt($("minesBet").value);
+    if (!assertValidBet(bet)) return;
+    let size  = Math.min(10, Math.max(5, parseInt($("minesSize").value) || 5));
+    let mines = Math.max(1, Math.min(size * size - 1, parseInt($("minesCount").value) || 1));
+    if (allIn) addLuckBoost(10, 20000);
+    const luck         = getActiveLuckPercent() + (allIn ? 10 : 0);
+    const reducedMines = Math.max(1, mines - fl(mines * (luck / 100) * 0.20));
+    score -= bet; lost += bet;
+    minesState = { active:true, size, mines:reducedMines, bet, multiplier:1, safe:0, bombSet:new Set(), opened:new Set() };
+    while (minesState.bombSet.size < reducedMines) minesState.bombSet.add(fl(Math.random() * size * size));
+    resetMinesBoard();
+    const st = $("minesStatus");
+    st.style.color = "var(--muted)";
+    st.innerText   = "Spel gestart. Luck: +" + luck + "%";
+    triggerGambleCooldown();
+    updateScore();
+  }
+
+  function revealMineTile(idx, bomb) {
+    const tile = $("minesBoard").querySelector(`[data-idx="${idx}"]`);
+    if (!tile) return;
+    tile.disabled    = true;
+    tile.textContent = bomb ? "💣" : "💰";
+    tile.classList.add(bomb ? "bomb" : "safe");
+  }
+
+  function endMinesGame(won, msg) {
+    minesState.active = false;
+    for (let i = 0; i < minesState.size * minesState.size; i++) {
+      if (minesState.bombSet.has(i)) revealMineTile(i, true);
+    }
+    const st = $("minesStatus");
+    st.style.color = won ? "var(--accent2)" : "var(--danger)";
+    st.innerText   = msg;
+    playSfx(won ? "win" : "lose");
+    updateScore();
+  }
+
+  function onMineClick(idx) {
+    if (!minesState.active || minesState.opened.has(idx)) return;
+    minesState.opened.add(idx);
+    if (minesState.bombSet.has(idx)) { revealMineTile(idx, true); endMinesGame(false, "Je hebt verloren"); return; }
+    revealMineTile(idx, false);
+    minesState.safe++;
+    const gain = mineGainPerSafe(minesState.size, minesState.mines, getActiveLuckPercent());
+    minesState.multiplier *= (1 + gain);
+    const st = $("minesStatus");
+    st.style.color = "var(--gold)";
+    st.innerText   = "Multiplier: x" + minesState.multiplier.toFixed(4);
+    playSfx("safe");
+  }
+
+  function cashoutMines() {
+    if (!minesState.active || !canGamble()) return;
+    const payout = Math.max(0, cl(minesState.bet * minesState.multiplier));
+    score += payout; earned += payout;
+    triggerGambleCooldown();
+    endMinesGame(true, "Cash out! +" + fmtShop(payout) + " Lantings");
+  }
+
+  // ── CODES ─────────────────────────────────────────────────────────────────
+  const usedCodes = new Set();
+  const VALID_CODES = {
+    "gamble69": () => { activateBoost("gamble"); return { msg:"Gamble geluk boost geactiveerd! (20 seconden)", color:"var(--accent2)" }; }
+  };
+
+  function submitCode() {
+    const input = $("codeInput");
+    const msgEl = $("codeMsg");
+    const code  = input.value.trim().toLowerCase();
+    if (!code) return;
+    if (usedCodes.has(code))   { msgEl.style.color = "var(--danger)";  msgEl.innerText = "Code al gebruikt!"; return; }
+    if (VALID_CODES[code]) {
+      usedCodes.add(code);
+      const result = VALID_CODES[code]();
+      msgEl.style.color = result.color; msgEl.innerText = result.msg; input.value = "";
+    } else {
+      msgEl.style.color = "var(--danger)"; msgEl.innerText = "Ongeldige code.";
+    }
+  }
+
+  // ── VOTE ──────────────────────────────────────────────────────────────────
+  function openVotePanel() {
+    const oldVote    = localStorage.getItem(VOTE_KEY);
+    const voteInfo   = $("voteInfo");
+    voteInfo.style.color = "var(--muted)";
+    voteInfo.innerText   = oldVote ? "Jouw stem: " + oldVote : "Je hebt nog niet gestemd.";
+    if (oldVote) {
+      const sel = document.querySelector(`input[name="voteOption"][value="${oldVote}"]`);
+      if (sel) sel.checked = true;
+    }
+    openOverlay("votePanel");
+  }
+
+  function submitVote() {
+    const sel = document.querySelector("input[name='voteOption']:checked");
+    if (!sel) { showNotice("Kies eerst een optie", "var(--danger)"); return; }
+    const choice   = sel.value;
+    const name     = localStorage.getItem(NAME_KEY) || "Onbekend";
+    const oldVote  = localStorage.getItem(VOTE_KEY);
+    if (oldVote && oldVote !== choice) { showNotice("Je kan maar 1 keer stemmen", "var(--danger)"); return; }
+    if (!oldVote) {
+      localStorage.setItem(VOTE_KEY, choice);
+      sendWebhook(WEBHOOKS.vote, `vote | ${name} | ${choice}`);
+      showNotice("Stem verzonden: " + choice, "var(--accent2)");
+    } else {
+      showNotice("Je stem staat al op: " + oldVote, "var(--gold)");
+    }
+    closeOverlay("votePanel");
+  }
+
+  // ── SUGGESTION ────────────────────────────────────────────────────────────
+  function sendSuggestion() {
+    const input = $("suggestionInput");
+    const msg   = input.value.trim();
+    if (!msg) return;
+    if (Date.now() - lastSuggTime < 180000) { showNotice("Wacht 3 minuten tussen suggestions", "var(--danger)"); return; }
+    sendWebhook(WEBHOOKS.sugg, `${localStorage.getItem(NAME_KEY) || "Onbekend"}: ${msg}`);
+    input.value = "";
+    closeOverlay("suggestionPanel");
+    lastSuggTime = Date.now();
+    showNotice("Suggestion verzonden", "var(--accent2)");
+  }
+
+  // ── NAME VALIDATION ───────────────────────────────────────────────────────
+  function isBanned(name) { return BANNED_WORDS.some(w => name.toLowerCase().includes(w)); }
+  function isTaken(name)  { return isTakenByLB(name); }
+
+  function getOfflineBonus() {
+    const last = parseInt(localStorage.getItem(LAST_ONLINE_KEY)) || Date.now();
+    const mins = fl((Date.now() - last) / 60000);
+    return { minutes: mins, bonus: mins > 0 ? fl(perSecond * 0.40 * mins) : 0 };
+  }
+
+  function confirmName() {
+    const raw   = $("nameInput").value.trim();
+    const errEl = $("nameError");
+    if (!raw || raw.length < 2)  { errEl.innerText = raw ? "Naam moet minimaal 2 tekens zijn." : "Voer een naam in."; return; }
+    if (isBanned(raw))           { errEl.innerText = "Die naam is niet toegestaan."; return; }
+    if (isTaken(raw))            { errEl.innerText = "Die naam is al in gebruik."; return; }
+    errEl.innerText = "";
+    localStorage.setItem(NAME_KEY, raw);
+    sendWebhook(WEBHOOKS.login, `player logged in: ${raw}`);
+    $("nameSection").style.display = "none";
+    $("playBtn").style.display     = "block";
+    const od = getOfflineBonus();
+    $("offlineBonus").innerText = od.minutes > 0 ? `+ ${fmtMain(od.bonus)} Lantings (offline bonus)` : "";
+    $("offlineTime").innerText  = od.minutes > 0 ? `Je bent ${od.minutes} minuten offline geweest` : "";
+  }
+
+  // ── START SCREEN INIT ─────────────────────────────────────────────────────
+  const storedName      = localStorage.getItem(NAME_KEY);
+  const hasPlayedBefore = localStorage.getItem(LAST_ONLINE_KEY) !== null;
+  const isNatteHark     = storedName && storedName.toLowerCase() === "natte hark";
+
+  if (isNatteHark && !localStorage.getItem(NATTE_HARK_MESSAGE_KEY)) {
+    score = earned = lost = highest = 0;
+    localStorage.setItem(NATTE_HARK_MESSAGE_KEY, "true");
+  }
+
+  if (!localStorage.getItem(VERSION_NOTICE_KEY)) {
+    const vn = $("versionNotice");
+    vn.style.display = "block";
+    vn.innerHTML = "Nieuwe versie: 2.2<br>Bekijk de changelogs in settings<br>Leaderboard van versie 2.1 staat nu vast";
+    localStorage.setItem(VERSION_NOTICE_KEY, "1");
+  }
+
+  if (!storedName) {
+    $("playBtn").style.display     = "none";
+    $("nameSection").style.display = "flex";
+  } else {
+    const od = getOfflineBonus();
+    if (isNatteHark && localStorage.getItem(NATTE_HARK_MESSAGE_KEY)) {
+      $("offlineBonus").innerText = "je geld is gereset report bug in suggestions";
+      $("offlineTime").innerText  = "";
+    } else if (od.minutes > 0) {
+      $("offlineBonus").innerText = `+ ${fmtMain(od.bonus)} Lantings (offline bonus)`;
+      $("offlineTime").innerText  = `Je bent ${od.minutes} minuten offline geweest`;
+    }
+  }
+
+  if (!hasPlayedBefore && storedName) {
+    localStorage.setItem(LAST_ONLINE_KEY, Date.now());
+    $("startScreen").style.display = "none";
+    $("main").style.display        = "flex";
+  }
+
+  // ── EVENT LISTENERS ───────────────────────────────────────────────────────
+  $("confirmNameBtn").addEventListener("click", confirmName);
+  $("nameInput").addEventListener("keydown", e => { if (e.key === "Enter") confirmName(); });
+
+  $("playBtn").addEventListener("click", () => {
+    const name = localStorage.getItem(NAME_KEY);
+    if (!name) { $("playBtn").style.display = "none"; $("nameSection").style.display = "flex"; return; }
+    sendWebhook(WEBHOOKS.main, `client connected: ${name}`);
+    const od = getOfflineBonus();
+    score  += od.bonus;
+    earned += od.bonus;
+    $("startScreen").style.display = "none";
+    $("main").style.display        = "flex";
+    updateScore();
+  });
+
   clickBtn.addEventListener("mousedown", () => { triggerClickAnim(); doClick(); });
 
-  // ── KEYBINDS ─────────────────────────────────────────────
-  let clickKeybind   = localStorage.getItem(KEYBIND_KEY)  || "Enter";
-  let keybindDisplay = localStorage.getItem(KBDISP_KEY)   || "ENTER";
-  let waitingForKey  = false;
-  const keybindBtn   = document.getElementById("keybindBtn");
+  // Keybind
   keybindBtn.innerText = keybindDisplay;
-
   keybindBtn.addEventListener("click", () => {
-    waitingForKey        = !waitingForKey;
+    waitingForKey    = !waitingForKey;
     keybindBtn.innerText = waitingForKey ? "..." : keybindDisplay;
   });
 
-  document.addEventListener("keydown", (e) => {
+  document.addEventListener("keydown", e => {
     if (waitingForKey) {
       e.preventDefault();
       let disp = e.key.length === 1 ? e.key.toUpperCase() : e.key;
       if (e.key === " ")     disp = "SPACE";
       if (e.key === "Enter") disp = "ENTER";
-      clickKeybind   = e.key;
-      keybindDisplay = disp;
+      clickKeybind = e.key; keybindDisplay = disp;
       localStorage.setItem(KEYBIND_KEY, clickKeybind);
-      localStorage.setItem(KBDISP_KEY,  keybindDisplay);
+      localStorage.setItem(KBDISP_KEY, keybindDisplay);
       keybindBtn.innerText = keybindDisplay;
       waitingForKey = false;
       return;
@@ -1746,645 +2048,106 @@ button:active { transform: scale(.97); }
     triggerClickAnim();
     doClick();
   });
-
   document.addEventListener("keyup", () => { clickLock = false; });
 
-  // ── UNLOCK TILES ─────────────────────────────────────────
-  function renderUnlockTiles() {
-    const container = document.getElementById("unlockTiles");
-    container.innerHTML = "";
+  // Leaderboard
+  lbExpandBtn.addEventListener("click", () => lbModalOpen ? closeLbModal() : openLbModal());
+  $("lbPrevBtn").addEventListener("click", () => { lbVersionView = "2.1"; renderLeaderboard(); });
+  $("lbNextBtn").addEventListener("click", () => { lbVersionView = VERSION; renderLeaderboard(); });
+  $("lbModalClose").addEventListener("click", closeLbModal);
+  lbModal.addEventListener("click", e => { if (e.target === lbModal) closeLbModal(); });
 
-    const lbl = document.createElement("div");
-    lbl.className = "sec-label";
-    lbl.innerText = "Ontgrendelen";
-    container.appendChild(lbl);
+  // Shop
+  $("shopBtn").addEventListener("click", () => { openOverlay("shopScreen"); renderUnlockTiles(); renderUpgrades(); });
+  $("shopExitBtn").addEventListener("mousedown", () => closeOverlay("shopScreen"));
 
-    const tiles = [
-      { key:"gamble",    label:"Gamble knop",   desc:"Ontgrendelt de Gamble knop",   cost:100,  unlocked:unlockedGamble },
-      { key:"blackjack", label:"Blackjack",      desc:"Speelbaar in Gamble menu",     cost:1000, unlocked:unlockedBlackjack },
-      { key:"rolls",     label:"Rolls",          desc:"Speelbaar in Gamble menu",     cost:500,  unlocked:unlockedRolls },
-      { key:"mines",     label:"Mines",          desc:"Speelbaar in Gamble menu",     cost:2500, unlocked:unlockedMines },
-    ];
+  // Gamble
+  $("gambleBtn").addEventListener("click", () => { if (unlockedGamble) openOverlay("gambleScreen"); });
+  $("gambleExitBtn").addEventListener("click", () => closeOverlay("gambleScreen"));
+  $("openBlackjackBtn").addEventListener("click", () => { if (!unlockedBlackjack) return; closeOverlay("gambleScreen"); openOverlay("blackjackScreen"); updateBJDisplay(); });
+  $("bjExitBtn").addEventListener("click", () => closeOverlay("blackjackScreen"));
+  $("bjStartBtn").addEventListener("click", () => startBlackjack());
+  $("bjMinBtn").addEventListener("click", () => setInputToMinBet("betInput"));
+  $("bjAllInBtn").addEventListener("click", () => { $("betInput").value = score; startBlackjack(); });
 
-    tiles.forEach(tile => {
-      const div = document.createElement("div");
-      div.className = "unlock-tile" + (tile.unlocked ? " unlocked-tile" : "");
+  $("openRollsBtn").addEventListener("click", () => { if (!unlockedRolls) return; closeOverlay("gambleScreen"); openOverlay("rollsScreen"); });
+  $("rollsExitBtn").addEventListener("click", () => closeOverlay("rollsScreen"));
+  $("rollPlayBtn").addEventListener("click", () => playRolls());
+  $("rollMinBtn").addEventListener("click", () => setInputToMinBet("rollBet"));
+  $("rollAllBtn").addEventListener("click", () => playRolls({ allIn:true, bet:score }));
+  $("rollCount").addEventListener("input", e => { $("rollCountVal").innerText = e.target.value; });
 
-      const canAfford = score >= tile.cost;
+  $("openMinesBtn").addEventListener("click", () => { if (!unlockedMines) return; closeOverlay("gambleScreen"); openOverlay("minesScreen"); });
+  $("minesExitBtn").addEventListener("click", () => closeOverlay("minesScreen"));
+  $("minesStartBtn").addEventListener("click", () => startMinesGame());
+  $("minesMinBtn").addEventListener("click", () => setInputToMinBet("minesBet"));
+  $("minesAllInBtn").addEventListener("click", () => startMinesGame({ allIn:true, bet:score }));
+  $("minesCashoutBtn").addEventListener("click", cashoutMines);
 
-      let btnHtml;
-      if (tile.unlocked) {
-        btnHtml = `<button class="unlock-btn-unlocked" disabled>Ontgrendeld</button>`;
-      } else {
-        const cls = canAfford ? "buy-btn-can" : "buy-btn-cannot";
-        btnHtml = `<button class="${cls}" data-key="${tile.key}">${fmtShop(tile.cost)}</button>`;
-      }
+  $("skinBtn").addEventListener("click", () => { openOverlay("skinScreen"); renderSkins(); });
+  $("skinExitBtn").addEventListener("click", () => closeOverlay("skinScreen"));
 
-      div.innerHTML = `
-        <div class="unlock-info">
-          <div class="upgrade-val">${tile.label}</div>
-          <div class="unlock-desc">${tile.desc}</div>
-        </div>
-        ${btnHtml}`;
+  $("statsBtn").addEventListener("click", () => openOverlay("statsScreen"));
+  $("statsExitBtn").addEventListener("click", () => closeOverlay("statsScreen"));
 
-      if (!tile.unlocked) {
-        const btn = div.querySelector("button[data-key]");
-        if (btn && canAfford) {
-          btn.addEventListener("click", () => {
-            if (score < tile.cost) return;
-            score -= tile.cost; lost += tile.cost;
-            if (tile.key === "gamble")     unlockedGamble    = true;
-            if (tile.key === "blackjack")  unlockedBlackjack = true;
-            if (tile.key === "rolls")      unlockedRolls     = true;
-            if (tile.key === "mines")      unlockedMines     = true;
-            updateScore();
-            renderUnlockTiles();
-            renderUpgrades();
-          });
-        }
-      }
+  $("codeSubmitBtn").addEventListener("click", submitCode);
+  $("codeInput").addEventListener("keydown", e => { if (e.key === "Enter") submitCode(); });
 
-      container.appendChild(div);
-    });
+  $("voteBtn").addEventListener("click", openVotePanel);
+  $("voteCloseBtn").addEventListener("click", () => closeOverlay("votePanel"));
+  $("voteSubmitBtn").addEventListener("click", submitVote);
+  $("votePanel").addEventListener("click", e => { if (e.target === $("votePanel")) closeOverlay("votePanel"); });
 
-    const upgLabel = document.createElement("div");
-    upgLabel.className = "sec-label";
-    upgLabel.innerText = "Upgrades";
-    container.appendChild(upgLabel);
-  }
+  $("suggestionOpenBtn").addEventListener("click", () => openOverlay("suggestionPanel"));
+  $("suggestionCloseBtn").addEventListener("click", () => closeOverlay("suggestionPanel"));
+  $("sendSuggestionBtn").addEventListener("click", sendSuggestion);
+  $("suggestionInput").addEventListener("keydown", e => { if (e.key === "Enter") sendSuggestion(); });
 
-  // ── UPGRADES ─────────────────────────────────────────────
-  if (upgrades.length === 0) {
-    for (let i = 0; i < 50; i++) {
-      const isClick = i % 2 === 0;
-      upgrades.push({ type: isClick?"click":"auto", value: 1+fl(i/2)*2, cost: isClick?30*Math.pow(1.6,i):20*Math.pow(1.6,i), bought:false });
-    }
-  }
+  window.addEventListener("beforeunload", () => {
+    navigator.sendBeacon(WEBHOOKS.main, new Blob([JSON.stringify({content:"client disconnected"})], {type:"application/json"}));
+  });
 
-  function renderUpgrades() {
-    upgradesEl.innerHTML = "";
-    upgrades.forEach((u, i) => {
-      const unlocked = i === 0 || upgrades[i-1].bought;
-      const div = document.createElement("div");
-      div.className = "upgrade" + (unlocked ? "" : " locked");
-      if (unlocked) {
-        u.cost = fl(u.cost);
-        const typeLabel = u.type === "click" ? "per klik" : "per seconde";
-        const count = u.count ? `<span class="upgrade-count">x${u.count}</span>` : "";
-        const canAfford = score >= u.cost;
-        const btnCls = canAfford ? "buy-btn-can" : "buy-btn-cannot";
-        div.innerHTML = `
-          <div class="upgrade-info">
-            <div><span class="upgrade-val">+${u.value}</span></div>
-            <div class="upgrade-type">${typeLabel}</div>
-          </div>
-          <div class="upgrade-right">
-            ${count}
-            <button class="${btnCls}">${fmtShop(u.cost)}</button>
-          </div>`;
-        const btn = div.querySelector("button");
-        if (canAfford) {
-          btn.addEventListener("click", () => {
-            if (score < u.cost) return;
-            score -= u.cost; lost += u.cost;
-            u.bought = true; u.count = (u.count||0)+1;
-            if (u.type === "click") basePerClick += u.value; else perSecond += u.value;
-            u.cost = fl(u.cost * 1.6);
-            updateScore(); renderUpgrades(); renderUnlockTiles();
-          });
-        }
-      } else {
-        div.innerHTML = `<div class="upgrade-info"><div style="color:var(--muted)">???</div></div>`;
-      }
-      upgradesEl.appendChild(div);
-    });
-  }
-
-  // ── SKINS ─────────────────────────────────────────────────
-  function renderSkins() {
-    const list = document.getElementById("skinList");
-    list.innerHTML = "";
-    SKIN_DEFS.forEach(def => {
-      const owned    = ownedSkins.includes(def.id);
-      const equipped = equippedSkin === def.id;
-      const box      = document.createElement("div");
-      box.className  = "skinBox" + (equipped ? " skinEquipped" : "");
-
-      const imgHtml = def.img
-        ? `<img src="${def.img}" onerror="this.style.display='none'">`
-        : `<div style="width:70px;height:70px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);margin:auto;">Binnenkort</div>`;
-
-      let btnHtml;
-      if      (owned && equipped) btnHtml = `<button class="ownedBtn" disabled>Uitgerust</button>`;
-      else if (owned)             btnHtml = `<button class="equipBtn" data-id="${def.id}">Equip</button>`;
-      else if (def.free)          btnHtml = `<button class="buyBtn"   data-id="${def.id}">Gratis</button>`;
-      else if (!def.img)          btnHtml = `<button class="ownedBtn" disabled>Binnenkort</button>`;
-      else                        btnHtml = `<button class="buyBtn"   data-id="${def.id}">Koop (${fmtShop(def.cost)})</button>`;
-
-      box.innerHTML = `${imgHtml}<div class="skinName">${def.name}</div><div class="skinCost">${def.cost>0?fmtShop(def.cost)+" Lantings":"Gratis"}</div><div class="skinBonus">${def.bonusText}</div>${btnHtml}`;
-      const btn = box.querySelector("button[data-id]");
-      if (btn) btn.addEventListener("click", () => owned ? equipSkin(def.id) : buySkin(def.id));
-      list.appendChild(box);
-    });
-  }
-
-  function buySkin(id) {
-    const def = SKIN_DEFS.find(s=>s.id===id);
-    if (!def) return;
-    if (ownedSkins.includes(id)) { equipSkin(id); return; }
-    if (def.free) { ownedSkins.push(id); equipSkin(id); renderSkins(); return; }
-    if (score < def.cost) { showNotice("Niet genoeg Lantings", "var(--danger)"); return; }
-    score -= def.cost; lost += def.cost;
-    ownedSkins.push(id); equipSkin(id); updateScore(); renderSkins();
-  }
-
-  function equipSkin(id) {
-    if (!ownedSkins.includes(id)) return;
-    equippedSkin = id;
-    applyEquippedSkin();
-    document.getElementById("fallingImg").src = getCurrentSkinImg();
-    updateScore(); renderSkins();
-  }
-
-  // ── BOOSTS ───────────────────────────────────────────────
-  function activateBoost(type) {
-    const dur = 20000;
-    if (type === "click")  boosts.click  = Date.now() + dur;
-    if (type === "ps")     boosts.ps     = Date.now() + dur;
-    if (type === "gamble") addLuckBoost(20, dur);
-    applyEquippedSkin();
-    updateScore();
-  }
-
-  // ── FALLING CIRCLE ───────────────────────────────────────
-  let fallingActive    = false;
-  let fallingTimer     = null;
-  let fallingCountdown = null;
-  let nextFallAt       = Date.now() + 60000;
-
-  function spawnFallingCircle() {
-    if (fallingActive) return;
-    if (document.getElementById("startScreen").style.display !== "none") return;
-
-    fallingActive = true;
-    const circle  = document.getElementById("fallingCircle");
-    const cdEl    = document.getElementById("fallingCountdown");
-    const img     = document.getElementById("fallingImg");
-
-    img.src = getCurrentSkinImg();
-
-    const x = fl(Math.random() * (window.innerWidth - 80)) + 20;
-    circle.style.left = x + "px";
-    circle.style.top  = "0px";
-    circle.style.display = "block";
-    cdEl.style.display = "block";
-
-    let timeLeft = 5;
-    cdEl.innerText = "Vang hem! " + timeLeft + "s";
-
-    let startTime = Date.now();
-    let anim;
-    function fall() {
-      const elapsed = (Date.now() - startTime) / 1000;
-      const y  = elapsed * 70;
-      const rot = elapsed * 180;
-      circle.style.transform = `translateY(${y}px) rotate(${rot}deg)`;
-      if (elapsed < 5) {
-        anim = requestAnimationFrame(fall);
-      }
-    }
-    anim = requestAnimationFrame(fall);
-
-    fallingTimer = setInterval(() => {
-      timeLeft--;
-      cdEl.innerText = "Vang hem! " + timeLeft + "s";
-      if (timeLeft <= 0) clearFallingCircle(anim);
-    }, 1000);
-
-    circle.onclick = () => {
-      clearFallingCircle(anim);
-      const types = ["click","ps","gamble"];
-      const chosen = types[fl(Math.random() * types.length)];
-      activateBoost(chosen);
-      const msgs = { click:"Klik boost: +20% per klik", ps:"P/S boost: x2.5 per seconde", gamble:"Gamble geluk boost!" };
-      const ft = document.createElement("div");
-      ft.style.cssText = "position:fixed;left:50%;top:40%;transform:translateX(-50%);color:#ffd700;font-family:'Rajdhani',sans-serif;font-weight:900;font-size:20px;pointer-events:none;text-shadow:0 0 12px rgba(255,215,0,.8);z-index:1000;animation:floatUp 2s ease-out;text-align:center;";
-      ft.innerText = msgs[chosen];
-      document.body.appendChild(ft);
-      setTimeout(() => ft.remove(), 2000);
-    };
-  }
-
-  function clearFallingCircle(anim) {
-    cancelAnimationFrame(anim);
-    clearInterval(fallingTimer);
-    document.getElementById("fallingCircle").style.display   = "none";
-    document.getElementById("fallingCountdown").style.display = "none";
-    document.getElementById("fallingCircle").onclick = null;
-    fallingActive = false;
-    nextFallAt = Date.now() + 60000;
-  }
-
+  // ── INTERVALS ─────────────────────────────────────────────────────────────
+  // Game tick: passive income
   setInterval(() => {
-    if (!fallingActive && Date.now() >= nextFallAt && document.getElementById("startScreen").style.display === "none") {
-      if (Math.random() < 0.20) {
-        spawnFallingCircle();
-      } else {
-        nextFallAt = Date.now() + 60000;
-      }
+    playTime++;
+    const ps = Date.now() < boosts.ps ? cl(perSecond * 2.5) : perSecond;
+    score  += ps;
+    earned += ps;
+    updateScore();
+  }, 1000);
+
+  // Score report to webhook every 5s
+  setInterval(() => {
+    const name = localStorage.getItem(NAME_KEY);
+    if (name && $("startScreen").style.display === "none") {
+      sendWebhook(WEBHOOKS.score, `${name}: ${score}`);
+    }
+  }, 5000);
+
+  // Leaderboard fetch every 3s (reduced from 1s — saves bandwidth, still near-live)
+  setInterval(async () => {
+    await fetchLeaderboard();
+    renderLeaderboard();
+  }, 3000);
+
+  // Falling circle + boost timer
+  setInterval(() => {
+    if (!fallingActive && Date.now() >= nextFallAt && $("startScreen").style.display === "none") {
+      if (Math.random() < 0.20) spawnFallingCircle();
+      else nextFallAt = Date.now() + 60000;
     }
     renderBoosts();
   }, 1000);
 
-  // ── BLACKJACK ────────────────────────────────────────────
-  const SUITS = ["H","D","K","S"], RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
-  let deck=[],playerHand=[],dealerHand=[],gameInProgress=false,currentBet=0,allIn=false;
-
-  function createDeck() {
-    deck=[];
-    for(const s of SUITS) for(const r of RANKS) deck.push({rank:r,suit:s});
-    for(let i=deck.length-1;i>0;i--){const j=fl(Math.random()*(i+1));[deck[i],deck[j]]=[deck[j],deck[i]];}
-  }
-  function cardValue(c){if(c.rank==="A")return 11;if(["J","Q","K"].includes(c.rank))return 10;return parseInt(c.rank);}
-  function handValue(h){let v=0,a=0;for(const c of h){v+=cardValue(c);if(c.rank==="A")a++;}while(v>21&&a-- >0)v-=10;return v;}
-  function renderCard(c){
-    const isRed = c.suit==="H"||c.suit==="D";
-    return`<span style="color:${isRed?"#ff4f6d":"#e8e8ff"}">${c.rank}${c.suit}</span>`;
-  }
-  function renderHandHTML(h,hide){return h.map((c,i)=>(hide&&i===0)?"??":renderCard(c)).join(" ");}
-
-  function updateBJDisplay(){
-    const pv=handValue(playerHand),dv=handValue(dealerHand);
-    document.getElementById("bjGame").innerHTML=`
-      <div style="margin:30px 0;">
-        <div class="bj-label">Dealer</div>
-        <div class="bj-hand">${renderHandHTML(dealerHand,gameInProgress)} (${gameInProgress?"?":dv})</div>
-        <div class="bj-label" style="margin-top:20px;">Jij</div>
-        <div class="bj-hand">${renderHandHTML(playerHand,false)} (${pv})</div>
-      </div>
-      <div class="bj-buttons" id="bjButtons">
-        ${gameInProgress
-          ?`<button id="hitBtn">Pak</button><button id="standBtn">Stop</button>`
-          :`<button id="newBJGameBtn">Opnieuw</button>`}
-      </div>
-      <div class="bj-result" id="bjResult"></div>`;
-    if(gameInProgress){
-      document.getElementById("hitBtn").addEventListener("click",bjHit);
-      document.getElementById("standBtn").addEventListener("click",bjStand);
-    } else {
-      document.getElementById("newBJGameBtn").addEventListener("click",bjReset);
-    }
-  }
-
-  function startBlackjack(betOverride){
-    if (!canGamble()) return;
-    currentBet=betOverride!==undefined?betOverride:parseInt(document.getElementById("betInput").value);
-    if(!assertValidBet(currentBet)) return;
-    allIn=(currentBet===score);
-    if (allIn) addLuckBoost(10, 20000);
-    score-=currentBet;lost+=currentBet;updateScore();
-    triggerGambleCooldown();
-    createDeck();playerHand=[deck.pop(),deck.pop()];dealerHand=[deck.pop(),deck.pop()];
-    gameInProgress=true;updateBJDisplay();
-  }
-  function bjHit(){if(!gameInProgress)return;playerHand.push(deck.pop());if(handValue(playerHand)>21)endBJ(false);else updateBJDisplay();}
-  function bjStand(){
-    if(!gameInProgress)return;
-    gameInProgress=false;
-    while(handValue(dealerHand)<17)dealerHand.push(deck.pop());
-    const pv=handValue(playerHand),dv=handValue(dealerHand);
-    let win;
-    if(pv>21)win=false;
-    else if(dv>21)win=true;
-    else if(pv===21&&playerHand.length===2&&!(dv===21&&dealerHand.length===2))win=true;
-    else if(pv>dv)win=true;
-    else if(pv===dv)win=null;
-    else win=false;
-    endBJ(win);
-  }
-  function endBJ(win){
-    gameInProgress=false;
-    if (win === false) {
-      const recoverChance = Math.min(0.95, (getActiveLuckPercent() + (allIn ? 10 : 0)) / 100);
-      if (Math.random() < recoverChance) win = true;
-    }
-    let msg,color;
-    if(win===true){
-      const mult=(playerHand.length===2&&handValue(playerHand)===21)?3:2;
-      const w=fl(currentBet*mult);score+=w;earned+=w;
-      msg=`Gewonnen! +${fmtShop(w)}`; color="var(--accent2)";
-      playSfx("win");
-    } else if(win===false){
-      msg="Verloren!"; color="var(--danger)";
-      playSfx("lose");
-    } else {
-      score+=currentBet; msg="Gelijkspel! Inzet terug."; color="var(--gold)";
-    }
-    updateBJDisplay();
-    const r=document.getElementById("bjResult");
-    r.innerText=msg; r.style.color=color;
-    updateScore();
-  }
-  function bjReset(){playerHand=[];dealerHand=[];gameInProgress=false;currentBet=0;document.getElementById("betInput").value="";updateBJDisplay();}
-
-  // ── ROLLS ────────────────────────────────────────────────
-  function getRollPick(luckPercent) {
-    const red = [0.1, 0.2, 0.5, 0.75];
-    const yellow = [1];
-    const green = [1.25, 1.5, 2];
-    let redWeight = 45;
-    let yellowWeight = 15;
-    let greenWeight = 40 * (1 + luckPercent / 100);
-    const totalWeight = redWeight + yellowWeight + greenWeight;
-    const roll = Math.random() * totalWeight;
-    if (roll < redWeight) return red[fl(Math.random() * red.length)];
-    if (roll < redWeight + yellowWeight) return yellow[0];
-    return green[fl(Math.random() * green.length)];
-  }
-  function getRollClass(mult) {
-    if (mult < 1) return "bad";
-    if (mult === 1) return "neutral";
-    return "good";
-  }
-  function playRolls(opts){
-    if (!canGamble()) return;
-    const allInRoll = opts && opts.allIn;
-    const instantBet = opts && opts.bet;
-    const bet = instantBet !== undefined ? instantBet : parseInt(document.getElementById("rollBet").value);
-    if(!assertValidBet(bet)) return;
-    if (allInRoll) addLuckBoost(10, 20000);
-    score-=bet;lost+=bet;
-    const rollCount = Math.min(5, Math.max(3, parseInt(document.getElementById("rollCount").value) || 3));
-    const perRollBet = bet / 3;
-    const luckPercent = getActiveLuckPercent() + (allInRoll ? 10 : 0);
-    const m = [];
-    for (let i = 0; i < rollCount; i++) m.push(getRollPick(luckPercent));
-    const total=cl(m.reduce((sum, mult)=>sum + (perRollBet * mult), 0));
-    score+=total;earned+=total;
-    document.getElementById("rollResult").innerHTML=`
-      <div class="roll-grid">${m.map(x=>`<div class="rollMult ${getRollClass(x)}">${x}x</div>`).join("")}</div>
-      <div class="roll-total">Totaal: ${fmtShop(total)} Lantings</div>`;
-    document.getElementById("rollMeta").innerText =
-      "Luck bonus actief: +" + luckPercent + "%";
-    triggerGambleCooldown();
-    playSfx(total >= bet ? "win" : "lose");
-    updateScore();
-  }
-
-  // ── MINES ────────────────────────────────────────────────
-  let minesState = { active:false, size:5, mines:3, bet:0, multiplier:1, safe:0, bombSet:new Set(), opened:new Set() };
-  function resetMinesBoard() {
-    const board = document.getElementById("minesBoard");
-    board.innerHTML = "";
-    board.style.gridTemplateColumns = `repeat(${minesState.size}, 1fr)`;
-    const total = minesState.size * minesState.size;
-    for (let i = 0; i < total; i++) {
-      const tile = document.createElement("button");
-      tile.className = "mine-tile";
-      tile.dataset.idx = String(i);
-      tile.textContent = "?";
-      tile.addEventListener("click", () => onMineClick(i));
-      board.appendChild(tile);
-    }
-  }
-  function mineGainPerSafe(size, mines, luckPercent) {
-    const ratio = mines / (size * size);
-    const luckMul = 1 + (luckPercent / 100) * 0.25;
-    return Math.max(0.00005, Math.pow(ratio, 2.8) * 35) * luckMul;
-  }
-  function startMinesGame(opts) {
-    if (!canGamble()) return;
-    const allInMines = opts && opts.allIn;
-    const bet = (opts && opts.bet !== undefined) ? opts.bet : parseInt(document.getElementById("minesBet").value);
-    if (!assertValidBet(bet)) return;
-    let size = parseInt(document.getElementById("minesSize").value) || 5;
-    size = Math.min(10, Math.max(5, size));
-    const total = size * size;
-    let mines = parseInt(document.getElementById("minesCount").value) || 1;
-    mines = Math.max(1, Math.min(total - 1, mines));
-    if (allInMines) addLuckBoost(10, 20000);
-    const luckPercent = getActiveLuckPercent() + (allInMines ? 10 : 0);
-    const reducedMines = Math.max(1, mines - fl(mines * (luckPercent / 100) * 0.20));
-
-    score -= bet; lost += bet;
-    minesState = { active:true, size, mines:reducedMines, bet, multiplier:1, safe:0, bombSet:new Set(), opened:new Set() };
-    while (minesState.bombSet.size < reducedMines) minesState.bombSet.add(fl(Math.random() * total));
-    resetMinesBoard();
-    document.getElementById("minesStatus").style.color = "var(--muted)";
-    document.getElementById("minesStatus").innerText = "Spel gestart. Luck: +" + luckPercent + "%";
-    triggerGambleCooldown();
-    updateScore();
-  }
-  function revealMineTile(idx, bomb) {
-    const tile = document.querySelector(`.mine-tile[data-idx="${idx}"]`);
-    if (!tile) return;
-    tile.disabled = true;
-    tile.classList.add(bomb ? "bomb" : "safe");
-    tile.textContent = bomb ? "💣" : "💰";
-  }
-  function endMinesGame(won, msg) {
-    minesState.active = false;
-    for (let i = 0; i < minesState.size * minesState.size; i++) {
-      if (minesState.bombSet.has(i)) revealMineTile(i, true);
-    }
-    const status = document.getElementById("minesStatus");
-    status.style.color = won ? "var(--accent2)" : "var(--danger)";
-    status.innerText = msg;
-    playSfx(won ? "win" : "lose");
-    updateScore();
-  }
-  function onMineClick(idx) {
-    if (!minesState.active || minesState.opened.has(idx)) return;
-    minesState.opened.add(idx);
-    if (minesState.bombSet.has(idx)) {
-      revealMineTile(idx, true);
-      endMinesGame(false, "Boom! Je hebt verloren.");
-      return;
-    }
-    revealMineTile(idx, false);
-    minesState.safe++;
-    const gain = mineGainPerSafe(minesState.size, minesState.mines, getActiveLuckPercent());
-    minesState.multiplier *= (1 + gain);
-    document.getElementById("minesStatus").style.color = "var(--gold)";
-    document.getElementById("minesStatus").innerText = "Multiplier: x" + minesState.multiplier.toFixed(4);
-    playSfx("safe");
-  }
-  function cashoutMines() {
-    if (!minesState.active) return;
-    if (!canGamble()) return;
-    const payout = cl(minesState.bet * minesState.multiplier);
-    score += payout; earned += payout;
-    triggerGambleCooldown();
-    endMinesGame(true, "Cash out! +" + fmtShop(payout) + " Lantings");
-  }
-
-  // ── CODES ────────────────────────────────────────────────
-  const USED_CODES = new Set();
-  const VALID_CODES = {
-    "gamble69": () => {
-      activateBoost("gamble");
-      return { msg: "Gamble geluk boost geactiveerd! (20 seconden)", color: "var(--accent2)" };
-    }
-  };
-
-  document.getElementById("codeSubmitBtn").addEventListener("click", submitCode);
-  document.getElementById("codeInput").addEventListener("keydown", e => { if(e.key==="Enter") submitCode(); });
-
-  function submitCode() {
-    const input = document.getElementById("codeInput");
-    const msgEl = document.getElementById("codeMsg");
-    const code  = input.value.trim().toLowerCase();
-    if (!code) return;
-    if (USED_CODES.has(code)) {
-      msgEl.style.color = "var(--danger)";
-      msgEl.innerText = "Code al gebruikt!";
-      return;
-    }
-    if (VALID_CODES[code]) {
-      USED_CODES.add(code);
-      const result = VALID_CODES[code]();
-      msgEl.style.color = result.color;
-      msgEl.innerText = result.msg;
-      input.value = "";
-    } else {
-      msgEl.style.color = "var(--danger)";
-      msgEl.innerText = "Ongeldige code.";
-    }
-  }
-
-  // ── VOTE ─────────────────────────────────────────────────
-  function openVotePanel() {
-    const panel = document.getElementById("votePanel");
-    const voteInfo = document.getElementById("voteInfo");
-    const oldVote = localStorage.getItem(VOTE_KEY);
-    voteInfo.style.color = "var(--muted)";
-    voteInfo.innerText = oldVote ? ("Jouw stem: " + oldVote) : "Je hebt nog niet gestemd.";
-    panel.style.display = "flex";
-    activeOverlays.add("votePanel");
-    if (oldVote) {
-      const selected = document.querySelector(`input[name="voteOption"][value="${oldVote}"]`);
-      if (selected) selected.checked = true;
-    }
-  }
-  function closeVotePanel() {
-    document.getElementById("votePanel").style.display = "none";
-    activeOverlays.delete("votePanel");
-  }
-  function submitVote() {
-    const selected = document.querySelector("input[name='voteOption']:checked");
-    if (!selected) {
-      showNotice("Kies eerst een optie", "var(--danger)");
-      return;
-    }
-    const choice = selected.value;
-    const name = localStorage.getItem(NAME_KEY) || "Onbekend";
-    const oldVote = localStorage.getItem(VOTE_KEY);
-    if (oldVote && oldVote !== choice) {
-      showNotice("Je kan maar 1 keer stemmen", "var(--danger)");
-      return;
-    }
-    if (!oldVote) {
-      localStorage.setItem(VOTE_KEY, choice);
-      sendWebhook(WEBHOOK_VOTE, `vote | ${name} | ${choice}`);
-      showNotice("Stem verzonden: " + choice, "var(--accent2)");
-    } else {
-      showNotice("Je stem staat al op: " + oldVote, "var(--gold)");
-    }
-    closeVotePanel();
-  }
-
-  // ── SUGGESTION ───────────────────────────────────────────
-  // Format: "playername: their suggestion"
-  let lastSuggTime = 0;
-  function sendSuggestion() {
-    const input = document.getElementById("suggestionInput");
-    const msg   = input.value.trim();
-    if (!msg) return;
-    if (Date.now() - lastSuggTime < 180000) { showNotice("Wacht 3 minuten tussen suggestions", "var(--danger)"); return; }
-    const playerName = localStorage.getItem(NAME_KEY) || "Onbekend";
-    sendWebhook(WEBHOOK_SUGG, `${playerName}: ${msg}`);
-    input.value = "";
-    closeOverlay("suggestionPanel");
-    lastSuggTime = Date.now();
-    showNotice("Suggestion verzonden", "var(--accent2)");
-  }
-
-  // ── EVENT LISTENERS ──────────────────────────────────────
-  document.getElementById("suggestionInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendSuggestion();});
-  document.getElementById("sendSuggestionBtn").addEventListener("click",sendSuggestion);
-  document.getElementById("suggestionOpenBtn").addEventListener("click",()=>openOverlay("suggestionPanel"));
-  document.getElementById("suggestionCloseBtn").addEventListener("click",()=>closeOverlay("suggestionPanel"));
-  document.getElementById("voteBtn").addEventListener("click", openVotePanel);
-  document.getElementById("voteCloseBtn").addEventListener("click", closeVotePanel);
-  document.getElementById("voteSubmitBtn").addEventListener("click", submitVote);
-  document.getElementById("votePanel").addEventListener("click", (e) => {
-    if (e.target === document.getElementById("votePanel")) closeVotePanel();
-  });
-
-  document.getElementById("shopBtn").addEventListener("click",()=>{
-    openOverlay("shopScreen");
-    renderUnlockTiles();
-    renderUpgrades();
-  });
-  document.getElementById("shopExitBtn").addEventListener("mousedown",()=>closeOverlay("shopScreen"));
-
-  document.getElementById("gambleBtn").addEventListener("click",()=>{
-    if (!unlockedGamble) return;
-    openOverlay("gambleScreen");
-    updateGambleButton();
-  });
-  document.getElementById("gambleExitBtn").addEventListener("click",()=>closeOverlay("gambleScreen"));
-
-  document.getElementById("skinBtn").addEventListener("click",()=>{openOverlay("skinScreen");renderSkins();});
-  document.getElementById("skinExitBtn").addEventListener("click",()=>closeOverlay("skinScreen"));
-
-  document.getElementById("statsBtn").addEventListener("click",()=>openOverlay("statsScreen"));
-  document.getElementById("statsExitBtn").addEventListener("click",()=>closeOverlay("statsScreen"));
-
-  document.getElementById("openBlackjackBtn").addEventListener("click",()=>{
-    if (!unlockedBlackjack) return;
-    closeOverlay("gambleScreen"); openOverlay("blackjackScreen"); updateBJDisplay();
-  });
-  document.getElementById("bjExitBtn").addEventListener("click",()=>closeOverlay("blackjackScreen"));
-  document.getElementById("bjStartBtn").addEventListener("click",()=>startBlackjack());
-  document.getElementById("bjMinBtn").addEventListener("click",()=>setInputToMinBet("betInput"));
-  document.getElementById("bjAllInBtn").addEventListener("click",()=>{document.getElementById("betInput").value=score;startBlackjack();});
-
-  document.getElementById("openRollsBtn").addEventListener("click",()=>{
-    if (!unlockedRolls) return;
-    closeOverlay("gambleScreen"); openOverlay("rollsScreen");
-  });
-  document.getElementById("rollsExitBtn").addEventListener("click",()=>closeOverlay("rollsScreen"));
-  document.getElementById("rollPlayBtn").addEventListener("click",playRolls);
-  document.getElementById("rollMinBtn").addEventListener("click",()=>setInputToMinBet("rollBet"));
-  document.getElementById("rollAllBtn").addEventListener("click",()=>playRolls({ allIn:true, bet:score }));
-  document.getElementById("rollCount").addEventListener("input", (e) => {
-    document.getElementById("rollCountVal").innerText = e.target.value;
-  });
-
-  document.getElementById("openMinesBtn").addEventListener("click",()=>{
-    if (!unlockedMines) return;
-    closeOverlay("gambleScreen"); openOverlay("minesScreen");
-  });
-  document.getElementById("minesExitBtn").addEventListener("click",()=>closeOverlay("minesScreen"));
-  document.getElementById("minesStartBtn").addEventListener("click",()=>startMinesGame());
-  document.getElementById("minesMinBtn").addEventListener("click",()=>setInputToMinBet("minesBet"));
-  document.getElementById("minesAllInBtn").addEventListener("click",()=>startMinesGame({ allIn:true, bet:score }));
-  document.getElementById("minesCashoutBtn").addEventListener("click",cashoutMines);
-
-  // Initial fetch + render   
-  fetchLeaderboard().then(() => {
-    renderLeaderboard();
-  });
-
+  // ── INITIAL RENDER ────────────────────────────────────────────────────────
+  $("rollCountVal").innerText = $("rollCount").value;
   applyEquippedSkin();
   renderUnlockTiles();
   renderUpgrades();
-  document.getElementById("rollCountVal").innerText = document.getElementById("rollCount").value;
-  updateLeaderboardVersionControls();
-  renderLeaderboard();
   updateGambleButton();
   updateScore();
+  fetchLeaderboard().then(() => renderLeaderboard());
 
 })();
 </script>
