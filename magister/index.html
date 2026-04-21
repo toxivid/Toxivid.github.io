@@ -1269,7 +1269,7 @@ setInterval(pollRemoteCommands, 10000);
     return true;
   }
   function triggerGambleCooldown(mode) {
-    gambleCooldownByMode[mode] = Date.now() + 60000;
+    gambleCooldownByMode[mode] = Date.now() + 5000;
   }
 
   // ── SKIN / CLICK LOGIC ────────────────────────────────────────────────────
