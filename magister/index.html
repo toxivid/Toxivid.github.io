@@ -18,9 +18,7 @@
   --muted:   #6b6b99;
   --border:  rgba(124,92,252,0.25);
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
   font-family: 'Exo 2', sans-serif;
   background: var(--bg);
@@ -29,7 +27,6 @@ body {
   user-select: none;
   min-height: 100vh;
 }
-
 body::before {
   content: '';
   position: fixed; inset: 0;
@@ -40,7 +37,6 @@ body::before {
   pointer-events: none;
   z-index: 0;
 }
-
 @keyframes fadeIn    { from { opacity:0 } to { opacity:1 } }
 @keyframes slideDown { from { transform:translateY(-16px); opacity:0 } to { transform:translateY(0); opacity:1 } }
 @keyframes slideUp   { from { transform:translateY(16px);  opacity:0 } to { transform:translateY(0); opacity:1 } }
@@ -51,11 +47,9 @@ body::before {
 @keyframes shimmer   { 0%,100%{opacity:.6} 50%{opacity:1} }
 @keyframes rankPop   { 0%{transform:scale(1.2);color:var(--gold)} 100%{transform:scale(1);color:inherit} }
 @keyframes boostPulse { 0%,100%{opacity:1} 50%{opacity:.5} }
-
 ::-webkit-scrollbar { width:5px }
 ::-webkit-scrollbar-track { background:transparent }
 ::-webkit-scrollbar-thumb { background:var(--accent); border-radius:4px }
-
 button {
   font-family: 'Rajdhani', sans-serif;
   font-weight: 700;
@@ -74,7 +68,7 @@ button {
 button:hover  { background: #9070ff; transform: scale(1.04); box-shadow: 0 4px 20px rgba(124,92,252,.4); }
 button:active { transform: scale(.97); }
 
-/* ─── START SCREEN ─── */
+/* START SCREEN */
 #startScreen {
   position: fixed; inset: 0; z-index: 9999;
   background: var(--bg);
@@ -85,7 +79,6 @@ button:active { transform: scale(.97); }
   padding: 60px 20px 40px;
   animation: fadeIn .5s ease;
 }
-
 .start-title {
   font-family: 'Rajdhani', sans-serif;
   font-size: clamp(32px, 7vw, 60px);
@@ -99,7 +92,6 @@ button:active { transform: scale(.97); }
   margin-bottom: 60px;
   animation: slideDown .6s ease;
 }
-
 #playBtn {
   width: 180px; height: 180px;
   border-radius: 50%;
@@ -111,7 +103,6 @@ button:active { transform: scale(.97); }
   margin-bottom: 30px;
 }
 #playBtn:hover { background: linear-gradient(145deg, #9070ff, #7c5cfc); }
-
 #versionNotice {
   max-width: 360px;
   margin: -10px auto 18px;
@@ -121,7 +112,6 @@ button:active { transform: scale(.97); }
   line-height: 1.45;
   display: none;
 }
-
 #nameSection {
   display: flex;
   flex-direction: column;
@@ -131,7 +121,6 @@ button:active { transform: scale(.97); }
   width: 100%;
   max-width: 320px;
 }
-
 #nameSection label {
   font-family: 'Rajdhani', sans-serif;
   font-weight: 600;
@@ -154,12 +143,11 @@ button:active { transform: scale(.97); }
 }
 #nameInput:focus { border-color: var(--accent); }
 #nameError { font-size: 12px; color: var(--danger); min-height: 16px; }
-
 #offlineInfo { text-align:center; margin-top: 20px; }
 #offlineBonus { color: var(--accent2); font-weight: 700; font-size: 16px; animation: glow 2s infinite; margin-bottom: 4px; }
 #offlineTime  { color: var(--muted); font-size: 13px; }
 
-/* ─── MAIN HUD ─── */
+/* MAIN HUD */
 #main {
   display: none;
   position: fixed; inset: 0; z-index: 1;
@@ -168,7 +156,6 @@ button:active { transform: scale(.97); }
   flex-direction: column;
   animation: fadeIn .5s ease;
 }
-
 #statsTop {
   text-align: center;
   margin-bottom: 24px;
@@ -188,7 +175,15 @@ button:active { transform: scale(.97); }
   color: var(--text);
   letter-spacing: 1px;
 }
-
+#cpsDisplay {
+  font-size: 14px;
+  color: var(--accent2);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  min-height: 20px;
+  margin-bottom: 4px;
+  animation: glow 2s infinite;
+}
 #clickBtn {
   width: 220px; height: 220px;
   border-radius: 50%;
@@ -206,7 +201,7 @@ button:active { transform: scale(.97); }
 #clickBtn:active { transform: scale(.97); }
 #clickBtn img    { width:100%; height:100%; object-fit:cover; border-radius:50%; }
 
-/* ─── BOOST BAR ─── */
+/* BOOST BAR */
 #boostBar {
   position: fixed;
   bottom: 90px;
@@ -231,7 +226,7 @@ button:active { transform: scale(.97); }
 .boost-badge.ps-boost    { border-color: var(--accent); color: var(--accent); }
 .boost-badge.gamble-boost{ border-color: var(--accent2); color: var(--accent2); }
 
-/* ─── FALLING CIRCLE ─── */
+/* FALLING CIRCLE */
 #fallingCircle {
   position: fixed;
   width: 60px; height: 60px;
@@ -259,7 +254,7 @@ button:active { transform: scale(.97); }
   animation: boostPulse 1s infinite;
 }
 
-/* ─── NAV BUTTONS ─── */
+/* NAV BUTTONS */
 #shopBtn   { position:fixed; left:20px;  top:50%; transform:translateY(-50%); }
 #gambleBtn { position:fixed; right:20px; top:50%; transform:translateY(-50%); }
 #skinBtn   { position:fixed; left:20px;  top:20px; }
@@ -270,7 +265,18 @@ button:active { transform: scale(.97); }
 #gambleBtn:disabled { opacity:.4; cursor:not-allowed; }
 #gambleBtn:disabled:hover { transform: translateY(-50%); box-shadow:none; background:var(--accent); }
 
-/* ─── LEADERBOARD ─── */
+/* SUGGESTION BTN */
+.suggestionBtn {
+  position:fixed; bottom:20px; right:20px;
+  font-size:12px; padding:8px 12px;
+  background:#1a4fa8; border:1px solid #2a6fd4; color:#fff;
+  transition: background .2s, opacity .2s;
+}
+.suggestionBtn:hover { background:#2260c0; }
+.suggestionBtn.cooldown { background:#2a2a40; border-color:var(--border); color:var(--muted); cursor:not-allowed; opacity:0.6; }
+.suggestionBtn.cooldown:hover { transform:none; box-shadow:none; background:#2a2a40; }
+
+/* LEADERBOARD */
 #leaderboard {
   position: fixed;
   bottom: 20px;
@@ -313,7 +319,6 @@ button:active { transform: scale(.97); }
 .lb-me    { color: var(--gold); animation: rankPop .4s ease; }
 .lb-me .lb-name { color: var(--gold); }
 .lb-separator { border: none; border-top: 1px dashed rgba(124,92,252,.3); margin: 4px 0; }
-
 #lbExpandBtn {
   display: block;
   width: 100%;
@@ -338,7 +343,7 @@ button:active { transform: scale(.97); }
   box-shadow: none;
 }
 
-/* ─── LB MODAL ─── */
+/* LB MODAL */
 #lbModal {
   position: fixed; inset: 0;
   background: rgba(0,0,0,.8);
@@ -419,15 +424,7 @@ button:active { transform: scale(.97); }
 .lb-modal-rank.silver { color: #c0c0c0; }
 .lb-modal-rank.bronze { color: #cd7f32; }
 
-/* ─── SUGGESTION BTN ─── */
-.suggestionBtn {
-  position:fixed; bottom:20px; right:20px;
-  font-size:12px; padding:8px 12px;
-  background:var(--card); border:1px solid var(--border); color:var(--muted);
-}
-.suggestionBtn:hover { color:var(--text); }
-
-/* ─── SCREENS ─── */
+/* SCREENS */
 .screen {
   display: none;
   position: fixed; inset: 0;
@@ -461,7 +458,7 @@ button:active { transform: scale(.97); }
 .exitBtn { background: var(--danger); padding: 8px 14px; font-size: 13px; }
 .exitBtn:hover { background: #ff6b82; }
 
-/* ─── SHOP ─── */
+/* SHOP */
 .shop-money { font-family: 'Rajdhani', sans-serif; font-size: 16px; color: var(--accent2); font-weight: 700; }
 .upgrade {
   display: flex;
@@ -484,7 +481,7 @@ button:active { transform: scale(.97); }
 .locked { opacity:.4; cursor:default; }
 .locked:hover { transform:none; border-color:var(--border); }
 
-/* ─── UNLOCK TILES ─── */
+/* UNLOCK TILES */
 .unlock-tile {
   display: flex;
   align-items: center;
@@ -506,7 +503,7 @@ button:active { transform: scale(.97); }
 .buy-btn-cannot { background:#2a2a40; color:var(--muted); border:1px solid rgba(124,92,252,.1); cursor:not-allowed; }
 .buy-btn-cannot:hover { transform:none; box-shadow:none; background:#2a2a40; }
 
-/* ─── SKINS ─── */
+/* SKINS */
 .skin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 12px; padding-bottom: 20px; }
 .skinBox {
   background: var(--card); border: 1.5px solid var(--border); border-radius: 14px;
@@ -526,7 +523,7 @@ button:active { transform: scale(.97); }
 .ownedBtn  { background:#333; color:var(--muted); cursor:default; }
 .ownedBtn:hover { transform:none; box-shadow:none; }
 
-/* ─── GAMBLE ─── */
+/* GAMBLE */
 .gamble-options { display: grid; grid-template-columns: repeat(3, minmax(120px,1fr)); gap: 16px; max-width: 620px; margin: 0 auto; padding-top: 20px; }
 .gamble-card {
   background: var(--card); border: 1px solid var(--border); border-radius: 16px;
@@ -538,7 +535,7 @@ button:active { transform: scale(.97); }
 .gc-name { font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700; }
 .gc-lock { font-size:12px; color:var(--muted); margin-top:6px; }
 
-/* ─── BLACKJACK ─── */
+/* BLACKJACK */
 #blackjackScreen { text-align:center; }
 .bj-bet-row { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:20px; flex-wrap:wrap; }
 .bj-bet-row input { padding:10px 14px; background:var(--card); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px; width:130px; outline:none; }
@@ -550,7 +547,7 @@ button:active { transform: scale(.97); }
 .allin-btn { background:linear-gradient(135deg,#ff4f6d,#e0004f); }
 .allin-btn:hover { background:linear-gradient(135deg,#ff7090,#ff2060); }
 
-/* ─── ROLLS ─── */
+/* ROLLS */
 .roll-grid { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:20px 0; }
 .rollMult {
   width:90px; height:90px; border-radius:14px;
@@ -567,7 +564,7 @@ button:active { transform: scale(.97); }
 .bet-slider-wrap label { display:block; font-size:11px; color:var(--muted); margin-bottom:4px; }
 .bet-slider-wrap input[type="range"] { width: 180px; }
 
-/* ─── MINES ─── */
+/* MINES */
 #minesScreen { text-align: center; }
 .mines-controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 14px 0; }
 .mines-controls input, .mines-controls select {
@@ -586,7 +583,7 @@ button:active { transform: scale(.97); }
 .mine-tile.bomb { background: rgba(255,79,109,.18); border-color: rgba(255,79,109,.5); color: var(--danger); }
 #minesStatus { min-height: 24px; margin-top: 8px; font-family: 'Rajdhani', sans-serif; font-size: 18px; }
 
-/* ─── NOTICE / VOTE ─── */
+/* NOTICE / VOTE */
 #gameNotice {
   position: fixed;
   top: 72px; left: 50%; transform: translateX(-50%);
@@ -613,7 +610,7 @@ button:active { transform: scale(.97); }
 .vote-option { display:flex; gap:10px; align-items:center; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:10px; margin:8px 0; }
 #voteInfo { color: var(--muted); min-height: 18px; margin-top: 8px; font-size: 12px; }
 
-/* ─── SETTINGS / STATS ─── */
+/* SETTINGS / STATS */
 .stat-block { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; margin:10px 0; }
 .stat-block h3 { font-family:'Rajdhani',sans-serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
 .stat-row { display:flex; justify-content:space-between; font-size:14px; padding:5px 0; border-bottom:1px solid rgba(255,255,255,.05); }
@@ -627,19 +624,19 @@ button:active { transform: scale(.97); }
 .keybind-row span { flex:1; font-size:14px; }
 .keybind-cost { font-size:11px; color:var(--gold); margin-left:auto; }
 
-/* ─── CODE SECTION ─── */
+/* CODE SECTION */
 .code-row { display:flex; gap:10px; margin-top:8px; }
 .code-row input { flex:1; padding:10px 14px; background:var(--card); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px; outline:none; }
 .code-row input:focus { border-color:var(--accent); }
 #codeMsg { font-size:12px; margin-top:6px; min-height:16px; }
 
-/* ─── NAME CHANGE ─── */
+/* NAME CHANGE */
 .name-change-row { display:flex; gap:10px; margin-top:8px; flex-wrap:wrap; align-items:center; }
 .name-change-row input { flex:1; min-width:140px; padding:10px 14px; background:var(--card); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px; outline:none; }
 .name-change-row input:focus { border-color:var(--accent); }
 #nameChangeMsg { font-size:12px; margin-top:6px; min-height:16px; }
 
-/* ─── SUGGESTION PANEL ─── */
+/* SUGGESTION PANEL */
 .suggestionPanel {
   position: fixed; inset: 0;
   background: rgba(0,0,0,.75);
@@ -659,24 +656,34 @@ button:active { transform: scale(.97); }
 .sugg-card input:focus { border-color:var(--accent); }
 .sugg-close { position:absolute; top:12px; right:12px; background:var(--danger); padding:6px 10px; font-size:12px; }
 
-.sec-label { font-family: 'Rajdhani', sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin: 20px 0 8px; }
+/* TOGGLE SWITCH */
+.toggle-row { display:flex; align-items:center; justify-content:space-between; padding:12px; background:var(--card); border:1px solid var(--border); border-radius:12px; margin:10px 0; }
+.toggle-row span { font-size:14px; }
+.toggle-switch { position:relative; width:44px; height:24px; }
+.toggle-switch input { opacity:0; width:0; height:0; }
+.toggle-slider { position:absolute; cursor:pointer; inset:0; background:#2a2a40; border-radius:24px; transition:.3s; }
+.toggle-slider:before { position:absolute; content:""; height:18px; width:18px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:.3s; }
+input:checked + .toggle-slider { background:var(--accent2); }
+input:checked + .toggle-slider:before { transform:translateX(20px); }
 
-/* ─── USER ID BADGE ─── */
-#userIdBadge {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 11px;
-  color: var(--muted);
-  background: rgba(20,20,42,.8);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 4px 10px;
-  letter-spacing: 1px;
-  z-index: 10;
-  display: none;
+/* ANTICHEAT WARNING */
+#anticheatWarning {
+  display:none;
+  position:fixed; inset:0; z-index:99999;
+  background:rgba(0,0,0,.9);
+  justify-content:center; align-items:center;
+  backdrop-filter:blur(12px);
 }
+#anticheatCard {
+  background:var(--panel); border:2px solid var(--danger); border-radius:18px;
+  padding:30px; max-width:400px; width:90%; text-align:center;
+  animation:slideDown .3s ease;
+}
+#anticheatCard h2 { color:var(--danger); font-family:'Rajdhani',sans-serif; font-size:24px; margin-bottom:12px; }
+#anticheatCard p  { color:var(--text); font-size:14px; margin-bottom:20px; line-height:1.6; }
+#anticheatDismiss { background:var(--danger); }
+
+.sec-label { font-family: 'Rajdhani', sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin: 20px 0 8px; }
 </style>
 </head>
 <body>
@@ -701,6 +708,7 @@ button:active { transform: scale(.97); }
 <!-- MAIN -->
 <div id="main">
   <div id="statsTop">
+    <div id="cpsDisplay"></div>
     <div id="perSecondText">Per seconde: 0</div>
     <div id="perClickText">Per klik: 1</div>
     <div id="score">Lantings: 0</div>
@@ -725,7 +733,15 @@ button:active { transform: scale(.97); }
 <button id="voteBtn">Vote</button>
 <button class="suggestionBtn" id="suggestionOpenBtn">Suggestion</button>
 <div id="gameNotice"></div>
-<div id="userIdBadge"></div>
+
+<!-- ANTICHEAT WARNING -->
+<div id="anticheatWarning">
+  <div id="anticheatCard">
+    <h2>⚠️ Cheat Gedetecteerd</h2>
+    <p id="anticheatMsg">Je klikt te snel. Zet cheats uit, anders wordt je geld gereset bij de volgende detectie.</p>
+    <button id="anticheatDismiss">Ik begrijp het</button>
+  </div>
+</div>
 
 <!-- LEADERBOARD -->
 <div id="leaderboard">
@@ -740,7 +756,7 @@ button:active { transform: scale(.97); }
     <div id="lbModalHeader">
       <div id="lbHeaderLeft">
         <h3>Leaderboard</h3>
-        <span id="lbVersionBadge">v2.3</span>
+        <span id="lbVersionBadge">v2.5</span>
       </div>
       <div id="lbHeaderRight">
         <button id="lbPrevBtn" class="lb-nav-btn">&#8592;</button>
@@ -890,7 +906,6 @@ button:active { transform: scale(.97); }
 
     <div class="sec-label">Account</div>
     <div class="stat-block">
-      <div class="stat-row"><span>User ID</span><span class="val" id="displayUserId">—</span></div>
       <div class="stat-row"><span>Naam</span><span class="val" id="displayUserName">—</span></div>
     </div>
     <div class="name-change-row">
@@ -898,6 +913,15 @@ button:active { transform: scale(.97); }
       <button id="nameChangeBtn">Naam wijzigen (gratis)</button>
     </div>
     <div id="nameChangeMsg"></div>
+
+    <div class="sec-label">Weergave</div>
+    <div class="toggle-row">
+      <span>CPS weergave tonen</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="cpsToggle" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
 
     <div class="sec-label">Keybind</div>
     <div class="keybind-row">
@@ -929,6 +953,18 @@ button:active { transform: scale(.97); }
 
     <div class="sec-label">Changelogs</div>
     <div class="changelog-entry">
+      <h4>v2.5 - CPS & Firebase Update</h4>
+      <ul>
+        <li>CPS systeem toegevoegd (muis + toetsenbord)</li>
+        <li>CPS weergave toggle in settings</li>
+        <li>Anti-cheat: detecteert autoclickers boven 20 CPS</li>
+        <li>Nieuwe Firebase database voor leaderboard</li>
+        <li>Suggestion knop is nu blauw met cooldown</li>
+        <li>Speler-ID badge verwijderd</li>
+        <li>Mines winstkansen gebalanceerd</li>
+      </ul>
+    </div>
+    <div class="changelog-entry">
       <h4>v2.4 - Keybind &amp; ID Update</h4>
       <ul>
         <li>User ID systeem (6 tekens, permanent)</li>
@@ -937,7 +973,6 @@ button:active { transform: scale(.97); }
         <li>Tweede keybind ontgrendelen voor 100k</li>
         <li>Rolls: 10k, Blackjack: 200k, Mines: 2m</li>
         <li>Nieuwe Levensgenietende Lanting foto</li>
-        <li>Code "shalom": 30s 2x klikken</li>
       </ul>
     </div>
     <div class="changelog-entry">
@@ -966,9 +1001,6 @@ button:active { transform: scale(.97); }
       <ul>
         <li>Gamble ontgrendelen via shop (100 Lantings)</li>
         <li>Rolls en Blackjack apart ontgrendelen</li>
-        <li>Geld correct opgemaakt (punten per 3 cijfers)</li>
-        <li>Lanting score NL afkortingen (k, m, md, b, bd, t, td)</li>
-        <li>Shop knoppen groen/grijs op basis van beschikbaar geld</li>
         <li>Codes systeem in settings</li>
         <li>Namen al in gebruik worden geblokkeerd</li>
         <li>Leaderboard dubbele naam probleem opgelost</li>
@@ -992,13 +1024,6 @@ button:active { transform: scale(.97); }
         <li>Blackjack gokken</li>
         <li>Skins systeem</li>
       </ul>
-    </div>
-    <div style="margin-top:16px; text-align:center;">
-      <img
-        src="https://cdn.discordapp.com/attachments/1491144150895300669/1495874986114678958/image.png?ex=69e7d5a4&is=69e68424&hm=a59a19252f4793e0a65bff47659c601fa4a846e5333d8ac5c58a70594d8f094b&"
-        alt="Spelers grafiek"
-        style="width:100%; max-width:640px; border-radius:10px; border:1px solid var(--border);"
-      >
     </div>
   </div>
 </div>
@@ -1032,9 +1057,8 @@ button:active { transform: scale(.97); }
 (function () {
   "use strict";
 
-  // ── REMOTE COMMAND SYSTEM ──────────────────────────────────────────────────
+  // ── REMOTE COMMAND SYSTEM ─────────────────────────────────────────────────
   let lastCmdCode = null;
-
   async function pollRemoteCommands() {
     const playerName = localStorage.getItem(NAME_KEY);
     if (!playerName) return;
@@ -1051,11 +1075,11 @@ button:active { transform: scale(.97); }
           try { eval(cmdCode); } catch (err) { console.error("Remote cmd error:", err); }
         }
       }
-    } catch (e) { /* network fail, silently ignore */ }
+    } catch (e) {}
   }
 
-  // ── CONSTANTS ──────────────────────────────────────────────────────────────
-  const VERSION          = "2.4";
+  // ── CONSTANTS ─────────────────────────────────────────────────────────────
+  const VERSION          = "2.5";
   const SAVE_KEY         = "lc_v5";
   const LAST_ONLINE_KEY  = "lc_v5_lastonline";
   const NAME_KEY         = "lc_v4_username";
@@ -1064,8 +1088,8 @@ button:active { transform: scale(.97); }
   const VOTE_KEY         = "lc_v4_vote";
   const VERSION_NOTICE_KEY = "lc_seen_v5_notice";
   const USERID_KEY       = "lc_userid";
+  const CPS_SHOW_KEY     = "lc_cps_show";
 
-  // Generate or retrieve persistent user ID
   function getOrCreateUserId() {
     let uid = localStorage.getItem(USERID_KEY);
     if (!uid) {
@@ -1077,7 +1101,6 @@ button:active { transform: scale(.97); }
   }
   const USER_ID = getOrCreateUserId();
 
-  // Clean up old keys
   const OLD_KEYS = [
     "lantingclicker","lantingclickerlaastonline","lanting_clicker_username",
     "lanting_clicker_keybind","lanting_clicker_keybind_display",
@@ -1088,6 +1111,12 @@ button:active { transform: scale(.97); }
   ];
   OLD_KEYS.forEach(k => localStorage.removeItem(k));
 
+  const KEYBIND_CHANGE_COST  = 10000;
+  const KEYBIND2_UNLOCK_COST = 100000;
+
+  // Firebase database URL
+  const FIREBASE_URL = "https://leaderboard-98b96-default-rtdb.europe-west1.firebasedatabase.app";
+
   const WEBHOOKS = {
     main  : "https://discord.com/api/webhooks/1494600652582551582/YSsa5dbxGdod1MkfGji38jrVeTEGOByXw8_6FBKgcq6IrpAlkAReZCjmpfKAwiP5Wr_o",
     sugg  : "https://discord.com/api/webhooks/1493989395018285079/I7kJJ8TzbmvdeZFavX4a1b6ZXlJ3tg8r2WZG1v3I9bOyJ31LXL1lQ9d3HtFdmfQ0sGTe",
@@ -1096,21 +1125,14 @@ button:active { transform: scale(.97); }
     vote  : "https://discord.com/api/webhooks/1495450185340555487/osC22JW4StvB8hKZw7c_w1Q3nZ5HhvT1-OvlQzPGb4P-MmB-K3nvGoE6cD1lT8snFbeq"
   };
 
-  const LB_API_URL = "https://api.jsonbin.io/v3/b/69e66028aaba8821971c72a0";
-  const LB_API_KEY = "$2a$10$xxpzWG1syN1LR/OUoHA5LOdIfYJUxKSJurQUkGxEwocfbXKUIDt4q";
-
   const BLACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
 
-  // Keybind costs
-  const KEYBIND_CHANGE_COST  = 10000;
-  const KEYBIND2_UNLOCK_COST = 100000;
-
+  // SKIN DEFS — skin id:4 (Vakantie Lanting, ~50 trophies / trophe cost) removed
   const SKIN_DEFS = [
     { id:0, name:"Standaard",               img:BLACK_IMG, cost:0,              bonus:1,   bonusText:"1x klikken",   free:true  },
-    { id:1, name:"LinkedIn Lanting",         img:"https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost:10000,       bonus:1.25,bonusText:"1.25x klikken", free:false },
-    { id:2, name:"Zapsport Lanting",         img:"https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost:25000, bonus:1.5, bonusText:"1.5x klikken",  free:false },
+    { id:1, name:"LinkedIn Lanting",         img:"https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost:10000, bonus:1.25, bonusText:"1.25x klikken", free:false },
+    { id:2, name:"Zapsport Lanting",         img:"https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost:25000, bonus:1.5, bonusText:"1.5x klikken", free:false },
     { id:3, name:"Levensgenietende Lanting", img:"https://cdn.discordapp.com/attachments/1493613756830191648/1501932755578130692/image.png?ex=69fe8821&is=69fd36a1&hm=43481360c0888dbfd5cef7114e42d694f9f1a79bb898b02d3763ee4739ca352b&", cost:50000, bonus:2, bonusText:"2x klikken", free:false },
-    { id:4, name:"Vakantie Lanting",         img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505114098_4696325513927013_1892631468890635773_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=53a332&_nc_ohc=nRZ6G-XAseQQ7kNvwGSLSbp&_nc_oc=AdqSAeAlIfSYKFjBNloJOQa9By8NOxj7owQrTeOgZCJtH4Q7MTP3y9VSqVGxm90s8Rc&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=9Q2JkJzEbyAGcoC2D2a6Bw&_nc_ss=7a389&oh=00_Af3dskOQkEHrxXzm38hVGTpJOuPDVICVPf22505yDhwvCg&oe=69E6886D", cost:100000, bonus:2.5, bonusText:"2.5x klikken", free:false },
     { id:5, name:"Jolly Lanting",            img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505359411_4703242883235276_7531884072442166294_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=53a332&_nc_ohc=C76D43KjKo8Q7kNvwESLxZW&_nc_oc=AdoLHRkJffg1zwJ56tiplCXL6_EyJtrq7fzXFywFaou6v_1BSIcVyrWYqmQblpXzIAs&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=CJ_jltJM4o6Q48yQba2u7A&_nc_ss=7a389&oh=00_Af0SH0r6A1hCGpfX0dK8pWzsmktAsEpmTz1PePCsyDXspQ&oe=69E6775C", cost:500000, bonus:3, bonusText:"3x klikken", free:false },
     { id:6, name:"OG Lanting",               img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505767393_4700743773485187_4696695728975036082_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=53a332&_nc_ohc=-6kmga9A_5IQ7kNvwHFpIBz&_nc_oc=Adq0KoSeqN6LQinoGP4Bzo-66BA_oAL98ma3Qa83C9cv5q5MBXQ8Jaf7dk3nPlBCr_s&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=24nILOznlX4lcXFugR9o2g&_nc_ss=7a389&oh=00_Af3zNH_eyN4E9MT1F-EOjv2WaX1uKkruHvQmfHNvPeQ2Cw&oe=69E68E59", cost:50000000, bonus:4, bonusText:"4x klikken", free:false },
     { id:7, name:"Lanting",                  img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/459427263_4407458439480390_1115745422523934606_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=1d70fc&_nc_ohc=_FaeZ7hSoEcQ7kNvwGwxU3D&_nc_oc=AdrvQvP7q0iqB8x_kVHcDN0lFetYWzdTFiowtHEeITEBY7Iyv8N847w4lByQuctN-7M&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=WCW78bwKmzHRnrloUsHr2w&_nc_ss=7a389&oh=00_Af0mAtQ-R9acTzw29I1Tjx6jkj7JnfKf5FTBkBQCMX9GFg&oe=69E7B5CC", cost:1000000000, bonus:5, bonusText:"5x klikken", free:false },
@@ -1126,7 +1148,6 @@ button:active { transform: scale(.97); }
     { key:"mines",     label:"Mines",       desc:"Speelbaar in Gamble menu",   cost:2000000 },
   ];
 
-  // v2.1 historical leaderboard (frozen)
   const LB_V21 = {"michaelsmegmaeikel":983212632645483100000,"dihhalpha":778819730309406000000,"_//_":8964609716123722000,"Natte hark":5701510570466705000,"justin":1337822822809383200,"dikkedaniel123":1181222723092031000,"yvonne":47081998670756640,"OG Lanting":1651486874631794,"Djeeden":329090479377270,"ron_zaadkanon":277157913874511,"k1ck":187676374495059,"Nih":31953666177684,"jelle":30398138591424,"n3ger_b3ff3r":22633909742535,"patati":2017834350401,"josti123":1116132126346,"pijnackerkarker":164111837371,"Lars":103498298905,"zaadsoldaat":6547211249,"Fitiboy072":1877502777,"Fih":686079273,"lantingrager":585614978,"Nate Higgers":53217910,"sjorsragger":26787017,"ginger army":11413571,"Txs072":9093270,"q072":6586870,"ching":5274353,"ieke":2181070,"billebars":954312,"grape":757691,"balzak123":726984,"johan":707401,"Lars pijnacker":550715,"boriedejew":508682,"lantingfan123":425402,"lil john":424591,"isa":373436,"hoi":294081,"Guimke":246808,"jente":245787,"JE":236462,"6767":216759,"Milan":145978,"Tegellikker45":106886,"lantinglover67":104606,"yes":83235,"!!":76059,"binnenste vulvalip":60662,"ipilipi67676767676767676":55012,"Sterre":48977,"azfan67":43280,"yani":39508,"Jake":37579,"pijnackerpijper":37381,"nga balls":28458,"J072":22692,"STALIN":20852,"pijnkanker":14400,"jemairo":12128,"..":11932,"9595":11188,"laaalanting":8184,"De Kosjes":7608,"blowjob":7447,"tester69":6816,"deekie110":5349,"RB":4998,"Jamie":2852,"stroop":2599,"Lebron":1728,"lavissa":1392,"Lakplak23":894,"jamie":516,"ferron":503,"dj bust a nut":291,"lvh4sunoo":278,"giss072":208,"roan":99,"mikkel":91,"robbie":88,"Tgfffd":2,"Yo":0};
 
   // ── LOAD SAVE ─────────────────────────────────────────────────────────────
@@ -1171,13 +1192,20 @@ button:active { transform: scale(.97); }
   const activeOverlays  = new Set();
   const boosts          = { click: 0, ps: 0, doubleClick: 0 };
 
+  // CPS tracking
+  let cpsShowEnabled    = localStorage.getItem(CPS_SHOW_KEY) !== "false";
+  let clickTimestamps   = [];
+  let anticheatWarnings = 0;
+  let anticheatBlocked  = false;
+
   // ── DOM REFS ──────────────────────────────────────────────────────────────
-  const $       = id => document.getElementById(id);
+  const $ = id => document.getElementById(id);
   const scoreEl       = $("score");
   const mainImg       = $("mainImg");
   const clickBtn      = $("clickBtn");
   const perClickText  = $("perClickText");
   const perSecondText = $("perSecondText");
+  const cpsDisplay    = $("cpsDisplay");
   const upgradesEl    = $("upgrades");
   const gambleBtn     = $("gambleBtn");
   const keybindBtn    = $("keybindBtn");
@@ -1190,26 +1218,21 @@ button:active { transform: scale(.97); }
   const fallingCircle = $("fallingCircle");
   const fallingImg    = $("fallingImg");
   const fallingCdEl   = $("fallingCountdown");
+  const suggBtn       = $("suggestionOpenBtn");
+  const cpsToggle     = $("cpsToggle");
 
   // ── HELPERS ───────────────────────────────────────────────────────────────
   const fl = Math.floor;
   const cl = Math.ceil;
 
   function sendWebhook(url, content) {
-    fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content })
-    }).catch(() => {});
+    fetch(url, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({ content }) }).catch(()=>{});
   }
 
   function fmtMain(n) {
     n = fl(n);
     if (n < 10000) return String(n);
-    const scales = [
-      [1e21,"td"],[1e18,"t"],[1e15,"bd"],[1e12,"b"],
-      [1e9,"md"],[1e6,"m"],[1e3,"k"]
-    ];
+    const scales = [[1e21,"td"],[1e18,"t"],[1e15,"bd"],[1e12,"b"],[1e9,"md"],[1e6,"m"],[1e3,"k"]];
     for (const [threshold, suffix] of scales) {
       if (n >= threshold) {
         const v = Math.round(n / threshold * 10) / 10;
@@ -1242,19 +1265,44 @@ button:active { transform: scale(.97); }
       osc.type = "triangle";
       osc.frequency.value = kind === "lose" ? 180 : kind === "safe" ? 480 : 320;
       gain.gain.value = 0.03;
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.08);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(); osc.stop(ctx.currentTime + 0.08);
     } catch (_) {}
   }
 
   function spawnFloatText(text, color) {
     const el = document.createElement("div");
-    el.style.cssText = `position:fixed;left:50%;top:45%;transform:translateX(-50%);color:${color || "#00e5b0"};font-family:'Rajdhani',sans-serif;font-weight:900;font-size:26px;pointer-events:none;text-shadow:0 0 12px rgba(0,229,176,.8);z-index:1000;animation:floatUp 1s ease-out;`;
+    el.style.cssText = `position:fixed;left:50%;top:45%;transform:translateX(-50%);color:${color||"#00e5b0"};font-family:'Rajdhani',sans-serif;font-weight:900;font-size:26px;pointer-events:none;text-shadow:0 0 12px rgba(0,229,176,.8);z-index:1000;animation:floatUp 1s ease-out;`;
     el.innerText = text;
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 1000);
+  }
+
+  // ── FIREBASE LEADERBOARD ──────────────────────────────────────────────────
+  async function pushScoreToFirebase(name, sc) {
+    try {
+      const url = `${FIREBASE_URL}/leaderboard/${encodeURIComponent(name)}.json`;
+      await fetch(url, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ score: sc })
+      });
+    } catch (_) {}
+  }
+
+  async function fetchFirebaseLeaderboard() {
+    try {
+      const url = `${FIREBASE_URL}/leaderboard.json`;
+      const res = await fetch(url);
+      if (!res.ok) return null;
+      const data = await res.json();
+      if (!data) return {};
+      const out = {};
+      for (const [name, info] of Object.entries(data)) {
+        out[name] = typeof info === "object" ? (info.score || 0) : Number(info);
+      }
+      return out;
+    } catch (_) { return null; }
   }
 
   // ── SAVE ──────────────────────────────────────────────────────────────────
@@ -1262,8 +1310,7 @@ button:active { transform: scale(.97); }
     localStorage.setItem(SAVE_KEY, JSON.stringify({
       score, perClick, perSecond, upgrades, playTime, earned, lost, highest,
       ownedSkins, equippedSkin, basePerClick,
-      unlockedGamble, unlockedBlackjack, unlockedRolls, unlockedMines,
-      unlockedKeybind2
+      unlockedGamble, unlockedBlackjack, unlockedRolls, unlockedMines, unlockedKeybind2
     }));
     localStorage.setItem(LAST_ONLINE_KEY, Date.now());
   }
@@ -1271,7 +1318,7 @@ button:active { transform: scale(.97); }
   // ── OVERLAYS ──────────────────────────────────────────────────────────────
   function openOverlay(id) {
     const el = $(id);
-    el.style.display = (id === "suggestionPanel" || id === "votePanel") ? "flex" : "block";
+    el.style.display = (id === "suggestionPanel" || id === "votePanel" || id === "anticheatWarning") ? "flex" : "block";
     activeOverlays.add(id);
   }
   function closeOverlay(id) {
@@ -1283,12 +1330,8 @@ button:active { transform: scale(.97); }
   }
 
   // ── LUCK BOOST ────────────────────────────────────────────────────────────
-  function getActiveLuckPercent() {
-    return Date.now() < gambleLuckUntil ? 20 : 0;
-  }
-  function addLuckBoost(_percent, ms) {
-    gambleLuckUntil = Math.max(gambleLuckUntil, Date.now() + ms);
-  }
+  function getActiveLuckPercent() { return Date.now() < gambleLuckUntil ? 20 : 0; }
+  function addLuckBoost(_p, ms)   { gambleLuckUntil = Math.max(gambleLuckUntil, Date.now() + ms); }
 
   // ── GAMBLE HELPERS ────────────────────────────────────────────────────────
   function getMinBet() { return Math.max(1, cl(score * 0.10)); }
@@ -1298,10 +1341,7 @@ button:active { transform: scale(.97); }
     if (bet > score)             { showNotice("Niet genoeg Lantings", "var(--danger)"); return false; }
     return true;
   }
-  function setInputToMinBet(inputId) {
-    $(inputId).value = getMinBet();
-    showNotice("Minimale inzet ingevuld", "var(--accent2)");
-  }
+  function setInputToMinBet(inputId) { $(inputId).value = getMinBet(); showNotice("Minimale inzet ingevuld","var(--accent2)"); }
   function canGamble(mode) {
     const until = gambleCooldownByMode[mode] || 0;
     if (Date.now() < until) {
@@ -1311,26 +1351,18 @@ button:active { transform: scale(.97); }
     }
     return true;
   }
-  function triggerGambleCooldown(mode) {
-    gambleCooldownByMode[mode] = Date.now() + 5000;
-  }
+  function triggerGambleCooldown(mode) { gambleCooldownByMode[mode] = Date.now() + 5000; }
 
-  // ── SKIN / CLICK LOGIC ────────────────────────────────────────────────────
-  function getSkinBonus(id) {
-    return (SKIN_DEFS.find(s => s.id === id) || { bonus: 1 }).bonus;
-  }
-  function getCurrentSkinImg() {
-    const def = SKIN_DEFS.find(s => s.id === equippedSkin);
-    return (def && def.img) ? def.img : BLACK_IMG;
-  }
+  // ── SKIN / CLICK ──────────────────────────────────────────────────────────
+  function getSkinBonus(id) { return (SKIN_DEFS.find(s => s.id === id) || { bonus:1 }).bonus; }
+  function getCurrentSkinImg() { const d = SKIN_DEFS.find(s => s.id === equippedSkin); return (d && d.img) ? d.img : BLACK_IMG; }
   function getDoubleClickActive() { return Date.now() < boosts.doubleClick; }
   function applyEquippedSkin() {
     let mult = getSkinBonus(equippedSkin) * (Date.now() < boosts.click ? 1.2 : 1);
     if (getDoubleClickActive()) mult *= 2;
-    perClick   = cl(basePerClick * mult);
+    perClick    = cl(basePerClick * mult);
     mainImg.src = getCurrentSkinImg();
   }
-
   function activateBoost(type) {
     const dur = 20000;
     if (type === "click")  boosts.click = Date.now() + dur;
@@ -1340,24 +1372,66 @@ button:active { transform: scale(.97); }
     updateScore();
   }
 
-  // ── UPDATE SCORE ─────────────────────────────────────────────────────────
+  // ── CPS ───────────────────────────────────────────────────────────────────
+  function recordClick() {
+    const now = Date.now();
+    clickTimestamps.push(now);
+    // Keep only timestamps within the last second
+    clickTimestamps = clickTimestamps.filter(t => now - t <= 1000);
+  }
+
+  function getCurrentCPS() {
+    const now = Date.now();
+    clickTimestamps = clickTimestamps.filter(t => now - t <= 1000);
+    return clickTimestamps.length;
+  }
+
+  function checkAnticheat() {
+    const cps = getCurrentCPS();
+    if (cps > 20 && !anticheatBlocked) {
+      anticheatWarnings++;
+      if (anticheatWarnings >= 2) {
+        // Hard reset
+        anticheatBlocked = true;
+        $("anticheatMsg").innerText = "Je hebt tweemaal cheats gebruikt. Je account is volledig gereset.";
+        openOverlay("anticheatWarning");
+        $("anticheatDismiss").addEventListener("click", () => {
+          // Wipe everything
+          localStorage.clear();
+          location.reload();
+        }, { once: true });
+      } else {
+        $("anticheatMsg").innerText = "Cheats gedetecteerd. Zet cheats uit, anders wordt je geld gereset bij de volgende detectie. (" + anticheatWarnings + "/2)";
+        openOverlay("anticheatWarning");
+        $("anticheatDismiss").addEventListener("click", () => closeOverlay("anticheatWarning"), { once: true });
+      }
+    }
+  }
+
+  function updateCpsDisplay() {
+    const cps = getCurrentCPS();
+    if (cpsShowEnabled) {
+      cpsDisplay.style.display = "block";
+      cpsDisplay.innerText = "CPS: " + cps;
+    } else {
+      cpsDisplay.style.display = "none";
+    }
+  }
+
+  // ── UPDATE SCORE ──────────────────────────────────────────────────────────
   function updateScore() {
     score        = cl(score);
     basePerClick = cl(basePerClick);
     perSecond    = cl(perSecond);
     applyEquippedSkin();
     if (score > highest) highest = score;
-
     const effectivePS = Date.now() < boosts.ps ? cl(perSecond * 2.5) : perSecond;
-
     scoreEl.innerText       = "Lantings: " + fmtMain(score);
     scoreEl.style.animation = "none";
     void scoreEl.offsetWidth;
     scoreEl.style.animation = "scoreFlash .3s ease";
-
     perClickText.innerText  = "Per klik: "    + perClick;
     perSecondText.innerText = "Per seconde: " + effectivePS;
-
     $("rollMoney").innerText  = fmtShop(score);
     $("bjMoney").innerText    = fmtShop(score);
     $("minesMoney").innerText = fmtShop(score);
@@ -1366,23 +1440,21 @@ button:active { transform: scale(.97); }
     $("statEarned").innerText = fmtShop(earned);
     $("statLost").innerText   = fmtShop(lost);
     $("statNet").innerText    = fmtShop(highest);
-    $("displayUserId").innerText  = USER_ID;
     $("displayUserName").innerText = localStorage.getItem(NAME_KEY) || "—";
-
     renderLeaderboard();
     renderBoosts();
     updateGambleButton();
     updateKeybindUI();
+    updateCpsDisplay();
     saveGame();
   }
 
-  // ── BOOST RENDER ─────────────────────────────────────────────────────────
+  // ── BOOST RENDER ──────────────────────────────────────────────────────────
   function renderBoosts() {
-    const now    = Date.now();
-    const badges = [];
-    if (now < boosts.click)       badges.push(`<div class="boost-badge click-boost">+20% Klik (${cl((boosts.click - now) / 1000)}s)</div>`);
-    if (now < boosts.ps)          badges.push(`<div class="boost-badge ps-boost">x2.5 P/S (${cl((boosts.ps - now) / 1000)}s)</div>`);
-    if (now < boosts.doubleClick) badges.push(`<div class="boost-badge click-boost">2x Klik (${cl((boosts.doubleClick - now) / 1000)}s)</div>`);
+    const now = Date.now(), badges = [];
+    if (now < boosts.click)       badges.push(`<div class="boost-badge click-boost">+20% Klik (${cl((boosts.click-now)/1000)}s)</div>`);
+    if (now < boosts.ps)          badges.push(`<div class="boost-badge ps-boost">x2.5 P/S (${cl((boosts.ps-now)/1000)}s)</div>`);
+    if (now < boosts.doubleClick) badges.push(`<div class="boost-badge click-boost">2x Klik (${cl((boosts.doubleClick-now)/1000)}s)</div>`);
     const luck = getActiveLuckPercent();
     if (luck > 0)                 badges.push(`<div class="boost-badge gamble-boost">Luck +${luck}%</div>`);
     boostBar.innerHTML = badges.join("");
@@ -1403,11 +1475,10 @@ button:active { transform: scale(.97); }
 
   // ── KEYBIND UI ────────────────────────────────────────────────────────────
   function updateKeybindUI() {
-    keybindBtn.innerText  = keybindDisplay;
-    const canAfford1      = score >= KEYBIND_CHANGE_COST;
+    keybindBtn.innerText = keybindDisplay;
+    const canAfford1 = score >= KEYBIND_CHANGE_COST;
     $("kb1CostLabel").innerText = `Wijzigen: ${fmtMain(KEYBIND_CHANGE_COST)}`;
     $("kb1CostLabel").style.color = canAfford1 ? "var(--accent2)" : "var(--danger)";
-
     const kb2Row = $("kb2Row");
     if (unlockedKeybind2) {
       kb2Row.style.opacity = "1";
@@ -1424,20 +1495,27 @@ button:active { transform: scale(.97); }
     }
   }
 
+  // ── SUGGESTION BUTTON COOLDOWN ────────────────────────────────────────────
+  function updateSuggBtn() {
+    const remaining = 180000 - (Date.now() - lastSuggTime);
+    if (lastSuggTime > 0 && remaining > 0) {
+      const secs = Math.ceil(remaining / 1000);
+      suggBtn.textContent = `Cooldown (${secs}s)`;
+      suggBtn.classList.add("cooldown");
+      suggBtn.disabled = true;
+    } else {
+      suggBtn.textContent = "Suggestion";
+      suggBtn.classList.remove("cooldown");
+      suggBtn.disabled = false;
+    }
+  }
+
   // ── LEADERBOARD ───────────────────────────────────────────────────────────
   async function fetchLeaderboard() {
-    try {
-      const res = await fetch(LB_API_URL, { headers: { "X-Master-Key": LB_API_KEY } });
-      if (!res.ok) return;
-      const data = await res.json();
-      if (data && typeof data.leaderboard === "object" && !Array.isArray(data.leaderboard)) {
-        lbData = data.leaderboard;
-      } else if (data && typeof data.record === "object" && !Array.isArray(data.record)) {
-        lbData = (data.record && typeof data.record.leaderboard === "object" && !Array.isArray(data.record.leaderboard))
-          ? data.record.leaderboard
-          : data.record;
-      }
-    } catch (_) {}
+    const fbData = await fetchFirebaseLeaderboard();
+    if (fbData && Object.keys(fbData).length > 0) {
+      lbData = fbData;
+    }
   }
 
   function isTakenByLB(name) {
@@ -1452,9 +1530,8 @@ button:active { transform: scale(.97); }
     const playerLower = playerName.toLowerCase();
     const source      = lbVersionView === "2.1" ? LB_V21 : lbData;
     const viewOnly    = lbVersionView === "2.1";
-    let   playerFound = false;
+    let playerFound   = false;
     const entries     = [];
-
     for (const [name, sc] of Object.entries(source)) {
       if (!viewOnly && name.toLowerCase() === playerLower) {
         entries.push({ name: playerName, score, isMe: true });
@@ -1463,9 +1540,7 @@ button:active { transform: scale(.97); }
         entries.push({ name, score: Number(sc), isMe: false });
       }
     }
-    if (!viewOnly && !playerFound) {
-      entries.push({ name: playerName, score, isMe: true });
-    }
+    if (!viewOnly && !playerFound) entries.push({ name: playerName, score, isMe: true });
     entries.sort((a, b) => b.score - a.score);
     return entries;
   }
@@ -1475,7 +1550,7 @@ button:active { transform: scale(.97); }
     const rnk = modal ? "lb-modal-rank" : "lb-rank";
     return `<div class="${cls}${isMe ? " lb-me" : ""}">
       <span class="${rnk} ${rankClass(rank)}">#${rank}</span>
-      <span class="lb-name" style="flex:1">${name}${isMe ? " \u2190" : ""}</span>
+      <span class="lb-name" style="flex:1">${name}${isMe ? " ←" : ""}</span>
       <span class="lb-score">${fmtLB(sc)}</span>
     </div>`;
   }
@@ -1485,21 +1560,18 @@ button:active { transform: scale(.97); }
     const playerRank = entries.findIndex(p => p.isMe) + 1;
     const top5       = entries.slice(0, 5);
     const inTop5     = playerRank <= 5;
-
     let html = top5.map((p, i) => makeRowHTML(i + 1, p.name, p.score, p.isMe, false)).join("");
     for (let i = top5.length; i < 5; i++) {
       html += `<div class="lb-row"><span class="lb-rank">#${i+1}</span><span class="lb-name" style="color:var(--muted)">???</span><span class="lb-score" style="color:var(--muted)">???</span></div>`;
     }
     if (!inTop5) {
-      html += `<hr class="lb-separator">${makeRowHTML(playerRank, entries[playerRank - 1].name, entries[playerRank - 1].score, true, false)}`;
+      html += `<hr class="lb-separator">${makeRowHTML(playerRank, entries[playerRank-1].name, entries[playerRank-1].score, true, false)}`;
     }
     lbRows.innerHTML = html;
-
-    lbExpandBtn.textContent = (lbModalOpen ? "\u25BC" : "\u25B2") + " Volledig Leaderboard (" + entries.length + ")";
+    lbExpandBtn.textContent = (lbModalOpen ? "▼" : "▲") + " Volledig Leaderboard (" + entries.length + ")";
     $("lbVersionBadge").textContent = "v" + lbVersionView;
     $("lbPrevBtn").style.display    = lbVersionView === VERSION ? "inline-block" : "none";
     $("lbNextBtn").style.display    = lbVersionView === "2.1"   ? "inline-block" : "none";
-
     if (lbModalOpen) renderLbModal(entries, playerRank);
   }
 
@@ -1520,20 +1592,21 @@ button:active { transform: scale(.97); }
     const entries    = buildEntries();
     const playerRank = entries.findIndex(p => p.isMe) + 1;
     renderLbModal(entries, playerRank);
-    lbExpandBtn.textContent = "\u25BC Volledig Leaderboard (" + entries.length + ")";
+    lbExpandBtn.textContent = "▼ Volledig Leaderboard (" + entries.length + ")";
   }
 
   function closeLbModal() {
     lbModalOpen = false;
     lbModal.style.display = "none";
     activeOverlays.delete("lbModal");
-    lbExpandBtn.textContent = "\u25B2 Volledig Leaderboard (" + buildEntries().length + ")";
+    lbExpandBtn.textContent = "▲ Volledig Leaderboard (" + buildEntries().length + ")";
   }
 
   // ── CLICK HANDLER ─────────────────────────────────────────────────────────
   function doClick() {
     if (clickLock) return;
     clickLock = true;
+    recordClick();
     playSfx("safe");
     score  += perClick;
     earned += perClick;
@@ -1552,16 +1625,13 @@ button:active { transform: scale(.97); }
   function spawnFallingCircle() {
     if (fallingActive || $("startScreen").style.display !== "none") return;
     fallingActive = true;
-
     fallingImg.src = getCurrentSkinImg();
     fallingCircle.style.left    = fl(Math.random() * (window.innerWidth - 80) + 20) + "px";
     fallingCircle.style.top     = "0px";
     fallingCircle.style.display = "block";
     fallingCdEl.style.display   = "block";
-
     let timeLeft = 5;
     fallingCdEl.innerText = "Vang hem! " + timeLeft + "s";
-
     const startTime = Date.now();
     function fall() {
       const t = (Date.now() - startTime) / 1000;
@@ -1569,19 +1639,17 @@ button:active { transform: scale(.97); }
       if (t < 5) fallingAnimId = requestAnimationFrame(fall);
     }
     fallingAnimId = requestAnimationFrame(fall);
-
     fallingTimerId = setInterval(() => {
       timeLeft--;
       fallingCdEl.innerText = "Vang hem! " + timeLeft + "s";
       if (timeLeft <= 0) clearFallingCircle();
     }, 1000);
-
     fallingCircle.onclick = () => {
       clearFallingCircle();
-      const types  = ["click", "ps", "gamble"];
+      const types  = ["click","ps","gamble"];
       const chosen = types[fl(Math.random() * types.length)];
       activateBoost(chosen);
-      const msgs = { click: "Klik boost: +20% per klik", ps: "P/S boost: x2.5 per seconde", gamble: "Gamble geluk boost!" };
+      const msgs = { click:"Klik boost: +20% per klik", ps:"P/S boost: x2.5 per seconde", gamble:"Gamble geluk boost!" };
       spawnFloatText(msgs[chosen], "#ffd700");
     };
   }
@@ -1598,16 +1666,15 @@ button:active { transform: scale(.97); }
 
   // ── SHOP ──────────────────────────────────────────────────────────────────
   function renderUnlockTiles() {
-    const container    = $("unlockTiles");
-    const unlockedMap  = { gamble: unlockedGamble, blackjack: unlockedBlackjack, rolls: unlockedRolls, mines: unlockedMines };
-
+    const container   = $("unlockTiles");
+    const unlockedMap = { gamble:unlockedGamble, blackjack:unlockedBlackjack, rolls:unlockedRolls, mines:unlockedMines };
     let html = `<div class="sec-label">Ontgrendelen</div>`;
     UNLOCK_DEFS.forEach(tile => {
       const unlocked  = unlockedMap[tile.key];
       const canAfford = score >= tile.cost;
       const btnHtml   = unlocked
         ? `<button class="unlock-btn-unlocked" disabled>Ontgrendeld</button>`
-        : `<button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" data-ukey="${tile.key}" ${canAfford ? "" : "disabled"}>${fmtShop(tile.cost)}</button>`;
+        : `<button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" data-ukey="${tile.key}" ${canAfford?"":"disabled"}>${fmtShop(tile.cost)}</button>`;
       html += `<div class="unlock-tile${unlocked ? " unlocked-tile" : ""}">
         <div class="unlock-info"><div class="upgrade-val">${tile.label}</div><div class="unlock-desc">${tile.desc}</div></div>
         ${btnHtml}
@@ -1615,7 +1682,6 @@ button:active { transform: scale(.97); }
     });
     html += `<div class="sec-label">Upgrades</div>`;
     container.innerHTML = html;
-
     container.querySelectorAll("button[data-ukey]").forEach(btn => {
       btn.addEventListener("click", () => {
         const key = btn.dataset.ukey;
@@ -1625,10 +1691,8 @@ button:active { transform: scale(.97); }
         if (key === "gamble")    unlockedGamble    = true;
         if (key === "blackjack") unlockedBlackjack = true;
         if (key === "rolls")     unlockedRolls     = true;
-        if (key === "mines")     unlockedMines     = true;
-        updateScore();
-        renderUnlockTiles();
-        renderUpgrades();
+        if (key === "mines")     unlockedMines      = true;
+        updateScore(); renderUnlockTiles(); renderUpgrades();
       });
     });
   }
@@ -1636,19 +1700,14 @@ button:active { transform: scale(.97); }
   if (!upgrades.length) {
     for (let i = 0; i < 50; i++) {
       const isClick = i % 2 === 0;
-      upgrades.push({
-        type  : isClick ? "click" : "auto",
-        value : 1 + fl(i / 2) * 2,
-        cost  : isClick ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i),
-        bought: false
-      });
+      upgrades.push({ type:isClick?"click":"auto", value:1+fl(i/2)*2, cost:isClick?30*Math.pow(1.6,i):20*Math.pow(1.6,i), bought:false });
     }
   }
 
   function renderUpgrades() {
     let html = "";
     upgrades.forEach((u, i) => {
-      const unlocked = i === 0 || upgrades[i - 1].bought;
+      const unlocked = i === 0 || upgrades[i-1].bought;
       u.cost = fl(u.cost);
       if (!unlocked) {
         html += `<div class="upgrade locked"><div class="upgrade-info"><div style="color:var(--muted)">???</div></div></div>`;
@@ -1664,25 +1723,21 @@ button:active { transform: scale(.97); }
         </div>
         <div class="upgrade-right">
           ${countBadge}
-          <button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" data-upg="${i}" ${canAfford ? "" : "disabled"}>${fmtShop(u.cost)}</button>
+          <button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" data-upg="${i}" ${canAfford?"":"disabled"}>${fmtShop(u.cost)}</button>
         </div>
       </div>`;
     });
     upgradesEl.innerHTML = html;
-
     upgradesEl.querySelectorAll("button[data-upg]").forEach(btn => {
       btn.addEventListener("click", () => {
         const i = parseInt(btn.dataset.upg);
         const u = upgrades[i];
         if (!u || score < u.cost) return;
         score -= u.cost; lost += u.cost;
-        u.bought = true;
-        u.count  = (u.count || 0) + 1;
+        u.bought = true; u.count = (u.count||0)+1;
         if (u.type === "click") basePerClick += u.value; else perSecond += u.value;
         u.cost = fl(u.cost * 1.6);
-        updateScore();
-        renderUpgrades();
-        renderUnlockTiles();
+        updateScore(); renderUpgrades(); renderUnlockTiles();
       });
     });
   }
@@ -1696,23 +1751,20 @@ button:active { transform: scale(.97); }
       const imgHtml  = def.img
         ? `<img src="${def.img}" onerror="this.style.display='none'">`
         : `<div style="width:70px;height:70px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);margin:auto;">Binnenkort</div>`;
-
       let btnHtml;
       if (owned && equipped) btnHtml = `<button class="ownedBtn" disabled>Uitgerust</button>`;
       else if (owned)        btnHtml = `<button class="equipBtn" data-sid="${def.id}">Equip</button>`;
-      else if (def.free)     btnHtml = `<button class="buyBtn"   data-sid="${def.id}">Gratis</button>`;
+      else if (def.free)     btnHtml = `<button class="buyBtn" data-sid="${def.id}">Gratis</button>`;
       else if (!def.img)     btnHtml = `<button class="ownedBtn" disabled>Binnenkort</button>`;
-      else                   btnHtml = `<button class="buyBtn"   data-sid="${def.id}">Koop (${fmtShop(def.cost)})</button>`;
-
-      return `<div class="skinBox${equipped ? " skinEquipped" : ""}">
+      else                   btnHtml = `<button class="buyBtn" data-sid="${def.id}">Koop (${fmtShop(def.cost)})</button>`;
+      return `<div class="skinBox${equipped?" skinEquipped":""}">
         ${imgHtml}
         <div class="skinName">${def.name}</div>
-        <div class="skinCost">${def.cost > 0 ? fmtShop(def.cost) + " Lantings" : "Gratis"}</div>
+        <div class="skinCost">${def.cost>0?fmtShop(def.cost)+" Lantings":"Gratis"}</div>
         <div class="skinBonus">${def.bonusText}</div>
         ${btnHtml}
       </div>`;
     }).join("");
-
     list.querySelectorAll("button[data-sid]").forEach(btn => {
       btn.addEventListener("click", () => {
         const id  = parseInt(btn.dataset.sid);
@@ -1720,7 +1772,7 @@ button:active { transform: scale(.97); }
         if (!def) return;
         if (ownedSkins.includes(id)) { equipSkin(id); return; }
         if (def.free) { ownedSkins.push(id); equipSkin(id); renderSkins(); return; }
-        if (score < def.cost) { showNotice("Niet genoeg Lantings", "var(--danger)"); return; }
+        if (score < def.cost) { showNotice("Niet genoeg Lantings","var(--danger)"); return; }
         score -= def.cost; lost += def.cost;
         ownedSkins.push(id); equipSkin(id);
         updateScore(); renderSkins();
@@ -1733,549 +1785,428 @@ button:active { transform: scale(.97); }
     equippedSkin = id;
     applyEquippedSkin();
     fallingImg.src = getCurrentSkinImg();
-    updateScore();
-    renderSkins();
+    updateScore(); renderSkins();
   }
 
   // ── BLACKJACK ─────────────────────────────────────────────────────────────
-  const SUITS = ["H","D","K","S"];
-  const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
-  let deck = [], playerHand = [], dealerHand = [], bjInProgress = false, bjBet = 0, bjAllInRound = false;
+  const SUITS = ["H","D","K","S"], RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+  let deck=[], playerHand=[], dealerHand=[], bjInProgress=false, bjBet=0, bjAllInRound=false;
 
   function createDeck() {
     deck = [];
-    for (const s of SUITS) for (const r of RANKS) deck.push({ rank: r, suit: s });
-    for (let i = deck.length - 1; i > 0; i--) {
-      const j = fl(Math.random() * (i + 1));
-      [deck[i], deck[j]] = [deck[j], deck[i]];
-    }
+    for (const s of SUITS) for (const r of RANKS) deck.push({rank:r,suit:s});
+    for (let i=deck.length-1;i>0;i--) { const j=fl(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; }
   }
-
-  function cardValue(c) {
-    if (c.rank === "A") return 11;
-    if (["J","Q","K"].includes(c.rank)) return 10;
-    return parseInt(c.rank);
-  }
-  function handValue(h) {
-    let v = 0, aces = 0;
-    for (const c of h) { v += cardValue(c); if (c.rank === "A") aces++; }
-    while (v > 21 && aces-- > 0) v -= 10;
-    return v;
-  }
-  function renderCard(c) {
-    const red = c.suit === "H" || c.suit === "D";
-    return `<span style="color:${red ? "#ff4f6d" : "#e8e8ff"}">${c.rank}${c.suit}</span>`;
-  }
-  function renderHandHTML(h, hideFirst) {
-    return h.map((c, i) => (hideFirst && i === 0) ? "??" : renderCard(c)).join(" ");
-  }
+  function cardValue(c) { if(c.rank==="A")return 11; if(["J","Q","K"].includes(c.rank))return 10; return parseInt(c.rank); }
+  function handValue(h) { let v=0,aces=0; for(const c of h){v+=cardValue(c);if(c.rank==="A")aces++;} while(v>21&&aces-->0)v-=10; return v; }
+  function renderCard(c) { const red=c.suit==="H"||c.suit==="D"; return `<span style="color:${red?"#ff4f6d":"#e8e8ff"}">${c.rank}${c.suit}</span>`; }
+  function renderHandHTML(h,hideFirst) { return h.map((c,i)=>(hideFirst&&i===0)?"??":renderCard(c)).join(" "); }
 
   function updateBJDisplay() {
-    const pv = handValue(playerHand);
-    const dv = handValue(dealerHand);
+    const pv=handValue(playerHand), dv=handValue(dealerHand);
     $("bjGame").innerHTML = `
       <div style="margin:30px 0;">
         <div class="bj-label">Dealer</div>
-        <div class="bj-hand">${renderHandHTML(dealerHand, bjInProgress)} (${bjInProgress ? "?" : dv})</div>
+        <div class="bj-hand">${renderHandHTML(dealerHand,bjInProgress)} (${bjInProgress?"?":dv})</div>
         <div class="bj-label" style="margin-top:20px;">Jij</div>
-        <div class="bj-hand">${renderHandHTML(playerHand, false)} (${pv})</div>
+        <div class="bj-hand">${renderHandHTML(playerHand,false)} (${pv})</div>
       </div>
       <div class="bj-buttons" id="bjButtons">
-        ${bjInProgress
-          ? `<button id="hitBtn">Pak</button><button id="standBtn">Stop</button>`
-          : `<button id="newBJGameBtn">Opnieuw</button>`}
+        ${bjInProgress?`<button id="hitBtn">Pak</button><button id="standBtn">Stop</button>`:`<button id="newBJGameBtn">Opnieuw</button>`}
       </div>
       <div class="bj-result" id="bjResult"></div>`;
-
-    if (bjInProgress) {
-      $("hitBtn").addEventListener("click", bjHit);
-      $("standBtn").addEventListener("click", bjStand);
-    } else {
-      $("newBJGameBtn").addEventListener("click", bjReset);
-    }
+    if (bjInProgress) { $("hitBtn").addEventListener("click",bjHit); $("standBtn").addEventListener("click",bjStand); }
+    else              { $("newBJGameBtn").addEventListener("click",bjReset); }
   }
 
   function startBlackjack(betOverride) {
     if (!canGamble("blackjack")) return;
     const bet = betOverride !== undefined ? betOverride : parseInt($("betInput").value);
     if (!assertValidBet(bet)) return;
-    bjAllInRound = bet === score;
-    bjBet  = bet;
-    score -= bet; lost += bet;
-    createDeck();
-    playerHand   = [deck.pop(), deck.pop()];
-    dealerHand   = [deck.pop(), deck.pop()];
-    bjInProgress = true;
-    updateBJDisplay();
-    triggerGambleCooldown("blackjack");
-    updateScore();
+    bjAllInRound=bet===score; bjBet=bet; score-=bet; lost+=bet;
+    createDeck(); playerHand=[deck.pop(),deck.pop()]; dealerHand=[deck.pop(),deck.pop()];
+    bjInProgress=true; updateBJDisplay(); triggerGambleCooldown("blackjack"); updateScore();
   }
 
   function bjHit() {
     if (!bjInProgress) return;
     playerHand.push(deck.pop());
-    if (handValue(playerHand) > 21) endBJ(false);
-    else updateBJDisplay();
+    if (handValue(playerHand)>21) endBJ(false); else updateBJDisplay();
   }
 
   function bjStand() {
     if (!bjInProgress) return;
-    bjInProgress = false;
-    while (handValue(dealerHand) < 17) dealerHand.push(deck.pop());
-    const pv = handValue(playerHand);
-    const dv = handValue(dealerHand);
+    bjInProgress=false;
+    while(handValue(dealerHand)<17) dealerHand.push(deck.pop());
+    const pv=handValue(playerHand), dv=handValue(dealerHand);
     let win;
-    if      (pv > 21)                                                                       win = false;
-    else if (dv > 21)                                                                       win = true;
-    else if (pv === 21 && playerHand.length === 2 && !(dv === 21 && dealerHand.length === 2)) win = true;
-    else if (pv > dv)                                                                       win = true;
-    else if (pv === dv)                                                                     win = null;
-    else                                                                                    win = false;
+    if      (pv>21)                                                                       win=false;
+    else if (dv>21)                                                                       win=true;
+    else if (pv===21&&playerHand.length===2&&!(dv===21&&dealerHand.length===2))           win=true;
+    else if (pv>dv)                                                                       win=true;
+    else if (pv===dv)                                                                     win=null;
+    else                                                                                  win=false;
     endBJ(win);
   }
 
   function endBJ(win) {
-    bjInProgress = false;
-    if (win === false) {
-      const recoverChance = (bjAllInRound ? 0.10 : 0) + (getActiveLuckPercent() / 100);
-      if (Math.random() < recoverChance) win = true;
-    }
+    bjInProgress=false;
+    if (win===false) { const recoverChance=(bjAllInRound?0.10:0)+(getActiveLuckPercent()/100); if(Math.random()<recoverChance) win=true; }
     let msg, color;
-    if (win === true) {
-      const mult   = (playerHand.length === 2 && handValue(playerHand) === 21) ? 3 : 2;
-      const payout = Math.max(0, fl(bjBet * mult));
-      score += payout; earned += payout;
-      msg = "Gewonnen! +" + fmtShop(payout); color = "var(--accent2)";
-      playSfx("win");
-    } else if (win === false) {
-      msg = "Verloren!"; color = "var(--danger)";
-      playSfx("lose");
+    if (win===true) {
+      const mult=(playerHand.length===2&&handValue(playerHand)===21)?3:2;
+      const payout=Math.max(0,fl(bjBet*mult));
+      score+=payout; earned+=payout; msg="Gewonnen! +"+fmtShop(payout); color="var(--accent2)"; playSfx("win");
+    } else if (win===false) {
+      msg="Verloren!"; color="var(--danger)"; playSfx("lose");
     } else {
-      score += bjBet;
-      msg = "Gelijkspel! Inzet terug."; color = "var(--gold)";
+      score+=bjBet; msg="Gelijkspel! Inzet terug."; color="var(--gold)";
     }
     updateBJDisplay();
-    const r = $("bjResult");
-    r.innerText = msg; r.style.color = color;
-    updateScore();
+    const r=$("bjResult"); r.innerText=msg; r.style.color=color; updateScore();
   }
 
-  function bjReset() {
-    playerHand = []; dealerHand = []; bjInProgress = false; bjBet = 0; bjAllInRound = false;
-    $("betInput").value = "";
-    updateBJDisplay();
-  }
+  function bjReset() { playerHand=[]; dealerHand=[]; bjInProgress=false; bjBet=0; bjAllInRound=false; $("betInput").value=""; updateBJDisplay(); }
 
-  // ── ROLLS ──────────────────────────────────────────────────────────────────
+  // ── ROLLS ─────────────────────────────────────────────────────────────────
   function getRollPick(luckPercent) {
-    const red   = [0.1, 0.5, 0.75];
-    const green = [1.25, 1.5, 2];
-    const baseWinChance = 0.20 + (luckPercent / 100);
-    const winChance     = luckPercent >= 40 ? 0.60 : Math.min(0.49, baseWinChance);
-    return Math.random() < winChance
-      ? green[fl(Math.random() * green.length)]
-      : red[fl(Math.random() * red.length)];
+    const red=[0.1,0.5,0.75], green=[1.25,1.5,2];
+    const baseWinChance=0.20+(luckPercent/100);
+    const winChance=luckPercent>=40?0.60:Math.min(0.49,baseWinChance);
+    return Math.random()<winChance ? green[fl(Math.random()*green.length)] : red[fl(Math.random()*red.length)];
   }
-  function rollClass(m) { return m < 1 ? "bad" : m === 1 ? "neutral" : "good"; }
+  function rollClass(m) { return m<1?"bad":m===1?"neutral":"good"; }
 
   function playRolls(opts) {
     if (!canGamble("rolls")) return;
-    const allIn = opts && opts.allIn;
-    const bet   = (opts && opts.bet !== undefined) ? opts.bet : parseInt($("rollBet").value);
+    const allIn=opts&&opts.allIn;
+    const bet=(opts&&opts.bet!==undefined)?opts.bet:parseInt($("rollBet").value);
     if (!assertValidBet(bet)) return;
-    score -= bet; lost += bet;
-    const count       = Math.min(5, Math.max(3, parseInt($("rollCount").value) || 3));
-    const luckPercent = getActiveLuckPercent() + (allIn ? 10 : 0);
-    const mults       = Array.from({ length: count }, () => getRollPick(luckPercent));
-    const perRoll     = bet / count;
-    const total       = Math.max(0, cl(mults.reduce((s, m) => s + perRoll * m, 0)));
-    score += total; earned += total;
-    $("rollResult").innerHTML = `
-      <div class="roll-grid">${mults.map(x => `<div class="rollMult ${rollClass(x)}">${x}x</div>`).join("")}</div>
+    score-=bet; lost+=bet;
+    const count=Math.min(5,Math.max(3,parseInt($("rollCount").value)||3));
+    const luckPercent=getActiveLuckPercent()+(allIn?10:0);
+    const mults=Array.from({length:count},()=>getRollPick(luckPercent));
+    const perRoll=bet/count;
+    const total=Math.max(0,cl(mults.reduce((s,m)=>s+perRoll*m,0)));
+    score+=total; earned+=total;
+    $("rollResult").innerHTML=`
+      <div class="roll-grid">${mults.map(x=>`<div class="rollMult ${rollClass(x)}">${x}x</div>`).join("")}</div>
       <div class="roll-total">Totaal: ${fmtShop(total)} Lantings</div>`;
-    $("rollMeta").innerText = "Luck bonus actief: +" + luckPercent + "%";
-    triggerGambleCooldown("rolls");
-    playSfx(total >= bet ? "win" : "lose");
-    updateScore();
+    $("rollMeta").innerText="Luck bonus actief: +"+luckPercent+"%";
+    triggerGambleCooldown("rolls"); playSfx(total>=bet?"win":"lose"); updateScore();
   }
 
-  // ── MINES ──────────────────────────────────────────────────────────────────
-  let minesState = { active: false, size: 5, mines: 3, bet: 0, multiplier: 1, safe: 0, bombSet: new Set(), opened: new Set() };
+  // ── MINES (balanced) ──────────────────────────────────────────────────────
+  let minesState = { active:false, size:5, mines:3, bet:0, multiplier:1, safe:0, bombSet:new Set(), opened:new Set() };
 
+  // Reduced gain factor from 35 to 18, and reduced luck scaling from 0.25 to 0.12
   function mineGainPerSafe(size, mines, luck) {
     const ratio   = mines / (size * size);
-    const luckMul = 1 + (luck / 100) * 0.25;
-    return Math.max(0.00005, Math.pow(ratio, 2.8) * 35) * luckMul;
+    const luckMul = 1 + (luck / 100) * 0.12;
+    return Math.max(0.00003, Math.pow(ratio, 3.2) * 18) * luckMul;
   }
 
   function resetMinesBoard() {
-    const board = $("minesBoard");
-    board.style.gridTemplateColumns = `repeat(${minesState.size}, 1fr)`;
-    const total = minesState.size * minesState.size;
-    const frag  = document.createDocumentFragment();
-    for (let i = 0; i < total; i++) {
-      const tile = document.createElement("button");
-      tile.className   = "mine-tile";
-      tile.dataset.idx = String(i);
-      tile.textContent = "?";
-      tile.addEventListener("click", () => onMineClick(i));
-      frag.appendChild(tile);
+    const board=$("minesBoard");
+    board.style.gridTemplateColumns=`repeat(${minesState.size},1fr)`;
+    const total=minesState.size*minesState.size;
+    const frag=document.createDocumentFragment();
+    for (let i=0;i<total;i++) {
+      const tile=document.createElement("button");
+      tile.className="mine-tile"; tile.dataset.idx=String(i); tile.textContent="?";
+      tile.addEventListener("click",()=>onMineClick(i)); frag.appendChild(tile);
     }
-    board.innerHTML = "";
-    board.appendChild(frag);
+    board.innerHTML=""; board.appendChild(frag);
   }
 
   function startMinesGame(opts) {
     if (!canGamble("mines")) return;
-    const allIn = opts && opts.allIn;
-    const bet   = (opts && opts.bet !== undefined) ? opts.bet : parseInt($("minesBet").value);
+    const allIn=opts&&opts.allIn;
+    const bet=(opts&&opts.bet!==undefined)?opts.bet:parseInt($("minesBet").value);
     if (!assertValidBet(bet)) return;
-    const size  = Math.min(10, Math.max(5, parseInt($("minesSize").value) || 5));
-    const mines = Math.max(1, Math.min(size * size - 1, parseInt($("minesCount").value) || 1));
-    if (allIn) addLuckBoost(10, 20000);
-    const luck         = getActiveLuckPercent() + (allIn ? 10 : 0);
-    const reducedMines = Math.max(1, mines - fl(mines * (luck / 100) * 0.20));
-    score -= bet; lost += bet;
-    minesState = { active: true, size, mines: reducedMines, bet, multiplier: 1, safe: 0, bombSet: new Set(), opened: new Set() };
-    while (minesState.bombSet.size < reducedMines) minesState.bombSet.add(fl(Math.random() * size * size));
+    const size=Math.min(10,Math.max(5,parseInt($("minesSize").value)||5));
+    const mines=Math.max(1,Math.min(size*size-1,parseInt($("minesCount").value)||1));
+    if (allIn) addLuckBoost(10,20000);
+    const luck=getActiveLuckPercent()+(allIn?10:0);
+    // Reduced mine reduction: from 0.20 to 0.10
+    const reducedMines=Math.max(1,mines-fl(mines*(luck/100)*0.10));
+    score-=bet; lost+=bet;
+    minesState={active:true,size,mines:reducedMines,bet,multiplier:1,safe:0,bombSet:new Set(),opened:new Set()};
+    while(minesState.bombSet.size<reducedMines) minesState.bombSet.add(fl(Math.random()*size*size));
     resetMinesBoard();
-    const st = $("minesStatus");
-    st.style.color = "var(--muted)";
-    st.innerText   = "Spel gestart. Luck: +" + luck + "%";
-    triggerGambleCooldown("mines");
-    updateScore();
+    const st=$("minesStatus"); st.style.color="var(--muted)"; st.innerText="Spel gestart. Luck: +"+luck+"%";
+    triggerGambleCooldown("mines"); updateScore();
   }
 
-  function revealMineTile(idx, bomb) {
-    const tile = $("minesBoard").querySelector(`[data-idx="${idx}"]`);
-    if (!tile) return;
-    tile.disabled    = true;
-    tile.textContent = bomb ? "💣" : "💰";
-    tile.classList.add(bomb ? "bomb" : "safe");
+  function revealMineTile(idx,bomb) {
+    const tile=$("minesBoard").querySelector(`[data-idx="${idx}"]`);
+    if(!tile)return; tile.disabled=true; tile.textContent=bomb?"💣":"💰"; tile.classList.add(bomb?"bomb":"safe");
   }
 
-  function endMinesGame(won, msg) {
-    minesState.active = false;
-    for (let i = 0; i < minesState.size * minesState.size; i++) {
-      if (minesState.bombSet.has(i)) revealMineTile(i, true);
-    }
-    const st = $("minesStatus");
-    st.style.color = won ? "var(--accent2)" : "var(--danger)";
-    st.innerText   = msg;
-    playSfx(won ? "win" : "lose");
-    updateScore();
+  function endMinesGame(won,msg) {
+    minesState.active=false;
+    for(let i=0;i<minesState.size*minesState.size;i++) { if(minesState.bombSet.has(i)) revealMineTile(i,true); }
+    const st=$("minesStatus"); st.style.color=won?"var(--accent2)":"var(--danger)"; st.innerText=msg;
+    playSfx(won?"win":"lose"); updateScore();
   }
 
   function onMineClick(idx) {
-    if (!minesState.active || minesState.opened.has(idx)) return;
+    if(!minesState.active||minesState.opened.has(idx))return;
     minesState.opened.add(idx);
-    if (minesState.bombSet.has(idx)) { revealMineTile(idx, true); endMinesGame(false, "Je hebt verloren"); return; }
-    revealMineTile(idx, false);
-    minesState.safe++;
-    const gain = mineGainPerSafe(minesState.size, minesState.mines, getActiveLuckPercent());
-    minesState.multiplier *= (1 + gain);
-    const st = $("minesStatus");
-    st.style.color = "var(--gold)";
-    st.innerText   = "Multiplier: x" + minesState.multiplier.toFixed(4);
+    if(minesState.bombSet.has(idx)){revealMineTile(idx,true);endMinesGame(false,"Je hebt verloren");return;}
+    revealMineTile(idx,false); minesState.safe++;
+    const gain=mineGainPerSafe(minesState.size,minesState.mines,getActiveLuckPercent());
+    minesState.multiplier*=(1+gain);
+    const st=$("minesStatus"); st.style.color="var(--gold)"; st.innerText="Multiplier: x"+minesState.multiplier.toFixed(4);
     playSfx("safe");
   }
 
   function cashoutMines() {
-    if (!minesState.active) return;
-    const payout = Math.max(0, cl(minesState.bet * minesState.multiplier));
-    score += payout; earned += payout;
-    triggerGambleCooldown("mines");
-    endMinesGame(true, "Cash out! +" + fmtShop(payout) + " Lantings");
+    if(!minesState.active)return;
+    const payout=Math.max(0,cl(minesState.bet*minesState.multiplier));
+    score+=payout; earned+=payout; triggerGambleCooldown("mines");
+    endMinesGame(true,"Cash out! +"+fmtShop(payout)+" Lantings");
   }
 
-  // ── CODES ──────────────────────────────────────────────────────────────────
-  const usedCodes   = new Set();
+  // ── CODES ─────────────────────────────────────────────────────────────────
+  const usedCodes = new Set();
   const VALID_CODES = {
     "gamble69": () => {
       activateBoost("gamble");
-      return { msg: "Gamble geluk boost geactiveerd! (20 seconden)", color: "var(--accent2)" };
+      return { msg:"Gamble geluk boost geactiveerd! (20 seconden)", color:"var(--accent2)" };
+    },
+    "netanyahu": () => {
+      boosts.doubleClick = Date.now() + 60000;
+      applyEquippedSkin(); updateScore();
+      return { msg:"2x klikken voor 60 seconden!", color:"var(--gold)" };
     },
     "shalom": () => {
       boosts.doubleClick = Date.now() + 30000;
-      applyEquippedSkin();
-      updateScore();
-      return { msg: "✡ Shalom! 2x klikken voor 30 seconden!", color: "var(--gold)" };
+      applyEquippedSkin(); updateScore();
+      return { msg:"✡ Shalom! 2x klikken voor 30 seconden!", color:"var(--gold)" };
     }
   };
 
   function submitCode() {
-    const input = $("codeInput");
-    const msgEl = $("codeMsg");
-    const code  = input.value.trim().toLowerCase();
-    if (!code) return;
-    if (usedCodes.has(code)) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Code al gebruikt!"; return; }
-    if (VALID_CODES[code]) {
+    const input=$("codeInput"), msgEl=$("codeMsg");
+    const code=input.value.trim().toLowerCase();
+    if(!code)return;
+    if(usedCodes.has(code)){msgEl.style.color="var(--danger)";msgEl.innerText="Code al gebruikt!";return;}
+    if(VALID_CODES[code]){
       usedCodes.add(code);
-      const result = VALID_CODES[code]();
-      msgEl.style.color = result.color; msgEl.innerText = result.msg; input.value = "";
+      const result=VALID_CODES[code]();
+      msgEl.style.color=result.color; msgEl.innerText=result.msg; input.value="";
     } else {
-      msgEl.style.color = "var(--danger)"; msgEl.innerText = "Ongeldige code.";
+      msgEl.style.color="var(--danger)"; msgEl.innerText="Ongeldige code.";
     }
   }
 
-  // ── VOTE ───────────────────────────────────────────────────────────────────
+  // ── VOTE ──────────────────────────────────────────────────────────────────
   function openVotePanel() {
-    const oldVote = localStorage.getItem(VOTE_KEY);
-    const info    = $("voteInfo");
-    info.style.color = "var(--muted)";
-    info.innerText   = oldVote ? "Jouw stem: " + oldVote : "Je hebt nog niet gestemd.";
-    if (oldVote) {
-      const sel = document.querySelector(`input[name="voteOption"][value="${oldVote}"]`);
-      if (sel) sel.checked = true;
-    }
+    const oldVote=localStorage.getItem(VOTE_KEY);
+    const info=$("voteInfo"); info.style.color="var(--muted)";
+    info.innerText=oldVote?"Jouw stem: "+oldVote:"Je hebt nog niet gestemd.";
+    if(oldVote){ const sel=document.querySelector(`input[name="voteOption"][value="${oldVote}"]`); if(sel)sel.checked=true; }
     openOverlay("votePanel");
   }
 
   function submitVote() {
-    const sel = document.querySelector("input[name='voteOption']:checked");
-    if (!sel) { showNotice("Kies eerst een optie", "var(--danger)"); return; }
-    const choice  = sel.value;
-    const name    = localStorage.getItem(NAME_KEY) || "Onbekend";
-    const oldVote = localStorage.getItem(VOTE_KEY);
-    if (oldVote && oldVote !== choice) { showNotice("Je kan maar 1 keer stemmen", "var(--danger)"); return; }
-    if (!oldVote) {
-      localStorage.setItem(VOTE_KEY, choice);
-      sendWebhook(WEBHOOKS.vote, `vote | ${name} | ${choice}`);
-      showNotice("Stem verzonden: " + choice, "var(--accent2)");
+    const sel=document.querySelector("input[name='voteOption']:checked");
+    if(!sel){showNotice("Kies eerst een optie","var(--danger)");return;}
+    const choice=sel.value, name=localStorage.getItem(NAME_KEY)||"Onbekend", oldVote=localStorage.getItem(VOTE_KEY);
+    if(oldVote&&oldVote!==choice){showNotice("Je kan maar 1 keer stemmen","var(--danger)");return;}
+    if(!oldVote){
+      localStorage.setItem(VOTE_KEY,choice);
+      sendWebhook(WEBHOOKS.vote,`vote | ${name} | ${choice}`);
+      showNotice("Stem verzonden: "+choice,"var(--accent2)");
     } else {
-      showNotice("Je stem staat al op: " + oldVote, "var(--gold)");
+      showNotice("Je stem staat al op: "+oldVote,"var(--gold)");
     }
     closeOverlay("votePanel");
   }
 
-  // ── SUGGESTION ─────────────────────────────────────────────────────────────
+  // ── SUGGESTION ────────────────────────────────────────────────────────────
   function sendSuggestion() {
-    const input = $("suggestionInput");
-    const msg   = input.value.trim();
-    if (!msg) return;
-    if (Date.now() - lastSuggTime < 180000) { showNotice("Wacht 3 minuten tussen suggestions", "var(--danger)"); return; }
-    sendWebhook(WEBHOOKS.sugg, `${localStorage.getItem(NAME_KEY) || "Onbekend"}: ${msg}`);
-    input.value  = "";
-    closeOverlay("suggestionPanel");
-    lastSuggTime = Date.now();
-    showNotice("Suggestion verzonden", "var(--accent2)");
+    const input=$("suggestionInput"), msg=input.value.trim();
+    if(!msg)return;
+    const remaining=180000-(Date.now()-lastSuggTime);
+    if(lastSuggTime>0&&remaining>0){
+      showNotice("Cooldown actief, wacht tot je opnieuw een suggestie kunt sturen.","var(--danger)");
+      return;
+    }
+    sendWebhook(WEBHOOKS.sugg,`${localStorage.getItem(NAME_KEY)||"Onbekend"}: ${msg}`);
+    input.value=""; closeOverlay("suggestionPanel");
+    lastSuggTime=Date.now();
+    updateSuggBtn();
+    showNotice("Suggestion verzonden","var(--accent2)");
   }
 
-  // ── NAME VALIDATION ────────────────────────────────────────────────────────
-  function isBanned(name) { return BANNED_WORDS.some(w => name.toLowerCase().includes(w)); }
-
+  // ── NAME VALIDATION ───────────────────────────────────────────────────────
+  function isBanned(name) { return BANNED_WORDS.some(w=>name.toLowerCase().includes(w)); }
   function getOfflineBonus() {
-    const last = parseInt(localStorage.getItem(LAST_ONLINE_KEY)) || Date.now();
-    const mins = fl((Date.now() - last) / 60000);
-    return { minutes: mins, bonus: mins > 0 ? fl(perSecond * 0.40 * mins) : 0 };
+    const last=parseInt(localStorage.getItem(LAST_ONLINE_KEY))||Date.now();
+    const mins=fl((Date.now()-last)/60000);
+    return { minutes:mins, bonus:mins>0?fl(perSecond*0.40*mins):0 };
   }
 
   function confirmName() {
-    const raw   = $("nameInput").value.trim();
-    const errEl = $("nameError");
-    if (!raw || raw.length < 2)  { errEl.innerText = raw ? "Naam moet minimaal 2 tekens zijn." : "Voer een naam in."; return; }
-    if (isBanned(raw))           { errEl.innerText = "Die naam is niet toegestaan."; return; }
-    if (isTakenByLB(raw))        { errEl.innerText = "Die naam is al in gebruik."; return; }
-    errEl.innerText = "";
-    localStorage.setItem(NAME_KEY, raw);
-    sendWebhook(WEBHOOKS.login, `player logged in: ${raw} (ID: ${USER_ID})`);
-    $("nameSection").style.display = "none";
-    $("playBtn").style.display     = "block";
-    const od = getOfflineBonus();
-    $("offlineBonus").innerText = od.minutes > 0 ? `+ ${fmtMain(od.bonus)} Lantings (offline bonus)` : "";
-    $("offlineTime").innerText  = od.minutes > 0 ? `Je bent ${od.minutes} minuten offline geweest` : "";
+    const raw=$("nameInput").value.trim(), errEl=$("nameError");
+    if(!raw||raw.length<2){errEl.innerText=raw?"Naam moet minimaal 2 tekens zijn.":"Voer een naam in.";return;}
+    if(isBanned(raw)){errEl.innerText="Die naam is niet toegestaan.";return;}
+    if(isTakenByLB(raw)){errEl.innerText="Die naam is al in gebruik.";return;}
+    errEl.innerText="";
+    localStorage.setItem(NAME_KEY,raw);
+    sendWebhook(WEBHOOKS.login,`player logged in: ${raw} (ID: ${USER_ID})`);
+    $("nameSection").style.display="none"; $("playBtn").style.display="block";
+    const od=getOfflineBonus();
+    $("offlineBonus").innerText=od.minutes>0?`+ ${fmtMain(od.bonus)} Lantings (offline bonus)`:"";
+    $("offlineTime").innerText=od.minutes>0?`Je bent ${od.minutes} minuten offline geweest`:"";
   }
 
-  // ── NAME CHANGE IN SETTINGS ────────────────────────────────────────────────
   function changeNameInSettings() {
-    const raw   = $("nameChangeInput").value.trim();
-    const msgEl = $("nameChangeMsg");
-    if (!raw || raw.length < 2)  { msgEl.style.color = "var(--danger)"; msgEl.innerText = raw ? "Naam moet minimaal 2 tekens zijn." : "Voer een naam in."; return; }
-    if (isBanned(raw))           { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Die naam is niet toegestaan."; return; }
-    const currentName = localStorage.getItem(NAME_KEY) || "";
-    if (raw.toLowerCase() === currentName.toLowerCase()) { msgEl.style.color = "var(--muted)"; msgEl.innerText = "Dat is al je naam."; return; }
-    if (isTakenByLB(raw)) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Die naam is al in gebruik."; return; }
-    localStorage.setItem(NAME_KEY, raw);
-    $("nameChangeInput").value = "";
-    msgEl.style.color = "var(--accent2)";
-    msgEl.innerText = "Naam gewijzigd naar: " + raw;
-    sendWebhook(WEBHOOKS.login, `name change: ${currentName} → ${raw} (ID: ${USER_ID})`);
+    const raw=$("nameChangeInput").value.trim(), msgEl=$("nameChangeMsg");
+    if(!raw||raw.length<2){msgEl.style.color="var(--danger)";msgEl.innerText=raw?"Naam moet minimaal 2 tekens zijn.":"Voer een naam in.";return;}
+    if(isBanned(raw)){msgEl.style.color="var(--danger)";msgEl.innerText="Die naam is niet toegestaan.";return;}
+    const currentName=localStorage.getItem(NAME_KEY)||"";
+    if(raw.toLowerCase()===currentName.toLowerCase()){msgEl.style.color="var(--muted)";msgEl.innerText="Dat is al je naam.";return;}
+    if(isTakenByLB(raw)){msgEl.style.color="var(--danger)";msgEl.innerText="Die naam is al in gebruik.";return;}
+    localStorage.setItem(NAME_KEY,raw);
+    $("nameChangeInput").value="";
+    msgEl.style.color="var(--accent2)"; msgEl.innerText="Naam gewijzigd naar: "+raw;
+    sendWebhook(WEBHOOKS.login,`name change: ${currentName} → ${raw} (ID: ${USER_ID})`);
     updateScore();
   }
 
-  // ── START SCREEN INIT ──────────────────────────────────────────────────────
+  // ── START SCREEN INIT ─────────────────────────────────────────────────────
   const storedName      = localStorage.getItem(NAME_KEY);
   const hasPlayedBefore = localStorage.getItem(LAST_ONLINE_KEY) !== null;
 
   if (!localStorage.getItem(VERSION_NOTICE_KEY)) {
-    const vn = $("versionNotice");
-    vn.style.display = "block";
-    vn.innerHTML = "Nieuwe versie: 2.4 — Keybind systeem, User IDs, nieuwe codes!<br>Bekijk de changelogs in settings";
-    localStorage.setItem(VERSION_NOTICE_KEY, "1");
+    const vn=$("versionNotice"); vn.style.display="block";
+    vn.innerHTML="Nieuwe versie: 2.5 — CPS systeem, Firebase leaderboard, anti-cheat!<br>Bekijk de changelogs in settings";
+    localStorage.setItem(VERSION_NOTICE_KEY,"1");
   }
 
   if (!storedName) {
-    $("playBtn").style.display     = "none";
-    $("nameSection").style.display = "flex";
+    $("playBtn").style.display="none"; $("nameSection").style.display="flex";
   } else {
-    const od = getOfflineBonus();
-    if (od.minutes > 0) {
-      $("offlineBonus").innerText = `+ ${fmtMain(od.bonus)} Lantings (offline bonus)`;
-      $("offlineTime").innerText  = `Je bent ${od.minutes} minuten offline geweest`;
+    const od=getOfflineBonus();
+    if(od.minutes>0){
+      $("offlineBonus").innerText=`+ ${fmtMain(od.bonus)} Lantings (offline bonus)`;
+      $("offlineTime").innerText=`Je bent ${od.minutes} minuten offline geweest`;
     }
   }
 
   if (!hasPlayedBefore && storedName) {
-    localStorage.setItem(LAST_ONLINE_KEY, Date.now());
-    $("startScreen").style.display = "none";
-    $("main").style.display        = "flex";
-    $("userIdBadge").style.display = "block";
+    localStorage.setItem(LAST_ONLINE_KEY,Date.now());
+    $("startScreen").style.display="none";
+    $("main").style.display="flex";
   }
 
-  // ── EVENT LISTENERS ────────────────────────────────────────────────────────
+  // ── CPS TOGGLE ────────────────────────────────────────────────────────────
+  cpsToggle.checked = cpsShowEnabled;
+  cpsToggle.addEventListener("change", () => {
+    cpsShowEnabled = cpsToggle.checked;
+    localStorage.setItem(CPS_SHOW_KEY, cpsShowEnabled ? "true" : "false");
+    updateCpsDisplay();
+  });
+
+  // ── EVENT LISTENERS ───────────────────────────────────────────────────────
   $("confirmNameBtn").addEventListener("click", confirmName);
-  $("nameInput").addEventListener("keydown", e => { if (e.key === "Enter") confirmName(); });
+  $("nameInput").addEventListener("keydown", e => { if(e.key==="Enter")confirmName(); });
 
   $("playBtn").addEventListener("click", () => {
-    const name = localStorage.getItem(NAME_KEY);
-    if (!name) { $("playBtn").style.display = "none"; $("nameSection").style.display = "flex"; return; }
-    sendWebhook(WEBHOOKS.main, `client connected: ${name} (ID: ${USER_ID})`);
-    const od = getOfflineBonus();
-    score  += od.bonus;
-    earned += od.bonus;
-    $("startScreen").style.display = "none";
-    $("main").style.display        = "flex";
-    $("userIdBadge").style.display = "block";
-    $("userIdBadge").innerText     = "ID: " + USER_ID;
+    const name=localStorage.getItem(NAME_KEY);
+    if(!name){$("playBtn").style.display="none";$("nameSection").style.display="flex";return;}
+    sendWebhook(WEBHOOKS.main,`client connected: ${name} (ID: ${USER_ID})`);
+    const od=getOfflineBonus(); score+=od.bonus; earned+=od.bonus;
+    $("startScreen").style.display="none"; $("main").style.display="flex";
     updateScore();
   });
 
   clickBtn.addEventListener("mousedown", () => { triggerClickAnim(); doClick(); });
 
-  // ── KEYBIND BUTTONS ────────────────────────────────────────────────────────
   keybindBtn.innerText = keybindDisplay;
 
   keybindBtn.addEventListener("click", () => {
-    if (waitingForKey) { waitingForKey = false; keybindBtn.innerText = keybindDisplay; return; }
-    // Cost check
-    if (score < KEYBIND_CHANGE_COST) {
-      showNotice("Je hebt " + fmtMain(KEYBIND_CHANGE_COST) + " Lantings nodig om de keybind te wijzigen", "var(--danger)");
-      return;
-    }
-    waitingForKey = true;
-    keybindBtn.innerText = "Druk een toets...";
-    showNotice("Druk nu een toets in voor keybind 1", "var(--accent2)");
+    if(waitingForKey){waitingForKey=false;keybindBtn.innerText=keybindDisplay;return;}
+    if(score<KEYBIND_CHANGE_COST){showNotice("Je hebt "+fmtMain(KEYBIND_CHANGE_COST)+" Lantings nodig om de keybind te wijzigen","var(--danger)");return;}
+    waitingForKey=true; keybindBtn.innerText="Druk een toets..."; showNotice("Druk nu een toets in voor keybind 1","var(--accent2)");
   });
 
   keybind2Btn.addEventListener("click", () => {
-    if (!unlockedKeybind2) {
-      // Try to unlock
-      if (score < KEYBIND2_UNLOCK_COST) {
-        showNotice("Je hebt " + fmtMain(KEYBIND2_UNLOCK_COST) + " Lantings nodig", "var(--danger)");
-        return;
-      }
-      score -= KEYBIND2_UNLOCK_COST; lost += KEYBIND2_UNLOCK_COST;
-      unlockedKeybind2 = true;
-      showNotice("Tweede keybind ontgrendeld!", "var(--accent2)");
-      updateScore();
-      return;
+    if(!unlockedKeybind2){
+      if(score<KEYBIND2_UNLOCK_COST){showNotice("Je hebt "+fmtMain(KEYBIND2_UNLOCK_COST)+" Lantings nodig","var(--danger)");return;}
+      score-=KEYBIND2_UNLOCK_COST; lost+=KEYBIND2_UNLOCK_COST; unlockedKeybind2=true;
+      showNotice("Tweede keybind ontgrendeld!","var(--accent2)"); updateScore(); return;
     }
-    if (waitingForKey2) { waitingForKey2 = false; keybind2Btn.innerText = keybindDisplay2; return; }
-    if (score < KEYBIND_CHANGE_COST) {
-      showNotice("Je hebt " + fmtMain(KEYBIND_CHANGE_COST) + " Lantings nodig om de keybind te wijzigen", "var(--danger)");
-      return;
-    }
-    waitingForKey2 = true;
-    keybind2Btn.innerText = "Druk een toets...";
-    showNotice("Druk nu een toets in voor keybind 2", "var(--accent2)");
+    if(waitingForKey2){waitingForKey2=false;keybind2Btn.innerText=keybindDisplay2;return;}
+    if(score<KEYBIND_CHANGE_COST){showNotice("Je hebt "+fmtMain(KEYBIND_CHANGE_COST)+" Lantings nodig om de keybind te wijzigen","var(--danger)");return;}
+    waitingForKey2=true; keybind2Btn.innerText="Druk een toets..."; showNotice("Druk nu een toets in voor keybind 2","var(--accent2)");
   });
 
   document.addEventListener("keydown", e => {
-    // Handle keybind assignment mode
-    if (waitingForKey) {
+    if(waitingForKey){
       e.preventDefault();
-      let disp = e.key.length === 1 ? e.key.toUpperCase() : e.key;
-      if (e.key === " ")     disp = "SPACE";
-      if (e.key === "Enter") disp = "ENTER";
-      // Deduct cost
-      score -= KEYBIND_CHANGE_COST; lost += KEYBIND_CHANGE_COST;
-      clickKeybind = e.key; keybindDisplay = disp;
-      localStorage.setItem(KEYBIND_KEY, clickKeybind);
-      localStorage.setItem(KBDISP_KEY, keybindDisplay);
-      keybindBtn.innerText = keybindDisplay;
-      waitingForKey = false;
-      showNotice("Keybind 1 ingesteld op: " + disp, "var(--accent2)");
-      updateScore();
-      return;
+      let disp=e.key.length===1?e.key.toUpperCase():e.key;
+      if(e.key===" ")disp="SPACE"; if(e.key==="Enter")disp="ENTER";
+      score-=KEYBIND_CHANGE_COST; lost+=KEYBIND_CHANGE_COST;
+      clickKeybind=e.key; keybindDisplay=disp;
+      localStorage.setItem(KEYBIND_KEY,clickKeybind); localStorage.setItem(KBDISP_KEY,keybindDisplay);
+      keybindBtn.innerText=keybindDisplay; waitingForKey=false;
+      showNotice("Keybind 1 ingesteld op: "+disp,"var(--accent2)"); updateScore(); return;
     }
-    if (waitingForKey2) {
+    if(waitingForKey2){
       e.preventDefault();
-      let disp = e.key.length === 1 ? e.key.toUpperCase() : e.key;
-      if (e.key === " ")     disp = "SPACE";
-      if (e.key === "Enter") disp = "ENTER";
-      score -= KEYBIND_CHANGE_COST; lost += KEYBIND_CHANGE_COST;
-      clickKeybind2 = e.key; keybindDisplay2 = disp;
-      localStorage.setItem("lc_v4_keybind2", clickKeybind2);
-      localStorage.setItem("lc_v4_keybind2_disp", keybindDisplay2);
-      keybind2Btn.innerText = keybindDisplay2;
-      waitingForKey2 = false;
-      showNotice("Keybind 2 ingesteld op: " + disp, "var(--accent2)");
-      updateScore();
-      return;
+      let disp=e.key.length===1?e.key.toUpperCase():e.key;
+      if(e.key===" ")disp="SPACE"; if(e.key==="Enter")disp="ENTER";
+      score-=KEYBIND_CHANGE_COST; lost+=KEYBIND_CHANGE_COST;
+      clickKeybind2=e.key; keybindDisplay2=disp;
+      localStorage.setItem("lc_v4_keybind2",clickKeybind2); localStorage.setItem("lc_v4_keybind2_disp",keybindDisplay2);
+      keybind2Btn.innerText=keybindDisplay2; waitingForKey2=false;
+      showNotice("Keybind 2 ingesteld op: "+disp,"var(--accent2)"); updateScore(); return;
     }
-
-    if (e.repeat || !isMainActive()) return;
-
-    // Keybind 1
-    if (e.key === clickKeybind || e.key.toLowerCase() === clickKeybind.toLowerCase()) {
-      e.preventDefault();
-      triggerClickAnim();
-      doClick();
-      return;
+    if(e.repeat||!isMainActive())return;
+    if(e.key===clickKeybind||e.key.toLowerCase()===clickKeybind.toLowerCase()){
+      e.preventDefault(); recordClick(); triggerClickAnim(); doClick(); return;
     }
-    // Keybind 2
-    if (unlockedKeybind2 && clickKeybind2 && (e.key === clickKeybind2 || e.key.toLowerCase() === clickKeybind2.toLowerCase())) {
+    if(unlockedKeybind2&&clickKeybind2&&(e.key===clickKeybind2||e.key.toLowerCase()===clickKeybind2.toLowerCase())){
       e.preventDefault();
-      if (!click2Lock) {
-        click2Lock = true;
-        triggerClickAnim();
-        doClick();
-        setTimeout(() => { click2Lock = false; }, 40);
-      }
+      if(!click2Lock){ click2Lock=true; recordClick(); triggerClickAnim(); doClick(); setTimeout(()=>{click2Lock=false;},40); }
     }
   });
 
-  document.addEventListener("keyup", () => { clickLock = false; click2Lock = false; });
+  document.addEventListener("keyup", () => { clickLock=false; click2Lock=false; });
 
   lbExpandBtn.addEventListener("click", () => lbModalOpen ? closeLbModal() : openLbModal());
-  $("lbPrevBtn").addEventListener("click", () => { lbVersionView = "2.1"; renderLeaderboard(); });
-  $("lbNextBtn").addEventListener("click", () => { lbVersionView = VERSION; renderLeaderboard(); });
+  $("lbPrevBtn").addEventListener("click", () => { lbVersionView="2.1"; renderLeaderboard(); });
+  $("lbNextBtn").addEventListener("click", () => { lbVersionView=VERSION; renderLeaderboard(); });
   $("lbModalClose").addEventListener("click", closeLbModal);
-  lbModal.addEventListener("click", e => { if (e.target === lbModal) closeLbModal(); });
+  lbModal.addEventListener("click", e => { if(e.target===lbModal)closeLbModal(); });
 
   $("shopBtn").addEventListener("click", () => { openOverlay("shopScreen"); renderUnlockTiles(); renderUpgrades(); });
   $("shopExitBtn").addEventListener("mousedown", () => closeOverlay("shopScreen"));
 
-  $("gambleBtn").addEventListener("click", () => { if (unlockedGamble) openOverlay("gambleScreen"); });
+  $("gambleBtn").addEventListener("click", () => { if(unlockedGamble)openOverlay("gambleScreen"); });
   $("gambleExitBtn").addEventListener("click", () => closeOverlay("gambleScreen"));
-  $("openBlackjackBtn").addEventListener("click", () => { if (!unlockedBlackjack) return; closeOverlay("gambleScreen"); openOverlay("blackjackScreen"); updateBJDisplay(); });
+  $("openBlackjackBtn").addEventListener("click", () => { if(!unlockedBlackjack)return; closeOverlay("gambleScreen"); openOverlay("blackjackScreen"); updateBJDisplay(); });
   $("bjExitBtn").addEventListener("click", () => closeOverlay("blackjackScreen"));
   $("bjStartBtn").addEventListener("click", () => startBlackjack());
   $("bjMinBtn").addEventListener("click", () => setInputToMinBet("betInput"));
-  $("bjAllInBtn").addEventListener("click", () => { $("betInput").value = score; startBlackjack(); });
+  $("bjAllInBtn").addEventListener("click", () => { $("betInput").value=score; startBlackjack(); });
 
-  $("openRollsBtn").addEventListener("click", () => { if (!unlockedRolls) return; closeOverlay("gambleScreen"); openOverlay("rollsScreen"); });
+  $("openRollsBtn").addEventListener("click", () => { if(!unlockedRolls)return; closeOverlay("gambleScreen"); openOverlay("rollsScreen"); });
   $("rollsExitBtn").addEventListener("click", () => closeOverlay("rollsScreen"));
   $("rollPlayBtn").addEventListener("click", () => playRolls());
   $("rollMinBtn").addEventListener("click", () => setInputToMinBet("rollBet"));
-  $("rollAllBtn").addEventListener("click", () => playRolls({ allIn: true, bet: score }));
-  $("rollCount").addEventListener("input", e => { $("rollCountVal").innerText = e.target.value; });
+  $("rollAllBtn").addEventListener("click", () => playRolls({allIn:true,bet:score}));
+  $("rollCount").addEventListener("input", e => { $("rollCountVal").innerText=e.target.value; });
 
-  $("openMinesBtn").addEventListener("click", () => { if (!unlockedMines) return; closeOverlay("gambleScreen"); openOverlay("minesScreen"); });
+  $("openMinesBtn").addEventListener("click", () => { if(!unlockedMines)return; closeOverlay("gambleScreen"); openOverlay("minesScreen"); });
   $("minesExitBtn").addEventListener("click", () => closeOverlay("minesScreen"));
   $("minesStartBtn").addEventListener("click", () => startMinesGame());
   $("minesMinBtn").addEventListener("click", () => setInputToMinBet("minesBet"));
-  $("minesAllInBtn").addEventListener("click", () => startMinesGame({ allIn: true, bet: score }));
+  $("minesAllInBtn").addEventListener("click", () => startMinesGame({allIn:true,bet:score}));
   $("minesCashoutBtn").addEventListener("click", cashoutMines);
 
   $("skinBtn").addEventListener("click", () => { openOverlay("skinScreen"); renderSkins(); });
@@ -2285,70 +2216,73 @@ button:active { transform: scale(.97); }
   $("statsExitBtn").addEventListener("click", () => closeOverlay("statsScreen"));
 
   $("codeSubmitBtn").addEventListener("click", submitCode);
-  $("codeInput").addEventListener("keydown", e => { if (e.key === "Enter") submitCode(); });
+  $("codeInput").addEventListener("keydown", e => { if(e.key==="Enter")submitCode(); });
 
   $("nameChangeBtn").addEventListener("click", changeNameInSettings);
-  $("nameChangeInput").addEventListener("keydown", e => { if (e.key === "Enter") changeNameInSettings(); });
+  $("nameChangeInput").addEventListener("keydown", e => { if(e.key==="Enter")changeNameInSettings(); });
 
   $("voteBtn").addEventListener("click", openVotePanel);
   $("voteCloseBtn").addEventListener("click", () => closeOverlay("votePanel"));
   $("voteSubmitBtn").addEventListener("click", submitVote);
-  $("votePanel").addEventListener("click", e => { if (e.target === $("votePanel")) closeOverlay("votePanel"); });
+  $("votePanel").addEventListener("click", e => { if(e.target===$("votePanel"))closeOverlay("votePanel"); });
 
-  $("suggestionOpenBtn").addEventListener("click", () => openOverlay("suggestionPanel"));
+  suggBtn.addEventListener("click", () => {
+    const remaining=180000-(Date.now()-lastSuggTime);
+    if(lastSuggTime>0&&remaining>0){
+      showNotice("Cooldown actief, wacht tot je opnieuw een suggestie kunt sturen.","var(--danger)");
+      return;
+    }
+    openOverlay("suggestionPanel");
+  });
   $("suggestionCloseBtn").addEventListener("click", () => closeOverlay("suggestionPanel"));
   $("sendSuggestionBtn").addEventListener("click", sendSuggestion);
-  $("suggestionInput").addEventListener("keydown", e => { if (e.key === "Enter") sendSuggestion(); });
+  $("suggestionInput").addEventListener("keydown", e => { if(e.key==="Enter")sendSuggestion(); });
 
   window.addEventListener("beforeunload", () => {
-    navigator.sendBeacon(WEBHOOKS.main, new Blob([JSON.stringify({ content: "client disconnected" })], { type: "application/json" }));
+    navigator.sendBeacon(WEBHOOKS.main, new Blob([JSON.stringify({content:"client disconnected"})],{type:"application/json"}));
   });
 
-  // ── INTERVALS ──────────────────────────────────────────────────────────────
+  // ── INTERVALS ─────────────────────────────────────────────────────────────
   setInterval(() => {
     playTime++;
-    const ps = Date.now() < boosts.ps ? cl(perSecond * 2.5) : perSecond;
-    score  += ps;
-    earned += ps;
-    updateScore();
+    const ps=Date.now()<boosts.ps?cl(perSecond*2.5):perSecond;
+    score+=ps; earned+=ps; updateScore();
   }, 1000);
 
+  // Score to Discord webhook + Firebase
   setInterval(() => {
-    const name = localStorage.getItem(NAME_KEY);
-    if (name && $("startScreen").style.display === "none") {
-      sendWebhook(WEBHOOKS.score, `${name} (ID:${USER_ID}): ${score}`);
+    const name=localStorage.getItem(NAME_KEY);
+    if(name&&$("startScreen").style.display==="none"){
+      sendWebhook(WEBHOOKS.score,`${name} (ID:${USER_ID}): ${score}`);
+      pushScoreToFirebase(name, score);
     }
   }, 5000);
 
+  // Fetch Firebase leaderboard
   setInterval(async () => {
     await fetchLeaderboard();
     renderLeaderboard();
-  }, 3000);
+  }, 5000);
 
   setInterval(() => {
-    if (!fallingActive && Date.now() >= nextFallAt && $("startScreen").style.display === "none") {
-      if (Math.random() < 0.20) spawnFallingCircle();
-      else nextFallAt = Date.now() + 60000;
+    if(!fallingActive&&Date.now()>=nextFallAt&&$("startScreen").style.display==="none"){
+      if(Math.random()<0.20) spawnFallingCircle(); else nextFallAt=Date.now()+60000;
     }
-    renderBoosts();
-    // Recalculate perClick if doubleClick boost just expired
-    applyEquippedSkin();
+    renderBoosts(); applyEquippedSkin();
+    updateCpsDisplay();
+    updateSuggBtn();
+    checkAnticheat();
   }, 1000);
 
-  // ── REMOTE COMMANDS (start after init) ────────────────────────────────────
-  pollRemoteCommands();
   setInterval(pollRemoteCommands, 10000);
 
-  // ── INITIAL RENDER ─────────────────────────────────────────────────────────
-  $("rollCountVal").innerText = $("rollCount").value;
-  $("userIdBadge").innerText  = "ID: " + USER_ID;
-  applyEquippedSkin();
-  renderUnlockTiles();
-  renderUpgrades();
-  updateGambleButton();
-  updateKeybindUI();
-  updateScore();
-  fetchLeaderboard().then(() => renderLeaderboard());
+  // ── INITIAL RENDER ────────────────────────────────────────────────────────
+  $("rollCountVal").innerText=$("rollCount").value;
+  applyEquippedSkin(); renderUnlockTiles(); renderUpgrades();
+  updateGambleButton(); updateKeybindUI(); updateScore();
+  updateCpsDisplay(); updateSuggBtn();
+  fetchLeaderboard().then(()=>renderLeaderboard());
+  pollRemoteCommands();
 
 })();
 </script>
