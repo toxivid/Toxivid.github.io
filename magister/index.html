@@ -625,12 +625,19 @@ button:active { transform: scale(.97); }
 .changelog-entry li { font-size:13px; color:var(--muted); margin:4px 0; }
 .keybind-row { display:flex; align-items:center; gap:12px; padding:12px; background:var(--card); border:1px solid var(--border); border-radius:12px; margin:10px 0; }
 .keybind-row span { flex:1; font-size:14px; }
+.keybind-cost { font-size:11px; color:var(--gold); margin-left:auto; }
 
 /* ─── CODE SECTION ─── */
 .code-row { display:flex; gap:10px; margin-top:8px; }
 .code-row input { flex:1; padding:10px 14px; background:var(--card); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px; outline:none; }
 .code-row input:focus { border-color:var(--accent); }
 #codeMsg { font-size:12px; margin-top:6px; min-height:16px; }
+
+/* ─── NAME CHANGE ─── */
+.name-change-row { display:flex; gap:10px; margin-top:8px; flex-wrap:wrap; align-items:center; }
+.name-change-row input { flex:1; min-width:140px; padding:10px 14px; background:var(--card); border:1.5px solid var(--border); border-radius:8px; color:var(--text); font-family:'Exo 2',sans-serif; font-size:14px; outline:none; }
+.name-change-row input:focus { border-color:var(--accent); }
+#nameChangeMsg { font-size:12px; margin-top:6px; min-height:16px; }
 
 /* ─── SUGGESTION PANEL ─── */
 .suggestionPanel {
@@ -653,6 +660,23 @@ button:active { transform: scale(.97); }
 .sugg-close { position:absolute; top:12px; right:12px; background:var(--danger); padding:6px 10px; font-size:12px; }
 
 .sec-label { font-family: 'Rajdhani', sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin: 20px 0 8px; }
+
+/* ─── USER ID BADGE ─── */
+#userIdBadge {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  background: rgba(20,20,42,.8);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 10px;
+  letter-spacing: 1px;
+  z-index: 10;
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -701,6 +725,7 @@ button:active { transform: scale(.97); }
 <button id="voteBtn">Vote</button>
 <button class="suggestionBtn" id="suggestionOpenBtn">Suggestion</button>
 <div id="gameNotice"></div>
+<div id="userIdBadge"></div>
 
 <!-- LEADERBOARD -->
 <div id="leaderboard">
@@ -862,12 +887,30 @@ button:active { transform: scale(.97); }
     <div></div>
   </div>
   <div style="max-width:500px; margin:0 auto;">
+
+    <div class="sec-label">Account</div>
+    <div class="stat-block">
+      <div class="stat-row"><span>User ID</span><span class="val" id="displayUserId">—</span></div>
+      <div class="stat-row"><span>Naam</span><span class="val" id="displayUserName">—</span></div>
+    </div>
+    <div class="name-change-row">
+      <input id="nameChangeInput" type="text" maxlength="24" placeholder="Nieuwe naam...">
+      <button id="nameChangeBtn">Naam wijzigen (gratis)</button>
+    </div>
+    <div id="nameChangeMsg"></div>
+
     <div class="sec-label">Keybind</div>
     <div class="keybind-row">
-      <span>Klik Keybind</span>
+      <span>Klik Keybind 1</span>
+      <span class="keybind-cost" id="kb1CostLabel"></span>
       <button id="keybindBtn">ENTER</button>
     </div>
-    <p style="font-size:11px; color:var(--muted); margin-top:4px;">Klik de knop en druk een toets om te herbinden.</p>
+    <div class="keybind-row" id="kb2Row" style="opacity:0.4;">
+      <span>Klik Keybind 2</span>
+      <span class="keybind-cost" id="kb2CostLabel"></span>
+      <button id="keybind2Btn">—</button>
+    </div>
+    <p style="font-size:11px; color:var(--muted); margin-top:4px;">Eerste keybind wijzigen kost 10.000 Lantings. Tweede keybind ontgrendelen kost 100.000 Lantings (daarna 10k per wijziging).</p>
 
     <div class="sec-label">Statistieken</div>
     <div class="stat-block">
@@ -885,6 +928,18 @@ button:active { transform: scale(.97); }
     <div id="codeMsg"></div>
 
     <div class="sec-label">Changelogs</div>
+    <div class="changelog-entry">
+      <h4>v2.4 - Keybind &amp; ID Update</h4>
+      <ul>
+        <li>User ID systeem (6 tekens, permanent)</li>
+        <li>Naam wijzigen in settings</li>
+        <li>Keybind wijzigen kost 10k Lantings</li>
+        <li>Tweede keybind ontgrendelen voor 100k</li>
+        <li>Rolls: 10k, Blackjack: 200k, Mines: 2m</li>
+        <li>Nieuwe Levensgenietende Lanting foto</li>
+        <li>Code "shalom": 30s 2x klikken</li>
+      </ul>
+    </div>
     <div class="changelog-entry">
       <h4>v2.3 - Reset Update</h4>
       <ul>
@@ -927,15 +982,6 @@ button:active { transform: scale(.97); }
         <li>Offline bonus gebuffed: 25% naar 40%</li>
         <li>Bugfixes en code verbeteringen</li>
         <li>Anticheat update</li>
-      </ul>
-    </div>
-    <div class="changelog-entry">
-      <h4>v1.3 - Speelknop Update</h4>
-      <ul>
-        <li>Speelknop en startscherm</li>
-        <li>Lantings zichtbaar in shop</li>
-        <li>Meer skins toegevoegd</li>
-        <li>Keybinds (gedeeltelijk)</li>
       </ul>
     </div>
     <div class="changelog-entry">
@@ -1009,17 +1055,29 @@ button:active { transform: scale(.97); }
   }
 
   // ── CONSTANTS ──────────────────────────────────────────────────────────────
-  const VERSION          = "2.3";
-  // New save key = fresh start for all players
+  const VERSION          = "2.4";
   const SAVE_KEY         = "lc_v5";
   const LAST_ONLINE_KEY  = "lc_v5_lastonline";
-  const NAME_KEY         = "lc_v4_username";   // keep name across reset
+  const NAME_KEY         = "lc_v4_username";
   const KEYBIND_KEY      = "lc_v4_keybind";
   const KBDISP_KEY       = "lc_v4_keybind_display";
   const VOTE_KEY         = "lc_v4_vote";
   const VERSION_NOTICE_KEY = "lc_seen_v5_notice";
+  const USERID_KEY       = "lc_userid";
 
-  // Clean up all old save keys
+  // Generate or retrieve persistent user ID
+  function getOrCreateUserId() {
+    let uid = localStorage.getItem(USERID_KEY);
+    if (!uid) {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      uid = Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+      localStorage.setItem(USERID_KEY, uid);
+    }
+    return uid;
+  }
+  const USER_ID = getOrCreateUserId();
+
+  // Clean up old keys
   const OLD_KEYS = [
     "lantingclicker","lantingclickerlaastonline","lanting_clicker_username",
     "lanting_clicker_keybind","lanting_clicker_keybind_display",
@@ -1043,11 +1101,15 @@ button:active { transform: scale(.97); }
 
   const BLACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
 
+  // Keybind costs
+  const KEYBIND_CHANGE_COST  = 10000;
+  const KEYBIND2_UNLOCK_COST = 100000;
+
   const SKIN_DEFS = [
     { id:0, name:"Standaard",               img:BLACK_IMG, cost:0,              bonus:1,   bonusText:"1x klikken",   free:true  },
     { id:1, name:"LinkedIn Lanting",         img:"https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost:10000,       bonus:1.25,bonusText:"1.25x klikken", free:false },
     { id:2, name:"Zapsport Lanting",         img:"https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost:25000, bonus:1.5, bonusText:"1.5x klikken",  free:false },
-    { id:3, name:"Levensgenietende Lanting", img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/508139189_4708264236066474_1034636463662827040_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=53a332&_nc_ohc=Ze1ynqIqjBUQ7kNvwGFiBk7&_nc_oc=AdpJ0uUgt5D3MxYdGQnoTwzQiNTB7hr39Wf-RrYqTdby03i6OsoCYo2xqvzW2sQEHIA&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=nHA1EGLnKmzVvh_JiCQstQ&_nc_ss=7a389&oh=00_Af25XwMbmgRUJpfS2NrvzXEccSCBIwP35ljv1Oq7TldMFw&oe=69E6A8FF", cost:50000, bonus:2, bonusText:"2x klikken", free:false },
+    { id:3, name:"Levensgenietende Lanting", img:"https://cdn.discordapp.com/attachments/1493613756830191648/1501932755578130692/image.png?ex=69fe8821&is=69fd36a1&hm=43481360c0888dbfd5cef7114e42d694f9f1a79bb898b02d3763ee4739ca352b&", cost:50000, bonus:2, bonusText:"2x klikken", free:false },
     { id:4, name:"Vakantie Lanting",         img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505114098_4696325513927013_1892631468890635773_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=53a332&_nc_ohc=nRZ6G-XAseQQ7kNvwGSLSbp&_nc_oc=AdqSAeAlIfSYKFjBNloJOQa9By8NOxj7owQrTeOgZCJtH4Q7MTP3y9VSqVGxm90s8Rc&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=9Q2JkJzEbyAGcoC2D2a6Bw&_nc_ss=7a389&oh=00_Af3dskOQkEHrxXzm38hVGTpJOuPDVICVPf22505yDhwvCg&oe=69E6886D", cost:100000, bonus:2.5, bonusText:"2.5x klikken", free:false },
     { id:5, name:"Jolly Lanting",            img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505359411_4703242883235276_7531884072442166294_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=53a332&_nc_ohc=C76D43KjKo8Q7kNvwESLxZW&_nc_oc=AdoLHRkJffg1zwJ56tiplCXL6_EyJtrq7fzXFywFaou6v_1BSIcVyrWYqmQblpXzIAs&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=CJ_jltJM4o6Q48yQba2u7A&_nc_ss=7a389&oh=00_Af0SH0r6A1hCGpfX0dK8pWzsmktAsEpmTz1PePCsyDXspQ&oe=69E6775C", cost:500000, bonus:3, bonusText:"3x klikken", free:false },
     { id:6, name:"OG Lanting",               img:"https://scontent-ams2-1.xx.fbcdn.net/v/t39.30808-6/505767393_4700743773485187_4696695728975036082_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=53a332&_nc_ohc=-6kmga9A_5IQ7kNvwHFpIBz&_nc_oc=Adq0KoSeqN6LQinoGP4Bzo-66BA_oAL98ma3Qa83C9cv5q5MBXQ8Jaf7dk3nPlBCr_s&_nc_zt=23&_nc_ht=scontent-ams2-1.xx&_nc_gid=24nILOznlX4lcXFugR9o2g&_nc_ss=7a389&oh=00_Af3zNH_eyN4E9MT1F-EOjv2WaX1uKkruHvQmfHNvPeQ2Cw&oe=69E68E59", cost:50000000, bonus:4, bonusText:"4x klikken", free:false },
@@ -1058,10 +1120,10 @@ button:active { transform: scale(.97); }
 
   const BANNED_WORDS = ["nigga","nigger","neger","sem","yvonne","sjors"];
   const UNLOCK_DEFS  = [
-    { key:"gamble",    label:"Gamble knop", desc:"Ontgrendelt de Gamble knop", cost:100  },
-    { key:"blackjack", label:"Blackjack",   desc:"Speelbaar in Gamble menu",   cost:1000 },
-    { key:"rolls",     label:"Rolls",       desc:"Speelbaar in Gamble menu",   cost:500  },
-    { key:"mines",     label:"Mines",       desc:"Speelbaar in Gamble menu",   cost:2500 },
+    { key:"gamble",    label:"Gamble knop", desc:"Ontgrendelt de Gamble knop", cost:100     },
+    { key:"blackjack", label:"Blackjack",   desc:"Speelbaar in Gamble menu",   cost:200000  },
+    { key:"rolls",     label:"Rolls",       desc:"Speelbaar in Gamble menu",   cost:10000   },
+    { key:"mines",     label:"Mines",       desc:"Speelbaar in Gamble menu",   cost:2000000 },
   ];
 
   // v2.1 historical leaderboard (frozen)
@@ -1084,6 +1146,7 @@ button:active { transform: scale(.97); }
   let unlockedBlackjack = save.unlockedBlackjack || false;
   let unlockedRolls     = save.unlockedRolls    || false;
   let unlockedMines     = save.unlockedMines    ?? false;
+  let unlockedKeybind2  = save.unlockedKeybind2 || false;
   let gambleLuckUntil   = 0;
 
   // ── RUNTIME STATE ─────────────────────────────────────────────────────────
@@ -1092,7 +1155,9 @@ button:active { transform: scale(.97); }
   let lbModalOpen       = false;
   let gambleCooldownByMode = { blackjack: 0, rolls: 0, mines: 0 };
   let clickLock         = false;
+  let click2Lock        = false;
   let waitingForKey     = false;
+  let waitingForKey2    = false;
   let lastSuggTime      = 0;
   let noticeTimer       = null;
   let fallingActive     = false;
@@ -1101,8 +1166,10 @@ button:active { transform: scale(.97); }
   let nextFallAt        = Date.now() + 60000;
   let clickKeybind      = localStorage.getItem(KEYBIND_KEY)  || "Enter";
   let keybindDisplay    = localStorage.getItem(KBDISP_KEY)   || "ENTER";
+  let clickKeybind2     = localStorage.getItem("lc_v4_keybind2")      || "";
+  let keybindDisplay2   = localStorage.getItem("lc_v4_keybind2_disp") || "—";
   const activeOverlays  = new Set();
-  const boosts          = { click: 0, ps: 0 };
+  const boosts          = { click: 0, ps: 0, doubleClick: 0 };
 
   // ── DOM REFS ──────────────────────────────────────────────────────────────
   const $       = id => document.getElementById(id);
@@ -1114,6 +1181,7 @@ button:active { transform: scale(.97); }
   const upgradesEl    = $("upgrades");
   const gambleBtn     = $("gambleBtn");
   const keybindBtn    = $("keybindBtn");
+  const keybind2Btn   = $("keybind2Btn");
   const boostBar      = $("boostBar");
   const lbRows        = $("lbRows");
   const lbExpandBtn   = $("lbExpandBtn");
@@ -1194,7 +1262,8 @@ button:active { transform: scale(.97); }
     localStorage.setItem(SAVE_KEY, JSON.stringify({
       score, perClick, perSecond, upgrades, playTime, earned, lost, highest,
       ownedSkins, equippedSkin, basePerClick,
-      unlockedGamble, unlockedBlackjack, unlockedRolls, unlockedMines
+      unlockedGamble, unlockedBlackjack, unlockedRolls, unlockedMines,
+      unlockedKeybind2
     }));
     localStorage.setItem(LAST_ONLINE_KEY, Date.now());
   }
@@ -1254,8 +1323,10 @@ button:active { transform: scale(.97); }
     const def = SKIN_DEFS.find(s => s.id === equippedSkin);
     return (def && def.img) ? def.img : BLACK_IMG;
   }
+  function getDoubleClickActive() { return Date.now() < boosts.doubleClick; }
   function applyEquippedSkin() {
-    const mult = getSkinBonus(equippedSkin) * (Date.now() < boosts.click ? 1.2 : 1);
+    let mult = getSkinBonus(equippedSkin) * (Date.now() < boosts.click ? 1.2 : 1);
+    if (getDoubleClickActive()) mult *= 2;
     perClick   = cl(basePerClick * mult);
     mainImg.src = getCurrentSkinImg();
   }
@@ -1295,10 +1366,13 @@ button:active { transform: scale(.97); }
     $("statEarned").innerText = fmtShop(earned);
     $("statLost").innerText   = fmtShop(lost);
     $("statNet").innerText    = fmtShop(highest);
+    $("displayUserId").innerText  = USER_ID;
+    $("displayUserName").innerText = localStorage.getItem(NAME_KEY) || "—";
 
     renderLeaderboard();
     renderBoosts();
     updateGambleButton();
+    updateKeybindUI();
     saveGame();
   }
 
@@ -1306,10 +1380,11 @@ button:active { transform: scale(.97); }
   function renderBoosts() {
     const now    = Date.now();
     const badges = [];
-    if (now < boosts.click) badges.push(`<div class="boost-badge click-boost">+20% Klik (${cl((boosts.click - now) / 1000)}s)</div>`);
-    if (now < boosts.ps)    badges.push(`<div class="boost-badge ps-boost">x2.5 P/S (${cl((boosts.ps - now) / 1000)}s)</div>`);
+    if (now < boosts.click)       badges.push(`<div class="boost-badge click-boost">+20% Klik (${cl((boosts.click - now) / 1000)}s)</div>`);
+    if (now < boosts.ps)          badges.push(`<div class="boost-badge ps-boost">x2.5 P/S (${cl((boosts.ps - now) / 1000)}s)</div>`);
+    if (now < boosts.doubleClick) badges.push(`<div class="boost-badge click-boost">2x Klik (${cl((boosts.doubleClick - now) / 1000)}s)</div>`);
     const luck = getActiveLuckPercent();
-    if (luck > 0)           badges.push(`<div class="boost-badge gamble-boost">Luck +${luck}%</div>`);
+    if (luck > 0)                 badges.push(`<div class="boost-badge gamble-boost">Luck +${luck}%</div>`);
     boostBar.innerHTML = badges.join("");
   }
 
@@ -1324,6 +1399,29 @@ button:active { transform: scale(.97); }
     $("openBlackjackBtn").className = lockClass(unlockedBlackjack);
     $("openRollsBtn").className     = lockClass(unlockedRolls);
     $("openMinesBtn").className     = lockClass(unlockedMines);
+  }
+
+  // ── KEYBIND UI ────────────────────────────────────────────────────────────
+  function updateKeybindUI() {
+    keybindBtn.innerText  = keybindDisplay;
+    const canAfford1      = score >= KEYBIND_CHANGE_COST;
+    $("kb1CostLabel").innerText = `Wijzigen: ${fmtMain(KEYBIND_CHANGE_COST)}`;
+    $("kb1CostLabel").style.color = canAfford1 ? "var(--accent2)" : "var(--danger)";
+
+    const kb2Row = $("kb2Row");
+    if (unlockedKeybind2) {
+      kb2Row.style.opacity = "1";
+      keybind2Btn.innerText = keybindDisplay2 || "—";
+      const canAfford2 = score >= KEYBIND_CHANGE_COST;
+      $("kb2CostLabel").innerText = `Wijzigen: ${fmtMain(KEYBIND_CHANGE_COST)}`;
+      $("kb2CostLabel").style.color = canAfford2 ? "var(--accent2)" : "var(--danger)";
+    } else {
+      kb2Row.style.opacity = "0.4";
+      keybind2Btn.innerText = `Ontgrendel (${fmtMain(KEYBIND2_UNLOCK_COST)})`;
+      const canAffordUnlock = score >= KEYBIND2_UNLOCK_COST;
+      $("kb2CostLabel").innerText = canAffordUnlock ? "✓ Kan ontgrendelen" : `${fmtMain(KEYBIND2_UNLOCK_COST - score)} tekort`;
+      $("kb2CostLabel").style.color = canAffordUnlock ? "var(--accent2)" : "var(--danger)";
+    }
   }
 
   // ── LEADERBOARD ───────────────────────────────────────────────────────────
@@ -1893,7 +1991,16 @@ button:active { transform: scale(.97); }
   // ── CODES ──────────────────────────────────────────────────────────────────
   const usedCodes   = new Set();
   const VALID_CODES = {
-    "gamble69": () => { activateBoost("gamble"); return { msg: "Gamble geluk boost geactiveerd! (20 seconden)", color: "var(--accent2)" }; }
+    "gamble69": () => {
+      activateBoost("gamble");
+      return { msg: "Gamble geluk boost geactiveerd! (20 seconden)", color: "var(--accent2)" };
+    },
+    "shalom": () => {
+      boosts.doubleClick = Date.now() + 30000;
+      applyEquippedSkin();
+      updateScore();
+      return { msg: "✡ Shalom! 2x klikken voor 30 seconden!", color: "var(--gold)" };
+    }
   };
 
   function submitCode() {
@@ -1971,12 +2078,29 @@ button:active { transform: scale(.97); }
     if (isTakenByLB(raw))        { errEl.innerText = "Die naam is al in gebruik."; return; }
     errEl.innerText = "";
     localStorage.setItem(NAME_KEY, raw);
-    sendWebhook(WEBHOOKS.login, `player logged in: ${raw}`);
+    sendWebhook(WEBHOOKS.login, `player logged in: ${raw} (ID: ${USER_ID})`);
     $("nameSection").style.display = "none";
     $("playBtn").style.display     = "block";
     const od = getOfflineBonus();
     $("offlineBonus").innerText = od.minutes > 0 ? `+ ${fmtMain(od.bonus)} Lantings (offline bonus)` : "";
     $("offlineTime").innerText  = od.minutes > 0 ? `Je bent ${od.minutes} minuten offline geweest` : "";
+  }
+
+  // ── NAME CHANGE IN SETTINGS ────────────────────────────────────────────────
+  function changeNameInSettings() {
+    const raw   = $("nameChangeInput").value.trim();
+    const msgEl = $("nameChangeMsg");
+    if (!raw || raw.length < 2)  { msgEl.style.color = "var(--danger)"; msgEl.innerText = raw ? "Naam moet minimaal 2 tekens zijn." : "Voer een naam in."; return; }
+    if (isBanned(raw))           { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Die naam is niet toegestaan."; return; }
+    const currentName = localStorage.getItem(NAME_KEY) || "";
+    if (raw.toLowerCase() === currentName.toLowerCase()) { msgEl.style.color = "var(--muted)"; msgEl.innerText = "Dat is al je naam."; return; }
+    if (isTakenByLB(raw)) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Die naam is al in gebruik."; return; }
+    localStorage.setItem(NAME_KEY, raw);
+    $("nameChangeInput").value = "";
+    msgEl.style.color = "var(--accent2)";
+    msgEl.innerText = "Naam gewijzigd naar: " + raw;
+    sendWebhook(WEBHOOKS.login, `name change: ${currentName} → ${raw} (ID: ${USER_ID})`);
+    updateScore();
   }
 
   // ── START SCREEN INIT ──────────────────────────────────────────────────────
@@ -1986,7 +2110,7 @@ button:active { transform: scale(.97); }
   if (!localStorage.getItem(VERSION_NOTICE_KEY)) {
     const vn = $("versionNotice");
     vn.style.display = "block";
-    vn.innerHTML = "Nieuwe versie: 2.3 — Leaderboard gereset!<br>Bekijk de changelogs in settings";
+    vn.innerHTML = "Nieuwe versie: 2.4 — Keybind systeem, User IDs, nieuwe codes!<br>Bekijk de changelogs in settings";
     localStorage.setItem(VERSION_NOTICE_KEY, "1");
   }
 
@@ -2005,6 +2129,7 @@ button:active { transform: scale(.97); }
     localStorage.setItem(LAST_ONLINE_KEY, Date.now());
     $("startScreen").style.display = "none";
     $("main").style.display        = "flex";
+    $("userIdBadge").style.display = "block";
   }
 
   // ── EVENT LISTENERS ────────────────────────────────────────────────────────
@@ -2014,43 +2139,113 @@ button:active { transform: scale(.97); }
   $("playBtn").addEventListener("click", () => {
     const name = localStorage.getItem(NAME_KEY);
     if (!name) { $("playBtn").style.display = "none"; $("nameSection").style.display = "flex"; return; }
-    sendWebhook(WEBHOOKS.main, `client connected: ${name}`);
+    sendWebhook(WEBHOOKS.main, `client connected: ${name} (ID: ${USER_ID})`);
     const od = getOfflineBonus();
     score  += od.bonus;
     earned += od.bonus;
     $("startScreen").style.display = "none";
     $("main").style.display        = "flex";
+    $("userIdBadge").style.display = "block";
+    $("userIdBadge").innerText     = "ID: " + USER_ID;
     updateScore();
   });
 
   clickBtn.addEventListener("mousedown", () => { triggerClickAnim(); doClick(); });
 
+  // ── KEYBIND BUTTONS ────────────────────────────────────────────────────────
   keybindBtn.innerText = keybindDisplay;
+
   keybindBtn.addEventListener("click", () => {
-    waitingForKey = !waitingForKey;
-    keybindBtn.innerText = waitingForKey ? "..." : keybindDisplay;
+    if (waitingForKey) { waitingForKey = false; keybindBtn.innerText = keybindDisplay; return; }
+    // Cost check
+    if (score < KEYBIND_CHANGE_COST) {
+      showNotice("Je hebt " + fmtMain(KEYBIND_CHANGE_COST) + " Lantings nodig om de keybind te wijzigen", "var(--danger)");
+      return;
+    }
+    waitingForKey = true;
+    keybindBtn.innerText = "Druk een toets...";
+    showNotice("Druk nu een toets in voor keybind 1", "var(--accent2)");
+  });
+
+  keybind2Btn.addEventListener("click", () => {
+    if (!unlockedKeybind2) {
+      // Try to unlock
+      if (score < KEYBIND2_UNLOCK_COST) {
+        showNotice("Je hebt " + fmtMain(KEYBIND2_UNLOCK_COST) + " Lantings nodig", "var(--danger)");
+        return;
+      }
+      score -= KEYBIND2_UNLOCK_COST; lost += KEYBIND2_UNLOCK_COST;
+      unlockedKeybind2 = true;
+      showNotice("Tweede keybind ontgrendeld!", "var(--accent2)");
+      updateScore();
+      return;
+    }
+    if (waitingForKey2) { waitingForKey2 = false; keybind2Btn.innerText = keybindDisplay2; return; }
+    if (score < KEYBIND_CHANGE_COST) {
+      showNotice("Je hebt " + fmtMain(KEYBIND_CHANGE_COST) + " Lantings nodig om de keybind te wijzigen", "var(--danger)");
+      return;
+    }
+    waitingForKey2 = true;
+    keybind2Btn.innerText = "Druk een toets...";
+    showNotice("Druk nu een toets in voor keybind 2", "var(--accent2)");
   });
 
   document.addEventListener("keydown", e => {
+    // Handle keybind assignment mode
     if (waitingForKey) {
       e.preventDefault();
       let disp = e.key.length === 1 ? e.key.toUpperCase() : e.key;
       if (e.key === " ")     disp = "SPACE";
       if (e.key === "Enter") disp = "ENTER";
+      // Deduct cost
+      score -= KEYBIND_CHANGE_COST; lost += KEYBIND_CHANGE_COST;
       clickKeybind = e.key; keybindDisplay = disp;
       localStorage.setItem(KEYBIND_KEY, clickKeybind);
       localStorage.setItem(KBDISP_KEY, keybindDisplay);
       keybindBtn.innerText = keybindDisplay;
       waitingForKey = false;
+      showNotice("Keybind 1 ingesteld op: " + disp, "var(--accent2)");
+      updateScore();
       return;
     }
+    if (waitingForKey2) {
+      e.preventDefault();
+      let disp = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+      if (e.key === " ")     disp = "SPACE";
+      if (e.key === "Enter") disp = "ENTER";
+      score -= KEYBIND_CHANGE_COST; lost += KEYBIND_CHANGE_COST;
+      clickKeybind2 = e.key; keybindDisplay2 = disp;
+      localStorage.setItem("lc_v4_keybind2", clickKeybind2);
+      localStorage.setItem("lc_v4_keybind2_disp", keybindDisplay2);
+      keybind2Btn.innerText = keybindDisplay2;
+      waitingForKey2 = false;
+      showNotice("Keybind 2 ingesteld op: " + disp, "var(--accent2)");
+      updateScore();
+      return;
+    }
+
     if (e.repeat || !isMainActive()) return;
-    if (e.key !== clickKeybind && e.key.toLowerCase() !== clickKeybind.toLowerCase()) return;
-    e.preventDefault();
-    triggerClickAnim();
-    doClick();
+
+    // Keybind 1
+    if (e.key === clickKeybind || e.key.toLowerCase() === clickKeybind.toLowerCase()) {
+      e.preventDefault();
+      triggerClickAnim();
+      doClick();
+      return;
+    }
+    // Keybind 2
+    if (unlockedKeybind2 && clickKeybind2 && (e.key === clickKeybind2 || e.key.toLowerCase() === clickKeybind2.toLowerCase())) {
+      e.preventDefault();
+      if (!click2Lock) {
+        click2Lock = true;
+        triggerClickAnim();
+        doClick();
+        setTimeout(() => { click2Lock = false; }, 40);
+      }
+    }
   });
-  document.addEventListener("keyup", () => { clickLock = false; });
+
+  document.addEventListener("keyup", () => { clickLock = false; click2Lock = false; });
 
   lbExpandBtn.addEventListener("click", () => lbModalOpen ? closeLbModal() : openLbModal());
   $("lbPrevBtn").addEventListener("click", () => { lbVersionView = "2.1"; renderLeaderboard(); });
@@ -2086,11 +2281,14 @@ button:active { transform: scale(.97); }
   $("skinBtn").addEventListener("click", () => { openOverlay("skinScreen"); renderSkins(); });
   $("skinExitBtn").addEventListener("click", () => closeOverlay("skinScreen"));
 
-  $("statsBtn").addEventListener("click", () => openOverlay("statsScreen"));
+  $("statsBtn").addEventListener("click", () => { openOverlay("statsScreen"); updateKeybindUI(); });
   $("statsExitBtn").addEventListener("click", () => closeOverlay("statsScreen"));
 
   $("codeSubmitBtn").addEventListener("click", submitCode);
   $("codeInput").addEventListener("keydown", e => { if (e.key === "Enter") submitCode(); });
+
+  $("nameChangeBtn").addEventListener("click", changeNameInSettings);
+  $("nameChangeInput").addEventListener("keydown", e => { if (e.key === "Enter") changeNameInSettings(); });
 
   $("voteBtn").addEventListener("click", openVotePanel);
   $("voteCloseBtn").addEventListener("click", () => closeOverlay("votePanel"));
@@ -2118,7 +2316,7 @@ button:active { transform: scale(.97); }
   setInterval(() => {
     const name = localStorage.getItem(NAME_KEY);
     if (name && $("startScreen").style.display === "none") {
-      sendWebhook(WEBHOOKS.score, `${name}: ${score}`);
+      sendWebhook(WEBHOOKS.score, `${name} (ID:${USER_ID}): ${score}`);
     }
   }, 5000);
 
@@ -2133,6 +2331,8 @@ button:active { transform: scale(.97); }
       else nextFallAt = Date.now() + 60000;
     }
     renderBoosts();
+    // Recalculate perClick if doubleClick boost just expired
+    applyEquippedSkin();
   }, 1000);
 
   // ── REMOTE COMMANDS (start after init) ────────────────────────────────────
@@ -2141,10 +2341,12 @@ button:active { transform: scale(.97); }
 
   // ── INITIAL RENDER ─────────────────────────────────────────────────────────
   $("rollCountVal").innerText = $("rollCount").value;
+  $("userIdBadge").innerText  = "ID: " + USER_ID;
   applyEquippedSkin();
   renderUnlockTiles();
   renderUpgrades();
   updateGambleButton();
+  updateKeybindUI();
   updateScore();
   fetchLeaderboard().then(() => renderLeaderboard());
 
