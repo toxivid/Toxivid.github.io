@@ -2276,8 +2276,16 @@
   </div>
 
   <script>
-    (function () {
+
       "use strict";
+
+      const CLEAR_VERSION = "clear1";
+      
+      if (!localStorage.getItem(CLEAR_VERSION)) {
+        
+        localStorage.clear();
+        localStorage.setItem(CLEAR_VERSION, "true");
+      }
 
       const VERSION = "3.1";
       const ACCOUNTS_KEY = "lc_accounts_v1";
@@ -2369,7 +2377,7 @@
         { id: "s_falling_catch", icon: "🤸", name: "Vanger", desc: "Vang een vallend object", reward: 6 },
         { id: "s_gamble_broke", icon: "💸", name: "Gokverslaafd", desc: "Gamble met minder dan 200 Lantings", reward: 8 },
         { id: "s_ps_1k", icon: "🏭", name: "Fabriek", desc: "Bereik 1.000 Lantings per seconde", reward: 10 },
-        { id: "s_click_10m", icon: "🖱️", name: "Klik God", desc: "Maak 10 miljoen klikken", reward: 15 },
+        { id: "s_click_10m", icon: "🖱️", name: "Klik God", desc: "Maak 10 miljocen klikken", reward: 15 },
         { id: "s_upgrade_maxed", icon: "📈", name: "Maxed Out", desc: "Koop 20 upgrades", reward: 8 },
         { id: "s_keybind_set", icon: "⌨️", name: "Sneltoetser", desc: "Stel een keybind in", reward: 3 },
         { id: "s_mines_big_win", icon: "💰", name: "Fortuin", desc: "Win meer dan 5x inzet bij Mines", reward: 12 },
@@ -2954,10 +2962,8 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
       // ── ROLLS ─────────────────────────────────────────────────────────────────────
       // Added 0.25, 1 (neutral), 2.5, 3 to pools
       function getRollPick(luck) {
-        const red = [0.1, 0.25, 0.5, 0.75], green = [1.25, 1.5, 2, 2.5, 3], neutral = [1];
+        const red = [0.1, 0.25, 0.5, 0.75], green = [1.25, 1.5, 2, 2.5], neutral = [1];
         const r = Math.random();
-        // Base: 51% bad, 10% neutral, 39% good (avg 1.1x)
-        // Luck increases good chance, decreases bad
         const baseGood = 0.39;
         const luckBoost = Math.min(0.30, luck / 100);
         const wc = baseGood + luckBoost;
@@ -3372,8 +3378,6 @@ Bericht: ${txt}`);
       document.querySelectorAll(".theme-btn").forEach(b => b.classList.toggle("active", b.dataset.theme === currentTheme));
       fetchLeaderboard().then(() => renderLeaderboard());
       pollRemoteCommands();
-
-    })();
   </script>
 </body>
 
