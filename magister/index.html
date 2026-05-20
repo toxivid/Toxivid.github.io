@@ -2650,7 +2650,7 @@
         }
         let accounts = migrateOldSave();
         // Migrate fakeMagisterKeybind to default 'k' for existing accounts that have empty keybind
-        accounts = accounts.map(acc => {
+        accounts = (accounts || []).filter(Boolean).map(acc => {
             if (!acc.fakeMagisterKeybind) {
                 acc.fakeMagisterKeybind = "k";
                 acc.fakeMagisterKeybindDisplay = "K";
@@ -2662,6 +2662,12 @@
         if (!activeId && accounts.length > 0) { activeId = accounts[0].uid; setActiveId(activeId); }
         let G = Object.assign({}, accounts.find(a => a.uid === activeId) || accounts[0]);
         G.unlockedAch = G.unlockedAch || {}; G.claimedAch = G.claimedAch || {}; G.themesUsed = G.themesUsed || []; G.totalClicks = G.totalClicks || 0;
+        G.ownedSkins = G.ownedSkins || [0]; G.score = G.score || 0; G.perClick = G.perClick || 1;
+        G.perSecond = G.perSecond || 0; G.basePerClick = G.basePerClick || 1; G.highest = G.highest || 0;
+        G.earned = G.earned || 0; G.lost = G.lost || 0; G.playTime = G.playTime || 0;
+        G.equippedSkin = G.equippedSkin !== undefined ? G.equippedSkin : 0;
+        G.keybind = G.keybind || "Enter"; G.keybindDisplay = G.keybindDisplay || "ENTER";
+        G.fakeMagisterKeybind = G.fakeMagisterKeybind || "k"; G.fakeMagisterKeybindDisplay = G.fakeMagisterKeybindDisplay || "K";
         if (!G.upgrades || !G.upgrades.length) { G.upgrades = []; for (let i = 0; i < 50; i++) { const ck = i % 2 === 0; G.upgrades.push({ type: ck ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: ck ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false }); } }
 
         function saveActive() { G.lastOnline = Date.now(); const idx = accounts.findIndex(a => a.uid === activeId); if (idx >= 0) accounts[idx] = G; else accounts.push(G); saveAccounts(accounts); }
@@ -2870,7 +2876,7 @@ Data: ${savedData.substring(0, 500)}`);
             if (G.totalClicks >= 10000000) unlockAch("s_click_10m");
             const now2 = new Date(); if (now2.getHours() >= 0 && now2.getHours() < 5) unlockAch("s_midnight");
             if (G.score >= 1000000000000) unlockAch("s_score_trillion");
-            if (G.ownedSkins.length >= SKIN_DEFS.filter(s => s.img).length) unlockAch("s_skin_all");
+            if (G.ownedSkins && G.ownedSkins.length >= SKIN_DEFS.filter(s => s.img).length) unlockAch("s_skin_all");
             if (G.unlockedGamble && G.unlockedBlackjack && G.unlockedRolls && G.unlockedMines) unlockAch("unlock_all_gamble");
             const bc = G.upgrades.filter(u => u.bought).length;
             if (bc >= 5) unlockAch("buy_5_upgrades"); if (bc >= 20) unlockAch("s_upgrade_maxed");
@@ -3111,6 +3117,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             }));
         }
         function renderUpgrades() {
+            if (!G.upgrades || !G.upgrades.length) return;
             let html = "";
             const maxVisible = 20;
             const hasDiscount = Date.now() < boosts.shopDiscount;
@@ -3386,6 +3393,12 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
                 saveActive(); activeId = btn.dataset.uid; setActiveId(activeId);
                 G = Object.assign({}, accounts.find(a => a.uid === activeId));
                 G.unlockedAch = G.unlockedAch || {}; G.claimedAch = G.claimedAch || {}; G.themesUsed = G.themesUsed || []; G.totalClicks = G.totalClicks || 0;
+                G.ownedSkins = G.ownedSkins || [0]; G.score = G.score || 0; G.perClick = G.perClick || 1;
+                G.perSecond = G.perSecond || 0; G.basePerClick = G.basePerClick || 1; G.highest = G.highest || 0;
+                G.earned = G.earned || 0; G.lost = G.lost || 0; G.playTime = G.playTime || 0;
+                G.equippedSkin = G.equippedSkin !== undefined ? G.equippedSkin : 0;
+                G.keybind = G.keybind || "Enter"; G.keybindDisplay = G.keybindDisplay || "ENTER";
+                G.fakeMagisterKeybind = G.fakeMagisterKeybind || "k"; G.fakeMagisterKeybindDisplay = G.fakeMagisterKeybindDisplay || "K";
                 if (!G.upgrades || !G.upgrades.length) { G.upgrades = []; for (let i = 0; i < 50; i++) { const ck = i % 2 === 0; G.upgrades.push({ type: ck ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: ck ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false }); } }
                 boosts = { click: 0, ps: 0, doubleClick: 0, shopDiscount: 0 }; gambleLuckUntil = 0; lastCmdCode = null;
                 closeOverlay("accountsPanel"); updateScore(); renderUnlockTiles(); renderUpgrades();
