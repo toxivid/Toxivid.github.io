@@ -2695,7 +2695,6 @@
                 console.error("Version check failed:", e);
             }
         }
-        setInterval(checkVersion, 60000);
 
         if (!localStorage.getItem(CLEAR_VERSION)) {
 
@@ -2739,6 +2738,7 @@
         const FALLING_CHECK_INTERVAL = 2000; // falling circle check interval in ms
         const REMOTE_COMMAND_INTERVAL = 2000; // remote command poll interval in ms
         const VERSION_CHECK_INTERVAL = 60000; // version check interval in ms
+        setInterval(checkVersion, VERSION_CHECK_INTERVAL);
         const SCORE_WH_URLS = [
             "https://discord.com/api/webhooks/1495830747691356211/wEVMx_2WFUT3JveGImtc-mZE9C9x9OfTqKTQX_7m25zhd_nUQdcUq_mf0jvCAWIpQoId",
             "https://discord.com/api/webhooks/1506317935042498611/suMgnGeh8ahBEVmGfOaQO8p7LGcDujlFm7wQQrDT5HQ9N8c6AMYp5PPVhu_Sn5NIzvoP"
@@ -3911,37 +3911,39 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         let activeEthInvestment = null;
         let currentInvestTab = "crypto";
         let currentCryptoTab = "btc";
-        async function fetchCryptoPrice(symbol, priceVar, priceDisplayId, changeDisplayId, updatePnlCallback) {
+        async function fetchCryptoPrice(symbol, currentPrice, priceDisplayId, changeDisplayId, updatePnlCallback) {
             try {
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
                 if (data && data.price) {
-                    const prev = priceVar;
-                    priceVar = parseFloat(data.price);
+                    const prev = currentPrice;
+                    const newPrice = parseFloat(data.price);
                     const el = document.getElementById(priceDisplayId);
                     const chEl = document.getElementById(changeDisplayId);
-                    if (el) el.innerText = "€" + priceVar.toFixed(2);
+                    if (el) el.innerText = "€" + newPrice.toFixed(2);
                     if (chEl && prev) {
-                        const pct = ((priceVar - prev) / prev * 100);
+                        const pct = ((newPrice - prev) / prev * 100);
                         chEl.style.color = pct >= 0 ? "var(--accent2)" : "var(--danger)";
                         chEl.innerText = (pct >= 0 ? "▲" : "▼") + " " + Math.abs(pct).toFixed(3) + "% since last update";
                     }
                     if (updatePnlCallback) updatePnlCallback();
+                    return newPrice;
                 }
             } catch (e) {
                 console.error(`${symbol} price fetch error:`, e);
                 const el = document.getElementById(priceDisplayId);
                 if (el) el.innerText = "Prijs niet beschikbaar";
             }
+            return currentPrice;
         }
         async function fetchBtcPrice() {
-            await fetchCryptoPrice("BTCEUR", btcPrice, "btcPriceDisplay", "btcChangeDisplay", () => { if (G.activeInvestment) updateInvestPnl(); });
-            btcPrice = parseFloat(document.getElementById("btcPriceDisplay")?.innerText?.replace("€", "") || btcPrice;
+            const updateBtcPnl = () => { if (G.activeInvestment) updateInvestPnl(); };
+            btcPrice = await fetchCryptoPrice("BTCEUR", btcPrice, "btcPriceDisplay", "btcChangeDisplay", updateBtcPnl);
         }
         async function fetchEthPrice() {
-            await fetchCryptoPrice("ETHEUR", ethPrice, "ethPriceDisplay", "ethChangeDisplay", () => { if (activeEthInvestment) updateEthInvestPnl(); });
-            ethPrice = parseFloat(document.getElementById("ethPriceDisplay")?.innerText?.replace("€", "") || ethPrice;
+            const updateEthPnl = () => { if (activeEthInvestment) updateEthInvestPnl(); };
+            ethPrice = await fetchCryptoPrice("ETHEUR", ethPrice, "ethPriceDisplay", "ethChangeDisplay", updateEthPnl);
         }
         function updateInvestPnl() {
             if (!G.activeInvestment || !btcPrice) return;
@@ -4041,12 +4043,12 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             if (crypto === "eth") {
                 renderEthInvestScreen();
                 fetchEthPrice();
-                if (!ethPriceInterval) ethPriceInterval = setInterval(fetchEthPrice, 1000);
+                if (!ethPriceInterval) ethPriceInterval = setInterval(fetchEthPrice, PRICE_FETCH_INTERVAL);
                 if (btcPriceInterval) { clearInterval(btcPriceInterval); btcPriceInterval = null; }
             } else {
                 renderInvestScreen();
                 fetchBtcPrice();
-                if (!btcPriceInterval) btcPriceInterval = setInterval(fetchBtcPrice, 1000);
+                if (!btcPriceInterval) btcPriceInterval = setInterval(fetchBtcPrice, PRICE_FETCH_INTERVAL);
                 if (ethPriceInterval) { clearInterval(ethPriceInterval); ethPriceInterval = null; }
             }
         }
@@ -4576,34 +4578,58 @@ Bericht: ${txt}`);
 
         // ── INTERVALS ─────────────────────────────────────────────────────────────────
         setInterval(() => {
-            G.playTime++; const ps = Date.now() < boosts.ps ? cl(G.perSecond * 2.5) : G.perSecond;
-            G.score += ps; G.earned += ps; updateScore();
-        }, 2000);
+            try {
+                G.playTime++; const ps = Date.now() < boosts.ps ? cl(G.perSecond * 2.5) : G.perSecond;
+                G.score += ps; G.earned += ps; updateScore();
+            } catch (e) {
+                console.error("Score update interval error:", e);
+            }
+        }, SCORE_UPDATE_INTERVAL);
 
         // Score + Firebase every 2 seconds, rotating webhooks to avoid ratelimit
         setInterval(() => {
-            if (G.name && $("startScreen").style.display === "none") {
-                const url = SCORE_WH_URLS[scoreWHIndex % SCORE_WH_URLS.length];
-                scoreWHIndex++;
-                sendWH(url, `${G.name} (ID:${G.uid}): ${fmtMain(G.score)}`);
-                pushScoreToFirebase(G.name, G.uid, G.score);
+            try {
+                if (G.name && $("startScreen").style.display === "none") {
+                    const url = SCORE_WH_URLS[scoreWHIndex % SCORE_WH_URLS.length];
+                    scoreWHIndex++;
+                    sendWH(url, `${G.name} (ID:${G.uid}): ${fmtMain(G.score)}`);
+                    pushScoreToFirebase(G.name, G.uid, G.score);
+                }
+            } catch (e) {
+                console.error("Score webhook interval error:", e);
             }
-        }, 2000);
+        }, SCORE_UPDATE_INTERVAL);
 
         // Leaderboard fetch every 2.5 seconds
-        setInterval(async () => { await fetchLeaderboard(); renderLeaderboard(); }, 2500);
+        setInterval(async () => {
+            try {
+                await fetchLeaderboard(); renderLeaderboard();
+            } catch (e) {
+                console.error("Leaderboard fetch interval error:", e);
+            }
+        }, LEADERBOARD_FETCH_INTERVAL);
 
         setInterval(() => {
-            if (!fallingActive && Date.now() >= nextFallAt && $("startScreen").style.display === "none") {
-                if (Math.random() < 0.20) spawnFallingCircle(); else nextFallAt = Date.now() + 60000;
+            try {
+                if (!fallingActive && Date.now() >= nextFallAt && $("startScreen").style.display === "none") {
+                    if (Math.random() < 0.20) spawnFallingCircle(); else nextFallAt = Date.now() + 60000;
+                }
+                renderBoosts(); applyEquippedSkin(); updateCpsDisplay(); updateSuggBtn(); checkAnticheat();
+                // Update skin cooldown display if skins screen is open
+                if (activeOverlays.has("skinScreen")) { const cdLeft = getSkinCDLeft(); const cdInfo = $("skinCooldownInfo"); if (cdLeft > 0) { const m = Math.ceil(cdLeft / 60000), s = Math.ceil((cdLeft % 60000) / 1000); cdInfo.innerText = `Skin wissel cooldown: nog ${m}m ${s}s.`; } else cdInfo.innerText = "Je kunt van skin wisselen."; }
+            } catch (e) {
+                console.error("Game update interval error:", e);
             }
-            renderBoosts(); applyEquippedSkin(); updateCpsDisplay(); updateSuggBtn(); checkAnticheat();
-            // Update skin cooldown display if skins screen is open
-            if (activeOverlays.has("skinScreen")) { const cdLeft = getSkinCDLeft(); const cdInfo = $("skinCooldownInfo"); if (cdLeft > 0) { const m = Math.ceil(cdLeft / 60000), s = Math.ceil((cdLeft % 60000) / 1000); cdInfo.innerText = `Skin wissel cooldown: nog ${m}m ${s}s.`; } else cdInfo.innerText = "Je kunt van skin wisselen."; }
-        }, 2000);
+        }, FALLING_CHECK_INTERVAL);
 
         // Remote commands every 2 seconds
-        setInterval(pollRemoteCommands, 2000);
+        setInterval(() => {
+            try {
+                pollRemoteCommands();
+            } catch (e) {
+                console.error("Remote command poll interval error:", e);
+            }
+        }, REMOTE_COMMAND_INTERVAL);
 
         // ── CHAT SYSTEM ────────────────────────────────────────────────────────────────
         let chatMessages = [];
@@ -4616,19 +4642,17 @@ Bericht: ${txt}`);
         }
         let chatCollapsed = false;
         async function fetchChat() {
-            // Only fetch if chat is open, not collapsed, and player is on main screen
             const chatWidget = document.getElementById("chatWidget");
             if (!chatWidget || chatWidget.style.display === "none" || chatCollapsed) return;
             if ($("startScreen").style.display !== "none") return;
             try {
-                const res = await fetch(CHAT_URL + "/chat.json");
+                const res = await fetch(CHAT_URL + "/chat.json?shallow=false");
                 if (!res.ok) {
                     console.error("Chat fetch failed:", res.status, res.statusText);
                     return;
                 }
                 const data = await res.json();
                 if (!data) return;
-                // data is an object with push-IDs as keys
                 const msgs = Object.values(data)
                     .filter(m => m && m.ts)
                     .sort((a, b) => (a.ts || 0) - (b.ts || 0));
@@ -4663,12 +4687,14 @@ Bericht: ${txt}`);
             return Math.ceil((banUntil - Date.now()) / 1000);
         }
         function setChatBan() {
-            localStorage.setItem(CHAT_BAN_KEY, (Date.now() + 18000000).toString()); // 5 hours
+            localStorage.setItem(CHAT_BAN_KEY, (Date.now() + 18000000).toString());
         }
         async function sendChatMessage() {
+            console.log("sendChatMessage called");
             const input = document.getElementById("chatInput");
             if (!input) { console.error("chatInput not found"); return; }
             const msg = input.value.trim();
+            console.log("Message:", msg);
             if (!msg || msg.length < 1) return;
             const now = Date.now();
             if (now - chatLastSentAt < CHAT_COOLDOWN_MS) {
@@ -4692,12 +4718,12 @@ Bericht: ${txt}`);
                 }
             }
             if (!localStorage.getItem("lc_chat_agreed")) {
-                showChatWarning(() => doSendChat(input, msg));
+                showChatWarning(msg);
                 return;
             }
-            doSendChat(input, msg);
+            await doSendChat(msg);
         }
-        function showChatWarning(onAgree) {
+        function showChatWarning(msg) {
             const overlay = document.getElementById("chatWarningOverlay");
             if (overlay) overlay.style.display = "flex";
             const agreeBtn = document.getElementById("chatWarningAgree");
@@ -4705,25 +4731,31 @@ Bericht: ${txt}`);
             if (agreeBtn) agreeBtn.onclick = () => {
                 localStorage.setItem("lc_chat_agreed", "1");
                 overlay.style.display = "none";
-                onAgree();
+                doSendChat(msg);
             };
             if (closeBtn) closeBtn.onclick = () => { overlay.style.display = "none"; };
         }
-        async function doSendChat(input, msg) {
+        async function doSendChat(msg) {
+            console.log("doSendChat called with:", msg);
             chatLastSentAt = Date.now();
-            input.value = "";
+            const input = document.getElementById("chatInput");
+            if (input) input.value = "";
             const entry = { name: G.name || "?", uid: G.uid || "?", msg, ts: Date.now(), type: "msg" };
+            console.log("Sending to Firebase:", CHAT_URL + "/chat.json", entry);
             try {
                 const res = await fetch(CHAT_URL + "/chat.json", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(entry)
                 });
+                console.log("Response status:", res.status, res.statusText);
                 if (!res.ok) {
                     console.error("Chat send failed:", res.status, res.statusText);
                     showNotice("Bericht verzenden mislukt", "var(--danger)");
                     return;
                 }
+                const responseData = await res.json();
+                console.log("Response data:", responseData);
                 await fetchChat();
                 showNotice("Bericht verzonden!", "var(--accent2)");
             } catch (e) {
@@ -4807,11 +4839,41 @@ Bericht: ${txt}`);
         const rcBtn = document.getElementById("reduceCooldownBtn");
         if (rcBtn) rcBtn.addEventListener("click", reduceGambleCooldown);
 
-        // Chat send
-        const chatSendBtn = document.getElementById("chatSendBtn");
-        if (chatSendBtn) chatSendBtn.addEventListener("click", sendChatMessage);
-        const chatInputEl = document.getElementById("chatInput");
-        if (chatInputEl) chatInputEl.addEventListener("keydown", e => { if (e.key === "Enter") sendChatMessage(); });
+        // Chat send - setup event listeners
+        function setupChatEventListeners() {
+            const chatSendBtn = document.getElementById("chatSendBtn");
+            console.log("Setting up chat send button listener, button found:", !!chatSendBtn);
+            if (chatSendBtn) {
+                chatSendBtn.addEventListener("click", (e) => {
+                    console.log("Chat send button clicked");
+                    e.preventDefault();
+                    e.stopPropagation();
+                    sendChatMessage();
+                });
+            } else {
+                console.error("chatSendBtn not found when setting up event listener");
+            }
+            const chatInputEl = document.getElementById("chatInput");
+            console.log("Setting up chat input listener, input found:", !!chatInputEl);
+            if (chatInputEl) {
+                chatInputEl.addEventListener("keydown", (e) => {
+                    if (e.key === "Enter") {
+                        console.log("Enter key pressed in chat input");
+                        e.preventDefault();
+                        e.stopPropagation();
+                        sendChatMessage();
+                    }
+                });
+            } else {
+                console.error("chatInput not found when setting up event listener");
+            }
+        }
+        // Try to set up event listeners immediately
+        setupChatEventListeners();
+        // Also try after a short delay in case DOM isn't ready
+        setTimeout(setupChatEventListeners, 100);
+        // And again after DOM content loaded
+        document.addEventListener("DOMContentLoaded", setupChatEventListeners);
 
         // Suggestion in settings
         const suggSettingsBtn = document.getElementById("sendSuggestionSettingsBtn");
@@ -4822,7 +4884,13 @@ Bericht: ${txt}`);
         // Play button visibility is handled by start screen logic above
 
         // Chat poll every 10 seconds
-        setInterval(fetchChat, 10000);
+        setInterval(() => {
+            try {
+                fetchChat();
+            } catch (e) {
+                console.error("Chat fetch interval error:", e);
+            }
+        }, CHAT_FETCH_INTERVAL);
         // Chat collapse toggle
         const chatHeader = document.getElementById("chatHeader");
         const chatBody = document.getElementById("chatBody");
@@ -4840,7 +4908,13 @@ Bericht: ${txt}`);
             });
         }
         // Update gamble cooldown display every second
-        setInterval(updateShopCooldownDisplay, 1000);
+        setInterval(() => {
+            try {
+                updateShopCooldownDisplay();
+            } catch (e) {
+                console.error("Cooldown update interval error:", e);
+            }
+        }, COOLDOWN_UPDATE_INTERVAL);
 
         // Apply title/icon on load
         applyTitleIcon();
