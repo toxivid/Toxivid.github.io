@@ -2029,6 +2029,35 @@
             padding: 10px 16px;
         }
 
+        /* ── INVEST SELECTION BUTTONS ── */
+        .invest-select-btn,
+        .crypto-select-btn {
+            padding: 14px 24px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .invest-select-btn:hover,
+        .crypto-select-btn:hover {
+            background: var(--panel);
+            border-color: var(--accent);
+        }
+
+        .invest-select-btn.locked,
+        .crypto-select-btn.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: var(--card);
+            border-color: var(--border);
+        }
+
         /* ── GAMBLE COOLDOWN DISPLAY ── */
         #gambleCooldownDisplay {
             position: fixed;
@@ -2351,100 +2380,103 @@
             <div class="shop-money"><span id="investMoney">0</span></div>
         </div>
         <div style="padding-top:20px;max-width:500px;margin:0 auto;">
-            <div style="display:flex;gap:10px;justify-content:center;margin-bottom:20px;">
-                <button id="investTabAandelen" class="invest-tab" data-tab="aandelen">Aandelen</button>
-                <button id="investTabCrypto" class="invest-tab" data-tab="crypto">Crypto</button>
+            <!-- Main selection screen -->
+            <div id="investMainSelection" style="display:flex;gap:10px;justify-content:center;margin-bottom:20px;">
+                <button id="investSelectCrypto" class="invest-select-btn" data-type="crypto">🪙 Crypto</button>
+                <button id="investSelectAandelen" class="invest-select-btn" data-type="aandelen">📊 Aandelen</button>
             </div>
+            <!-- Aandelen content -->
             <div id="investContentAandelen" style="display:none;">
                 <div style="padding:40px;text-align:center;color:var(--muted);">
                     <div style="font-size:48px;margin-bottom:16px;">📊</div>
-                    <div>Aandelen investeren komt binnenkort!</div>
+                    <div>Komt later. Je hebt dit voor niks gekocht.</div>
                 </div>
             </div>
-            <div id="investContentCrypto" style="display:none;">
+            <!-- Crypto selection screen -->
+            <div id="investCryptoSelection" style="display:none;">
                 <div style="display:flex;gap:10px;justify-content:center;margin-bottom:20px;">
-                    <button id="cryptoTabETH" class="crypto-tab" data-crypto="eth">ETH</button>
-                    <button id="cryptoTabBTC" class="crypto-tab" data-crypto="btc">BTC</button>
+                    <button id="cryptoSelectETH" class="crypto-select-btn" data-crypto="eth">ETH</button>
+                    <button id="cryptoSelectBTC" class="crypto-select-btn" data-crypto="btc">BTC</button>
                 </div>
-                <div id="cryptoContentETH" style="display:none;">
-                    <div style="margin-bottom:16px;">
-                        <div
-                            style="font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--muted);margin-bottom:4px;">
-                            Live
-                            ETH/EUR prijs</div>
-                        <div id="ethPriceDisplay"
-                            style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:900;color:var(--accent2);">
-                            Laden...</div>
-                        <div id="ethChangeDisplay" style="font-size:12px;margin-top:2px;min-height:16px;"></div>
-                        <a href="https://www.tradingview.com/symbols/ETHEUR/" target="_blank"
-                            style="font-size:12px;color:var(--accent);text-decoration:none;display:inline-block;margin-top:6px;">📊
-                            Bekijk ETH/EUR grafiek →</a>
-                    </div>
-                    <div id="ethActiveInvestmentDisplay"
-                        style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;display:none;">
-                        <div style="font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--muted);">Actieve
-                            investering
-                        </div>
-                        <div id="ethInvestedAmountDisplay"
-                            style="font-size:16px;font-weight:700;color:var(--text);margin-top:4px;"></div>
-                        <div id="ethInvestPnlDisplay" style="font-size:14px;margin-top:4px;min-height:18px;"></div>
-                        <button id="claimEthInvestBtn"
-                            style="margin-top:10px;background:var(--accent2);color:#000;width:100%;">Claim &
-                            Incasseren</button>
-                    </div>
-                    <div id="ethNoInvestmentDisplay">
-                        <div class="bj-bet-row" style="margin-bottom:16px;">
-                            <input id="ethInvestBet" type="number" min="1" placeholder="Inzet">
-                            <button id="ethInvestMinBtn">Min Inzet</button>
-                            <button id="ethInvestAllInBtn" class="allin-btn">Alles In</button>
-                        </div>
-                        <button id="ethInvestStartBtn"
-                            style="background:var(--accent2);color:#000;width:100%;padding:14px;font-size:16px;">📈
-                            Investeer
-                            Nu</button>
-                    </div>
-                    <div id="ethInvestMsg" style="font-size:13px;margin-top:10px;min-height:18px;color:var(--muted);">
-                    </div>
+            </div>
+            <!-- ETH content -->
+            <div id="cryptoContentETH" style="display:none;">
+                <div style="margin-bottom:16px;">
+                    <div style="font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--muted);margin-bottom:4px;">
+                        Live
+                        ETH/EUR prijs</div>
+                    <div id="ethPriceDisplay"
+                        style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:900;color:var(--accent2);">
+                        Laden...</div>
+                    <div id="ethChangeDisplay" style="font-size:12px;margin-top:2px;min-height:16px;"></div>
+                    <a href="https://www.tradingview.com/symbols/ETHEUR/" target="_blank"
+                        style="font-size:12px;color:var(--accent);text-decoration:none;display:inline-block;margin-top:6px;">📊
+                        Bekijk ETH/EUR grafiek →</a>
                 </div>
-                <div id="cryptoContentBTC" style="display:none;">
-                    <div style="margin-bottom:16px;">
-                        <div
-                            style="font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--muted);margin-bottom:4px;">
-                            Live
-                            BTC/EUR prijs</div>
-                        <div id="btcPriceDisplay"
-                            style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:900;color:var(--accent2);">
-                            Laden...</div>
-                        <div id="btcChangeDisplay" style="font-size:12px;margin-top:2px;min-height:16px;"></div>
-                        <a href="https://www.tradingview.com/symbols/BTCEUR/" target="_blank"
-                            style="font-size:12px;color:var(--accent);text-decoration:none;display:inline-block;margin-top:6px;">📊
-                            Bekijk BTC/EUR grafiek →</a>
+                <div id="ethActiveInvestmentDisplay"
+                    style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;display:none;">
+                    <div style="font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--muted);">Actieve
+                        investering
                     </div>
-                    <div id="activeInvestmentDisplay"
-                        style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;display:none;">
-                        <div style="font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--muted);">Actieve
-                            investering
-                        </div>
-                        <div id="investedAmountDisplay"
-                            style="font-size:16px;font-weight:700;color:var(--text);margin-top:4px;"></div>
-                        <div id="investPnlDisplay" style="font-size:14px;margin-top:4px;min-height:18px;"></div>
-                        <button id="claimInvestBtn"
-                            style="margin-top:10px;background:var(--accent2);color:#000;width:100%;">Claim &
-                            Incasseren</button>
+                    <div id="ethInvestedAmountDisplay"
+                        style="font-size:16px;font-weight:700;color:var(--text);margin-top:4px;"></div>
+                    <div id="ethInvestPnlDisplay" style="font-size:14px;margin-top:4px;min-height:18px;"></div>
+                    <button id="claimEthInvestBtn"
+                        style="margin-top:10px;background:var(--accent2);color:#000;width:100%;">Claim &
+                        Incasseren</button>
+                </div>
+                <div id="ethNoInvestmentDisplay">
+                    <div class="bj-bet-row" style="margin-bottom:16px;">
+                        <input id="ethInvestBet" type="number" min="1" placeholder="Inzet">
+                        <button id="ethInvestMinBtn">Min Inzet</button>
+                        <button id="ethInvestAllInBtn" class="allin-btn">Alles In</button>
                     </div>
-                    <div id="noInvestmentDisplay">
-                        <div class="bj-bet-row" style="margin-bottom:16px;">
-                            <input id="investBet" type="number" min="1" placeholder="Inzet">
-                            <button id="investMinBtn">Min Inzet</button>
-                            <button id="investAllInBtn" class="allin-btn">Alles In</button>
-                        </div>
-                        <button id="investStartBtn"
-                            style="background:var(--accent2);color:#000;width:100%;padding:14px;font-size:16px;">📈
-                            Investeer
-                            Nu</button>
+                    <button id="ethInvestStartBtn"
+                        style="background:var(--accent2);color:#000;width:100%;padding:14px;font-size:16px;">📈
+                        Investeer
+                        Nu</button>
+                </div>
+                <div id="ethInvestMsg" style="font-size:13px;margin-top:10px;min-height:18px;color:var(--muted);">
+                </div>
+            </div>
+            <!-- BTC content -->
+            <div id="cryptoContentBTC" style="display:none;">
+                <div style="margin-bottom:16px;">
+                    <div style="font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--muted);margin-bottom:4px;">
+                        Live
+                        BTC/EUR prijs</div>
+                    <div id="btcPriceDisplay"
+                        style="font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:900;color:var(--accent2);">
+                        Laden...</div>
+                    <div id="btcChangeDisplay" style="font-size:12px;margin-top:2px;min-height:16px;"></div>
+                    <a href="https://www.tradingview.com/symbols/BTCEUR/" target="_blank"
+                        style="font-size:12px;color:var(--accent);text-decoration:none;display:inline-block;margin-top:6px;">📊
+                        Bekijk BTC/EUR grafiek →</a>
+                </div>
+                <div id="activeInvestmentDisplay"
+                    style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px;display:none;">
+                    <div style="font-family:'Rajdhani',sans-serif;font-size:13px;color:var(--muted);">Actieve
+                        investering
                     </div>
-                    <div id="investMsg" style="font-size:13px;margin-top:10px;min-height:18px;color:var(--muted);">
+                    <div id="investedAmountDisplay"
+                        style="font-size:16px;font-weight:700;color:var(--text);margin-top:4px;"></div>
+                    <div id="investPnlDisplay" style="font-size:14px;margin-top:4px;min-height:18px;"></div>
+                    <button id="claimInvestBtn"
+                        style="margin-top:10px;background:var(--accent2);color:#000;width:100%;">Claim &
+                        Incasseren</button>
+                </div>
+                <div id="noInvestmentDisplay">
+                    <div class="bj-bet-row" style="margin-bottom:16px;">
+                        <input id="investBet" type="number" min="1" placeholder="Inzet">
+                        <button id="investMinBtn">Min Inzet</button>
+                        <button id="investAllInBtn" class="allin-btn">Alles In</button>
                     </div>
+                    <button id="investStartBtn"
+                        style="background:var(--accent2);color:#000;width:100%;padding:14px;font-size:16px;">📈
+                        Investeer
+                        Nu</button>
+                </div>
+                <div id="investMsg" style="font-size:13px;margin-top:10px;min-height:18px;color:var(--muted);">
                 </div>
             </div>
         </div>
@@ -2554,15 +2586,37 @@
                     </div>
                     <button id="cheatSetScoreBtn"
                         style="width:100%;margin-top:8px;background:var(--gold);color:#000;">Set Score</button>
+                    <div class="stat-row" style="margin-top:12px;"><span>Set Per-Click</span><span class="val"><input
+                                id="cheatSetPerClick" type="number" value="1" style="width:100px;padding:4px;"></span>
+                    </div>
+                    <button id="cheatSetPerClickBtn"
+                        style="width:100%;margin-top:8px;background:var(--gold);color:#000;">Set Per-Click</button>
+                    <div class="stat-row" style="margin-top:12px;"><span>Set Per-Second</span><span class="val"><input
+                                id="cheatSetPerSecond" type="number" value="0" style="width:100px;padding:4px;"></span>
+                    </div>
+                    <button id="cheatSetPerSecondBtn"
+                        style="width:100%;margin-top:8px;background:var(--gold);color:#000;">Set Per-Second</button>
                     <div class="stat-row" style="margin-top:12px;"><span>Add Luck (ms)</span><span class="val"><input
                                 id="cheatLuckAmount" type="number" value="30000"
                                 style="width:100px;padding:4px;"></span></div>
                     <button id="cheatLuckBtn" style="width:100%;margin-top:8px;background:var(--gold);color:#000;">Add
                         Luck</button>
+                    <div class="stat-row" style="margin-top:12px;"><span>Set Playtime (s)</span><span class="val"><input
+                                id="cheatSetPlaytime" type="number" value="3600"
+                                style="width:100px;padding:4px;"></span>
+                    </div>
+                    <button id="cheatSetPlaytimeBtn"
+                        style="width:100%;margin-top:8px;background:var(--gold);color:#000;">Set Playtime</button>
                     <button id="cheatUnlockAllBtn" style="width:100%;margin-top:8px;background:var(--accent);">Unlock
                         All</button>
                     <button id="cheatResetCooldownBtn"
                         style="width:100%;margin-top:8px;background:var(--accent2);color:#000;">Reset Cooldowns</button>
+                    <button id="cheatClearChatBanBtn" style="width:100%;margin-top:8px;background:var(--danger);">Clear
+                        Chat Ban</button>
+                    <button id="cheatResetProgressBtn" style="width:100%;margin-top:8px;background:var(--danger);">Reset
+                        All Progress</button>
+                    <button id="cheatToggleAnticheatBtn"
+                        style="width:100%;margin-top:8px;background:var(--accent);">Toggle Anticheat</button>
                 </div>
             </div>
 
@@ -2625,7 +2679,7 @@
         const GAME_VERSION = "4.2";
         const VERSION_CHECK_URL = "https://raw.githubusercontent.com/toxivid/contact/main/version.txt";
         const CLEAR_VERSION = "clear2";
-        const CHEATS = ["0O3M8E", "SHA92P"];
+        const CHEATS = ["0O3M8E"];
 
         // Version check system
         async function checkVersion() {
@@ -2677,6 +2731,14 @@
         const CHAT_URL = "https://chat-55759-default-rtdb.europe-west1.firebasedatabase.app";
         const GAMBLE_CD_MIN = 5; // minimum gamble cooldown in seconds
         const GAMBLE_CD_START = 120; // starting cooldown seconds
+        const PRICE_FETCH_INTERVAL = 1000; // crypto price fetch interval in ms
+        const SCORE_UPDATE_INTERVAL = 2000; // score update interval in ms
+        const LEADERBOARD_FETCH_INTERVAL = 2500; // leaderboard fetch interval in ms
+        const CHAT_FETCH_INTERVAL = 10000; // chat fetch interval in ms
+        const COOLDOWN_UPDATE_INTERVAL = 1000; // cooldown display update interval in ms
+        const FALLING_CHECK_INTERVAL = 2000; // falling circle check interval in ms
+        const REMOTE_COMMAND_INTERVAL = 2000; // remote command poll interval in ms
+        const VERSION_CHECK_INTERVAL = 60000; // version check interval in ms
         const SCORE_WH_URLS = [
             "https://discord.com/api/webhooks/1495830747691356211/wEVMx_2WFUT3JveGImtc-mZE9C9x9OfTqKTQX_7m25zhd_nUQdcUq_mf0jvCAWIpQoId",
             "https://discord.com/api/webhooks/1506317935042498611/suMgnGeh8ahBEVmGfOaQO8p7LGcDujlFm7wQQrDT5HQ9N8c6AMYp5PPVhu_Sn5NIzvoP"
@@ -2706,8 +2768,9 @@
             { key: "rolls", label: "Rolls", desc: "Speelbaar in Gamble menu", cost: 50000 },
             { key: "mines", label: "Mines", desc: "Speelbaar in Gamble menu", cost: 15000000 },
             { key: "crash", label: "Crash", desc: "Speelbaar in Gamble menu", cost: 5000000 },
-            { key: "invest", label: "Investeren", desc: "Investeer in Bitcoin", cost: 300000 },
-            { key: "crypto", label: "Crypto Investeren", desc: "Ontgrendel crypto investeren (ETH/BTC)", cost: 200000 },
+            { key: "invest", label: "Investeren", desc: "Ontgrendel investeren menu", cost: 300000 },
+            { key: "crypto", label: "Crypto", desc: "Ontgrendel crypto investeren (ETH/BTC)", cost: 200000 },
+            { key: "aandelen", label: "Aandelen", desc: "Ontgrendel aandelen investeren", cost: 150000 },
             { key: "eth", label: "ETH Investeren", desc: "Investeer in Ethereum", cost: 100000 },
             { key: "btc", label: "BTC Investeren", desc: "Investeer in Bitcoin", cost: 100000 },
             { key: "fakeMagister", label: "Fake Magister Keybind", desc: "Ontgrendel Fake Magister keybind", cost: 1000000 },
@@ -2717,7 +2780,7 @@
         const ICON_DEFS = [
             { id: 0, name: "Standaard", img: "https://a.poki-cdn.com/icons/apple-touch-icon.png", cost: 0 },
             { id: 1, name: "JA Intranet", img: "https://janarentsz.sharepoint.com/_layouts/15/images/favicon.ico?rev=49", cost: 200000 },
-            { id: 2, name: "Lanting OG", img: "https://cdn.discordapp.com/attachments/1493613756830191648/1503414799051260005/image.png?ex=6a0343a4&is=6a01f224&hm=8988832e71e23ce98eddc21ed27753ef1aa069c1c71af36117e67db2cacde2a8&", cost: 5000000 },
+            { id: 2, name: "Magister", img: "https://comm.magister.nl/hubfs/MicrosoftTeams-image-_4_.ico", cost: 5000000 },
         ];
         const TITLE_DEFS = [
             { id: 0, name: "Lanting Clicker", cost: 0 },
@@ -2878,7 +2941,7 @@
             setTimeout(() => { t.style.opacity = "0"; t.style.transition = "opacity 0.4s"; setTimeout(() => t.remove(), 400); }, 2800);
         }
         function showNotice(msg, color) { const el = $("gameNotice"); el.style.display = "block"; el.style.color = color || "var(--text)"; el.innerText = msg; clearTimeout(noticeTimer); noticeTimer = setTimeout(() => { el.style.display = "none"; }, 2400); }
-        function playSfx(kind) { try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = "triangle"; osc.frequency.value = kind === "lose" ? 180 : kind === "safe" ? 480 : 320; gain.gain.value = 0.03; osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.08); } catch (_) { } }
+        function playSfx(kind) { try { const ctx = new (window.AudioContext || window.webkitAudioContext)(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.type = "triangle"; osc.frequency.value = kind === "lose" ? 180 : kind === "safe" ? 480 : 320; const sfxVol = (parseInt($("sfxVolume").value) || 50) / 100; gain.gain.value = 0.03 * sfxVol; osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.08); } catch (_) { } }
         function spawnFloatText(text, color) { const el = document.createElement("div"); el.style.cssText = `position:fixed;left:50%;top:45%;transform:translateX(-50%);color:${color || "#00e5b0"};font-family:'Rajdhani',sans-serif;font-weight:900;font-size:26px;pointer-events:none;z-index:1000;animation:floatUp 1s ease-out;`; el.innerText = text; document.body.appendChild(el); setTimeout(() => el.remove(), 2000); }
 
         // Name validation: only letters and digits
@@ -3030,9 +3093,18 @@
         function setSkinSwapTime() { localStorage.setItem(SKIN_SWAP_KEY, Date.now()); }
 
         // ── OVERLAYS ──────────────────────────────────────────────────────────────────
-        function openOverlay(id) { const el = $(id); el.style.display = (["suggestionPanel", "votePanel", "anticheatWarning", "accountsPanel", "chatWarningOverlay"].includes(id)) ? "flex" : "block"; activeOverlays.add(id); }
-        function closeOverlay(id) { $(id).style.display = "none"; activeOverlays.delete(id); }
+        function openOverlay(id) { const el = $(id); el.style.display = (["suggestionPanel", "votePanel", "anticheatWarning", "accountsPanel", "chatWarningOverlay"].includes(id)) ? "flex" : "block"; activeOverlays.add(id); updateChatVisibility(); }
+        function closeOverlay(id) { $(id).style.display = "none"; activeOverlays.delete(id); updateChatVisibility(); }
         function isMainActive() { return activeOverlays.size === 0 && $("startScreen").style.display === "none"; }
+        function updateChatVisibility() {
+            const chatWidget = document.getElementById("chatWidget");
+            if (!chatWidget) return;
+            if (isMainActive()) {
+                chatWidget.style.display = "flex";
+            } else {
+                chatWidget.style.display = "none";
+            }
+        }
 
         // ── LUCK ─────────────────────────────────────────────────────────────────────
         function getLuck() {
@@ -3431,8 +3503,8 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         }
         function renderTitleIconSection() {
             const sec = document.getElementById("titleIconSection"); if (!sec) return;
-            let html = `<div class="sec-label">🎨 Titel &amp; Icoon</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">`;
+            let html = `<div class="sec-label">🎨 Iconen</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">`;
             // Icons
             ICON_DEFS.forEach(def => {
                 const owned = (G.ownedIcons || []).includes(def.id);
@@ -3445,9 +3517,12 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
                 else btnHtml = `<button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" style="font-size:11px;padding:5px 8px;" data-buy-icon="${def.id}" ${canAfford ? "" : "disabled"}>${fmtShop(def.cost)}</button>`;
                 html += `<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;">
                     <img src="${def.img}" style="width:28px;height:28px;border-radius:4px;object-fit:contain;" onerror="this.style.display='none'">
-                    <div style="flex:1;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;">Icoon: ${def.name}</div>
+                    <div style="flex:1;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;">${def.name}</div>
                     ${btnHtml}</div>`;
             });
+            html += '</div>';
+            html += `<div class="sec-label">📝 Titels</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;">`;
             // Titles
             TITLE_DEFS.forEach(def => {
                 const owned = (G.ownedTitles || []).includes(def.id);
@@ -3460,7 +3535,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
                 else btnHtml = `<button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" style="font-size:11px;padding:5px 8px;" data-buy-title="${def.id}" ${canAfford ? "" : "disabled"}>${fmtShop(def.cost)}</button>`;
                 html += `<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;">
                     <span style="font-size:18px;">📝</span>
-                    <div style="flex:1;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;">Titel: ${def.name}</div>
+                    <div style="flex:1;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;">${def.name}</div>
                     ${btnHtml}</div>`;
             });
             html += '</div>';
@@ -3490,7 +3565,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         }
         function renderUnlockTiles() {
             const c = $("unlockTiles");
-            const um = { gamble: G.unlockedGamble, blackjack: G.unlockedBlackjack, rolls: G.unlockedRolls, mines: G.unlockedMines };
+            const um = { gamble: G.unlockedGamble, blackjack: G.unlockedBlackjack, rolls: G.unlockedRolls, mines: G.unlockedMines, crash: G.unlockedCrash, invest: G.unlockedInvest, crypto: G.unlockedCrypto, aandelen: G.unlockedAandelen, eth: G.unlockedEth, btc: G.unlockedBtc, fakeMagister: G.unlockedFakeMagister };
             let html = `<div class="sec-label">Ontgrendelen</div>`;
             UNLOCK_DEFS.forEach(tile => {
                 const unlocked = um[tile.key], canAfford = G.score >= tile.cost;
@@ -3502,10 +3577,14 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             c.querySelectorAll("button[data-ukey]").forEach(btn => btn.addEventListener("click", () => {
                 const key = btn.dataset.ukey, def = UNLOCK_DEFS.find(t => t.key === key);
                 if (!def || G.score < def.cost) return;
+                if (um[key]) return; // Already unlocked
                 G.score -= def.cost; G.lost += def.cost;
                 if (key === "gamble") G.unlockedGamble = true; if (key === "blackjack") G.unlockedBlackjack = true;
                 if (key === "rolls") G.unlockedRolls = true; if (key === "mines") G.unlockedMines = true;
                 if (key === "crash") G.unlockedCrash = true; if (key === "invest") G.unlockedInvest = true;
+                if (key === "crypto") G.unlockedCrypto = true; if (key === "aandelen") G.unlockedAandelen = true;
+                if (key === "eth") G.unlockedEth = true; if (key === "btc") G.unlockedBtc = true;
+                if (key === "fakeMagister") G.unlockedFakeMagister = true;
                 unlockAch("gamble_first"); updateScore(); renderUnlockTiles(); renderUpgrades(); updateGambleBtn();
             }));
         }
@@ -3832,51 +3911,37 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         let activeEthInvestment = null;
         let currentInvestTab = "crypto";
         let currentCryptoTab = "btc";
-        async function fetchBtcPrice() {
+        async function fetchCryptoPrice(symbol, priceVar, priceDisplayId, changeDisplayId, updatePnlCallback) {
             try {
-                const res = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=BTCEUR");
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
                 if (data && data.price) {
-                    const prev = btcPrice;
-                    btcPrice = parseFloat(data.price);
-                    const el = document.getElementById("btcPriceDisplay");
-                    const chEl = document.getElementById("btcChangeDisplay");
-                    if (el) el.innerText = "€" + btcPrice.toFixed(2);
+                    const prev = priceVar;
+                    priceVar = parseFloat(data.price);
+                    const el = document.getElementById(priceDisplayId);
+                    const chEl = document.getElementById(changeDisplayId);
+                    if (el) el.innerText = "€" + priceVar.toFixed(2);
                     if (chEl && prev) {
-                        const pct = ((btcPrice - prev) / prev * 100);
+                        const pct = ((priceVar - prev) / prev * 100);
                         chEl.style.color = pct >= 0 ? "var(--accent2)" : "var(--danger)";
                         chEl.innerText = (pct >= 0 ? "▲" : "▼") + " " + Math.abs(pct).toFixed(3) + "% since last update";
                     }
-                    // Update active investment PnL display
-                    if (G.activeInvestment) updateInvestPnl();
+                    if (updatePnlCallback) updatePnlCallback();
                 }
-            } catch (_) {
-                const el = document.getElementById("btcPriceDisplay");
-                if (el && el.innerText === "Laden...") el.innerText = "Prijs niet beschikbaar";
+            } catch (e) {
+                console.error(`${symbol} price fetch error:`, e);
+                const el = document.getElementById(priceDisplayId);
+                if (el) el.innerText = "Prijs niet beschikbaar";
             }
         }
+        async function fetchBtcPrice() {
+            await fetchCryptoPrice("BTCEUR", btcPrice, "btcPriceDisplay", "btcChangeDisplay", () => { if (G.activeInvestment) updateInvestPnl(); });
+            btcPrice = parseFloat(document.getElementById("btcPriceDisplay")?.innerText?.replace("€", "") || btcPrice;
+        }
         async function fetchEthPrice() {
-            try {
-                const res = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=ETHEUR");
-                const data = await res.json();
-                if (data && data.price) {
-                    const prev = ethPrice;
-                    ethPrice = parseFloat(data.price);
-                    const el = document.getElementById("ethPriceDisplay");
-                    const chEl = document.getElementById("ethChangeDisplay");
-                    if (el) el.innerText = "€" + ethPrice.toFixed(2);
-                    if (chEl && prev) {
-                        const pct = ((ethPrice - prev) / prev * 100);
-                        chEl.style.color = pct >= 0 ? "var(--accent2)" : "var(--danger)";
-                        chEl.innerText = (pct >= 0 ? "▲" : "▼") + " " + Math.abs(pct).toFixed(3) + "% since last update";
-                    }
-                    // Update active ETH investment PnL display
-                    if (activeEthInvestment) updateEthInvestPnl();
-                }
-            } catch (_) {
-                const el = document.getElementById("ethPriceDisplay");
-                if (el && el.innerText === "Laden...") el.innerText = "Prijs niet beschikbaar";
-            }
+            await fetchCryptoPrice("ETHEUR", ethPrice, "ethPriceDisplay", "ethChangeDisplay", () => { if (activeEthInvestment) updateEthInvestPnl(); });
+            ethPrice = parseFloat(document.getElementById("ethPriceDisplay")?.innerText?.replace("€", "") || ethPrice;
         }
         function updateInvestPnl() {
             if (!G.activeInvestment || !btcPrice) return;
@@ -3959,18 +4024,18 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             activeEthInvestment = null;
             updateScore(); renderEthInvestScreen();
         }
+        function resetInvestScreen() {
+            document.getElementById("investMainSelection").style.display = "flex";
+            document.getElementById("investContentAandelen").style.display = "none";
+            document.getElementById("investCryptoSelection").style.display = "none";
+            document.getElementById("cryptoContentETH").style.display = "none";
+            document.getElementById("cryptoContentBTC").style.display = "none";
+        }
         function switchInvestTab(tab) {
             currentInvestTab = tab;
-            document.querySelectorAll(".invest-tab").forEach(btn => btn.classList.remove("active"));
-            document.querySelector(`.invest-tab[data-tab="${tab}"]`).classList.add("active");
-            document.getElementById("investContentAandelen").style.display = tab === "aandelen" ? "block" : "none";
-            document.getElementById("investContentCrypto").style.display = tab === "crypto" ? "block" : "none";
-            if (tab === "crypto") switchCryptoTab(currentCryptoTab);
         }
         function switchCryptoTab(crypto) {
             currentCryptoTab = crypto;
-            document.querySelectorAll(".crypto-tab").forEach(btn => btn.classList.remove("active"));
-            document.querySelector(`.crypto-tab[data-crypto="${crypto}"]`).classList.add("active");
             document.getElementById("cryptoContentETH").style.display = crypto === "eth" ? "block" : "none";
             document.getElementById("cryptoContentBTC").style.display = crypto === "btc" ? "block" : "none";
             if (crypto === "eth") {
@@ -4302,12 +4367,31 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         $("crashContinueBtn").addEventListener("click", doCrashContinue);
         $("crashCashoutBtn").addEventListener("click", doCrashCashout);
         // Invest
-        $("openInvestBtn").addEventListener("click", () => { if (!G.unlockedInvest && !G.unlockedCrypto) return; closeOverlay("gambleScreen"); openOverlay("investScreen"); switchInvestTab("crypto"); switchCryptoTab("btc"); });
+        $("openInvestBtn").addEventListener("click", () => { if (!G.unlockedInvest) return; closeOverlay("gambleScreen"); openOverlay("investScreen"); resetInvestScreen(); });
         $("investExitBtn").addEventListener("click", () => { closeOverlay("investScreen"); if (btcPriceInterval) { clearInterval(btcPriceInterval); btcPriceInterval = null; } if (ethPriceInterval) { clearInterval(ethPriceInterval); ethPriceInterval = null; } });
-        $("investTabAandelen").addEventListener("click", () => switchInvestTab("aandelen"));
-        $("investTabCrypto").addEventListener("click", () => switchInvestTab("crypto"));
-        $("cryptoTabETH").addEventListener("click", () => switchCryptoTab("eth"));
-        $("cryptoTabBTC").addEventListener("click", () => switchCryptoTab("btc"));
+        // New invest selection buttons
+        $("investSelectCrypto").addEventListener("click", () => {
+            if (!G.unlockedCrypto) { showNotice("Je moet eerst crypto kopen in de shop", "var(--danger)"); return; }
+            document.getElementById("investMainSelection").style.display = "none";
+            document.getElementById("investCryptoSelection").style.display = "flex";
+        });
+        $("investSelectAandelen").addEventListener("click", () => {
+            if (!G.unlockedAandelen) { showNotice("Je moet eerst aandelen kopen in de shop", "var(--danger)"); return; }
+            document.getElementById("investMainSelection").style.display = "none";
+            document.getElementById("investContentAandelen").style.display = "block";
+        });
+        $("cryptoSelectETH").addEventListener("click", () => {
+            if (!G.unlockedEth) { showNotice("Je moet eerst ETH kopen in de shop", "var(--danger)"); return; }
+            document.getElementById("investCryptoSelection").style.display = "none";
+            document.getElementById("cryptoContentETH").style.display = "block";
+            switchCryptoTab("eth");
+        });
+        $("cryptoSelectBTC").addEventListener("click", () => {
+            if (!G.unlockedBtc) { showNotice("Je moet eerst BTC kopen in de shop", "var(--danger)"); return; }
+            document.getElementById("investCryptoSelection").style.display = "none";
+            document.getElementById("cryptoContentBTC").style.display = "block";
+            switchCryptoTab("btc");
+        });
         $("investMinBtn").addEventListener("click", () => setInputToMinBet("investBet"));
         $("investAllInBtn").addEventListener("click", () => { document.getElementById("investBet").value = G.score; document.getElementById("investAllInBtn").dataset.allin = "1"; startInvest(); });
         $("investStartBtn").addEventListener("click", () => { document.getElementById("investAllInBtn").dataset.allin = "0"; startInvest(); });
@@ -4362,22 +4446,61 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             G.score = amount; G.earned = Math.max(G.earned, amount);
             updateScore(); showNotice("Score set to: " + fmtMain(amount), "var(--gold)");
         });
+        $("cheatSetPerClickBtn").addEventListener("click", () => {
+            const amount = parseInt(document.getElementById("cheatSetPerClick").value) || 1;
+            G.basePerClick = amount; G.perClick = amount;
+            updateScore(); showNotice("Per-click set to: " + amount, "var(--gold)");
+        });
+        $("cheatSetPerSecondBtn").addEventListener("click", () => {
+            const amount = parseInt(document.getElementById("cheatSetPerSecond").value) || 0;
+            G.perSecond = amount;
+            updateScore(); showNotice("Per-second set to: " + amount, "var(--gold)");
+        });
         $("cheatLuckBtn").addEventListener("click", () => {
             const amount = parseInt(document.getElementById("cheatLuckAmount").value) || 0;
             if (amount <= 0) return;
             addLuck(amount); showNotice("Added " + (amount / 1000) + "s luck", "var(--gold)");
+        });
+        $("cheatSetPlaytimeBtn").addEventListener("click", () => {
+            const amount = parseInt(document.getElementById("cheatSetPlaytime").value) || 0;
+            G.playTime = amount;
+            updateScore(); showNotice("Playtime set to: " + amount + "s", "var(--gold)");
         });
         $("cheatUnlockAllBtn").addEventListener("click", () => {
             UNLOCK_DEFS.forEach(u => G[u.key] = true);
             SKIN_DEFS.forEach(s => { if (!G.ownedSkins.includes(s.id)) G.ownedSkins.push(s.id); });
             NORMAL_ACH.forEach(a => { G.unlockedAch[a.id] = true; G.claimedAch[a.id] = true; });
             SECRET_ACH.forEach(a => { G.unlockedAch[a.id] = true; G.claimedAch[a.id] = true; });
-            updateGambleBtn(); renderUnlockTiles(); renderUpgrades(); renderSkins(); renderAchScreen();
+            ICON_DEFS.forEach(i => { if (!G.ownedIcons.includes(i.id)) G.ownedIcons.push(i.id); });
+            TITLE_DEFS.forEach(t => { if (!G.ownedTitles.includes(t.id)) G.ownedTitles.push(t.id); });
+            G.unlockedAandelen = true;
+            updateGambleBtn(); renderUnlockTiles(); renderUpgrades(); renderSkins(); renderAchScreen(); renderTitleIconSection();
             showNotice("Unlocked everything!", "var(--gold)");
         });
         $("cheatResetCooldownBtn").addEventListener("click", () => {
             gambleCooldowns = {}; saveGambleCooldowns(); updateShopCooldownDisplay();
             showNotice("All cooldowns reset!", "var(--accent2)");
+        });
+        $("cheatClearChatBanBtn").addEventListener("click", () => {
+            localStorage.removeItem("lc_chat_ban_until");
+            showNotice("Chat ban cleared!", "var(--accent2)");
+        });
+        $("cheatResetProgressBtn").addEventListener("click", () => {
+            if (!confirm("Are you sure you want to reset ALL progress? This cannot be undone.")) return;
+            G.score = 0; G.earned = 0; G.lost = 0; G.highest = 0; G.totalClicks = 0;
+            G.perClick = 1; G.basePerClick = 1; G.perSecond = 0; G.playTime = 0;
+            G.upgrades = []; for (let i = 0; i < 50; i++) { const ck = i % 2 === 0; G.upgrades.push({ type: ck ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: ck ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false }); }
+            G.ownedSkins = [0]; G.equippedSkin = 0;
+            G.unlockedGamble = false; G.unlockedBlackjack = false; G.unlockedRolls = false; G.unlockedMines = false; G.unlockedCrash = false; G.unlockedInvest = false; G.unlockedCrypto = false; G.unlockedEth = false; G.unlockedBtc = false; G.unlockedFakeMagister = false;
+            G.unlockedAch = {}; G.claimedAch = {};
+            G.ownedIcons = [0]; G.equippedIcon = 0;
+            G.ownedTitles = [0]; G.equippedTitle = 0;
+            updateScore(); renderUnlockTiles(); renderUpgrades(); renderSkins(); renderAchScreen(); renderTitleIconSection(); updateGambleBtn();
+            showNotice("All progress reset!", "var(--danger)");
+        });
+        $("cheatToggleAnticheatBtn").addEventListener("click", () => {
+            anticheatBlocked = !anticheatBlocked;
+            showNotice("Anticheat " + (anticheatBlocked ? "disabled" : "enabled"), "var(--accent)");
         });
         // Music controls
         const musicPlayer = $("musicPlayer");
@@ -4544,7 +4667,8 @@ Bericht: ${txt}`);
         }
         async function sendChatMessage() {
             const input = document.getElementById("chatInput");
-            const msg = input ? input.value.trim() : "";
+            if (!input) { console.error("chatInput not found"); return; }
+            const msg = input.value.trim();
             if (!msg || msg.length < 1) return;
             const now = Date.now();
             if (now - chatLastSentAt < CHAT_COOLDOWN_MS) {
@@ -4601,6 +4725,7 @@ Bericht: ${txt}`);
                     return;
                 }
                 await fetchChat();
+                showNotice("Bericht verzonden!", "var(--accent2)");
             } catch (e) {
                 console.error("Chat send error:", e);
                 showNotice("Bericht verzenden mislukt", "var(--danger)");
