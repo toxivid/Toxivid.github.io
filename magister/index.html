@@ -3435,7 +3435,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         // ── ROLLS ─────────────────────────────────────────────────────────────────────
         // Added 0.25, 1 (neutral), 2.5, 3 to pools
         function getRollPick(luck) {
-            const red = [0.1, 0.25, 0.5, 0.75], green = [1.2, 1.5, 2, 2.5], neutral = [1, 1];
+            const red = [0.1, 0.2, 0.5, 0.7], green = [1.2, 1.5, 2, 2.5], neutral = [1, 1];
             const r = Math.random();
             const baseGood = 0.39;
             const luckBoost = Math.min(0.30, luck / 100);
