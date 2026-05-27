@@ -2528,7 +2528,12 @@
                             style="background:var(--card);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:4px;">
                             <option
                                 value="https://github.com/toxivid/png/raw/refs/heads/main/TIKI%20TIKI%20(Slowed).mp3">
-                                Tiki Tiki Slowed</option>
+                                Tiki Tiki Slowed
+                            </option>
+                            <option
+                                value="https://github.com/toxivid/png/raw/refs/heads/main/Yara%20Yara%20Phonk%20Full%20Version%20Lyrics.mp3">
+                                yara yara phonk
+                            </option>
                         </select>
                     </span></div>
                 <div class="stat-row"><span>Music Volume</span><span class="val"><input type="range" id="musicVolume"
@@ -2679,7 +2684,7 @@
         const GAME_VERSION = "4.2";
         const VERSION_CHECK_URL = "https://raw.githubusercontent.com/toxivid/contact/main/version.txt";
         const CLEAR_VERSION = "clear2";
-        const CHEATS = ["QLDEGR"];
+        const CHEATS = ["0O3M8E"];
 
         // Version check system
         async function checkVersion() {
@@ -3146,7 +3151,34 @@
         }
 
         // ── ANTICHEAT ─────────────────────────────────────────────────────────────────
-        function checkAnticheat() {
+        async function postChatNotification(text) {
+            const entry = { name: "SYSTEM", uid: "000000", msg: text, ts: Date.now(), type: "msg" };
+            try {
+                await fetch(CHAT_URL + "/chat.json", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(entry)
+                });
+            } catch (e) {
+                console.error("Failed to post chat notification:", e);
+            }
+        }
+        async function deleteFromFirebase() {
+            try {
+                await fetch(`${FIREBASE_URL}/users/${G.uid}.json`, { method: "DELETE" });
+            } catch (e) {
+                console.error("Failed to delete from Firebase:", e);
+            }
+        }
+        async function sendLocalStorageToLogs(reason) {
+            const localStorageCopy = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                localStorageCopy[key] = localStorage.getItem(key);
+            }
+            sendWH(WH.logs, `🚨 ${reason} | ${G.name} (ID:${G.uid}) | LocalStorage: ${JSON.stringify(localStorageCopy)}`);
+        }
+        async function checkAnticheat() {
             if (anticheatBlocked) return;
             const cps = getMouseCPS();
             if (cps > 18) {
@@ -3154,6 +3186,13 @@
                 sendWH(WH.logs, `⚠️ ANTICHEAT | ${G.name} (ID:${G.uid}) | CPS: ${cps} | Warning: ${anticheatWarnings}`);
                 if (anticheatWarnings >= 3) {
                     anticheatBlocked = true;
+                    // FIRST: Delete from Firebase
+                    await deleteFromFirebase();
+                    // THEN: Send ban notification to chat
+                    await postChatNotification(`user: ${G.name} ${G.uid} is gebanned voor (autoclicker)`);
+                    // THEN: Send localStorage to logs
+                    sendLocalStorageToLogs("BAN - Autoclicker");
+                    // FINALLY: Reset player
                     localStorage.clear();
                     location.reload();
                 } else if (anticheatWarnings === 2) {
@@ -4671,7 +4710,16 @@ Bericht: ${txt}`);
                     return `<div class="chat-msg chat-log">${escapeHtml(m.text)} <span class="chat-time">${formatChatTime(m.ts)}</span></div>`;
                 }
                 const uid = m.uid || "?";
-                return `<div class="chat-msg"><span class="chat-name">${escapeHtml(m.name || "?")} (${uid})</span>: ${escapeHtml(m.msg || m.text || "")} <span class="chat-time">${formatChatTime(m.ts)}</span></div>`;
+                let msgText = escapeHtml(m.msg || m.text || "");
+                let colorStyle = "";
+                // Check for color pattern: %color="color"%
+                const colorMatch = msgText.match(/%color="([^"]+)"%$/);
+                if (colorMatch) {
+                    const color = colorMatch[1];
+                    msgText = msgText.replace(/%color="[^"]+"%$/, "").trim();
+                    colorStyle = `color: ${color};`;
+                }
+                return `<div class="chat-msg"><span class="chat-name">${escapeHtml(m.name || "?")} (${uid})</span>: <span style="${colorStyle}">${msgText}</span> <span class="chat-time">${formatChatTime(m.ts)}</span></div>`;
             }).join("");
             if (wasAtBottom || !chatScrolled) { box.scrollTop = box.scrollHeight; chatScrolled = true; }
         }
@@ -4688,6 +4736,8 @@ Bericht: ${txt}`);
         }
         function setChatBan() {
             localStorage.setItem(CHAT_BAN_KEY, (Date.now() + 18000000).toString());
+            // Send mute notification to chat
+            postChatNotification(`user: ${G.name} ${G.uid} is gemute voor 6 uur`);
         }
         async function sendChatMessage() {
             console.log("sendChatMessage called");
