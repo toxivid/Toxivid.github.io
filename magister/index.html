@@ -565,7 +565,7 @@
 
         #statsBtn {
             position: fixed;
-            right: 20px;
+            right: 300px;
             top: 20px;
         }
 
@@ -621,6 +621,24 @@
             max-width: min(270px, calc(50vw - 60px));
             backdrop-filter: blur(12px);
             z-index: 5;
+            max-height: calc(100vh - 180px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #leaderboardTop {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(20, 20, 42, .95);
+            border: 2px solid #ff0000;
+            border-radius: 14px;
+            padding: 14px 20px;
+            min-width: min(240px, calc(50vw - 80px));
+            max-width: min(270px, calc(50vw - 60px));
+            backdrop-filter: blur(12px);
+            z-index: 100;
             max-height: calc(100vh - 180px);
             overflow: hidden;
             display: flex;
@@ -2130,19 +2148,20 @@
             margin-bottom: 16px;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
 </head>
 
 <body>
     <div id="toastContainer"></div>
     <div id="loadingScreen">
-        <div class="loading-title">Lanting Clicker</div>
+        <div class="loading-title">lanting clicker</div>
         <div class="loading-bar-wrap">
             <div class="loading-bar-fill" id="loadingBarFill"></div>
         </div>
         <div class="loading-status" id="loadingStatus">Laden...</div>
     </div>
     <div id="startScreen" style="display:none;">
-        <div class="start-title">poki</div>
+        <div class="start-title">lanting clicker</div>
         <button id="playBtn">SPELEN</button>
         <div id="versionNotice"></div>
         <div id="nameSection" style="display:none;">
@@ -2211,11 +2230,16 @@
         <div id="lbRows"></div>
         <button id="lbExpandBtn">▲ Volledig Leaderboard</button>
     </div>
+    <div id="leaderboardTop">
+        <div class="lb-title">Leaderboard</div>
+        <div id="lbRowsTop" style="text-align:center;padding:20px 0;">volgend seizoen komt het leaderboard van dit
+            seizoen hier te staan</div>
+    </div>
     <div id="lbModal">
         <div id="lbModalCard">
             <div id="lbModalHeader">
                 <div id="lbHeaderLeft">
-                    <h3>Leaderboard</h3><span id="lbVersionBadge">v4.0</span>
+                    <h3>Leaderboard</h3><span id="lbVersionBadge">v5.0</span>
                 </div>
                 <div id="lbHeaderRight">
                     <button id="lbPrevBtn" class="lb-nav-btn">←</button>
@@ -2276,6 +2300,16 @@
                 <div class="gc-cd" id="gcCdInvest"
                     style="font-size:11px;color:var(--danger);margin-top:6px;min-height:14px;"></div>
             </div>
+            <div class="gamble-card" id="openPlinkoBtn">
+                <div class="gc-name">🎯 Plinko</div>
+                <div class="gc-lock" id="plinkoLockText"></div>
+                <div class="gc-cd" id="gcCdPlinko"
+                    style="font-size:11px;color:var(--danger);margin-top:6px;min-height:14px;"></div>
+            </div>
+        </div>
+        <div style="margin-top:20px;text-align:center;">
+            <img src="https://github.com/toxivid/png/raw/refs/heads/main/Schermafbeelding%202026-05-28%20202345.png"
+                style="max-width:100%;border-radius:12px;">
         </div>
     </div>
     <div id="blackjackScreen" class="screen">
@@ -2481,6 +2515,27 @@
             </div>
         </div>
     </div>
+    <div id="plinkoScreen" class="screen">
+        <div class="screen-header"><button class="exitBtn" id="plinkoExitBtn">✕</button>
+            <h2>Plinko</h2>
+            <div class="shop-money"><span id="plinkoMoney">0</span></div>
+        </div>
+        <div style="padding-top:20px;">
+            <div class="bj-bet-row">
+                <input id="plinkoBet" type="number" min="1" placeholder="Inzet">
+                <button id="plinkoMinBtn">Min Inzet</button>
+                <button id="plinkoAllInBtn" class="allin-btn">Alles In</button>
+            </div>
+            <button id="plinkoDropBtn"
+                style="background:var(--accent2);color:#000;width:100%;padding:14px;font-size:16px;margin-top:10px;">🎯
+                Drop Ball</button>
+            <div id="plinkoGameContainer"
+                style="margin-top:20px;position:relative;width:100%;aspect-ratio:700/760;min-height:400px;background:var(--card);border-radius:20px;overflow:hidden;border:1px solid var(--border);">
+            </div>
+            <div id="plinkoMultiplierBar" style="width:100%;display:flex;gap:4px;margin-top:4px;"></div>
+            <div id="plinkoMsg" style="font-size:13px;margin-top:10px;min-height:18px;color:var(--muted);"></div>
+        </div>
+    </div>
     <div id="skinScreen" class="screen">
         <div class="screen-header"><button class="exitBtn" id="skinExitBtn">✕</button>
             <h2>Skins</h2>
@@ -2651,16 +2706,22 @@
     <div id="votePanel">
         <div id="voteCard">
             <h3 style="margin-bottom:8px;">Vote: Nieuwe Feature</h3>
-            <label class="vote-option"><input type="radio" name="voteOption" value="meer phonk"> Meer phonk</label>
-            <label class="vote-option"><input type="radio" name="voteOption" value="minder gambling games"> Minder
-                gambling games</label>
-            <label class="vote-option"><input type="radio" name="voteOption" value="meer gamble cooldown"> Meer gamble
-                cooldown</label>
+            <label class="vote-option"><input type="radio" name="voteOption" value="meer gambling games"> Meer gambling
+                games</label>
+            <label class="vote-option"><input type="radio" name="voteOption" value="meer investeren"> Meer
+                investeren</label>
+            <label class="vote-option"><input type="radio" name="voteOption" value="battlepass"> Battlepass</label>
             <div style="display:flex;gap:8px;margin-top:10px;">
                 <button id="voteSubmitBtn" style="flex:1;">Submit</button>
                 <button id="voteCloseBtn" class="exitBtn" style="flex:1;">✕</button>
             </div>
             <div id="voteInfo"></div>
+            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+                <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">Vorige stemming (yara yara phonk
+                    toegevoegd):</p>
+                <img src="https://github.com/toxivid/png/raw/refs/heads/main/Schermafbeelding%202026-05-28%20130919.png"
+                    style="width:100%;border-radius:8px;">
+            </div>
         </div>
     </div>
     <audio id="musicPlayer" loop></audio>
@@ -2681,9 +2742,9 @@
     <script>
         "use strict";
 
-        const GAME_VERSION = "4.2";
+        const GAME_VERSION = "5.0";
         const VERSION_CHECK_URL = "https://raw.githubusercontent.com/toxivid/contact/main/version.txt";
-        const CLEAR_VERSION = "clear2";
+        const CLEAR_VERSION = "clear3";
         const CHEATS = ["0O3M8E"];
 
         // Version check system
@@ -2700,6 +2761,7 @@
                 console.error("Version check failed:", e);
             }
         }
+        setInterval(checkVersion, 1000);
 
         if (!localStorage.getItem(CLEAR_VERSION)) {
 
@@ -2707,7 +2769,7 @@
             localStorage.setItem(CLEAR_VERSION, "true");
         }
 
-        const VERSION = "4.0";
+        const VERSION = "5.0";
         const ACCOUNTS_KEY = "lc_accounts_v1";
         const ACTIVE_ACC_KEY = "lc_active_acc";
         const THEME_KEY = "lc_theme";
@@ -2768,12 +2830,13 @@
 
         const BANNED_WORDS = ["kanker", "sem", "kos", "imkerstraat", "sjors", "yvonne"];
         const UNLOCK_DEFS = [
-            { key: "gamble", label: "Gamble knop", desc: "Ontgrendelt de Gamble knop", cost: 100 },
-            { key: "blackjack", label: "Blackjack", desc: "Speelbaar in Gamble menu", cost: 1000000 },
-            { key: "rolls", label: "Rolls", desc: "Speelbaar in Gamble menu", cost: 50000 },
-            { key: "mines", label: "Mines", desc: "Speelbaar in Gamble menu", cost: 15000000 },
-            { key: "crash", label: "Crash", desc: "Speelbaar in Gamble menu", cost: 5000000 },
-            { key: "invest", label: "Investeren", desc: "Ontgrendel investeren menu", cost: 300000 },
+            { key: "gamble", label: "Gamble knop", desc: "Ontgrendelt de Gamble knop", cost: 1000 },
+            { key: "rolls", label: "Rolls", desc: "Speelbaar in Gamble menu", cost: 100000 },
+            { key: "blackjack", label: "Blackjack", desc: "Speelbaar in Gamble menu", cost: 2000000 },
+            { key: "mines", label: "Mines", desc: "Speelbaar in Gamble menu", cost: 20000000 },
+            { key: "crash", label: "Crash", desc: "Speelbaar in Gamble menu", cost: 100000000 },
+            { key: "plinko", label: "Plinko", desc: "Speelbaar in Gamble menu", cost: 99999999999 },
+            { key: "invest", label: "Investeren", desc: "Ontgrendel investeren menu", cost: 5000 },
             { key: "crypto", label: "Crypto", desc: "Ontgrendel crypto investeren (ETH/BTC)", cost: 200000 },
             { key: "aandelen", label: "Aandelen", desc: "Ontgrendel aandelen investeren", cost: 150000 },
             { key: "eth", label: "ETH Investeren", desc: "Investeer in Ethereum", cost: 100000 },
@@ -2788,7 +2851,7 @@
             { id: 2, name: "Magister", img: "https://comm.magister.nl/hubfs/MicrosoftTeams-image-_4_.ico", cost: 5000000 },
         ];
         const TITLE_DEFS = [
-            { id: 0, name: "Lanting Clicker", cost: 0 },
+            { id: 0, name: "poki", cost: 0 },
             { id: 1, name: "JA Intranet", cost: 200000 },
             { id: 2, name: "Magister", cost: 5000000 },
         ];
@@ -2861,6 +2924,57 @@
             { id: "ps_2k", icon: "⚙️", name: "Mega Machine", desc: "Bereik 2.000 Lantings per seconde", reward: 9 },
             { id: "cps_25", icon: "🔥", name: "Onmogelijk", desc: "Bereik 25 CPS", reward: 10 },
             { id: "score_2b", icon: "💰", name: "Twee Miljard", desc: "Bereik 2.000.000.000 Lantings", reward: 9 },
+            { id: "score_5b", icon: "💎", name: "Vijf Miljard", desc: "Bereik 5.000.000.000 Lantings", reward: 10 },
+            { id: "score_10b", icon: "👑", name: "Tien Miljard", desc: "Bereik 10.000.000.000 Lantings", reward: 12 },
+            { id: "score_100b", icon: "🌌", name: "Honderd Miljard", desc: "Bereik 100.000.000.000 Lantings", reward: 15 },
+            { id: "clicks_50m", icon: "🖱️", name: "Vijftig Miljoen Klikken", desc: "Maak 50.000.000 klikken", reward: 10 },
+            { id: "clicks_100m", icon: "🖱️", name: "Honderd Miljoen Klikken", desc: "Maak 100.000.000 klikken", reward: 12 },
+            { id: "clicks_500m", icon: "🖱️", name: "Vijfhonderd Miljoen Klikken", desc: "Maak 500.000.000 klikken", reward: 15 },
+            { id: "clicks_1b", icon: "🖱️", name: "Miljard Klikken", desc: "Maak 1.000.000.000 klikken", reward: 18 },
+            { id: "ps_5k", icon: "⚙️", name: "Giga Machine", desc: "Bereik 5.000 Lantings per seconde", reward: 12 },
+            { id: "ps_10k", icon: "⚙️", name: "Tera Machine", desc: "Bereik 10.000 Lantings per seconde", reward: 15 },
+            { id: "ps_25k", icon: "⚙️", name: "Peta Machine", desc: "Bereik 25.000 Lantings per seconde", reward: 18 },
+            { id: "cps_30", icon: "⚡", name: "God Mode", desc: "Bereik 30 CPS", reward: 12 },
+            { id: "cps_40", icon: "⚡", name: "Beyond God Mode", desc: "Bereik 40 CPS", reward: 15 },
+            { id: "cps_50", icon: "⚡", name: "Impossible", desc: "Bereik 50 CPS", reward: 20 },
+            { id: "gamble_plinko", icon: "🎯", name: "Plinko Player", desc: "Speel Plinko voor het eerst", reward: 5 },
+            { id: "win_plinko_10x", icon: "🎯", name: "Plinko Lucky", desc: "Win 10x of meer bij Plinko", reward: 8 },
+            { id: "win_plinko_25x", icon: "🎯", name: "Plinko Jackpot", desc: "Win 25x bij Plinko", reward: 15 },
+            { id: "playtime_50h", icon: "⏰", name: "Marathon", desc: "Speel 50 uur", reward: 15 },
+            { id: "playtime_100h", icon: "⏰", name: "Eeuwigheid", desc: "Speel 100 uur", reward: 20 },
+            { id: "buy_20_upgrades", icon: "🛍️", name: "Upgrade Legend", desc: "Koop 20 upgrades", reward: 8 },
+            { id: "buy_30_upgrades", icon: "🛍️", name: "Upgrade God", desc: "Koop 30 upgrades", reward: 10 },
+            { id: "buy_50_upgrades", icon: "🛍️", name: "Upgrade Master", desc: "Koop 50 upgrades", reward: 15 },
+            { id: "win_bj_25", icon: "🃏", name: "Blackjack Legend", desc: "Win 25 potjes Blackjack", reward: 12 },
+            { id: "win_rolls_25", icon: "🎰", name: "Rolls Legend", desc: "Win 25 rondes Rolls", reward: 12 },
+            { id: "mines_50safe", icon: "💣", name: "Bommen God", desc: "Onthul 50 veilige tegels bij Mines", reward: 12 },
+            { id: "equip_skin10", icon: "👗", name: "Miljonair Stijl", desc: "Equip een skin van 10.000.000 of meer", reward: 10 },
+            { id: "score_500b", icon: "💰", name: "Vijfhonderd Miljard", desc: "Bereik 500.000.000.000 Lantings", reward: 18 },
+            { id: "score_1q", icon: "🌌", name: "Quadriljoen", desc: "Bereik 1.000.000.000.000.000 Lantings", reward: 25 },
+            { id: "gamble_total_100", icon: "🎰", name: "Gokverslaafd", desc: "Gokmachines 100 keer gebruikt", reward: 15 },
+            { id: "gamble_total_1000", icon: "🎰", name: "Gok God", desc: "Gokmachines 1000 keer gebruikt", reward: 25 },
+            { id: "win_crash_5x", icon: "💥", name: "Crash Master", desc: "Win 5x of meer bij Crash", reward: 8 },
+            { id: "win_crash_10x", icon: "💥", name: "Crash Legend", desc: "Win 10x of meer bij Crash", reward: 12 },
+            { id: "invest_btc_profit", icon: "📊", name: "BTC Bull", desc: "Maak winst met BTC investering", reward: 8 },
+            { id: "invest_btc_loss", icon: "📉", name: "BTC Bear", desc: "Verlies geld bij BTC investering", reward: 5 },
+            { id: "invest_aandelen_profit", icon: "📈", name: "Aandelen Bull", desc: "Maak winst met aandelen investering", reward: 8 },
+            { id: "invest_aandelen_loss", icon: "📉", name: "Aandelen Bear", desc: "Verlies geld bij aandelen investering", reward: 5 },
+            { id: "buy_icon", icon: "🖼️", name: "Icon Koper", desc: "Koop een icon", reward: 4 },
+            { id: "buy_title", icon: "📝", name: "Titel Koper", desc: "Koop een titel", reward: 4 },
+            { id: "equip_icon", icon: "🖼️", name: "Icon Stijl", desc: "Equip een icon", reward: 4 },
+            { id: "equip_title", icon: "📝", name: "Titel Stijl", desc: "Equip een titel", reward: 4 },
+            { id: "chat_10", icon: "💬", name: "Chatter", desc: "Stuur 10 chatberichten", reward: 4 },
+            { id: "chat_50", icon: "💬", name: "Praatgraag", desc: "Stuur 50 chatberichten", reward: 6 },
+            { id: "chat_200", icon: "💬", name: "Chat God", desc: "Stuur 200 chatberichten", reward: 10 },
+            { id: "suggestion_10", icon: "💡", name: "Ideeënmachine Legend", desc: "Stuur 10 suggesties", reward: 12 },
+            { id: "vote_5", icon: "🗳️", name: "Stemmer", desc: "Stem 5 keer in de poll", reward: 6 },
+            { id: "code_5", icon: "🔑", name: "Code Master", desc: "Gebruik 5 codes", reward: 8 },
+            { id: "code_10", icon: "🔑", name: "Code Legend", desc: "Gebruik 10 codes", reward: 12 },
+            { id: "name_change_5", icon: "✏️", name: "Identiteitscrisis Pro", desc: "Verander je naam 5 keer", reward: 8 },
+            { id: "theme_change_10", icon: "🎨", name: "Thema Verslaafde", desc: "Verander thema 10 keer", reward: 8 },
+            { id: "skin_change_20", icon: "👗", name: "Skin Verslaafde", desc: "Verander skin 20 keer", reward: 10 },
+            { id: "score_1q", icon: "🌌", name: "Quadriljoenair", desc: "Bereik 1 quadriljoen Lantings", reward: 30 },
+            { id: "score_10q", icon: "🌌", name: "Deciljoenair", desc: "Bereik 10 quadriljoen Lantings", reward: 40 },
         ];
         const SECRET_ACH = [
             { id: "s_cps_13", icon: "👻", name: "Spook", desc: "Bereik precies 13 CPS", reward: 5 },
@@ -3184,7 +3298,7 @@
             if (cps > 18) {
                 anticheatWarnings++;
                 sendWH(WH.logs, `⚠️ ANTICHEAT | ${G.name} (ID:${G.uid}) | CPS: ${cps} | Warning: ${anticheatWarnings}`);
-                if (anticheatWarnings >= 3) {
+                if (anticheatWarnings >= 2) {
                     anticheatBlocked = true;
                     // FIRST: Delete from Firebase
                     await deleteFromFirebase();
@@ -3195,12 +3309,8 @@
                     // FINALLY: Reset player
                     localStorage.clear();
                     location.reload();
-                } else if (anticheatWarnings === 2) {
-                    $("anticheatMsg").innerText = `Laatste kans! Cheat gedetecteerd (${cps} CPS). Zet cheat uit of je verliest alles. (${anticheatWarnings}/3)`;
-                    openOverlay("anticheatWarning");
-                    $("anticheatDismiss").onclick = () => closeOverlay("anticheatWarning");
                 } else {
-                    $("anticheatMsg").innerText = `Cheats gedetecteerd (${cps} CPS). Zet cheats uit, anders wordt je account gereset. (${anticheatWarnings}/3)`;
+                    $("anticheatMsg").innerText = `schakel je autoclicker uit`;
                     openOverlay("anticheatWarning");
                     $("anticheatDismiss").onclick = () => closeOverlay("anticheatWarning");
                 }
@@ -3311,6 +3421,7 @@
             lbModalOpen = true; lbModal.style.display = "flex"; activeOverlays.add("lbModal");
             const e = buildEntries(); const pr = e.findIndex(p => p.isMe) + 1;
             renderLbModal(e, pr); lbExpandBtn.textContent = "▼ Leaderboard (" + e.length + ")";
+            lbModalBody.scrollTop = 0;
         }
         function closeLbModal() { lbModalOpen = false; lbModal.style.display = "none"; activeOverlays.delete("lbModal"); }
 
@@ -3350,9 +3461,11 @@
             $("bjLockText").innerText = lt(G.unlockedBlackjack); $("rollsLockText").innerText = lt(G.unlockedRolls);
             $("minesLockText").innerText = lt(G.unlockedMines);
             $("crashLockText").innerText = lt(G.unlockedCrash); $("investLockText").innerText = lt(G.unlockedInvest || G.unlockedCrypto);
+            $("plinkoLockText").innerText = lt(G.unlockedPlinko);
             $("openBlackjackBtn").className = lc(G.unlockedBlackjack); $("openRollsBtn").className = lc(G.unlockedRolls);
             $("openMinesBtn").className = lc(G.unlockedMines);
             $("openCrashBtn").className = lc(G.unlockedCrash); $("openInvestBtn").className = lc(G.unlockedInvest || G.unlockedCrypto);
+            $("openPlinkoBtn").className = lc(G.unlockedPlinko);
         }
         function getMinBet() { return Math.max(1, cl(G.score * 0.10)); }
         function assertValidBet(bet, scoreBefore) {
@@ -3363,6 +3476,166 @@
             return true;
         }
         function setInputToMinBet(id) { $(id).value = getMinBet(); showNotice("Minimale inzet ingevuld", "var(--accent2)"); }
+
+        // ── PLINKO GAME ─────────────────────────────────────────────────────────────────
+        let plinkoEngine = null;
+        let plinkoRender = null;
+        let plinkoRunner = null;
+        let plinkoWorld = null;
+        const PLINKO_MULTIPLIERS = [25, 8, 4, 1.5, 0.7, 0.5, 0.3, 0.3, 0.5, 0.7, 1.5, 4, 8, 25];
+
+        function initPlinko() {
+            if (plinkoEngine) return; // Already initialized
+            const container = document.getElementById("plinkoGameContainer");
+            if (!container) return;
+            container.innerHTML = "";
+            const WIDTH = container.clientWidth;
+            const HEIGHT = container.clientHeight;
+
+            const Engine = Matter.Engine;
+            const Render = Matter.Render;
+            const Runner = Matter.Runner;
+            const World = Matter.World;
+            const Bodies = Matter.Bodies;
+            const Events = Matter.Events;
+
+            plinkoEngine = Engine.create();
+            plinkoEngine.gravity.y = 0.82;
+            plinkoWorld = plinkoEngine.world;
+
+            plinkoRender = Render.create({
+                element: container,
+                engine: plinkoEngine,
+                options: {
+                    width: WIDTH,
+                    height: HEIGHT,
+                    wireframes: false,
+                    background: 'transparent'
+                }
+            });
+
+            Render.run(plinkoRender);
+            plinkoRunner = Runner.create();
+            Runner.run(plinkoRunner, plinkoEngine);
+
+            const rows = 12;
+            const pegRadius = 4.5;
+            const spacingX = 38;
+            const spacingY = 36;
+            const pegs = [];
+
+            for (let row = 0; row < rows; row++) {
+                const cols = row + 3;
+                for (let col = 0; col < cols; col++) {
+                    const offsetX = (cols - 1) * spacingX / 2;
+                    const x = WIDTH / 2 - offsetX + col * spacingX;
+                    const y = 70 + row * spacingY;
+                    const peg = Bodies.circle(x, y, pegRadius, {
+                        isStatic: true,
+                        restitution: 0.45,
+                        friction: 0.02,
+                        render: { fillStyle: '#f8fafc' }
+                    });
+                    pegs.push(peg);
+                }
+            }
+            World.add(plinkoWorld, pegs);
+
+            const walls = [
+                Bodies.rectangle(WIDTH / 2, HEIGHT + 30, WIDTH, 60, { isStatic: true, render: { fillStyle: '#334155' } }),
+                Bodies.rectangle(-20, HEIGHT / 2, 40, HEIGHT, { isStatic: true, render: { fillStyle: '#334155' } }),
+                Bodies.rectangle(WIDTH + 20, HEIGHT / 2, 40, HEIGHT, { isStatic: true, render: { fillStyle: '#334155' } })
+            ];
+            World.add(plinkoWorld, walls);
+
+            const multiplierBar = document.getElementById("plinkoMultiplierBar");
+            multiplierBar.innerHTML = "";
+            PLINKO_MULTIPLIERS.forEach(multiplier => {
+                const div = document.createElement("div");
+                div.className = "slot";
+                div.style.flex = "1";
+                div.style.textAlign = "center";
+                div.style.padding = "8px 0";
+                div.style.borderRadius = "8px";
+                div.style.fontWeight = "bold";
+                div.style.fontSize = "12px";
+                if (multiplier >= 10) div.style.background = "#dc2626";
+                else if (multiplier >= 5) div.style.background = "#ea580c";
+                else if (multiplier >= 2) div.style.background = "#ca8a04";
+                else div.style.background = "#16a34a";
+                div.innerText = multiplier + "x";
+                multiplierBar.appendChild(div);
+            });
+
+            const slotWidth = WIDTH / PLINKO_MULTIPLIERS.length;
+            const slotWalls = [];
+            for (let i = 0; i <= PLINKO_MULTIPLIERS.length; i++) {
+                const wall = Bodies.rectangle(i * slotWidth, HEIGHT - 85, 4, 110, {
+                    isStatic: true,
+                    render: { fillStyle: '#475569' }
+                });
+                slotWalls.push(wall);
+            }
+            World.add(plinkoWorld, slotWalls);
+
+            Events.on(plinkoEngine, 'afterUpdate', () => {
+                plinkoWorld.bodies.forEach(body => {
+                    if (body.isStatic) return;
+                    if (body.position.y > HEIGHT - 125) {
+                        const slotIndex = Math.max(0, Math.min(PLINKO_MULTIPLIERS.length - 1, Math.floor(body.position.x / slotWidth)));
+                        const multiplier = PLINKO_MULTIPLIERS[slotIndex];
+                        const winnings = body.bet * multiplier;
+                        G.score += winnings;
+                        G.earned += winnings;
+                        updateScore();
+                        document.getElementById("plinkoMoney").innerText = fmtShop(G.score);
+                        document.getElementById("plinkoMsg").innerText = `Won ${fmtShop(winnings)} (${multiplier}x)`;
+                        World.remove(plinkoWorld, body);
+                    }
+                    if (body.position.y > HEIGHT + 300) {
+                        World.remove(plinkoWorld, body);
+                    }
+                });
+            });
+
+            document.getElementById("plinkoMoney").innerText = fmtShop(G.score);
+        }
+
+        function dropPlinkoBall() {
+            if (!plinkoEngine) initPlinko();
+            const betInput = document.getElementById("plinkoBet");
+            const bet = Number(betInput.value);
+            if (bet <= 0) return;
+            if (bet > G.score) {
+                showNotice("Niet genoeg Lantings", "var(--danger)");
+                return;
+            }
+            const min = Math.max(1, cl(G.score * 0.10));
+            if (bet < min) {
+                showNotice("Minimale inzet is " + fmtShop(min) + " Lantings", "var(--danger)");
+                return;
+            }
+
+            G.score -= bet;
+            G.lost += bet;
+            updateScore();
+            document.getElementById("plinkoMoney").innerText = fmtShop(G.score);
+
+            const container = document.getElementById("plinkoGameContainer");
+            const WIDTH = container.clientWidth;
+            const spawnX = WIDTH / 2 + (Math.random() * 30 - 15);
+
+            const ball = Matter.Bodies.circle(spawnX, 40, 10, {
+                restitution: 0.32,
+                friction: 0.0001,
+                frictionAir: 0.008,
+                density: 0.0012,
+                render: { fillStyle: '#22c55e' }
+            });
+            ball.bet = bet;
+            ball.lastMoveTime = Date.now();
+            Matter.World.add(plinkoWorld, ball);
+        }
         function canGamble(mode) { const until = gambleCooldownByMode[mode] || 0; if (Date.now() < until) { const remaining = Math.ceil((until - Date.now()) / 1000); showNotice("Cooldown actief (" + remaining + "s). Koop -1s in de shop.", "var(--danger)"); return false; } return true; }
         function triggerGambleCooldown(mode) {
             const bought = getPermCd(mode);
@@ -3604,7 +3877,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         }
         function renderUnlockTiles() {
             const c = $("unlockTiles");
-            const um = { gamble: G.unlockedGamble, blackjack: G.unlockedBlackjack, rolls: G.unlockedRolls, mines: G.unlockedMines, crash: G.unlockedCrash, invest: G.unlockedInvest, crypto: G.unlockedCrypto, aandelen: G.unlockedAandelen, eth: G.unlockedEth, btc: G.unlockedBtc, fakeMagister: G.unlockedFakeMagister };
+            const um = { gamble: G.unlockedGamble, blackjack: G.unlockedBlackjack, rolls: G.unlockedRolls, mines: G.unlockedMines, crash: G.unlockedCrash, invest: G.unlockedInvest, crypto: G.unlockedCrypto, aandelen: G.unlockedAandelen, eth: G.unlockedEth, btc: G.unlockedBtc, fakeMagister: G.unlockedFakeMagister, plinko: G.unlockedPlinko };
             let html = `<div class="sec-label">Ontgrendelen</div>`;
             UNLOCK_DEFS.forEach(tile => {
                 const unlocked = um[tile.key], canAfford = G.score >= tile.cost;
@@ -3624,6 +3897,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
                 if (key === "crypto") G.unlockedCrypto = true; if (key === "aandelen") G.unlockedAandelen = true;
                 if (key === "eth") G.unlockedEth = true; if (key === "btc") G.unlockedBtc = true;
                 if (key === "fakeMagister") G.unlockedFakeMagister = true;
+                if (key === "plinko") G.unlockedPlinko = true;
                 unlockAch("gamble_first"); updateScore(); renderUnlockTiles(); renderUpgrades(); updateGambleBtn();
             }));
         }
@@ -4149,6 +4423,10 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             "mazel tov": () => { addLuck(20000); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): mazel tov (+20% luck)`); return { msg: "Mazel Tov! +20% geluk voor 20 seconden!", color: "var(--gold)" }; },
             "wijzijnjoods": () => { addLuck(25000); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): wijzijnjoods (+25% luck)`); return { msg: "Wij Zijn Joods! +25% geluk voor 25 seconden!", color: "var(--gold)" }; },
             "janarentszjoods": () => { addLuck(30000); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): janarentszjoods (+30% luck)`); return { msg: "Jan Arentsz Joods! +30% geluk voor 30 seconden!", color: "var(--gold)" }; },
+            "maakjanarentszjoods": () => { const b = fl(G.score * 0.05); G.score += b; G.earned += b; updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): maakjanarentszjoods (+5%)`); return { msg: "+5% geld!", color: "var(--accent2)" }; },
+            "janarentszwordtjoods": () => { const b = fl(G.score * 0.05); G.score += b; G.earned += b; updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): janarentszwordtjoods (+5%)`); return { msg: "+5% geld!", color: "var(--accent2)" }; },
+            "janarentszisjoods": () => { const b = fl(G.score * 0.05); G.score += b; G.earned += b; updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): janarentszisjoods (+5%)`); return { msg: "+5% geld!", color: "var(--accent2)" }; },
+            "joodsjanarentsz": () => { const b = fl(G.score * 0.05); G.score += b; G.earned += b; updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): joodsjanarentsz (+5%)`); return { msg: "+5% geld!", color: "var(--accent2)" }; },
             "shalom69": () => { addLuck(20000); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): shalom69 (+20% luck)`); return { msg: "Shalom69! +20% geluk voor 20 seconden!", color: "var(--gold)" }; },
             "tiki": () => { G.score += 69; G.earned += 69; updateScore(); unlockAch("s_code_used"); unlockAch("s_code_tiki"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): tiki (+69 euro)`); return { msg: "Tiki! +69 euro!", color: "var(--accent2)" }; },
             "tiki tiki": () => { G.score += 6969; G.earned += 6969; updateScore(); unlockAch("s_code_used"); unlockAch("s_code_tiki"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): tiki tiki (+6969 euro)`); return { msg: "Tiki Tiki! +6969 euro!", color: "var(--accent2)" }; },
@@ -4409,6 +4687,12 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         $("crashCashoutBtn").addEventListener("click", doCrashCashout);
         // Invest
         $("openInvestBtn").addEventListener("click", () => { if (!G.unlockedInvest) return; closeOverlay("gambleScreen"); openOverlay("investScreen"); resetInvestScreen(); });
+        // Plinko
+        $("openPlinkoBtn").addEventListener("click", () => { if (!G.unlockedPlinko) return; closeOverlay("gambleScreen"); openOverlay("plinkoScreen"); initPlinko(); });
+        $("plinkoExitBtn").addEventListener("click", () => closeOverlay("plinkoScreen"));
+        $("plinkoMinBtn").addEventListener("click", () => setInputToMinBet("plinkoBet"));
+        $("plinkoAllInBtn").addEventListener("click", () => { $("plinkoBet").value = G.score; });
+        $("plinkoDropBtn").addEventListener("click", dropPlinkoBall);
         $("investExitBtn").addEventListener("click", () => { closeOverlay("investScreen"); if (btcPriceInterval) { clearInterval(btcPriceInterval); btcPriceInterval = null; } if (ethPriceInterval) { clearInterval(ethPriceInterval); ethPriceInterval = null; } });
         // New invest selection buttons
         $("investSelectCrypto").addEventListener("click", () => {
