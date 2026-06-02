@@ -4260,7 +4260,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             if (!G.activeInvestment || !btcPrice) return;
             const inv = G.activeInvestment;
             const pct = ((btcPrice - inv.entryPrice) / inv.entryPrice) * 100;
-            const multiplied = pct * 10; // x10
+            const multiplied = pct * 50; // x10
             const pnl = fl(inv.amount * (multiplied / 100));
             const el = document.getElementById("investPnlDisplay");
             const aEl = document.getElementById("investedAmountDisplay");
