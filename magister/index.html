@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="nl">
+
 <head>
     <meta charset="UTF-8">
     <title>Magister</title>
@@ -35,6 +36,7 @@
             --border: rgba(252, 92, 92, 0.25);
             --grid: rgba(252, 92, 92, 0.04);
         }
+
         :root[data-theme="white"] {
             --bg: #f0f0f0;
             --panel: #ffffff;
@@ -2213,10 +2215,9 @@
             </div>
         </div>
     </div>
-    <div id="fakeMagisterOverlay"
+    <div id="fakeScreenOverlay"
         style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#fff;">
-        <img src="https://github.com/toxivid/png/blob/main/Schermafbeelding%202026-05-26%20195936.png?raw=true"
-            style="width:100%;height:100%;object-fit:contain;">
+        <img src="" style="width:100%;height:100%;object-fit:contain;">
     </div>
     <div id="achToast">
         <div class="ach-toast-icon" id="achToastIcon">🏆</div>
@@ -2604,9 +2605,22 @@
                     id="kb1CostLabel"></span><button id="keybindBtn">ENTER</button></div>
             <div class="keybind-row" id="kb2Row" style="opacity:0.4;"><span>Klik Keybind 2</span><span
                     class="keybind-cost" id="kb2CostLabel"></span><button id="keybind2Btn">—</button></div>
-            <div class="sec-label">Fake Magister</div>
-            <div class="keybind-row"><span>Fake Magister Keybind</span><button id="fakeMagisterKeybindBtn">—</button>
+            <div class="sec-label">Fake Screens</div>
+            <div class="keybind-row"><span>Fake Screen Keybind</span><button id="fakeScreenKeybindBtn">—</button>
             </div>
+            <div class="keybind-row"><span>Enable Keybind</span><span class="val"
+                    style="display:flex;align-items:center;"><label class="toggle-switch" style="margin:0;"><input
+                            type="checkbox" id="enableFakeScreenKeybind"><span
+                            class="toggle-slider"></span></label></span></div>
+            <div class="keybind-row"><span>Select Fake Screen</span><select id="fakeScreenSelect"
+                    style="padding:4px;border-radius:4px;border:1px solid var(--accent2);background:var(--bg);color:var(--text);">
+                    <option value="fakeMagister">Fake Magister</option>
+                    <option value="fakeTeams">Fake Teams</option>
+                    <option value="fakeSomething">Fake Something</option>
+                </select></div>
+            <div class="keybind-row"><span>Automatisch Foto Sizen</span><span class="val"
+                    style="display:flex;align-items:center;"><label class="toggle-switch" style="margin:0;"><input
+                            type="checkbox" id="autoSizePhoto"><span class="toggle-slider"></span></label></span></div>
             <div class="sec-label">Statistieken</div>
             <div class="stat-block">
                 <div class="stat-row"><span>Speeltijd</span><span class="val"><span id="statTime">0</span>s</span></div>
@@ -2833,13 +2847,18 @@
             { key: "blackjack", label: "Blackjack", desc: "Speelbaar in Gamble menu", cost: 2000000 },
             { key: "mines", label: "Mines", desc: "Speelbaar in Gamble menu", cost: 20000000 },
             { key: "crash", label: "Crash", desc: "Speelbaar in Gamble menu", cost: 100000000 },
-            { key: "plinko", label: "Plinko", desc: "Speelbaar in Gamble menu", cost: 6969696969 },
+            { key: "plinko", label: "Plinko", desc: "Speelbaar in Gamble menu", cost: 99999999999 },
             { key: "invest", label: "Investeren", desc: "Ontgrendel investeren menu", cost: 5000 },
             { key: "crypto", label: "Crypto", desc: "Ontgrendel crypto investeren (ETH/BTC)", cost: 200000 },
             { key: "aandelen", label: "Aandelen", desc: "Ontgrendel aandelen investeren", cost: 150000 },
             { key: "eth", label: "ETH Investeren", desc: "Investeer in Ethereum", cost: 100000 },
             { key: "btc", label: "BTC Investeren", desc: "Investeer in Bitcoin", cost: 100000 },
-            { key: "fakeMagister", label: "Fake Magister Keybind", desc: "Ontgrendel Fake Magister keybind", cost: 1000000 },
+        ];
+
+        const FAKE_SCREEN_DEFS = [
+            { key: "fakeMagister", label: "Fake Magister", desc: "Fake Magister scherm", cost: 100000, url: "https://github.com/toxivid/png/blob/main/Schermafbeelding%202026-05-26%20195936.png?raw=true" },
+            { key: "fakeTeams", label: "Fake Teams", desc: "Fake Teams scherm", cost: 100000, url: "https://github.com/toxivid/png/blob/main/Schermafbeelding%202026-06-02%20100743.png?raw=true" },
+            { key: "fakeSomething", label: "Fake Something", desc: "Fake Something scherm", cost: 100000, url: "" },
         ];
 
         // TITLE & ICON DEFS
@@ -2847,11 +2866,13 @@
             { id: 0, name: "Standaard", img: "https://a.poki-cdn.com/icons/apple-touch-icon.png", cost: 0 },
             { id: 1, name: "JA Intranet", img: "https://janarentsz.sharepoint.com/_layouts/15/images/favicon.ico?rev=49", cost: 200000 },
             { id: 2, name: "Magister", img: "https://comm.magister.nl/hubfs/MicrosoftTeams-image-_4_.ico", cost: 5000000 },
+            { id: 3, name: "Teams", img: "https://statics.teams.cdn.office.net/evergreen-assets/icons/microsoft_teams_logo_refresh_v2025.ico", cost: 200000 },
         ];
         const TITLE_DEFS = [
             { id: 0, name: "poki", cost: 0 },
             { id: 1, name: "JA Intranet", cost: 200000 },
             { id: 2, name: "Magister", cost: 5000000 },
+            { id: 3, name: "Teams", cost: 200000 },
         ];
 
         // Per-game permanent cooldown stored in localStorage per account
@@ -3073,7 +3094,7 @@
         function setActiveId(id) { localStorage.setItem(ACTIVE_ACC_KEY, id); }
         function createDefaultSave(name, uid) {
             const u = []; for (let i = 0; i < 50; i++) { const ck = i % 2 === 0; u.push({ type: ck ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: ck ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false }); }
-            return { uid, name, score: 0, perClick: 1, perSecond: 0, upgrades: u, ownedSkins: [0], equippedSkin: 0, basePerClick: 1, playTime: 0, earned: 0, lost: 0, highest: 0, totalClicks: 0, unlockedGamble: false, unlockedBlackjack: false, unlockedRolls: false, unlockedMines: false, unlockedCrash: false, unlockedInvest: false, unlockedKeybind2: false, keybind: "Enter", keybindDisplay: "ENTER", keybind2: "", keybind2Display: "—", fakeMagisterKeybind: "k", fakeMagisterKeybindDisplay: "K", fakeMagisterActive: false, unlockedAch: {}, claimedAch: {}, themesUsed: [], ownedIcons: [0], equippedIcon: 0, ownedTitles: [0], equippedTitle: 0, activeInvestment: null, createdAt: Date.now(), lastOnline: Date.now() };
+            return { uid, name, score: 0, perClick: 1, perSecond: 0, upgrades: u, ownedSkins: [0], equippedSkin: 0, basePerClick: 1, playTime: 0, earned: 0, lost: 0, highest: 0, totalClicks: 0, unlockedGamble: false, unlockedBlackjack: false, unlockedRolls: false, unlockedMines: false, unlockedCrash: false, unlockedInvest: false, unlockedKeybind2: false, keybind: "Enter", keybindDisplay: "ENTER", keybind2: "", keybind2Display: "—", fakeScreenKeybind: "k", fakeScreenKeybindDisplay: "K", fakeScreenActive: false, selectedFakeScreen: "fakeMagister", enableFakeScreenKeybind: false, autoSizePhoto: false, unlockedFakeScreens: {}, unlockedAch: {}, claimedAch: {}, themesUsed: [], ownedIcons: [0], equippedIcon: 0, ownedTitles: [0], equippedTitle: 0, activeInvestment: null, createdAt: Date.now(), lastOnline: Date.now() };
         }
         function migrateOldSave() {
             let accs = loadAccounts();
@@ -3103,6 +3124,10 @@
         let G = Object.assign({}, accounts.find(a => a.uid === activeId) || accounts[0]);
         G.unlockedAch = G.unlockedAch || {}; G.claimedAch = G.claimedAch || {}; G.themesUsed = G.themesUsed || []; G.totalClicks = G.totalClicks || 0;
         G.ownedSkins = G.ownedSkins || [0]; G.score = G.score || 0; G.perClick = G.perClick || 1;
+        G.fakeScreenKeybind = G.fakeScreenKeybind || "k"; G.fakeScreenKeybindDisplay = G.fakeScreenKeybindDisplay || "K";
+        G.fakeScreenActive = G.fakeScreenActive || false; G.selectedFakeScreen = G.selectedFakeScreen || "fakeMagister";
+        G.enableFakeScreenKeybind = G.enableFakeScreenKeybind || false; G.autoSizePhoto = G.autoSizePhoto || false;
+        G.unlockedFakeScreens = G.unlockedFakeScreens || {};
         G.perSecond = G.perSecond || 0; G.basePerClick = G.basePerClick || 1; G.highest = G.highest || 0;
         G.earned = G.earned || 0; G.lost = G.lost || 0; G.playTime = G.playTime || 0;
         G.equippedSkin = G.equippedSkin !== undefined ? G.equippedSkin : 0;
@@ -3132,7 +3157,7 @@
         let lbData = {}, lbVersionView = VERSION, lbModalOpen = false, lbModalScrollPos = 0;
         let gambleCooldownByMode = { blackjack: 0, rolls: 0, mines: 0, crash: 0, invest: 0 };
         let gambleLuckUntil = 0;
-        let waitingForKey = false, waitingForKey2 = false, waitingForKey3 = false;
+        let waitingForKey = false, waitingForKey2 = false, waitingForKey3 = false, waitingForKey4 = false;
         let lastSuggTime = parseInt(localStorage.getItem(LAST_SUGG_KEY)) || 0;
         let fallingActive = false, fallingAnimId = null, fallingTimerId = null, nextFallAt = Date.now() + 60000;
         let activeOverlays = new Set();
@@ -3199,7 +3224,11 @@
         }
         async function fetchLeaderboard() { const d = await fetchFirebaseLeaderboard(); if (d && Object.keys(d).length > 0) lbData = d; }
         async function isNameTakenFirebase(name) {
-            try { const d = await fetchFirebaseLeaderboard(); return Object.keys(d).some(k => k.toLowerCase() === name.toLowerCase()); } catch { return false; }
+            try {
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 5000));
+                const d = await Promise.race([fetchFirebaseLeaderboard(), timeoutPromise]);
+                return Object.keys(d).some(k => k.toLowerCase() === name.toLowerCase());
+            } catch { return false; }
         }
 
         // ── SAVE ──────────────────────────────────────────────────────────────────────
@@ -3749,7 +3778,10 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
                 $("kb2CostLabel").innerText = cu ? "✓ Kan ontgrendelen" : `${fmtMain(KEYBIND2_UNLOCK_COST - G.score)} tekort`;
                 $("kb2CostLabel").style.color = cu ? "var(--accent2)" : "var(--danger)";
             }
-            $("fakeMagisterKeybindBtn").innerText = G.fakeMagisterKeybindDisplay || "—";
+            $("fakeScreenKeybindBtn").innerText = G.fakeScreenKeybindDisplay || "—";
+            $("autoSizePhoto").checked = G.autoSizePhoto || false;
+            $("enableFakeScreenKeybind").checked = G.enableFakeScreenKeybind || false;
+            $("fakeScreenSelect").value = G.selectedFakeScreen || "fakeMagister";
         }
 
         // ── ADMIN PANEL ─────────────────────────────────────────────────────────────────
@@ -3875,11 +3907,17 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         }
         function renderUnlockTiles() {
             const c = $("unlockTiles");
-            const um = { gamble: G.unlockedGamble, blackjack: G.unlockedBlackjack, rolls: G.unlockedRolls, mines: G.unlockedMines, crash: G.unlockedCrash, invest: G.unlockedInvest, crypto: G.unlockedCrypto, aandelen: G.unlockedAandelen, eth: G.unlockedEth, btc: G.unlockedBtc, fakeMagister: G.unlockedFakeMagister, plinko: G.unlockedPlinko };
+            const um = { gamble: G.unlockedGamble, blackjack: G.unlockedBlackjack, rolls: G.unlockedRolls, mines: G.unlockedMines, crash: G.unlockedCrash, invest: G.unlockedInvest, crypto: G.unlockedCrypto, aandelen: G.unlockedAandelen, eth: G.unlockedEth, btc: G.unlockedBtc, plinko: G.unlockedPlinko };
             let html = `<div class="sec-label">Ontgrendelen</div>`;
             UNLOCK_DEFS.forEach(tile => {
                 const unlocked = um[tile.key], canAfford = G.score >= tile.cost;
                 const btn = unlocked ? `<button class="unlock-btn-unlocked" disabled>Ontgrendeld</button>` : `<button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" data-ukey="${tile.key}" ${canAfford ? "" : "disabled"}>${fmtShop(tile.cost)}</button>`;
+                html += `<div class="unlock-tile${unlocked ? " unlocked-tile" : ""}"><div class="unlock-info"><div class="upgrade-val">${tile.label}</div><div class="unlock-desc">${tile.desc}</div></div>${btn}</div>`;
+            });
+            html += `<div class="sec-label">Fake Screens</div>`;
+            FAKE_SCREEN_DEFS.forEach(tile => {
+                const unlocked = G.unlockedFakeScreens[tile.key] || false, canAfford = G.score >= tile.cost;
+                const btn = unlocked ? `<button class="unlock-btn-unlocked" disabled>Ontgrendeld</button>` : `<button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" data-fskey="${tile.key}" ${canAfford ? "" : "disabled"}>${fmtShop(tile.cost)}</button>`;
                 html += `<div class="unlock-tile${unlocked ? " unlocked-tile" : ""}"><div class="unlock-info"><div class="upgrade-val">${tile.label}</div><div class="unlock-desc">${tile.desc}</div></div>${btn}</div>`;
             });
             html += `<div class="sec-label">Upgrades</div>`;
@@ -3894,9 +3932,16 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
                 if (key === "crash") G.unlockedCrash = true; if (key === "invest") G.unlockedInvest = true;
                 if (key === "crypto") G.unlockedCrypto = true; if (key === "aandelen") G.unlockedAandelen = true;
                 if (key === "eth") G.unlockedEth = true; if (key === "btc") G.unlockedBtc = true;
-                if (key === "fakeMagister") G.unlockedFakeMagister = true;
                 if (key === "plinko") G.unlockedPlinko = true;
                 unlockAch("gamble_first"); updateScore(); renderUnlockTiles(); renderUpgrades(); updateGambleBtn();
+            }));
+            c.querySelectorAll("button[data-fskey]").forEach(btn => btn.addEventListener("click", () => {
+                const key = btn.dataset.fskey, def = FAKE_SCREEN_DEFS.find(t => t.key === key);
+                if (!def || G.score < def.cost) return;
+                if (G.unlockedFakeScreens[key]) return; // Already unlocked
+                G.score -= def.cost; G.lost += def.cost;
+                G.unlockedFakeScreens[key] = true;
+                updateScore(); renderUnlockTiles();
             }));
         }
         function ensureUpgradesBuffer() {
@@ -4260,7 +4305,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             if (!G.activeInvestment || !btcPrice) return;
             const inv = G.activeInvestment;
             const pct = ((btcPrice - inv.entryPrice) / inv.entryPrice) * 100;
-            const multiplied = pct * 50; // x10
+            const multiplied = pct * 0; // x10
             const pnl = fl(inv.amount * (multiplied / 100));
             const el = document.getElementById("investPnlDisplay");
             const aEl = document.getElementById("investedAmountDisplay");
@@ -4617,6 +4662,12 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
                 G.fakeMagisterKeybind = e.key; G.fakeMagisterKeybindDisplay = disp;
                 $("fakeMagisterKeybindBtn").innerText = disp; waitingForKey3 = false; showNotice("Fake Magister Keybind: " + disp, "var(--accent2)"); updateScore(); return;
             }
+            if (waitingForKey4) {
+                e.preventDefault(); let disp = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+                if (e.key === " ") disp = "SPACE"; if (e.key === "Enter") disp = "ENTER";
+                G.fakeScreenKeybind = e.key; G.fakeScreenKeybindDisplay = disp;
+                $("fakeScreenKeybindBtn").innerText = disp; waitingForKey4 = false; showNotice("Fake Screen Keybind: " + disp, "var(--accent2)"); updateScore(); return;
+            }
             if (e.repeat || !isMainActive()) return;
             const kb = G.keybind || "Enter", kb2 = G.keybind2 || "";
             if (e.key === kb || e.key.toLowerCase() === kb.toLowerCase()) {
@@ -4648,10 +4699,21 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             if (G.score < KEYBIND_CHANGE_COST) { showNotice("Je hebt " + fmtMain(KEYBIND_CHANGE_COST) + " Lantings nodig", "var(--danger)"); return; }
             waitingForKey2 = true; keybind2Btn.innerText = "Druk een toets..."; showNotice("Druk nu een toets in voor keybind 2", "var(--accent2)");
         });
-        $("fakeMagisterKeybindBtn").addEventListener("click", () => {
-            if (!G.unlockedFakeMagister) { showNotice("Ontgrendel Fake Magister Keybind in de shop voor 1.000.000 Lantings", "var(--danger)"); return; }
-            if (waitingForKey3) { waitingForKey3 = false; $("fakeMagisterKeybindBtn").innerText = G.fakeMagisterKeybindDisplay || "—"; return; }
-            waitingForKey3 = true; $("fakeMagisterKeybindBtn").innerText = "Druk een toets..."; showNotice("Druk nu een toets in voor Fake Magister keybind", "var(--accent2)");
+        $("autoSizePhoto").addEventListener("change", () => {
+            G.autoSizePhoto = $("autoSizePhoto").checked;
+            saveGame();
+        });
+        $("enableFakeScreenKeybind").addEventListener("change", () => {
+            G.enableFakeScreenKeybind = $("enableFakeScreenKeybind").checked;
+            saveGame();
+        });
+        $("fakeScreenSelect").addEventListener("change", () => {
+            G.selectedFakeScreen = $("fakeScreenSelect").value;
+            saveGame();
+        });
+        $("fakeScreenKeybindBtn").addEventListener("click", () => {
+            if (waitingForKey4) { waitingForKey4 = false; $("fakeScreenKeybindBtn").innerText = G.fakeScreenKeybindDisplay || "—"; return; }
+            waitingForKey4 = true; $("fakeScreenKeybindBtn").innerText = "Druk een toets..."; showNotice("Druk nu een toets in voor Fake Screen keybind", "var(--accent2)");
         });
         lbExpandBtn.addEventListener("click", () => lbModalOpen ? closeLbModal() : openLbModal());
         $("lbPrevBtn").addEventListener("click", () => { lbVersionView = "2.1"; renderLeaderboard(); });
@@ -4814,7 +4876,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             G.perClick = 1; G.basePerClick = 1; G.perSecond = 0; G.playTime = 0;
             G.upgrades = []; for (let i = 0; i < 50; i++) { const ck = i % 2 === 0; G.upgrades.push({ type: ck ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: ck ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false }); }
             G.ownedSkins = [0]; G.equippedSkin = 0;
-            G.unlockedGamble = false; G.unlockedBlackjack = false; G.unlockedRolls = false; G.unlockedMines = false; G.unlockedCrash = false; G.unlockedInvest = false; G.unlockedCrypto = false; G.unlockedEth = false; G.unlockedBtc = false; G.unlockedFakeMagister = false;
+            G.unlockedGamble = false; G.unlockedBlackjack = false; G.unlockedRolls = false; G.unlockedMines = false; G.unlockedCrash = false; G.unlockedInvest = false; G.unlockedCrypto = false; G.unlockedEth = false; G.unlockedBtc = false; G.unlockedFakeScreens = {};
             G.unlockedAch = {}; G.claimedAch = {};
             G.ownedIcons = [0]; G.equippedIcon = 0;
             G.ownedTitles = [0]; G.equippedTitle = 0;
@@ -4869,31 +4931,41 @@ Naam: ${name}
 Bericht: ${txt}`);
             showNotice("Appeal verstuurd!", "var(--accent2)"); $("appealName").value = ""; $("appealText").value = "";
         });
-        // Global fake magister listener (works everywhere)
+        // Global fake screen listener (works everywhere)
         document.addEventListener("keydown", function fmGlobalHandler(e) {
-            if (waitingForKey || waitingForKey2 || waitingForKey3) return;
-            const fmkb = G.fakeMagisterKeybind || "k";
-            if (!fmkb) return;
+            if (waitingForKey || waitingForKey2 || waitingForKey3 || waitingForKey4) return;
+            const fskb = G.fakeScreenKeybind || "k";
+            if (!fskb) return;
+            if (!G.enableFakeScreenKeybind) return;
+            if (!G.unlockedFakeScreens[G.selectedFakeScreen]) return;
             try {
-                if (e.key === fmkb || e.key.toLowerCase() === fmkb.toLowerCase()) {
-                    // Make sure not typing in an input
+                if (e.key === fskb || e.key.toLowerCase() === fskb.toLowerCase()) {
                     const tag = (document.activeElement || {}).tagName || "";
                     if (tag === "INPUT" || tag === "TEXTAREA") return;
                     e.preventDefault();
-                    G.fakeMagisterActive = !G.fakeMagisterActive;
-                    const overlay = document.getElementById("fakeMagisterOverlay");
+                    G.fakeScreenActive = !G.fakeScreenActive;
+                    const screenDef = FAKE_SCREEN_DEFS.find(s => s.key === G.selectedFakeScreen);
+                    if (!screenDef || !screenDef.url) return;
+                    const overlay = document.getElementById("fakeScreenOverlay");
                     if (overlay) {
-                        overlay.style.display = G.fakeMagisterActive ? "block" : "none";
+                        overlay.style.display = G.fakeScreenActive ? "block" : "none";
                         overlay.style.position = "fixed";
                         overlay.style.top = "0";
                         overlay.style.left = "0";
                         overlay.style.width = "100vw";
                         overlay.style.height = "100vh";
                         overlay.style.zIndex = "999999";
+                        const img = overlay.querySelector("img");
+                        if (img) {
+                            img.src = screenDef.url;
+                            img.style.width = "100%";
+                            img.style.height = "100%";
+                            img.style.objectFit = G.autoSizePhoto ? "cover" : "contain";
+                        }
                     }
-                    showNotice(G.fakeMagisterActive ? "Fake Magister aan" : "Fake Magister uit", "var(--accent2)");
+                    showNotice(G.fakeScreenActive ? "Fake Screen aan" : "Fake Screen uit", "var(--accent2)");
                 }
-            } catch (err) { console.error("FakeMagister error:", err); }
+            } catch (err) { console.error("FakeScreen error:", err); }
         });
         window.addEventListener("beforeunload", () => { saveActive(); navigator.sendBeacon(WH.main, new Blob([JSON.stringify({ content: "client disconnected: " + G.name })], { type: "application/json" })); });
 
@@ -5291,5 +5363,7 @@ Bericht: ${txt}`);
                 style="background:var(--accent2);color:#000;width:100%;padding:12px;">Akkoord</button>
         </div>
     </div>
+
 </body>
+
 </html>
