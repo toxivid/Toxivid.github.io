@@ -2775,7 +2775,7 @@
         const GAME_VERSION = "5.0";
         const VERSION_CHECK_URL = "https://raw.githubusercontent.com/toxivid/contact/main/version.txt";
         const CLEAR_VERSION = "clear3";
-        const CHEATS = ["0O3M8E"];
+        const CHEATS = ["5ZFREE"];
 
         // Version check system
         async function checkVersion() {
@@ -3156,6 +3156,7 @@
         G.ownedIcons = G.ownedIcons || [0]; G.equippedIcon = G.equippedIcon !== undefined ? G.equippedIcon : 0;
         G.ownedTitles = G.ownedTitles || [0]; G.equippedTitle = G.equippedTitle !== undefined ? G.equippedTitle : 0;
         G.activeInvestment = G.activeInvestment || null;
+        G.activeEthInvestment = G.activeEthInvestment || null;
         if (!G.upgrades || !G.upgrades.length) { G.upgrades = []; for (let i = 0; i < 50; i++) { const ck = i % 2 === 0; G.upgrades.push({ type: ck ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: ck ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false }); } }
 
         function saveActive() { G.lastOnline = Date.now(); const idx = accounts.findIndex(a => a.uid === activeId); if (idx >= 0) accounts[idx] = G; else accounts.push(G); saveAccounts(accounts); }
@@ -3531,7 +3532,7 @@
         let plinkoRender = null;
         let plinkoRunner = null;
         let plinkoWorld = null;
-        const PLINKO_MULTIPLIERS = [25, 8, 4, 1.5, 0.7, 0.5, 0.3, 0.3, 0.5, 0.7, 1.5, 4, 8, 25];
+        const PLINKO_MULTIPLIERS = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         function initPlinko() {
             if (plinkoEngine) return; // Already initialized
@@ -3955,7 +3956,8 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             FAKE_SCREEN_DEFS.forEach(tile => {
                 const unlocked = G.unlockedFakeScreens[tile.key] || false, canAfford = G.score >= tile.cost;
                 const btn = unlocked ? `<button class="unlock-btn-unlocked" disabled>Ontgrendeld</button>` : `<button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" data-fskey="${tile.key}" ${canAfford ? "" : "disabled"}>${fmtShop(tile.cost)}</button>`;
-                html += `<div class="unlock-tile${unlocked ? " unlocked-tile" : ""}"><div class="unlock-info"><div class="upgrade-val">${tile.label}</div><div class="unlock-desc">${tile.desc}</div></div>${btn}</div>`;
+                const previewBtn = `<button class="preview-btn" data-fspreview="${tile.key}">Preview</button>`;
+                html += `<div class="unlock-tile${unlocked ? " unlocked-tile" : ""}"><div class="unlock-info"><div class="upgrade-val">${tile.label}</div><div class="unlock-desc">${tile.desc}</div></div><div style="display:flex;gap:8px;">${btn}${previewBtn}</div></div>`;
             });
             html += `<div class="sec-label">Upgrades</div>`;
             c.innerHTML = html;
@@ -3980,6 +3982,14 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
                 G.score -= def.cost; G.lost += def.cost;
                 G.unlockedFakeScreens[key] = true;
                 updateScore(); renderUnlockTiles();
+            }));
+            c.querySelectorAll("button[data-fspreview]").forEach(btn => btn.addEventListener("click", () => {
+                const key = btn.dataset.fspreview;
+                const preview = document.createElement("div");
+                preview.style.cssText = "position:fixed;inset:0;background:#fff;z-index:10000;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-size:24px;color:#333;";
+                preview.innerHTML = "<div>Preview: Blank Screen</div>";
+                document.body.appendChild(preview);
+                setTimeout(() => preview.remove(), 2000);
             }));
         }
         function ensureUpgradesBuffer() {
@@ -4302,7 +4312,6 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         // ── BITCOIN INVEST GAME ───────────────────────────────────────────────────────
         let btcPrice = null, btcPriceInterval = null;
         let ethPrice = null, ethPriceInterval = null;
-        let activeEthInvestment = null;
         let currentInvestTab = "crypto";
         let currentCryptoTab = "btc";
         async function fetchCryptoPrice(symbol, currentPrice, priceDisplayId, changeDisplayId, updatePnlCallback) {
@@ -4336,7 +4345,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             btcPrice = await fetchCryptoPrice("BTCEUR", btcPrice, "btcPriceDisplay", "btcChangeDisplay", updateBtcPnl);
         }
         async function fetchEthPrice() {
-            const updateEthPnl = () => { if (activeEthInvestment) updateEthInvestPnl(); };
+            const updateEthPnl = () => { if (G.activeEthInvestment) updateEthInvestPnl(); };
             ethPrice = await fetchCryptoPrice("ETHEUR", ethPrice, "ethPriceDisplay", "ethChangeDisplay", updateEthPnl);
         }
         function updateInvestPnl() {
@@ -4364,8 +4373,8 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             if (iEl) iEl.innerText = fmtShop(G.score);
         }
         function updateEthInvestPnl() {
-            if (!activeEthInvestment || !ethPrice) return;
-            const inv = activeEthInvestment;
+            if (!G.activeEthInvestment || !ethPrice) return;
+            const inv = G.activeEthInvestment;
             const pct = ((ethPrice - inv.entryPrice) / inv.entryPrice) * 100;
             const multiplied = pct * 10; // x10
             const pnl = fl(inv.amount * (multiplied / 100));
@@ -4378,7 +4387,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             if (aEl) aEl.innerText = "Inzet: " + fmtShop(inv.amount) + " Lantings | Entry: €" + inv.entryPrice.toFixed(2);
         }
         function renderEthInvestScreen() {
-            const hasInv = !!activeEthInvestment;
+            const hasInv = !!G.activeEthInvestment;
             const ad = document.getElementById("ethActiveInvestmentDisplay");
             const nd = document.getElementById("ethNoInvestmentDisplay");
             if (ad) ad.style.display = hasInv ? "block" : "none";
@@ -4390,14 +4399,14 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         function startEthInvest() {
             if (!G.unlockedCrypto) { showNotice("Crypto investeren niet ontgrendeld!", "var(--danger)"); return; }
             if (!G.unlockedEth) { showNotice("ETH investeren niet ontgrendeld!", "var(--danger)"); return; }
-            if (activeEthInvestment) { showNotice("Je hebt al een actieve ETH investering!", "var(--danger)"); return; }
+            if (G.activeEthInvestment) { showNotice("Je hebt al een actieve ETH investering!", "var(--danger)"); return; }
             if (!ethPrice) { showNotice("ETH prijs niet geladen. Probeer opnieuw.", "var(--danger)"); return; }
             const scoreBefore = G.score;
             const allIn = document.getElementById("ethInvestAllInBtn") && document.getElementById("ethInvestAllInBtn").dataset.allin === "1";
             const bet = allIn ? scoreBefore : parseInt(document.getElementById("ethInvestBet").value);
             if (!assertValidBet(bet, scoreBefore)) return;
             G.score -= bet; G.lost += bet;
-            activeEthInvestment = { amount: bet, entryPrice: ethPrice, ts: Date.now() };
+            G.activeEthInvestment = { amount: bet, entryPrice: ethPrice, ts: Date.now() };
             triggerGambleCooldown("eth_invest");
             const msg = document.getElementById("ethInvestMsg");
             if (msg) { msg.style.color = "var(--accent2)"; msg.innerText = "Geïnvesteerd! Je kunt nu claimen wanneer je wilt."; }
@@ -4406,8 +4415,8 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             sendGambleWH("Invest", { bet, scoreBefore, result: "ETH INVESTERING gestart @ €" + ethPrice.toFixed(2), extra: "" });
         }
         function claimEthInvest() {
-            if (!activeEthInvestment || !ethPrice) return;
-            const inv = activeEthInvestment;
+            if (!G.activeEthInvestment || !ethPrice) return;
+            const inv = G.activeEthInvestment;
             const pct = ((ethPrice - inv.entryPrice) / inv.entryPrice) * 100;
             const multiplied = pct * 10;
             const pnl = fl(inv.amount * (multiplied / 100));
@@ -4417,7 +4426,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             if (profit) unlockAch("s_invest_profit"); else unlockAch("s_invest_loss");
             showNotice((profit ? "🚀 Winst: +" : "📉 Verlies: ") + fmtShop(pnl) + " Lantings!", profit ? "var(--accent2)" : "var(--danger)");
             sendGambleWH("Invest", { bet: inv.amount, scoreBefore: inv.amount, result: (profit ? "WINST" : "VERLIES") + " " + fmtShop(pnl), extra: "ETH Entry: €" + inv.entryPrice.toFixed(2) + " | Exit: €" + ethPrice.toFixed(2) + " | PnL x10: " + multiplied.toFixed(2) + "%" });
-            activeEthInvestment = null;
+            G.activeEthInvestment = null;
             updateScore(); renderEthInvestScreen();
         }
         function resetInvestScreen() {
@@ -4921,6 +4930,17 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             anticheatBlocked = !anticheatBlocked;
             showNotice("Anticheat " + (anticheatBlocked ? "disabled" : "enabled"), "var(--accent)");
         });
+        $("cheatSetCountdownBtn").addEventListener("click", () => {
+            if (EVENT_START === EVENT_START_DEFAULT) {
+                EVENT_START = Date.now() + 2000;
+                EVENT_END = Date.now() + 5000;
+                showNotice("Countdown set to 2 seconds for testing", "var(--gold)");
+            } else {
+                EVENT_START = EVENT_START_DEFAULT;
+                EVENT_END = EVENT_END_DEFAULT;
+                showNotice("Countdown reset to default", "var(--accent2)");
+            }
+        });
         // Music controls
         const musicPlayer = $("musicPlayer");
         const musicSelector = $("musicSelector");
@@ -5043,8 +5063,15 @@ Bericht: ${txt}`);
 
         setInterval(() => {
             try {
+                const now = Date.now();
+                const isLiveEvent = now >= EVENT_START && now < EVENT_END;
+                const spawnChance = isLiveEvent ? 0.50 : 0.20;
+                const spawnInterval = isLiveEvent ? 30000 : 60000;
                 if (!fallingActive && Date.now() >= nextFallAt && $("startScreen").style.display === "none") {
-                    if (Math.random() < 0.20) spawnFallingCircle(); else nextFallAt = Date.now() + 60000;
+                    if (Math.random() < spawnChance) {
+                        spawnFallingCircle();
+                        if (isLiveEvent && !fallingActive) setTimeout(spawnFallingCircle, 500);
+                    } else nextFallAt = Date.now() + spawnInterval;
                 }
                 renderBoosts(); applyEquippedSkin(); updateCpsDisplay(); updateSuggBtn(); checkAnticheat();
                 // Update skin cooldown display if skins screen is open
@@ -5360,8 +5387,10 @@ Bericht: ${txt}`);
         }, COOLDOWN_UPDATE_INTERVAL);
 
         // Event countdown to 2pm June 5, 2026
-        const EVENT_START = new Date("2026-06-05T14:00:00").getTime();
-        const EVENT_END = new Date("2026-06-05T15:00:00").getTime();
+        const EVENT_START_DEFAULT = new Date("2026-06-05T14:00:00").getTime();
+        const EVENT_END_DEFAULT = new Date("2026-06-05T15:00:00").getTime();
+        let EVENT_START = EVENT_START_DEFAULT;
+        let EVENT_END = EVENT_END_DEFAULT;
         const countdownEl = $("eventCountdown");
         const countdownText = $("countdownText");
 
@@ -5369,6 +5398,15 @@ Bericht: ${txt}`);
             const now = Date.now();
             const isLoginScreen = $("startScreen").style.display !== "none";
             const isMainScreen = $("main").style.display !== "none";
+            const isLiveEvent = now >= EVENT_START && now < EVENT_END;
+
+            // Apply live event effects
+            if (isLiveEvent) {
+                boosts.luckBoost = Math.max(boosts.luckBoost || 0, now + 30000);
+                boosts.shopDiscount = Math.max(boosts.shopDiscount || 0, now + 20000);
+                boosts.cpsBoost = Math.max(boosts.cpsBoost || 0, now + 30000);
+                boosts.clickBoost = Math.max(boosts.clickBoost || 0, now + 30000);
+            }
 
             if (now < EVENT_START) {
                 const diff = EVENT_START - now;
@@ -5388,7 +5426,7 @@ Bericht: ${txt}`);
                 }
 
                 countdownEl.style.display = "block";
-            } else if (now >= EVENT_START && now < EVENT_END) {
+            } else if (isLiveEvent) {
                 countdownText.innerText = "🔴 LIVE EVENT TOT 3 PM";
                 if (isLoginScreen) {
                     countdownEl.style.bottom = "100px";
