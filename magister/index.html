@@ -557,15 +557,9 @@
             transform: translateY(-50%);
         }
 
-        #skinBtn {
-            position: fixed;
-            left: 20px;
-            top: 20px;
-        }
-
         #statsBtn {
             position: fixed;
-            right: 300px;
+            right: 20px;
             top: 20px;
         }
 
@@ -597,7 +591,7 @@
 
         #achBtn {
             position: fixed;
-            bottom: 20px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 60;
@@ -630,7 +624,7 @@
         #leaderboardTop {
             position: fixed;
             top: 20px;
-            right: 20px;
+            left: 20px;
             background: rgba(20, 20, 42, .95);
             border: 2px solid #ff0000;
             border-radius: 14px;
@@ -2139,13 +2133,25 @@
 
             #shopBtn,
             #gambleBtn {
-                top: 40%;
+                top: 66%;
             }
         }
 
         /* ── GAMBLE COOLDOWN in shop moved to top ── */
         #gambleCooldownShopSection {
             margin-bottom: 16px;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.05);
+            }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
@@ -2191,9 +2197,7 @@
     <div id="fallingCountdown"></div>
     <button id="shopBtn">Shop</button>
     <button id="gambleBtn" disabled>Gamble</button>
-    <button id="skinBtn">Skins</button>
     <button id="statsBtn">Instellingen</button>
-    <button id="voteBtn">Vote</button>
     <button id="achBtn">🏆 Achievements</button>
     <button class="suggestionBtn" id="suggestionOpenBtn" style="display:none;">Suggestion</button>
     <div id="suggestionCooldown"
@@ -2201,6 +2205,10 @@
     </div>
     <div id="gameNotice"></div>
     <div id="gambleCooldownDisplay"></div>
+    <div id="eventCountdown"
+        style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,rgba(255,0,0,0.9),rgba(200,0,0,0.9));color:#fff;padding:15px 30px;border-radius:20px;font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:bold;text-align:center;z-index:9999;display:none;box-shadow:0 4px 20px rgba(255,0,0,0.5);border:2px solid rgba(255,255,255,0.3);">
+        <div id="countdownText"></div>
+    </div>
     <div id="anticheatWarning">
         <div id="anticheatCard">
             <h2>⚠️ Cheat Gedetecteerd</h2>
@@ -2255,6 +2263,13 @@
             <h2>Shop</h2>
             <div class="shop-money"><span id="shopMoney">0</span> Lantings</div>
         </div>
+        <div id="skinsShopSection">
+            <div class="sec-label">Skins</div>
+            <div id="skinCooldownInfo"></div>
+            <p style="color:var(--muted);font-size:12px;margin-bottom:12px;">Skins geven een bonus op je klikken. Je
+                kunt eens per 60 minuten van skin wisselen.</p>
+            <div id="skinList" class="skin-grid"></div>
+        </div>
         <div id="gambleCooldownShopSection">
             <div class="sec-label">Gamble Cooldown</div>
             <div class="stat-block" id="cdShopBlock"></div>
@@ -2303,6 +2318,12 @@
                 <div class="gc-name">🎯 Plinko</div>
                 <div class="gc-lock" id="plinkoLockText"></div>
                 <div class="gc-cd" id="gcCdPlinko"
+                    style="font-size:11px;color:var(--danger);margin-top:6px;min-height:14px;"></div>
+            </div>
+            <div class="gamble-card" id="openRouletteBtn">
+                <div class="gc-name">🎰 Roulette</div>
+                <div class="gc-lock" id="rouletteLockText"></div>
+                <div class="gc-cd" id="gcCdRoulette"
                     style="font-size:11px;color:var(--danger);margin-top:6px;min-height:14px;"></div>
             </div>
         </div>
@@ -2535,16 +2556,12 @@
             <div id="plinkoMsg" style="font-size:13px;margin-top:10px;min-height:18px;color:var(--muted);"></div>
         </div>
     </div>
-    <div id="skinScreen" class="screen">
-        <div class="screen-header"><button class="exitBtn" id="skinExitBtn">✕</button>
-            <h2>Skins</h2>
-            <div></div>
+    <div id="rouletteScreen" class="screen">
+        <div class="screen-header"><button class="exitBtn" id="rouletteExitBtn">✕</button>
+            <h2>🎰 Roulette</h2>
+            <div class="shop-money"><span id="rouletteMoney">0</span></div>
         </div>
-        <div id="skinCooldownInfo"></div>
-        <p style="color:var(--muted);font-size:12px;margin-bottom:12px;">Skins geven een bonus op je klikken. Je kunt
-            eens
-            per 60 minuten van skin wisselen.</p>
-        <div id="skinList" class="skin-grid"></div>
+        <div style="padding-top:20px;background:#fff;height:calc(100vh - 80px);"></div>
     </div>
     <div id="statsScreen" class="screen">
         <div class="screen-header"><button class="exitBtn" id="statsExitBtn">✕</button>
@@ -2552,6 +2569,25 @@
             <div></div>
         </div>
         <div style="max-width:500px;margin:0 auto;">
+            <div class="sec-label">Vote</div>
+            <div class="stat-block">
+                <h3 style="margin-bottom:8px;">Vote: Nieuwe Feature</h3>
+                <label class="vote-option"><input type="radio" name="voteOption" value="meer gambling games"> Meer
+                    gambling games</label>
+                <label class="vote-option"><input type="radio" name="voteOption" value="meer investeren"> Meer
+                    investeren</label>
+                <label class="vote-option"><input type="radio" name="voteOption" value="battlepass"> Battlepass</label>
+                <div style="display:flex;gap:8px;margin-top:10px;">
+                    <button id="voteSubmitBtn" style="flex:1;">Submit</button>
+                </div>
+                <div id="voteInfo"></div>
+                <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+                    <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">Vorige stemming (yara yara phonk
+                        toegevoegd):</p>
+                    <img src="https://github.com/toxivid/png/raw/refs/heads/main/Schermafbeelding%202026-05-28%20130919.png"
+                        style="width:100%;border-radius:8px;">
+                </div>
+            </div>
             <div class="sec-label">Account</div>
             <div class="stat-block">
                 <div class="stat-row"><span>User ID</span><span class="val" id="displayUserId">—</span></div>
@@ -2689,6 +2725,9 @@
                         All Progress</button>
                     <button id="cheatToggleAnticheatBtn"
                         style="width:100%;margin-top:8px;background:var(--accent);">Toggle Anticheat</button>
+                    <button id="cheatSetCountdownBtn"
+                        style="width:100%;margin-top:8px;background:var(--gold);color:#000;">Set Countdown to
+                        2s</button>
                 </div>
             </div>
 
@@ -2713,27 +2752,6 @@
             <h3>Stuur Suggestion</h3>
             <input id="suggestionInput" type="text" placeholder="Jouw idee...">
             <button id="sendSuggestionBtn" style="width:100%;">Verzenden</button>
-        </div>
-    </div>
-    <div id="votePanel">
-        <div id="voteCard">
-            <h3 style="margin-bottom:8px;">Vote: Nieuwe Feature</h3>
-            <label class="vote-option"><input type="radio" name="voteOption" value="meer gambling games"> Meer gambling
-                games</label>
-            <label class="vote-option"><input type="radio" name="voteOption" value="meer investeren"> Meer
-                investeren</label>
-            <label class="vote-option"><input type="radio" name="voteOption" value="battlepass"> Battlepass</label>
-            <div style="display:flex;gap:8px;margin-top:10px;">
-                <button id="voteSubmitBtn" style="flex:1;">Submit</button>
-                <button id="voteCloseBtn" class="exitBtn" style="flex:1;">✕</button>
-            </div>
-            <div id="voteInfo"></div>
-            <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
-                <p style="font-size:12px;color:var(--muted);margin-bottom:8px;">Vorige stemming (yara yara phonk
-                    toegevoegd):</p>
-                <img src="https://github.com/toxivid/png/raw/refs/heads/main/Schermafbeelding%202026-05-28%20130919.png"
-                    style="width:100%;border-radius:8px;">
-            </div>
         </div>
     </div>
     <audio id="musicPlayer" loop></audio>
@@ -2848,6 +2866,7 @@
             { key: "mines", label: "Mines", desc: "Speelbaar in Gamble menu", cost: 20000000 },
             { key: "crash", label: "Crash", desc: "Speelbaar in Gamble menu", cost: 100000000 },
             { key: "plinko", label: "Plinko", desc: "Speelbaar in Gamble menu", cost: 99999999999 },
+            { key: "roulette", label: "Roulette", desc: "Speelbaar in Gamble menu", cost: 99999999999999 },
             { key: "invest", label: "Investeren", desc: "Ontgrendel investeren menu", cost: 5000 },
             { key: "crypto", label: "Crypto", desc: "Ontgrendel crypto investeren (ETH/BTC)", cost: 200000 },
             { key: "aandelen", label: "Aandelen", desc: "Ontgrendel aandelen investeren", cost: 150000 },
@@ -3094,7 +3113,7 @@
         function setActiveId(id) { localStorage.setItem(ACTIVE_ACC_KEY, id); }
         function createDefaultSave(name, uid) {
             const u = []; for (let i = 0; i < 50; i++) { const ck = i % 2 === 0; u.push({ type: ck ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: ck ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false }); }
-            return { uid, name, score: 0, perClick: 1, perSecond: 0, upgrades: u, ownedSkins: [0], equippedSkin: 0, basePerClick: 1, playTime: 0, earned: 0, lost: 0, highest: 0, totalClicks: 0, unlockedGamble: false, unlockedBlackjack: false, unlockedRolls: false, unlockedMines: false, unlockedCrash: false, unlockedInvest: false, unlockedKeybind2: false, keybind: "Enter", keybindDisplay: "ENTER", keybind2: "", keybind2Display: "—", fakeScreenKeybind: "k", fakeScreenKeybindDisplay: "K", fakeScreenActive: false, selectedFakeScreen: "fakeMagister", enableFakeScreenKeybind: false, autoSizePhoto: false, unlockedFakeScreens: {}, unlockedAch: {}, claimedAch: {}, themesUsed: [], ownedIcons: [0], equippedIcon: 0, ownedTitles: [0], equippedTitle: 0, activeInvestment: null, createdAt: Date.now(), lastOnline: Date.now() };
+            return { uid, name, score: 0, perClick: 1, perSecond: 0, upgrades: u, ownedSkins: [0], equippedSkin: 0, basePerClick: 1, playTime: 0, earned: 0, lost: 0, highest: 0, totalClicks: 0, unlockedGamble: false, unlockedBlackjack: false, unlockedRolls: false, unlockedMines: false, unlockedCrash: false, unlockedPlinko: false, unlockedRoulette: false, unlockedInvest: false, unlockedKeybind2: false, keybind: "Enter", keybindDisplay: "ENTER", keybind2: "", keybind2Display: "—", fakeScreenKeybind: "k", fakeScreenKeybindDisplay: "K", fakeScreenActive: false, selectedFakeScreen: "fakeMagister", enableFakeScreenKeybind: false, autoSizePhoto: false, unlockedFakeScreens: {}, unlockedAch: {}, claimedAch: {}, themesUsed: [], ownedIcons: [0], equippedIcon: 0, ownedTitles: [0], equippedTitle: 0, activeInvestment: null, createdAt: Date.now(), lastOnline: Date.now() };
         }
         function migrateOldSave() {
             let accs = loadAccounts();
@@ -3489,10 +3508,12 @@
             $("minesLockText").innerText = lt(G.unlockedMines);
             $("crashLockText").innerText = lt(G.unlockedCrash); $("investLockText").innerText = lt(G.unlockedInvest || G.unlockedCrypto);
             $("plinkoLockText").innerText = lt(G.unlockedPlinko);
+            $("rouletteLockText").innerText = lt(G.unlockedRoulette);
             $("openBlackjackBtn").className = lc(G.unlockedBlackjack); $("openRollsBtn").className = lc(G.unlockedRolls);
             $("openMinesBtn").className = lc(G.unlockedMines);
             $("openCrashBtn").className = lc(G.unlockedCrash); $("openInvestBtn").className = lc(G.unlockedInvest || G.unlockedCrypto);
             $("openPlinkoBtn").className = lc(G.unlockedPlinko);
+            $("openRouletteBtn").className = lc(G.unlockedRoulette);
         }
         function getMinBet() { return Math.max(1, cl(G.score * 0.10)); }
         function assertValidBet(bet, scoreBefore) {
@@ -3502,7 +3523,8 @@
             if (bet > scoreBefore) { showNotice("Niet genoeg Lantings", "var(--danger)"); return false; }
             return true;
         }
-        function setInputToMinBet(id) { $(id).value = getMinBet(); showNotice("Minimale inzet ingevuld", "var(--accent2)"); }
+        const minBetInputs = new Set();
+        function setInputToMinBet(id) { $(id).value = getMinBet(); minBetInputs.add(id); showNotice("Minimale inzet ingevuld", "var(--accent2)"); }
 
         // ── PLINKO GAME ─────────────────────────────────────────────────────────────────
         let plinkoEngine = null;
@@ -3827,7 +3849,22 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             function fall() { const t = (Date.now() - st) / 1000; fallingCircle.style.transform = `translateY(${t * 70}px) rotate(${t * 180}deg)`; if (t < 6) fallingAnimId = requestAnimationFrame(fall); }
             fallingAnimId = requestAnimationFrame(fall);
             fallingTimerId = setInterval(() => { tl--; fallingCdEl.innerText = "Vang hem! " + tl + "s"; if (tl <= 0) clearFalling(); }, 1000);
-            fallingCircle.onclick = () => { clearFalling(); boosts.shopDiscount = Date.now() + 20000; spawnFloatText("Shop 20% korting!", "#ffd700"); unlockAch("s_falling_catch"); };
+            const boostTypes = [
+                { type: "shopDiscount", duration: 20000, text: "Shop 20% korting!", color: "#ffd700" },
+                { type: "luckBoost", duration: 30000, text: "20% Luck Boost!", color: "#ff6b6b" },
+                { type: "cpsBoost", duration: 30000, text: "2x CPS Boost!", color: "#4ecdc4" },
+                { type: "clickBoost", duration: 30000, text: "50% Click Boost!", color: "#a8e6cf" }
+            ];
+            const boost = boostTypes[fl(Math.random() * boostTypes.length)];
+            fallingCircle.onclick = () => {
+                clearFalling();
+                if (boost.type === "shopDiscount") boosts.shopDiscount = Date.now() + boost.duration;
+                else if (boost.type === "luckBoost") boosts.luckBoost = Date.now() + boost.duration;
+                else if (boost.type === "cpsBoost") boosts.cpsBoost = Date.now() + boost.duration;
+                else if (boost.type === "clickBoost") boosts.clickBoost = Date.now() + boost.duration;
+                spawnFloatText(boost.text, boost.color);
+                unlockAch("s_falling_catch");
+            };
         }
         function clearFalling() { cancelAnimationFrame(fallingAnimId); clearInterval(fallingTimerId); fallingCircle.style.display = "none"; fallingCdEl.style.display = "none"; fallingCircle.onclick = null; fallingActive = false; nextFallAt = Date.now() + 60000; }
 
@@ -3907,7 +3944,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         }
         function renderUnlockTiles() {
             const c = $("unlockTiles");
-            const um = { gamble: G.unlockedGamble, blackjack: G.unlockedBlackjack, rolls: G.unlockedRolls, mines: G.unlockedMines, crash: G.unlockedCrash, invest: G.unlockedInvest, crypto: G.unlockedCrypto, aandelen: G.unlockedAandelen, eth: G.unlockedEth, btc: G.unlockedBtc, plinko: G.unlockedPlinko };
+            const um = { gamble: G.unlockedGamble, blackjack: G.unlockedBlackjack, rolls: G.unlockedRolls, mines: G.unlockedMines, crash: G.unlockedCrash, invest: G.unlockedInvest, crypto: G.unlockedCrypto, aandelen: G.unlockedAandelen, eth: G.unlockedEth, btc: G.unlockedBtc, plinko: G.unlockedPlinko, roulette: G.unlockedRoulette };
             let html = `<div class="sec-label">Ontgrendelen</div>`;
             UNLOCK_DEFS.forEach(tile => {
                 const unlocked = um[tile.key], canAfford = G.score >= tile.cost;
@@ -3933,6 +3970,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
                 if (key === "crypto") G.unlockedCrypto = true; if (key === "aandelen") G.unlockedAandelen = true;
                 if (key === "eth") G.unlockedEth = true; if (key === "btc") G.unlockedBtc = true;
                 if (key === "plinko") G.unlockedPlinko = true;
+                if (key === "roulette") G.unlockedRoulette = true;
                 unlockAch("gamble_first"); updateScore(); renderUnlockTiles(); renderUpgrades(); updateGambleBtn();
             }));
             c.querySelectorAll("button[data-fskey]").forEach(btn => btn.addEventListener("click", () => {
@@ -4488,7 +4526,6 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             const oldVote = localStorage.getItem(VOTE_KEY);
             const info = $("voteInfo"); info.style.color = "var(--muted)"; info.innerText = oldVote ? "Jouw stem: " + oldVote : "Je hebt nog niet gestemd.";
             if (oldVote) { const sel = document.querySelector(`input[name="voteOption"][value="${oldVote}"]`); if (sel) sel.checked = true; }
-            openOverlay("votePanel");
         }
         function submitVote() {
             const sel = document.querySelector("input[name='voteOption']:checked");
@@ -4497,7 +4534,6 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             if (oldVote && oldVote !== choice) { showNotice("Je kan maar 1 keer stemmen", "var(--danger)"); return; }
             if (!oldVote) { localStorage.setItem(VOTE_KEY, choice); sendWH(WH.vote, `vote | ${G.name} | ${choice}`); showNotice("Stem verzonden: " + choice, "var(--accent2)"); unlockAch("s_vote"); }
             else showNotice("Je stem staat al op: " + oldVote, "var(--gold)");
-            closeOverlay("votePanel");
         }
 
         // ── SUGGESTION ────────────────────────────────────────────────────────────────
@@ -4720,7 +4756,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         $("lbNextBtn").addEventListener("click", () => { lbVersionView = VERSION; renderLeaderboard(); });
         $("lbModalClose").addEventListener("click", closeLbModal);
         lbModal.addEventListener("click", e => { if (e.target === lbModal) closeLbModal(); });
-        $("shopBtn").addEventListener("click", () => { openOverlay("shopScreen"); renderTitleIconSection(); renderUnlockTiles(); renderUpgrades(); renderCdShopBlock(); });
+        $("shopBtn").addEventListener("click", () => { openOverlay("shopScreen"); renderSkins(); renderTitleIconSection(); renderUnlockTiles(); renderUpgrades(); renderCdShopBlock(); });
         $("shopExitBtn").addEventListener("mousedown", () => closeOverlay("shopScreen"));
         $("gambleBtn").addEventListener("click", () => { if (G.unlockedGamble) openOverlay("gambleScreen"); });
         $("gambleExitBtn").addEventListener("click", () => closeOverlay("gambleScreen"));
@@ -4750,6 +4786,9 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         // Plinko
         $("openPlinkoBtn").addEventListener("click", () => { if (!G.unlockedPlinko) return; closeOverlay("gambleScreen"); openOverlay("plinkoScreen"); initPlinko(); });
         $("plinkoExitBtn").addEventListener("click", () => closeOverlay("plinkoScreen"));
+        // Roulette
+        $("openRouletteBtn").addEventListener("click", () => { if (!G.unlockedRoulette) return; closeOverlay("gambleScreen"); openOverlay("rouletteScreen"); });
+        $("rouletteExitBtn").addEventListener("click", () => closeOverlay("rouletteScreen"));
         $("plinkoMinBtn").addEventListener("click", () => setInputToMinBet("plinkoBet"));
         $("plinkoAllInBtn").addEventListener("click", () => { $("plinkoBet").value = G.score; });
         $("plinkoDropBtn").addEventListener("click", dropPlinkoBall);
@@ -4790,8 +4829,6 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         $("minesMinBtn").addEventListener("click", () => setInputToMinBet("minesBet"));
         $("minesAllInBtn").addEventListener("click", () => startMinesGame({ allIn: true, bet: G.score }));
         $("minesCashoutBtn").addEventListener("click", cashoutMines);
-        $("skinBtn").addEventListener("click", () => { openOverlay("skinScreen"); renderSkins(); });
-        $("skinExitBtn").addEventListener("click", () => closeOverlay("skinScreen"));
         $("statsBtn").addEventListener("click", () => { openOverlay("statsScreen"); updateKeybindUI(); checkAdminAccess(); });
         $("statsExitBtn").addEventListener("click", () => closeOverlay("statsScreen"));
         $("achBtn").addEventListener("click", () => { openOverlay("achScreen"); renderAchScreen(); });
@@ -4800,10 +4837,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         $("codeInput").addEventListener("keydown", e => { if (e.key === "Enter") submitCode(); });
         $("nameChangeBtn").addEventListener("click", changeNameInSettings);
         $("nameChangeInput").addEventListener("keydown", e => { if (e.key === "Enter") changeNameInSettings(); });
-        $("voteBtn").addEventListener("click", openVotePanel);
-        $("voteCloseBtn").addEventListener("click", () => closeOverlay("votePanel"));
         $("voteSubmitBtn").addEventListener("click", submitVote);
-        $("votePanel").addEventListener("click", e => { if (e.target === $("votePanel")) closeOverlay("votePanel"); });
         suggBtn.addEventListener("click", () => {
             const rem = 180000 - (Date.now() - lastSuggTime);
             if (lastSuggTime > 0 && rem > 0) { showNotice("Cooldown actief, wacht tot je opnieuw een suggestie kunt sturen.", "var(--danger)"); return; }
@@ -4876,7 +4910,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             G.perClick = 1; G.basePerClick = 1; G.perSecond = 0; G.playTime = 0;
             G.upgrades = []; for (let i = 0; i < 50; i++) { const ck = i % 2 === 0; G.upgrades.push({ type: ck ? "click" : "auto", value: 1 + fl(i / 2) * 2, cost: ck ? 30 * Math.pow(1.6, i) : 20 * Math.pow(1.6, i), bought: false }); }
             G.ownedSkins = [0]; G.equippedSkin = 0;
-            G.unlockedGamble = false; G.unlockedBlackjack = false; G.unlockedRolls = false; G.unlockedMines = false; G.unlockedCrash = false; G.unlockedInvest = false; G.unlockedCrypto = false; G.unlockedEth = false; G.unlockedBtc = false; G.unlockedFakeScreens = {};
+            G.unlockedGamble = false; G.unlockedBlackjack = false; G.unlockedRolls = false; G.unlockedMines = false; G.unlockedCrash = false; G.unlockedPlinko = false; G.unlockedRoulette = false; G.unlockedInvest = false; G.unlockedCrypto = false; G.unlockedEth = false; G.unlockedBtc = false; G.unlockedFakeScreens = {};
             G.unlockedAch = {}; G.claimedAch = {};
             G.ownedIcons = [0]; G.equippedIcon = 0;
             G.ownedTitles = [0]; G.equippedTitle = 0;
@@ -4974,6 +5008,11 @@ Bericht: ${txt}`);
             try {
                 G.playTime++; const ps = Date.now() < boosts.ps ? cl(G.perSecond * 2.5) : G.perSecond;
                 G.score += ps; G.earned += ps; updateScore();
+                // Update minimum bet inputs
+                minBetInputs.forEach(id => {
+                    const el = $(id);
+                    if (el) el.value = getMinBet();
+                });
             } catch (e) {
                 console.error("Score update interval error:", e);
             }
@@ -5319,6 +5358,52 @@ Bericht: ${txt}`);
                 console.error("Cooldown update interval error:", e);
             }
         }, COOLDOWN_UPDATE_INTERVAL);
+
+        // Event countdown to 2pm June 5, 2026
+        const EVENT_START = new Date("2026-06-05T14:00:00").getTime();
+        const EVENT_END = new Date("2026-06-05T15:00:00").getTime();
+        const countdownEl = $("eventCountdown");
+        const countdownText = $("countdownText");
+
+        setInterval(() => {
+            const now = Date.now();
+            const isLoginScreen = $("startScreen").style.display !== "none";
+            const isMainScreen = $("main").style.display !== "none";
+
+            if (now < EVENT_START) {
+                const diff = EVENT_START - now;
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                countdownText.innerText = `${hours}h ${minutes}m ${seconds}s`;
+
+                if (isLoginScreen) {
+                    countdownEl.style.bottom = "100px";
+                    countdownEl.style.fontSize = "32px";
+                    countdownEl.style.padding = "25px 50px";
+                } else if (isMainScreen) {
+                    countdownEl.style.bottom = "20px";
+                    countdownEl.style.fontSize = "18px";
+                    countdownEl.style.padding = "15px 30px";
+                }
+
+                countdownEl.style.display = "block";
+            } else if (now >= EVENT_START && now < EVENT_END) {
+                countdownText.innerText = "🔴 LIVE EVENT TOT 3 PM";
+                if (isLoginScreen) {
+                    countdownEl.style.bottom = "100px";
+                    countdownEl.style.fontSize = "32px";
+                    countdownEl.style.padding = "25px 50px";
+                } else if (isMainScreen) {
+                    countdownEl.style.bottom = "20px";
+                    countdownEl.style.fontSize = "18px";
+                    countdownEl.style.padding = "15px 30px";
+                }
+                countdownEl.style.display = "block";
+            } else {
+                countdownEl.style.display = "none";
+            }
+        }, 1000);
 
         // Apply title/icon on load
         applyTitleIcon();
