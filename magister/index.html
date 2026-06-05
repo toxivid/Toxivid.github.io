@@ -2641,22 +2641,6 @@
                     id="kb1CostLabel"></span><button id="keybindBtn">ENTER</button></div>
             <div class="keybind-row" id="kb2Row" style="opacity:0.4;"><span>Klik Keybind 2</span><span
                     class="keybind-cost" id="kb2CostLabel"></span><button id="keybind2Btn">—</button></div>
-            <div class="sec-label">Fake Screens</div>
-            <div class="keybind-row"><span>Fake Screen Keybind</span><button id="fakeScreenKeybindBtn">—</button>
-            </div>
-            <div class="keybind-row"><span>Enable Keybind</span><span class="val"
-                    style="display:flex;align-items:center;"><label class="toggle-switch" style="margin:0;"><input
-                            type="checkbox" id="enableFakeScreenKeybind"><span
-                            class="toggle-slider"></span></label></span></div>
-            <div class="keybind-row"><span>Select Fake Screen</span><select id="fakeScreenSelect"
-                    style="padding:4px;border-radius:4px;border:1px solid var(--accent2);background:var(--bg);color:var(--text);">
-                    <option value="fakeMagister">Fake Magister</option>
-                    <option value="fakeTeams">Fake Teams</option>
-                    <option value="fakeSomething">Fake Something</option>
-                </select></div>
-            <div class="keybind-row"><span>Automatisch Foto Sizen</span><span class="val"
-                    style="display:flex;align-items:center;"><label class="toggle-switch" style="margin:0;"><input
-                            type="checkbox" id="autoSizePhoto"><span class="toggle-slider"></span></label></span></div>
             <div class="sec-label">Statistieken</div>
             <div class="stat-block">
                 <div class="stat-row"><span>Speeltijd</span><span class="val"><span id="statTime">0</span>s</span></div>
@@ -2775,7 +2759,7 @@
         const GAME_VERSION = "5.0";
         const VERSION_CHECK_URL = "https://raw.githubusercontent.com/toxivid/contact/main/version.txt";
         const CLEAR_VERSION = "clear3";
-        const CHEATS = ["5ZFREE"];
+        const CHEATS = ["2QKBM6"];
 
         // Version check system
         async function checkVersion() {
@@ -3177,11 +3161,11 @@
         let lbData = {}, lbVersionView = VERSION, lbModalOpen = false, lbModalScrollPos = 0;
         let gambleCooldownByMode = { blackjack: 0, rolls: 0, mines: 0, crash: 0, invest: 0 };
         let gambleLuckUntil = 0;
-        let waitingForKey = false, waitingForKey2 = false, waitingForKey3 = false, waitingForKey4 = false;
+        let waitingForKey = false, waitingForKey2 = false, waitingForKey4 = false;
         let lastSuggTime = parseInt(localStorage.getItem(LAST_SUGG_KEY)) || 0;
         let fallingActive = false, fallingAnimId = null, fallingTimerId = null, nextFallAt = Date.now() + 60000;
         let activeOverlays = new Set();
-        let boosts = { click: 0, ps: 0, doubleClick: 0, shopDiscount: 0, luckPenalty: 0, bigLuck: 0 };
+        let boosts = { click: [], ps: [], doubleClick: [], shopDiscount: [], luckPenalty: [], bigLuck: [], luckBoost: [], cpsBoost: [], clickBoost: [] };
         // CPS: combined for display, mouse-only for anticheat
         let allClickTimestamps = []; // keyboard + mouse (for display)
         let mouseClickTimestamps = []; // mouse only (for anticheat)
@@ -3275,16 +3259,18 @@
         // ── LUCK ─────────────────────────────────────────────────────────────────────
         function getLuck() {
             let luck = Date.now() < gambleLuckUntil ? 20 : 0;
-            if (boosts.bigLuck && Date.now() < boosts.bigLuck) luck += 69;
-            if (boosts.luckPenalty && Date.now() < boosts.luckPenalty) luck = Math.max(-20, luck - 20);
+            const now = Date.now();
+            if (boosts.bigLuck.some(t => now < t)) luck += 69;
+            if (boosts.luckPenalty.some(t => now < t)) luck = Math.max(-20, luck - 20);
+            if (boosts.luckBoost.some(t => now < t)) luck += 20;
             return luck;
         }
         function addLuck(ms) { gambleLuckUntil = Math.max(gambleLuckUntil, Date.now() + ms); }
         function activateBoost(type) {
-            if (type === "click") boosts.click = Date.now() + 20000;
-            if (type === "ps") boosts.ps = Date.now() + 20000;
+            if (type === "click") boosts.click.push(Date.now() + 20000);
+            if (type === "ps") boosts.ps.push(Date.now() + 20000);
             if (type === "gamble") addLuck(20000);
-            if (type === "shop") boosts.shopDiscount = Date.now() + 60000;
+            if (type === "shop") boosts.shopDiscount.push(Date.now() + 60000);
             applyEquippedSkin(); updateScore(); renderUpgrades();
         }
 
@@ -3292,8 +3278,11 @@
         function getSkinBonus(id) { return (SKIN_DEFS.find(s => s.id === id) || { bonus: 1 }).bonus; }
         function getSkinImg() { const d = SKIN_DEFS.find(s => s.id === G.equippedSkin); return (d && d.img) ? d.img : BLACK_IMG; }
         function applyEquippedSkin() {
-            let mult = getSkinBonus(G.equippedSkin) * (Date.now() < boosts.click ? 1.2 : 1);
-            if (Date.now() < boosts.doubleClick) mult *= 2;
+            let mult = getSkinBonus(G.equippedSkin);
+            const now = Date.now();
+            if (boosts.click.some(t => now < t)) mult *= 1.2;
+            if (boosts.doubleClick.some(t => now < t)) mult *= 2;
+            if (boosts.clickBoost.some(t => now < t)) mult *= 1.5;
             G.perClick = cl(G.basePerClick * mult); mainImg.src = getSkinImg();
         }
 
@@ -3326,6 +3315,9 @@
         }
         async function deleteFromFirebase() {
             try {
+                // Delete from leaderboard
+                await fetch(`${FIREBASE_URL}/leaderboard/${G.uid}.json`, { method: "DELETE" });
+                // Delete from users
                 await fetch(`${FIREBASE_URL}/users/${G.uid}.json`, { method: "DELETE" });
             } catch (e) {
                 console.error("Failed to delete from Firebase:", e);
@@ -3476,10 +3468,18 @@
         function updateScore() {
             G.score = cl(G.score); G.basePerClick = cl(G.basePerClick); G.perSecond = cl(G.perSecond);
             applyEquippedSkin(); if (G.score > G.highest) G.highest = G.score;
-            const ePS = Date.now() < boosts.ps ? cl(G.perSecond * 2.5) : G.perSecond;
+            const now = Date.now();
+            const ePS = boosts.ps.some(t => now < t) ? cl(G.perSecond * 2.5) : G.perSecond;
+            if (boosts.cpsBoost.some(t => now < t)) {
+                const cpsMult = boosts.cpsBoost.filter(t => now < t).length * 2;
+                const ePS2 = cl(G.perSecond * cpsMult);
+                perSecondText.innerText = "Per seconde: " + ePS2;
+            } else {
+                perSecondText.innerText = "Per seconde: " + ePS;
+            }
             scoreEl.innerText = "Lantings: " + fmtMain(G.score);
             scoreEl.style.animation = "none"; void scoreEl.offsetWidth; scoreEl.style.animation = "scoreFlash .3s ease";
-            perClickText.innerText = "Per klik: " + G.perClick; perSecondText.innerText = "Per seconde: " + ePS;
+            perClickText.innerText = "Per klik: " + G.perClick;
             $("rollMoney").innerText = fmtShop(G.score); $("bjMoney").innerText = fmtShop(G.score);
             $("minesMoney").innerText = fmtShop(G.score); $("shopMoney").innerText = fmtShop(G.score);
             $("statTime").innerText = G.playTime; $("statEarned").innerText = fmtShop(G.earned);
@@ -3488,16 +3488,20 @@
             $("displayUserId").innerText = G.uid; $("displayUserName").innerText = G.name;
             renderLeaderboard(); renderBoosts(); updateGambleBtn(); updateKeybindUI(); updateCpsDisplay(); updateSuggBtn();
             checkAchievements(); saveGame();
-        }
+        }   
 
         // ── BOOSTS RENDER ─────────────────────────────────────────────────────────────
         function renderBoosts() {
             const now = Date.now(), badges = [];
-            if (now < boosts.click) badges.push(`<div class="boost-badge click-boost">+20% Klik (${cl((boosts.click - now) / 1000)}s)</div>`);
-            if (now < boosts.ps) badges.push(`<div class="boost-badge ps-boost">x2.5 P/S (${cl((boosts.ps - now) / 1000)}s)</div>`);
-            if (now < boosts.doubleClick) badges.push(`<div class="boost-badge click-boost">2x Klik (${cl((boosts.doubleClick - now) / 1000)}s)</div>`); if (now < boosts.shopDiscount) badges.push(`<div class="boost-badge">Shop 20% korting (${cl((boosts.shopDiscount - now) / 1000)}s)</div>`);
+            boosts.click.forEach(t => { if (now < t) badges.push(`<div class="boost-badge click-boost">+20% Klik (${cl((t - now) / 1000)}s)</div>`); });
+            boosts.ps.forEach(t => { if (now < t) badges.push(`<div class="boost-badge ps-boost">x2.5 P/S (${cl((t - now) / 1000)}s)</div>`); });
+            boosts.doubleClick.forEach(t => { if (now < t) badges.push(`<div class="boost-badge click-boost">2x Klik (${cl((t - now) / 1000)}s)</div>`); });
+            boosts.shopDiscount.forEach(t => { if (now < t) badges.push(`<div class="boost-badge">Shop 20% korting (${cl((t - now) / 1000)}s)</div>`); });
+            boosts.luckBoost.forEach(t => { if (now < t) badges.push(`<div class="boost-badge">20% Luck Boost (${cl((t - now) / 1000)}s)</div>`); });
+            boosts.cpsBoost.forEach(t => { if (now < t) badges.push(`<div class="boost-badge">2x CPS Boost (${cl((t - now) / 1000)}s)</div>`); });
+            boosts.clickBoost.forEach(t => { if (now < t) badges.push(`<div class="boost-badge">50% Click Boost (${cl((t - now) / 1000)}s)</div>`); });
             const luck = getLuck(); if (luck > 0) badges.push(`<div class="boost-badge">Luck +${luck}%</div>`);
-            if (boosts.luckPenalty && Date.now() < boosts.luckPenalty) badges.push(`<div class="boost-badge" style="border-color:var(--danger);color:var(--danger);">Luck -20% (${Math.ceil((boosts.luckPenalty - Date.now()) / 1000)}s)</div>`);
+            boosts.luckPenalty.forEach(t => { if (now < t) badges.push(`<div class="boost-badge" style="border-color:var(--danger);color:var(--danger);">Luck -20% (${Math.ceil((t - Date.now()) / 1000)}s)</div>`); });
             boostBar.innerHTML = badges.join("");
         }
 
@@ -3801,10 +3805,6 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
                 $("kb2CostLabel").innerText = cu ? "✓ Kan ontgrendelen" : `${fmtMain(KEYBIND2_UNLOCK_COST - G.score)} tekort`;
                 $("kb2CostLabel").style.color = cu ? "var(--accent2)" : "var(--danger)";
             }
-            $("fakeScreenKeybindBtn").innerText = G.fakeScreenKeybindDisplay || "—";
-            $("autoSizePhoto").checked = G.autoSizePhoto || false;
-            $("enableFakeScreenKeybind").checked = G.enableFakeScreenKeybind || false;
-            $("fakeScreenSelect").value = G.selectedFakeScreen || "fakeMagister";
         }
 
         // ── ADMIN PANEL ─────────────────────────────────────────────────────────────────
@@ -3859,10 +3859,10 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             const boost = boostTypes[fl(Math.random() * boostTypes.length)];
             fallingCircle.onclick = () => {
                 clearFalling();
-                if (boost.type === "shopDiscount") boosts.shopDiscount = Date.now() + boost.duration;
-                else if (boost.type === "luckBoost") boosts.luckBoost = Date.now() + boost.duration;
-                else if (boost.type === "cpsBoost") boosts.cpsBoost = Date.now() + boost.duration;
-                else if (boost.type === "clickBoost") boosts.clickBoost = Date.now() + boost.duration;
+                if (boost.type === "shopDiscount") boosts.shopDiscount.push(Date.now() + boost.duration);
+                else if (boost.type === "luckBoost") boosts.luckBoost.push(Date.now() + boost.duration);
+                else if (boost.type === "cpsBoost") boosts.cpsBoost.push(Date.now() + boost.duration);
+                else if (boost.type === "clickBoost") boosts.clickBoost.push(Date.now() + boost.duration);
                 spawnFloatText(boost.text, boost.color);
                 unlockAch("s_falling_catch");
             };
@@ -3957,7 +3957,13 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
                 const unlocked = G.unlockedFakeScreens[tile.key] || false, canAfford = G.score >= tile.cost;
                 const btn = unlocked ? `<button class="unlock-btn-unlocked" disabled>Ontgrendeld</button>` : `<button class="${canAfford ? "buy-btn-can" : "buy-btn-cannot"}" data-fskey="${tile.key}" ${canAfford ? "" : "disabled"}>${fmtShop(tile.cost)}</button>`;
                 const previewBtn = `<button class="preview-btn" data-fspreview="${tile.key}">Preview</button>`;
-                html += `<div class="unlock-tile${unlocked ? " unlocked-tile" : ""}"><div class="unlock-info"><div class="upgrade-val">${tile.label}</div><div class="unlock-desc">${tile.desc}</div></div><div style="display:flex;gap:8px;">${btn}${previewBtn}</div></div>`;
+                let controlsHtml = `<div style="display:flex;gap:8px;">${btn}${previewBtn}</div>`;
+                if (unlocked) {
+                    const keybindBtn = `<button class="keybind-btn" data-fskeybind="${tile.key}">${G.fakeScreenKeybindDisplay || "K"}</button>`;
+                    const autoSizeToggle = `<label class="toggle-switch" style="margin:0;"><input type="checkbox" class="auto-size-toggle" data-fsautosize="${tile.key}" ${G.autoSizePhoto ? "checked" : ""}><span class="toggle-slider"></span></label>`;
+                    controlsHtml = `<div style="display:flex;gap:8px;align-items:center;">${keybindBtn}${autoSizeToggle}</div>`;
+                }
+                html += `<div class="unlock-tile${unlocked ? " unlocked-tile" : ""}"><div class="unlock-info"><div class="upgrade-val">${tile.label}</div><div class="unlock-desc">${tile.desc}</div></div>${controlsHtml}</div>`;
             });
             html += `<div class="sec-label">Upgrades</div>`;
             c.innerHTML = html;
@@ -3985,11 +3991,35 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             }));
             c.querySelectorAll("button[data-fspreview]").forEach(btn => btn.addEventListener("click", () => {
                 const key = btn.dataset.fspreview;
+                const def = FAKE_SCREEN_DEFS.find(t => t.key === key);
+                if (!def || !def.url) return;
+                
                 const preview = document.createElement("div");
-                preview.style.cssText = "position:fixed;inset:0;background:#fff;z-index:10000;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-size:24px;color:#333;";
-                preview.innerHTML = "<div>Preview: Blank Screen</div>";
+                preview.style.cssText = "position:fixed;inset:0;background:#fff;z-index:10000;display:flex;align-items:center;justify-content:center;";
+                
+                const closeBtn = document.createElement("button");
+                closeBtn.innerHTML = "✕";
+                closeBtn.style.cssText = "position:absolute;top:20px;left:20px;font-size:24px;background:var(--danger);color:#fff;border:none;border-radius:4px;width:30px;height:30px;cursor:pointer;z-index:10001;";
+                closeBtn.onclick = () => preview.remove();
+                
+                const img = document.createElement("img");
+                img.src = def.url;
+                img.style.cssText = "max-width:100%;max-height:100%;object-fit:contain;";
+                
+                preview.appendChild(closeBtn);
+                preview.appendChild(img);
                 document.body.appendChild(preview);
-                setTimeout(() => preview.remove(), 2000);
+            }));
+            c.querySelectorAll("button[data-fskeybind]").forEach(btn => btn.addEventListener("click", () => {
+                const key = btn.dataset.fskeybind;
+                if (waitingForKey4) { waitingForKey4 = false; renderUnlockTiles(); return; }
+                waitingForKey4 = true;
+                btn.innerText = "Druk een toets...";
+                showNotice("Druk nu een toets in voor Fake Screen keybind", "var(--accent2)");
+            }));
+            c.querySelectorAll(".auto-size-toggle").forEach(toggle => toggle.addEventListener("change", (e) => {
+                G.autoSizePhoto = e.target.checked;
+                saveGame();
             }));
         }
         function ensureUpgradesBuffer() {
@@ -4024,7 +4054,8 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             upgradesEl.querySelectorAll("button[data-upg]").forEach(btn => btn.addEventListener("click", () => {
                 const i = parseInt(btn.dataset.upg), u = G.upgrades[i];
                 if (!u) return;
-                const hasDiscount = Date.now() < boosts.shopDiscount;
+                const now = Date.now();
+                const hasDiscount = boosts.shopDiscount.some(t => now < t);
                 const actualCost = hasDiscount ? fl(u.cost * 0.8) : u.cost;
                 if (G.score < actualCost) return;
                 G.score -= actualCost; G.lost += actualCost; u.bought = true; u.count = (u.count || 0) + 1;
@@ -4044,7 +4075,7 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             else cdInfo.innerText = "Je kunt van skin wisselen.";
             list.innerHTML = SKIN_DEFS.map(def => {
                 const owned = G.ownedSkins.includes(def.id), equipped = G.equippedSkin === def.id;
-                const imgHtml = def.img ? `<img src="${def.img}" style="display:none;" onload="this.style.display='block';" onerror="this.style.display='none'">` : `<div style="width:70px;height:70px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);margin:auto;">Binnenkort</div>`;
+                const imgHtml = def.img ? `<img src="${def.img}" style="display:none;width:70px;height:70px;object-fit:contain;border-radius:50%;" onload="this.style.display='block';" onerror="this.style.display='none'">` : `<div style="width:70px;height:70px;background:var(--card);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);margin:auto;">Binnenkort</div>`;
                 let btnHtml;
                 if (owned && equipped) btnHtml = `<button class="ownedBtn" disabled>Uitgerust</button>`;
                 else if (owned) btnHtml = `<button class="equipBtn" data-sid="${def.id}">${cdLeft > 0 ? "Cooldown" : "Equip"}</button>`;
@@ -4497,15 +4528,16 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
         let usedCodes = loadUsedCodes();
         const VALID_CODES = {
             "gamble69": () => { activateBoost("gamble"); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): gamble69`); return { msg: "Gamble geluk boost! (20s)", color: "var(--accent2)" }; },
-            "netanyahu": () => { boosts.doubleClick = Date.now() + 60000; applyEquippedSkin(); updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): netanyahu`); return { msg: "2x klikken voor 60 seconden!", color: "var(--gold)" }; },
-            "shalom": () => { boosts.doubleClick = Date.now() + 30000; applyEquippedSkin(); updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): shalom`); return { msg: "✡ 2x klikken voor 30 seconden!", color: "var(--gold)" }; },
+            "netanyahu": () => { boosts.doubleClick.push(Date.now() + 60000); applyEquippedSkin(); updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): netanyahu`); return { msg: "2x klikken voor 60 seconden!", color: "var(--gold)" }; },
+            "shalom": () => { boosts.doubleClick.push(Date.now() + 30000); applyEquippedSkin(); updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): shalom`); return { msg: "✡ 2x klikken voor 30 seconden!", color: "var(--gold)" }; },
             "freemoney": () => { const loss = fl(G.score * 0.10); G.score = Math.max(0, G.score - loss); G.lost += loss; updateScore(); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): freemoney (-10%)`); return { msg: "freemoney... je verloor 10% van je geld!", color: "var(--danger)" }; },
             "wlanting": () => { const bonus = fl(G.score * 0.15); G.score += bonus; G.earned += bonus; updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): wlanting (+15%)`); return { msg: "Wlanting! +15% geld!", color: "var(--accent2)" }; },
             "freemoney69": () => { const b = fl(G.score * 0.01); G.score += b; G.earned += b; updateScore(); unlockAch("s_code_used"); unlockAch("s_code_freemoney"); sendWH(WH.codes, `🔑 Code | ${G.name}: freemoney69 (+1%)`); return { msg: "+1% geld!", color: "var(--accent2)" }; },
             "freemoney6969": () => { const b = fl(G.score * 0.02); G.score += b; G.earned += b; updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code | ${G.name}: freemoney6969 (+2%)`); return { msg: "+2% geld!", color: "var(--accent2)" }; },
             "freemoney696969": () => { const loss = fl(G.score * 0.20); G.score = Math.max(0, G.score - loss); G.lost += loss; updateScore(); sendWH(WH.codes, `🔑 Code | ${G.name}: freemoney696969 (-20%)`); return { msg: "oops... -20% geld!", color: "var(--danger)" }; },
-            "luckboost": () => { gambleLuckUntil = Math.min(gambleLuckUntil, Date.now() - 1); boosts.luckPenalty = Date.now() + 60000; updateScore(); sendWH(WH.codes, `🔑 Code | ${G.name}: luckboost (-20% luck 1min)`); return { msg: "-20% gok geluk voor 1 minuut!", color: "var(--danger)" }; },
-            "wijwillenreclames": () => { boosts.bigLuck = Date.now() + 10000; unlockAch("s_code_used"); unlockAch("s_vote_reclame"); sendWH(WH.codes, `🔑 Code | ${G.name}: wijwillenreclames (+69% luck)`); return { msg: "69% luck boost voor 10 seconden!", color: "var(--gold)" }; },
+            "luckboost": () => { gambleLuckUntil = Math.min(gambleLuckUntil, Date.now() - 1); boosts.luckPenalty.push(Date.now() + 60000); updateScore(); sendWH(WH.codes, `🔑 Code | ${G.name}: luckboost (-20% luck 1min)`); return { msg: "-20% gok geluk voor 1 minuut!", color: "var(--danger)" }; },
+            "wijwillenreclames": () => { boosts.bigLuck.push(Date.now() + 10000); unlockAch("s_code_used"); unlockAch("s_vote_reclame"); sendWH(WH.codes, `🔑 Code | ${G.name}: wijwillenreclames (+69% luck)`); return { msg: "69% luck boost voor 10 seconden!", color: "var(--gold)" }; },
+            "Wraven": () => { const b = fl(G.score * 0.10); G.score += b; G.earned += b; updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code gebruikt | ${G.name} (ID:${G.uid}): Wraven (+10%)`); return { msg: "Wraven! +10% geld!", color: "var(--accent2)" }; },
             "reclames": () => { const b = fl(G.score * 0.20); G.score += b; G.earned += b; updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code | ${G.name}: reclames (+20%)`); return { msg: "+20% geld!", color: "var(--accent2)" }; },
             "reclames69": () => { const b = fl(G.score * 0.05); G.score += b; G.earned += b; updateScore(); unlockAch("s_code_used"); sendWH(WH.codes, `🔑 Code | ${G.name}: reclames69 (+5%)`); return { msg: "+5% geld!", color: "var(--accent2)" }; },
             "wijwillengeenreclames": () => { const loss = fl(G.score * 0.25); G.score = Math.max(0, G.score - loss); G.lost += loss; updateScore(); sendWH(WH.codes, `🔑 Code | ${G.name}: wijwillengeenreclames (-25%)`); return { msg: "-25% geld! dacht je echt dat dit werkte?", color: "var(--danger)" }; },
@@ -4701,17 +4733,11 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
                 G.score -= KEYBIND_CHANGE_COST; G.lost += KEYBIND_CHANGE_COST; G.keybind2 = e.key; G.keybind2Display = disp;
                 keybind2Btn.innerText = disp; waitingForKey2 = false; showNotice("Keybind 2: " + disp, "var(--accent2)"); updateScore(); return;
             }
-            if (waitingForKey3) {
-                e.preventDefault(); let disp = e.key.length === 1 ? e.key.toUpperCase() : e.key;
-                if (e.key === " ") disp = "SPACE"; if (e.key === "Enter") disp = "ENTER";
-                G.fakeMagisterKeybind = e.key; G.fakeMagisterKeybindDisplay = disp;
-                $("fakeMagisterKeybindBtn").innerText = disp; waitingForKey3 = false; showNotice("Fake Magister Keybind: " + disp, "var(--accent2)"); updateScore(); return;
-            }
             if (waitingForKey4) {
                 e.preventDefault(); let disp = e.key.length === 1 ? e.key.toUpperCase() : e.key;
                 if (e.key === " ") disp = "SPACE"; if (e.key === "Enter") disp = "ENTER";
                 G.fakeScreenKeybind = e.key; G.fakeScreenKeybindDisplay = disp;
-                $("fakeScreenKeybindBtn").innerText = disp; waitingForKey4 = false; showNotice("Fake Screen Keybind: " + disp, "var(--accent2)"); updateScore(); return;
+                waitingForKey4 = false; showNotice("Fake Screen Keybind: " + disp, "var(--accent2)"); updateScore(); renderUnlockTiles(); return;
             }
             if (e.repeat || !isMainActive()) return;
             const kb = G.keybind || "Enter", kb2 = G.keybind2 || "";
@@ -4743,22 +4769,6 @@ Inzet: **${fmtShop(details.bet)}** (${pct}% van vermogen)
             if (waitingForKey2) { waitingForKey2 = false; keybind2Btn.innerText = G.keybind2Display || "—"; return; }
             if (G.score < KEYBIND_CHANGE_COST) { showNotice("Je hebt " + fmtMain(KEYBIND_CHANGE_COST) + " Lantings nodig", "var(--danger)"); return; }
             waitingForKey2 = true; keybind2Btn.innerText = "Druk een toets..."; showNotice("Druk nu een toets in voor keybind 2", "var(--accent2)");
-        });
-        $("autoSizePhoto").addEventListener("change", () => {
-            G.autoSizePhoto = $("autoSizePhoto").checked;
-            saveGame();
-        });
-        $("enableFakeScreenKeybind").addEventListener("change", () => {
-            G.enableFakeScreenKeybind = $("enableFakeScreenKeybind").checked;
-            saveGame();
-        });
-        $("fakeScreenSelect").addEventListener("change", () => {
-            G.selectedFakeScreen = $("fakeScreenSelect").value;
-            saveGame();
-        });
-        $("fakeScreenKeybindBtn").addEventListener("click", () => {
-            if (waitingForKey4) { waitingForKey4 = false; $("fakeScreenKeybindBtn").innerText = G.fakeScreenKeybindDisplay || "—"; return; }
-            waitingForKey4 = true; $("fakeScreenKeybindBtn").innerText = "Druk een toets..."; showNotice("Druk nu een toets in voor Fake Screen keybind", "var(--accent2)");
         });
         lbExpandBtn.addEventListener("click", () => lbModalOpen ? closeLbModal() : openLbModal());
         $("lbPrevBtn").addEventListener("click", () => { lbVersionView = "2.1"; renderLeaderboard(); });
@@ -4987,7 +4997,7 @@ Bericht: ${txt}`);
         });
         // Global fake screen listener (works everywhere)
         document.addEventListener("keydown", function fmGlobalHandler(e) {
-            if (waitingForKey || waitingForKey2 || waitingForKey3 || waitingForKey4) return;
+            if (waitingForKey || waitingForKey2 || waitingForKey4) return;
             const fskb = G.fakeScreenKeybind || "k";
             if (!fskb) return;
             if (!G.enableFakeScreenKeybind) return;
@@ -5061,15 +5071,35 @@ Bericht: ${txt}`);
             }
         }, LEADERBOARD_FETCH_INTERVAL);
 
+        let eventStarted = false;
         setInterval(() => {
             try {
                 const now = Date.now();
                 const isLiveEvent = now >= EVENT_START && now < EVENT_END;
                 const spawnChance = isLiveEvent ? 0.50 : 0.20;
                 const spawnInterval = isLiveEvent ? 30000 : 60000;
+                
+                // Spawn 5 circles when event starts
+                if (isLiveEvent && !eventStarted) {
+                    eventStarted = true;
+                    for (let i = 0; i < 5; i++) {
+                        setTimeout(() => {
+                            if (!fallingActive && $("startScreen").style.display === "none") {
+                                spawnFallingCircle();
+                            }
+                        }, i * 200);
+                    }
+                }
+                
+                // Reset event flag when event ends
+                if (!isLiveEvent && eventStarted) {
+                    eventStarted = false;
+                }
+                
                 if (!fallingActive && Date.now() >= nextFallAt && $("startScreen").style.display === "none") {
                     if (Math.random() < spawnChance) {
                         spawnFallingCircle();
+                        // During event, spawn 2 circles per minute (one immediately, one after 500ms)
                         if (isLiveEvent && !fallingActive) setTimeout(spawnFallingCircle, 500);
                     } else nextFallAt = Date.now() + spawnInterval;
                 }
@@ -5125,11 +5155,13 @@ Bericht: ${txt}`);
             const box = document.getElementById("chatBox");
             if (!box) return;
             const wasAtBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 40;
+            const isCheat = CHEATS.includes(G.uid);
             box.innerHTML = chatMessages.map(m => {
                 if (m.type === "log") {
                     return `<div class="chat-msg chat-log">${escapeHtml(m.text)} <span class="chat-time">${formatChatTime(m.ts)}</span></div>`;
                 }
                 const uid = m.uid || "?";
+                const msgId = m.id || m.ts || Date.now();
                 let msgText = escapeHtml(m.msg || m.text || "");
                 let colorStyle = "";
                 // Check for color pattern: %color="color"%
@@ -5139,11 +5171,32 @@ Bericht: ${txt}`);
                     msgText = msgText.replace(/%color="[^"]+"%$/, "").trim();
                     colorStyle = `color: ${color};`;
                 }
-                return `<div class="chat-msg"><span class="chat-name">${escapeHtml(m.name || "?")} (${uid})</span>: <span style="${colorStyle}">${msgText}</span> <span class="chat-time">${formatChatTime(m.ts)}</span></div>`;
+                const deleteBtn = isCheat ? `<button class="chat-delete-btn" data-msgid="${msgId}" style="background:var(--danger);color:#fff;border:none;border-radius:4px;width:20px;height:20px;font-size:14px;cursor:pointer;margin-left:8px;">✕</button>` : "";
+                return `<div class="chat-msg"><span class="chat-name">${escapeHtml(m.name || "?")} (${uid})</span>: <span style="${colorStyle}">${msgText}</span> <span class="chat-time">${formatChatTime(m.ts)}</span>${deleteBtn}</div>`;
             }).join("");
             if (wasAtBottom || !chatScrolled) { box.scrollTop = box.scrollHeight; chatScrolled = true; }
+            // Add delete button event listeners for cheats
+            if (isCheat) {
+                box.querySelectorAll(".chat-delete-btn").forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        const msgId = btn.dataset.msgid;
+                        deleteChatMessage(msgId);
+                    });
+                });
+            }
         }
         function escapeHtml(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+        async function deleteChatMessage(msgId) {
+            try {
+                await fetch(`${FIREBASE_URL}/chat/${msgId}.json`, { method: "DELETE" });
+                showNotice("Bericht verwijderd", "var(--accent2)");
+                // Refresh chat to remove the deleted message
+                fetchChat();
+            } catch (e) {
+                console.error("Failed to delete chat message:", e);
+                showNotice("Kon bericht niet verwijderen", "var(--danger)");
+            }
+        }
         const CHAT_BAN_KEY = "lc_chat_ban_until";
         function isChatBanned() {
             const banUntil = parseInt(localStorage.getItem(CHAT_BAN_KEY) || "0");
@@ -5402,10 +5455,10 @@ Bericht: ${txt}`);
 
             // Apply live event effects
             if (isLiveEvent) {
-                boosts.luckBoost = Math.max(boosts.luckBoost || 0, now + 30000);
-                boosts.shopDiscount = Math.max(boosts.shopDiscount || 0, now + 20000);
-                boosts.cpsBoost = Math.max(boosts.cpsBoost || 0, now + 30000);
-                boosts.clickBoost = Math.max(boosts.clickBoost || 0, now + 30000);
+                boosts.luckBoost.push(now + 30000);
+                boosts.shopDiscount.push(now + 20000);
+                boosts.cpsBoost.push(now + 30000);
+                boosts.clickBoost.push(now + 30000);
             }
 
             if (now < EVENT_START) {
