@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seedlands — Infinite World</title>
+<style>
+  :root{
+    --ink:#0f1a14;
+    --panel:#14231b;
+    --panel-2:#1c3126;
+    --accent:#8fd14f;
+    --accent-2:#e8b04b;
+    --sand:#dcc48a;
+    --water:#3a7bc4;
+    --text:#eaf2e6;
+    --muted:#9db299;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;background:var(--ink);color:var(--text);
+    font-family:'Trebuchet MS',Verdana,sans-serif;overflow:hidden;}
+
+  /* ---------- START SCREEN ---------- */
+  #startScreen{
+    position:fixed;inset:0;display:flex;align-items:center;justify-content:center;
+    background:
+      radial-gradient(circle at 20% 20%, #1c3126 0%, transparent 45%),
+      radial-gradient(circle at 80% 70%, #223d2c 0%, transparent 50%),
+      linear-gradient(160deg,#0f1a14,#111f17 60%,#0c1610);
+    z-index:50;
+  }
+  .startCard{
+    width:min(560px,92vw);
+    background:rgba(20,35,27,0.9);
+    border:1px solid #2c4636;
+    border-radius:14px;
+    padding:32px 30px 26px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+  }
+  .startCard h1{
+    margin:0 0 4px;font-size:30px;letter-spacing:1px;color:var(--accent);
+    text-shadow:0 0 18px rgba(143,209,79,0.35);
+  }
+  .startCard p.sub{margin:0 0 22px;color:var(--muted);font-size:14px;}
+  .seedRow{display:flex;gap:8px;margin-bottom:10px;}
+  #seedInput{
+    flex:1;padding:12px 14px;border-radius:8px;border:1px solid #35543f;
+    background:#0f1c15;color:var(--text);font-size:15px;outline:none;
+  }
+  #seedInput:focus{border-color:var(--accent);}
+  button{
+    cursor:pointer;border:none;border-radius:8px;font-weight:600;
+    font-family:inherit;transition:transform .08s ease, filter .15s ease;
+  }
+  button:active{transform:scale(0.96);}
+  .btnGhost{
+    padding:12px 14px;background:#20362a;color:var(--text);border:1px solid #35543f;
+  }
+  .btnGhost:hover{filter:brightness(1.2);}
+  .btnPrimary{
+    width:100%;padding:13px 14px;background:linear-gradient(180deg,var(--accent),#6fb534);
+    color:#0f1a0c;font-size:16px;margin-top:6px;
+  }
+  .btnPrimary:hover{filter:brightness(1.08);}
+  .startCard label{font-size:12px;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;}
+  #seedList{
+    margin-top:18px;max-height:190px;overflow-y:auto;border-top:1px solid #24382c;padding-top:12px;
+  }
+  #seedList::-webkit-scrollbar{width:6px;}
+  #seedList::-webkit-scrollbar-thumb{background:#2c4636;border-radius:3px;}
+  .seedEntry{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:9px 10px;border-radius:8px;margin-bottom:6px;background:#152420;
+    border:1px solid #223a2b;cursor:pointer;font-size:13px;
+  }
+  .seedEntry:hover{background:#1c3327;border-color:var(--accent);}
+  .seedEntry .sName{font-weight:600;color:var(--accent-2);}
+  .seedEntry .sMeta{color:var(--muted);font-size:11px;}
+  .loadingRow{color:var(--muted);font-size:12px;padding:6px 2px;}
+  .startFoot{margin-top:14px;color:var(--muted);font-size:11px;line-height:1.5;}
+
+  /* ---------- GAME SCREEN ---------- */
+  #gameScreen{position:fixed;inset:0;display:none;}
+  canvas{display:block;background:#1a2b20;}
+  #world{position:absolute;top:0;left:0;width:100%;height:100%;cursor:crosshair;}
+
+  #topBar{
+    position:absolute;top:10px;left:10px;display:flex;gap:8px;align-items:center;
+    background:rgba(15,26,20,0.75);border:1px solid #2c4636;border-radius:10px;
+    padding:8px 12px;font-size:12px;color:var(--muted);backdrop-filter:blur(3px);
+  }
+  #topBar b{color:var(--accent-2);}
+  #topBar button{padding:5px 9px;font-size:11px;background:#20362a;color:var(--text);border:1px solid #35543f;}
+
+  #minimapWrap{
+    position:absolute;top:10px;right:10px;background:rgba(15,26,20,0.75);
+    border:1px solid #2c4636;border-radius:10px;padding:6px;backdrop-filter:blur(3px);
+  }
+  #minimap{display:block;border-radius:6px;background:#0c1610;}
+  #minimapHint{font-size:10px;color:var(--muted);text-align:center;margin-top:4px;}
+
+  #hotbar{
+    position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+    display:flex;gap:8px;background:rgba(15,26,20,0.85);
+    border:1px solid #2c4636;border-radius:12px;padding:8px;backdrop-filter:blur(3px);
+  }
+  .slot{
+    width:56px;height:56px;border-radius:9px;background:#182a20;border:2px solid #2c4636;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    position:relative;color:var(--text);font-size:22px;user-select:none;
+  }
+  .slot .num{position:absolute;top:2px;left:5px;font-size:9px;color:var(--muted);}
+  .slot .badge{
+    position:absolute;bottom:2px;right:4px;font-size:10px;background:#0f1c15;
+    padding:1px 4px;border-radius:5px;color:var(--accent-2);border:1px solid #2c4636;
+  }
+  .slot.active{border-color:var(--accent);box-shadow:0 0 12px rgba(143,209,79,0.5);}
+  .slot .name{font-size:8px;color:var(--muted);margin-top:2px;}
+
+  #mapOverlay{
+    position:absolute;inset:0;background:rgba(6,12,9,0.92);display:none;
+    align-items:center;justify-content:center;flex-direction:column;z-index:20;
+  }
+  #mapOverlay canvas{border:1px solid #2c4636;border-radius:10px;cursor:grab;}
+  #mapOverlay canvas:active{cursor:grabbing;}
+  #mapOverlay .mapTitle{margin-bottom:10px;font-size:14px;color:var(--muted);}
+  #mapOverlay .mapTitle b{color:var(--accent);}
+
+  #toast{
+    position:absolute;bottom:88px;left:50%;transform:translateX(-50%);
+    background:rgba(20,35,27,0.9);border:1px solid #2c4636;border-radius:8px;
+    padding:8px 14px;font-size:12px;color:var(--accent-2);opacity:0;
+    transition:opacity .25s ease;pointer-events:none;
+  }
+  #toast.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- ================= START SCREEN ================= -->
+<div id="startScreen">
+  <div class="startCard">
+    <h1>🌱 Seedlands</h1>
+    <p class="sub">An infinite world generated entirely from a seed. Same seed, same world — forever.</p>
+
+    <label for="seedInput">World seed</label>
+    <div class="seedRow">
+      <input id="seedInput" type="text" placeholder="type any text or number…" maxlength="64" autocomplete="off">
+      <button class="btnGhost" id="randomSeedBtn" title="Generate a random seed">🎲</button>
+    </div>
+    <button class="btnPrimary" id="playBtn">Play</button>
+
+    <div id="seedList">
+      <div class="loadingRow" id="seedListStatus">Loading previously played worlds…</div>
+    </div>
+    <div class="startFoot">Move: WASD / Arrows · Hotbar: 1–5 · Map: M · Seeds &amp; coordinates sync to Firebase.</div>
+  </div>
+</div>
+
+<!-- ================= GAME SCREEN ================= -->
+<div id="gameScreen">
+  <canvas id="world"></canvas>
+
+  <div id="topBar">
+    <span>Seed: <b id="seedLabel">—</b></span>
+    <span id="coordLabel">(0, 0)</span>
+    <button id="backBtn">⟵ Menu</button>
+  </div>
+
+  <div id="minimapWrap">
+    <canvas id="minimap" width="150" height="150"></canvas>
+    <div id="minimapHint">press M for full map</div>
+  </div>
+
+  <div id="hotbar"></div>
+
+  <div id="toast"></div>
+
+  <div id="mapOverlay">
+    <div class="mapTitle">Explored world — <b id="mapSeedLabel"></b> · drag to pan · M / Esc to close</div>
+    <canvas id="fullMap" width="720" height="480"></canvas>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* =====================================================================
+   SEEDED RANDOMNESS  (Math.random is never used anywhere in this file)
+   ===================================================================== */
+
+// Hash an arbitrary string into a stream of 32-bit integers (xmur3)
+function xmur3(str){
+  let h = 1779033703 ^ str.length;
+  for(let i=0;i<str.length;i++){
+    h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+    h = (h << 13) | (h >>> 19);
+  }
+  return function(){
+    h = Math.imul(h ^ (h >>> 16), 2246822507);
+    h = Math.imul(h ^ (h >>> 13), 3266489909);
+    h ^= h >>> 16;
+    return h >>> 0;
+  };
+}
+
+// mulberry32: fast seeded PRNG, returns fn() -> float in [0,1)
+function mulberry32(seed){
+  let a = seed >>> 0;
+  return function(){
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Non-Math.random source for one-off ids (uses crypto, not Math.random)
+function secureRandomId(){
+  if(window.crypto && crypto.getRandomValues){
+    const buf = new Uint32Array(4);
+    crypto.getRandomValues(buf);
+    return Array.from(buf).map(n=>n.toString(36)).join('');
+  }
+  return 'p' + Date.now().toString(36) + performance.now().toString(36).replace('.','');
+}
+
+/* =====================================================================
+   PERLIN-STYLE 2D NOISE, permutation table built with a seeded PRNG
+   ===================================================================== */
+class Noise2D{
+  constructor(seedInt){
+    const rand = mulberry32(seedInt);
+    const p = new Uint8Array(256);
+    for(let i=0;i<256;i++) p[i]=i;
+    for(let i=255;i>0;i--){
+      const j = Math.floor(rand()*(i+1));
+      const tmp=p[i]; p[i]=p[j]; p[j]=tmp;
+    }
+    this.perm = new Uint8Array(512);
+    for(let i=0;i<512;i++) this.perm[i]=p[i & 255];
+  }
+  static fade(t){ return t*t*t*(t*(t*6-15)+10); }
+  static lerp(a,b,t){ return a + t*(b-a); }
+  static grad(hash,x,y){
+    const h = hash & 3;
+    const u = h < 2 ? x : y;
+    const v = h < 2 ? y : x;
+    return ((h & 1) ? -u : u) + ((h & 2) ? -2*v : 2*v);
+  }
+  noise(x,y){
+    const X = Math.floor(x) & 255, Y = Math.floor(y) & 255;
+    x -= Math.floor(x); y -= Math.floor(y);
+    const u = Noise2D.fade(x), v = Noise2D.fade(y);
+    const perm = this.perm;
+    const aa = perm[perm[X]+Y],     ba = perm[perm[X+1]+Y];
+    const ab = perm[perm[X]+Y+1],   bb = perm[perm[X+1]+Y+1];
+    return Noise2D.lerp(
+      Noise2D.lerp(Noise2D.grad(aa,x,y),   Noise2D.grad(ba,x-1,y),   u),
+      Noise2D.lerp(Noise2D.grad(ab,x,y-1), Noise2D.grad(bb,x-1,y-1), u),
+      v
+    );
+  }
+  fbm(x,y,octaves){
+    let val=0, amp=1, freq=1, norm=0;
+    for(let i=0;i<octaves;i++){
+      val += this.noise(x*freq,y*freq)*amp;
+      norm += amp;
+      amp *= 0.5; freq *= 2;
+    }
+    return val/norm;
+  }
+}
+
+/* =====================================================================
+   WORLD GENERATION  — pure function of (worldX, worldY, seed)
+   ===================================================================== */
+const TILE = 32;
+const CHUNK = 16; // tiles per chunk, used only for exploration/minimap bookkeeping
+
+const World = {
+  seedStr: '',
+  seedKey: '',
+  elev: null, moist: null, tree: null, detail: null,
+  modified: new Map(), // "x,y" -> {type?, hasTree?}  (player edits, persists client-side)
+
+  init(seedStr){
+    this.seedStr = seedStr;
+    const next = xmur3('sw::'+seedStr);
+    this.elev   = new Noise2D(next());
+    this.moist  = new Noise2D(next());
+    this.tree   = new Noise2D(next());
+    this.detail = new Noise2D(next());
+    const keyHash = next() ^ next();
+    this.seedKey = (keyHash >>> 0).toString(36);
+    this.modified.clear();
+  },
+
+  getTile(wx, wy){
+    const key = wx+','+wy;
+    const override = this.modified.get(key);
+
+    let e = this.elev.fbm(wx*0.045, wy*0.045, 3);
+    let m = this.moist.fbm(wx*0.05 + 100, wy*0.05 + 100, 2);
+    let t = this.tree.noise(wx*0.14 + 50, wy*0.14 - 50);
+    let d = this.detail.noise(wx*0.22, wy*0.22); // shading detail
+
+    let type, hasTree = false;
+    if(e < -0.18){
+      type = 'water';
+    } else if(m < -0.22){
+      type = 'sand';
+    } else {
+      type = 'grass';
+      if(m > 0.02 && t > 0.12) hasTree = true;
+    }
+
+    if(override){
+      if(override.type) type = override.type;
+      if(override.hasTree !== undefined) hasTree = override.hasTree;
+    }
+    if(type === 'water') hasTree = false;
+
+    return {type, hasTree, shade: d};
+  },
+
+  setOverride(wx, wy, patch){
+    const key = wx+','+wy;
+    const existing = this.modified.get(key) || {};
+    this.modified.set(key, Object.assign(existing, patch));
+  }
+};
+
+/* =====================================================================
+   PLAYER
+   ===================================================================== */
+const Player = {
+  x: 0, y: 0,      // world pixel coords
+  speed: 3.4,
+  dir: 'down',
+  size: 22,
+  keys: {},
+  wood: 0,
+  saplings: 5,
+
+  spawn(){
+    // find a walkable (non-water) tile near origin
+    let r = 0;
+    while(r < 200){
+      for(let a=-r; a<=r; a++){
+        const t = World.getTile(a, r === 0 ? 0 : r);
+        if(t.type !== 'water'){ this.x=a*TILE+TILE/2; this.y=(r===0?0:r)*TILE+TILE/2; return; }
+      }
+      r++;
+    }
+    this.x = 0; this.y = 0;
+  },
+
+  tileBlocked(px, py){
+    const tx = Math.floor(px / TILE), ty = Math.floor(py / TILE);
+    return World.getTile(tx, ty).type === 'water';
+  },
+
+  update(){
+    let dx=0, dy=0;
+    if(this.keys['w']||this.keys['arrowup']) dy -= 1;
+    if(this.keys['s']||this.keys['arrowdown']) dy += 1;
+    if(this.keys['a']||this.keys['arrowleft']) dx -= 1;
+    if(this.keys['d']||this.keys['arrowright']) dx += 1;
+
+    if(dx===0 && dy===0) return;
+    const len = Math.sqrt(dx*dx+dy*dy);
+    dx = dx/len*this.speed; dy = dy/len*this.speed;
+
+    if(Math.abs(dx) > Math.abs(dy)) this.dir = dx>0?'right':'left';
+    else if(dy!==0) this.dir = dy>0?'down':'up';
+
+    const half = this.size/2;
+    const nx = this.x + dx;
+    if(!this.tileBlocked(nx-half, this.y-half) && !this.tileBlocked(nx+half, this.y-half) &&
+       !this.tileBlocked(nx-half, this.y+half) && !this.tileBlocked(nx+half, this.y+half)){
+      this.x = nx;
+    }
+    const ny = this.y + dy;
+    if(!this.tileBlocked(this.x-half, ny-half) && !this.tileBlocked(this.x+half, ny-half) &&
+       !this.tileBlocked(this.x-half, ny+half) && !this.tileBlocked(this.x+half, ny+half)){
+      this.y = ny;
+    }
+  }
+};
+
+/* =====================================================================
+   EXPLORATION TRACKING (for minimap / full map fog of war)
+   ===================================================================== */
+const Explored = {
+  chunks: new Map(), // "cx,cy" -> dominant tile type (sampled)
+  mark(chunkX, chunkY){
+    const key = chunkX+','+chunkY;
+    if(!this.chunks.has(key)){
+      const t = World.getTile(chunkX*CHUNK + CHUNK/2 | 0, chunkY*CHUNK + CHUNK/2 | 0);
+      this.chunks.set(key, t.type);
+    }
+  },
+  markAround(worldPxX, worldPxY, radiusChunks){
+    const cx = Math.floor(worldPxX/TILE/CHUNK);
+    const cy = Math.floor(worldPxY/TILE/CHUNK);
+    for(let y=cy-radiusChunks;y<=cy+radiusChunks;y++)
+      for(let x=cx-radiusChunks;x<=cx+radiusChunks;x++)
+        this.mark(x,y);
+  }
+};
+
+/* =====================================================================
+   HOTBAR
+   ===================================================================== */
+const HOTBAR_ITEMS = [
+  {name:'Hand',  icon:'✋', action:'none'},
+  {name:'Axe',   icon:'🪓', action:'chop'},
+  {name:'Sapling',icon:'🌱', action:'plant'},
+  {name:'Shovel',icon:'⛏️', action:'terraform'},
+  {name:'Bucket',icon:'🪣', action:'water'},
+];
+let activeSlot = 1;
+
+function renderHotbar(){
+  const bar = document.getElementById('hotbar');
+  bar.innerHTML = '';
+  HOTBAR_ITEMS.forEach((item, i)=>{
+    const slot = document.createElement('div');
+    slot.className = 'slot' + (i+1===activeSlot ? ' active':'');
+    let badge = '';
+    if(item.action==='chop') badge = Player.wood;
+    if(item.action==='plant') badge = Player.saplings;
+    slot.innerHTML = `<span class="num">${i+1}</span>${item.icon}<span class="name">${item.name}</span>` +
+      (badge!==''?`<span class="badge">${badge}</span>`:'');
+    slot.addEventListener('click', ()=>{ activeSlot=i+1; renderHotbar(); });
+    bar.appendChild(slot);
+  });
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._h);
+  showToast._h = setTimeout(()=>t.classList.remove('show'), 1400);
+}
+
+/* =====================================================================
+   RENDERING
+   ===================================================================== */
+const canvas = document.getElementById('world');
+const ctx = canvas.getContext('2d');
+
+function resize(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+
+const COLORS = {
+  water:  ['#3a7bc4', '#3468a8'],
+  sand:   ['#e3cd93', '#d3ba7c'],
+  grass:  ['#5f9a4c', '#4e8540'],
+};
+
+function shadeColor(type, shade){
+  const [a,b] = COLORS[type];
+  return shade > 0 ? a : b;
+}
+
+function worldToScreen(wx, wy, camX, camY){
+  return [wx - camX, wy - camY];
+}
+
+function drawTree(sx, sy){
+  // trunk
+  ctx.fillStyle = '#5b3a24';
+  ctx.fillRect(sx+TILE/2-3, sy+TILE/2, 6, TILE/2-2);
+  // canopy (drawn as layered circles for a soft look)
+  ctx.fillStyle = '#2f6b34';
+  ctx.beginPath();
+  ctx.arc(sx+TILE/2, sy+TILE/2-6, 15, 0, Math.PI*2);
+  ctx.fill();
+  ctx.fillStyle = '#3d8a44';
+  ctx.beginPath();
+  ctx.arc(sx+TILE/2-6, sy+TILE/2-12, 11, 0, Math.PI*2);
+  ctx.arc(sx+TILE/2+7, sy+TILE/2-13, 10, 0, Math.PI*2);
+  ctx.fill();
+}
+
+function drawPlayer(sx, sy){
+  ctx.save();
+  ctx.translate(sx, sy);
+  // soft shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.28)';
+  ctx.beginPath();
+  ctx.ellipse(0, Player.size*0.55, Player.size*0.55, Player.size*0.22, 0, 0, Math.PI*2);
+  ctx.fill();
+  // body
+  ctx.fillStyle = '#e8b04b';
+  ctx.beginPath();
+  ctx.arc(0, 0, Player.size*0.5, 0, Math.PI*2);
+  ctx.fill();
+  ctx.strokeStyle = '#8a5a1e';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  // facing indicator
+  ctx.fillStyle = '#3b2411';
+  const off = {up:[0,-10], down:[0,10], left:[-10,0], right:[10,0]}[Player.dir];
+  ctx.beginPath();
+  ctx.arc(off[0]*0.5, off[1]*0.5, 3, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+}
+
+let camX=0, camY=0;
+
+function render(){
+  resizeIfNeeded();
+  camX = Player.x - canvas.width/2;
+  camY = Player.y - canvas.height/2;
+
+  const startTX = Math.floor(camX / TILE) - 1;
+  const endTX   = Math.ceil((camX+canvas.width) / TILE) + 1;
+  const startTY = Math.floor(camY / TILE) - 1;
+  const endTY   = Math.ceil((camY+canvas.height) / TILE) + 1;
+
+  // pass 1: ground tiles
+  const tileCache = [];
+  for(let ty=startTY; ty<=endTY; ty++){
+    const row = [];
+    for(let tx=startTX; tx<=endTX; tx++){
+      const t = World.getTile(tx,ty);
+      row.push(t);
+      const sx = tx*TILE - camX, sy = ty*TILE - camY;
+      ctx.fillStyle = shadeColor(t.type, t.shade);
+      ctx.fillRect(sx, sy, TILE+1, TILE+1);
+      if(t.type === 'water'){
+        ctx.fillStyle = 'rgba(255,255,255,0.06)';
+        ctx.fillRect(sx, sy, TILE, TILE*0.25);
+      }
+    }
+    tileCache.push(row);
+  }
+
+  // pass 2: player (drawn BEFORE trees so foliage overlaps the player)
+  const [psx, psy] = worldToScreen(Player.x, Player.y, camX, camY);
+  drawPlayer(psx, psy);
+
+  // pass 3: trees on top, so the player visually walks under the canopy
+  for(let ty=startTY; ty<=endTY; ty++){
+    for(let tx=startTX; tx<=endTX; tx++){
+      const t = tileCache[ty-startTY][tx-startTX];
+      if(t.hasTree){
+        const sx = tx*TILE - camX, sy = ty*TILE - camY;
+        drawTree(sx, sy);
+      }
+    }
+  }
+
+  Explored.markAround(Player.x, Player.y, 2);
+}
+
+function resizeIfNeeded(){
+  if(canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) resize();
+}
+
+/* -------- minimap -------- */
+const mmCanvas = document.getElementById('minimap');
+const mmCtx = mmCanvas.getContext('2d');
+function renderMinimap(){
+  const size = mmCanvas.width;
+  mmCtx.fillStyle = '#0c1610';
+  mmCtx.fillRect(0,0,size,size);
+  const pcx = Math.floor(Player.x/TILE/CHUNK);
+  const pcy = Math.floor(Player.y/TILE/CHUNK);
+  const range = 6; // chunks each direction
+  const cell = size/(range*2+1);
+  for(let y=-range;y<=range;y++){
+    for(let x=-range;x<=range;x++){
+      const key = (pcx+x)+','+(pcy+y);
+      const type = Explored.chunks.get(key);
+      if(!type) continue;
+      mmCtx.fillStyle = type==='water'?'#3a7bc4':type==='sand'?'#dcc48a':'#4e8540';
+      mmCtx.fillRect((x+range)*cell, (y+range)*cell, cell+0.5, cell+0.5);
+    }
+  }
+  // player marker
+  mmCtx.fillStyle = '#e8b04b';
+  mmCtx.beginPath();
+  mmCtx.arc(range*cell+cell/2, range*cell+cell/2, 3.5, 0, Math.PI*2);
+  mmCtx.fill();
+}
+
+/* -------- full map overlay -------- */
+const fullMap = document.getElementById('fullMap');
+const fmCtx = fullMap.getContext('2d');
+const mapOverlay = document.getElementById('mapOverlay');
+let mapOpen = false;
+let mapPan = {x:0,y:0}; // chunk offset from player
+let dragging = false, dragStart = null, panStart = null;
+
+function renderFullMap(){
+  const w = fullMap.width, h = fullMap.height, cell = 8;
+  fmCtx.fillStyle = '#060a08';
+  fmCtx.fillRect(0,0,w,h);
+  const pcx = Math.floor(Player.x/TILE/CHUNK) + mapPan.x;
+  const pcy = Math.floor(Player.y/TILE/CHUNK) + mapPan.y;
+  const rangeX = Math.ceil(w/cell/2), rangeY = Math.ceil(h/cell/2);
+  for(let y=-rangeY;y<=rangeY;y++){
+    for(let x=-rangeX;x<=rangeX;x++){
+      const key = (pcx+x)+','+(pcy+y);
+      const type = Explored.chunks.get(key);
+      const sx = w/2 + x*cell, sy = h/2 + y*cell;
+      if(!type){
+        fmCtx.fillStyle = '#0b0f0d';
+        fmCtx.fillRect(sx,sy,cell,cell);
+        continue;
+      }
+      fmCtx.fillStyle = type==='water'?'#3a7bc4':type==='sand'?'#dcc48a':'#4e8540';
+      fmCtx.fillRect(sx,sy,cell,cell);
+    }
+  }
+  // player marker only when panned to origin
+  if(mapPan.x===0 && mapPan.y===0){
+    fmCtx.fillStyle = '#e8b04b';
+    fmCtx.beginPath();
+    fmCtx.arc(w/2+cell/2, h/2+cell/2, 4, 0, Math.PI*2);
+    fmCtx.fill();
+  }
+}
+
+function toggleMap(){
+  mapOpen = !mapOpen;
+  mapOverlay.style.display = mapOpen ? 'flex' : 'none';
+  if(mapOpen){ mapPan = {x:0,y:0}; renderFullMap(); }
+}
+
+fullMap.addEventListener('mousedown', e=>{
+  dragging = true; dragStart = {x:e.clientX,y:e.clientY}; panStart = {...mapPan};
+});
+window.addEventListener('mousemove', e=>{
+  if(!dragging) return;
+  const dx = e.clientX - dragStart.x, dy = e.clientY - dragStart.y;
+  mapPan.x = panStart.x - Math.round(dx/8);
+  mapPan.y = panStart.y - Math.round(dy/8);
+  renderFullMap();
+});
+window.addEventListener('mouseup', ()=>dragging=false);
+
+/* =====================================================================
+   INTERACTION (hotbar actions on click)
+   ===================================================================== */
+canvas.addEventListener('click', (e)=>{
+  const wx = Math.floor((e.clientX + camX)/TILE);
+  const wy = Math.floor((e.clientY + camY)/TILE);
+  const px = Math.floor(Player.x/TILE), py = Math.floor(Player.y/TILE);
+  const dist = Math.max(Math.abs(wx-px), Math.abs(wy-py));
+  if(dist > 3){ showToast('Too far away'); return; }
+
+  const item = HOTBAR_ITEMS[activeSlot-1];
+  const tile = World.getTile(wx,wy);
+
+  if(item.action==='chop'){
+    if(tile.hasTree){
+      World.setOverride(wx,wy,{hasTree:false});
+      Player.wood++;
+      showToast('Chopped a tree (+1 wood)');
+    } else showToast('No tree there');
+  } else if(item.action==='plant'){
+    if(tile.type==='grass' && !tile.hasTree && Player.saplings>0){
+      World.setOverride(wx,wy,{hasTree:true});
+      Player.saplings--;
+      showToast('Planted a sapling');
+    } else showToast("Can't plant there");
+  } else if(item.action==='terraform'){
+    if(tile.type==='grass'){ World.setOverride(wx,wy,{type:'sand',hasTree:false}); showToast('Turned to sand'); }
+    else if(tile.type==='sand'){ World.setOverride(wx,wy,{type:'grass'}); showToast('Turned to grass'); }
+  } else if(item.action==='water'){
+    if(tile.type!=='water'){ World.setOverride(wx,wy,{type:'water',hasTree:false}); showToast('Placed water'); }
+  }
+  renderHotbar();
+});
+
+/* =====================================================================
+   FIREBASE  (Realtime Database REST API — coordinates stored compressed)
+   ===================================================================== */
+const DB_URL = 'https://poker-6772b-default-rtdb.europe-west1.firebasedatabase.app';
+
+function getPlayerId(){
+  let id = localStorage.getItem('sw_player_id');
+  if(!id){ id = secureRandomId(); localStorage.setItem('sw_player_id', id); }
+  return id;
+}
+const PLAYER_ID = getPlayerId();
+
+// compress world pixel coords -> compact base36 tile-coord string, e.g. "1a2,-f3"
+function compressCoords(px, py){
+  const tx = Math.round(px/TILE), ty = Math.round(py/TILE);
+  return tx.toString(36) + ',' + ty.toString(36);
+}
+
+async function recordSeedPlay(seedStr, seedKey){
+  try{
+    await fetch(`${DB_URL}/seeds/${seedKey}.json`, {
+      method:'PATCH',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ s: seedStr, t: Date.now() })
+    });
+  }catch(e){ console.warn('Firebase: could not record seed', e); }
+}
+
+let lastPosSend = 0;
+async function syncPlayerPosition(force){
+  const now = Date.now();
+  if(!force && now - lastPosSend < 2500) return;
+  lastPosSend = now;
+  try{
+    await fetch(`${DB_URL}/seeds/${World.seedKey}/players/${PLAYER_ID}.json`, {
+      method:'PUT',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(compressCoords(Player.x, Player.y))
+    });
+  }catch(e){ /* offline-safe: fail silently */ }
+}
+
+async function fetchSeedList(){
+  try{
+    const res = await fetch(`${DB_URL}/seeds.json`);
+    if(!res.ok) return {};
+    const data = await res.json();
+    return data || {};
+  }catch(e){ return {}; }
+}
+
+/* =====================================================================
+   START SCREEN LOGIC
+   ===================================================================== */
+async function populateSeedList(){
+  const listEl = document.getElementById('seedList');
+  const statusEl = document.getElementById('seedListStatus');
+  const data = await fetchSeedList();
+  const entries = Object.entries(data);
+  if(entries.length === 0){
+    statusEl.textContent = 'No worlds played yet — be the first!';
+    return;
+  }
+  entries.sort((a,b)=> (b[1].t||0) - (a[1].t||0));
+  listEl.innerHTML = '';
+  entries.slice(0,25).forEach(([key, val])=>{
+    const players = val.players ? Object.keys(val.players).length : 0;
+    const row = document.createElement('div');
+    row.className = 'seedEntry';
+    row.innerHTML = `<span class="sName">${escapeHtml(val.s || key)}</span>
+                      <span class="sMeta">${players} explorer${players===1?'':'s'}</span>`;
+    row.addEventListener('click', ()=>{
+      document.getElementById('seedInput').value = val.s || '';
+      startGame(val.s || key);
+    });
+    listEl.appendChild(row);
+  });
+}
+function escapeHtml(str){
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+document.getElementById('randomSeedBtn').addEventListener('click', ()=>{
+  document.getElementById('seedInput').value = secureRandomId();
+});
+document.getElementById('playBtn').addEventListener('click', ()=>{
+  const val = document.getElementById('seedInput').value.trim() || secureRandomId();
+  startGame(val);
+});
+document.getElementById('seedInput').addEventListener('keydown', (e)=>{
+  if(e.key==='Enter') document.getElementById('playBtn').click();
+});
+document.getElementById('backBtn').addEventListener('click', ()=>{
+  document.getElementById('gameScreen').style.display = 'none';
+  document.getElementById('startScreen').style.display = 'flex';
+  populateSeedList();
+});
+
+/* =====================================================================
+   GAME START / LOOP
+   ===================================================================== */
+function startGame(seedStr){
+  World.init(seedStr);
+  Player.spawn();
+  Player.wood = 0; Player.saplings = 5;
+  Explored.chunks.clear();
+  activeSlot = 1;
+
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('gameScreen').style.display = 'block';
+  document.getElementById('seedLabel').textContent = seedStr;
+  document.getElementById('mapSeedLabel').textContent = seedStr;
+  resize();
+  renderHotbar();
+
+  recordSeedPlay(seedStr, World.seedKey);
+  syncPlayerPosition(true);
+}
+
+window.addEventListener('keydown', (e)=>{
+  const k = e.key.toLowerCase();
+  Player.keys[k] = true;
+  if(k >= '1' && k <= '5'){ activeSlot = parseInt(k,10); renderHotbar(); }
+  if(k === 'm'){ toggleMap(); }
+  if(k === 'escape' && mapOpen){ toggleMap(); }
+});
+window.addEventListener('keyup', (e)=>{
+  Player.keys[e.key.toLowerCase()] = false;
+});
+
+function loop(){
+  if(document.getElementById('gameScreen').style.display === 'block'){
+    Player.update();
+    render();
+    renderMinimap();
+    if(mapOpen) renderFullMap();
+    document.getElementById('coordLabel').textContent =
+      `(${Math.round(Player.x/TILE)}, ${Math.round(Player.y/TILE)})`;
+    syncPlayerPosition(false);
+  }
+  requestAnimationFrame(loop);
+}
+
+resize();
+populateSeedList();
+requestAnimationFrame(loop);
+
+})();
+</script>
+</body>
+</html>
