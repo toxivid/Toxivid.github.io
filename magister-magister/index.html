@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poki Games</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111827;
+      color: white;
+    }
+
+    header {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: #1f2937;
+      border-bottom: 1px solid #374151;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .open-btn {
+      background: #ff4b55;
+      color: white;
+      text-decoration: none;
+      padding: 11px 18px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .open-btn:hover {
+      background: #ff6870;
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    .game-container {
+      width: 100%;
+      height: calc(100vh - 110px);
+      min-height: 500px;
+      background: #000;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .fallback {
+      text-align: center;
+      padding: 30px;
+    }
+
+    .fallback a {
+      color: white;
+      background: #ff4b55;
+      padding: 12px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">🎮 Poki</div>
+
+    <a
+      class="open-btn"
+      href="https://poki.com/"
+      target="_blank"
+      rel="noopener noreferrer">
+      Open Poki ↗
+    </a>
+  </header>
+
+  <main>
+    <div class="game-container">
+      <iframe
+        src="https://poki.com/"
+        title="Poki Games"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="fallback">
+      <p>If Poki doesn't load inside the frame:</p>
+
+      <a
+        href="https://poki.com/"
+        target="_blank"
+        rel="noopener noreferrer">
+        Play on Poki
+      </a>
+    </div>
+  </main>
+
+</body>
+</html>
