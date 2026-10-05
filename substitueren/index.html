@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Substitueren oefenen</title>
+<style>
+*{box-sizing:border-box}body{font-family:system-ui,Arial,sans-serif;background:#f3f6fb;color:#182235;margin:0;min-height:100vh;display:grid;place-items:center;padding:20px}
+main{background:white;width:min(520px,100%);padding:28px;border-radius:18px;box-shadow:0 8px 30px #15294a18}
+h1{margin:0 0 8px;font-size:1.65rem}.sub{color:#667085;margin:0 0 22px}
+.pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.pill{border:1px solid #d7deea;background:#e8efff;border-color:#5679d8;color:#244bb2;border-radius:999px;padding:8px 12px}
+.question{background:#f5f7fb;border-radius:14px;padding:22px;text-align:center;margin:12px 0 16px}.eq{font-size:1.3rem;font-weight:650;margin:5px}.ask{color:#667085;margin-top:12px}
+input{width:100%;padding:13px;font:inherit;border:1px solid #cbd5e1;border-radius:10px;margin-bottom:10px}button.primary{width:100%;padding:12px;border:0;border-radius:10px;background:#315fca;color:white;font:inherit;font-weight:600;cursor:pointer}button.primary:hover{background:#244da9}
+.feedback{min-height:28px;margin:12px 0 4px;text-align:center;font-weight:600}.stats{display:flex;justify-content:space-between;color:#667085;font-size:.95rem;margin-top:15px}.hint{font-size:.9rem;color:#667085;text-align:center;margin-top:16px}
+</style>
+</head>
+<body>
+<main>
+<h1>Substitueren oefenen</h1>
+<p class="sub">Vul de gegeven waarde in en reken uit.</p>
+<div class="pills">
+<span class="pill active">Substitueren</span>
+</div>
+<div class="question">
+<div class="eq" id="eq1"></div>
+<div class="eq" id="eq2"></div>
+<div class="ask" id="ask"></div>
+</div>
+<form id="form">
+<input id="answer" autocomplete="off" placeholder="Jouw antwoord" aria-label="Jouw antwoord">
+<button class="primary" type="submit">Controleer</button>
+</form>
+<div class="feedback" id="feedback" aria-live="polite"></div>
+<div class="stats"><span>Goed: <b id="score">0</b></span><span>Opgave: <b id="count">1</b></span></div>
+<p class="hint">Tip: vul x in de eerste formule in en werk de haakjes uit.</p>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+let score=0, count=1, answer='';
+const vars=['a','b','m','n','p','q'];
+
+function newQuestion(){
+  $('feedback').textContent='';
+  $('answer').value='';
+  $('answer').focus();
+
+  const v=vars[Math.floor(Math.random()*vars.length)];
+  const xCoeff=Math.floor(Math.random()*7)+2;
+  const xConst=Math.floor(Math.random()*9)+1;
+  const yCoeff=Math.floor(Math.random()*7)+2;
+  const yConst=Math.floor(Math.random()*9)+1;
+
+  // Example:
+  // y = 5x + 3
+  // x = 3m + 2
+  // Answer: y = 15m + 13
+  const newCoeff=yCoeff*xCoeff;
+  const newConst=yCoeff*xConst+yConst;
+
+  $('eq1').textContent=`y = ${yCoeff}x + ${yConst}`;
+  $('eq2').textContent=`x = ${xCoeff}${v} + ${xConst}`;
+  $('ask').textContent='Vervang x in de eerste formule en geef één nieuwe formule voor y.';
+
+  answer=`y=${newCoeff}${v}+${newConst}`;
+  $('count').textContent=count;
+}
+
+$('form').addEventListener('submit',e=>{
+  e.preventDefault();
+
+  const raw=$('answer').value
+    .toLowerCase()
+    .replace(/\s/g,'')
+    .replace(/\*/g,'');
+
+  if(raw===answer){
+    score++;
+    $('score').textContent=score;
+    $('feedback').textContent='Goed gedaan!';
+    $('feedback').style.color='#16803d';
+  }else{
+    $('feedback').textContent=`Niet helemaal. Het goede antwoord is ${answer.replace('=',' = ')}`;
+    $('feedback').style.color='#c24135';
+  }
+
+  count++;
+  setTimeout(newQuestion,1300);
+});
+
+newQuestion();
+</script>
+</body>
+</html>
